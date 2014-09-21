@@ -10,6 +10,6 @@ libraryDependencies ++= Seq(
   cache,
   jdbc,
   "com.typesafe.slick" %% "slick" % "2.1.0",
-  "org.postgresql" % "postgresql" % "9.3-1102-jdbc41",
+  "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "org.scalatestplus" %% "play" % "1.1.0" % "test"
 )
