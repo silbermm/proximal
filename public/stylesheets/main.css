@@ -7845,3 +7845,6 @@ button.close {
 .x-ng-cloak {
   display: none !important;
 }
+body {
+  padding-top: 70px;
+}

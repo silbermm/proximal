@@ -42,7 +42,8 @@ module.exports = function(grunt) {
           'public/javascripts/app.js': [
             'web/js/*.coffee', 'web/js/**/*.coffee'
           ],
-          'web/spec/test.js': [
+          'web/specs/test.js': [
+            'web/specs/**/*.coffee',
             'web/spec/**/*.coffee'
           ]
         }
