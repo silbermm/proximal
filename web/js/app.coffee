@@ -6,9 +6,7 @@ angular.module 'proximal', ["templates-main", "ui.router","ui.router.state","ngA
     
     if angular.isDefined( toState.data.pageTitle )
       $rootScope.pageTitle = toState.data.pageTitle + ' | Poximal Learning Lab'
-               
-
-    
+                   
   )
 
 .controller 'AppCtrl', ($scope, $state, $log) ->

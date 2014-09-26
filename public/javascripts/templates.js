@@ -7,7 +7,7 @@ angular.module("../home/home.html", []).run(["$templateCache", function($templat
 
 angular.module("../login/login.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../login/login.html",
-    "<prox-header></prox-header><prox-footer></prox-footer>");
+    "<prox-header></prox-header><div class=container-fluid><form class=form-horizontal></form></div><prox-footer></prox-footer>");
 }]);
 
 angular.module("../shared/footer/footer.html", []).run(["$templateCache", function($templateCache) {

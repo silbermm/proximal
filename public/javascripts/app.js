@@ -3,7 +3,7 @@
     return $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
       $log.debug("state changed!");
       if (angular.isDefined(toState.data.pageTitle)) {
-        return $rootScope.pageTitle = toState.data.pageTitle + ' | AlwaysUC';
+        return $rootScope.pageTitle = toState.data.pageTitle + ' | Poximal Learning Lab';
       }
     });
   }).controller('AppCtrl', function($scope, $state, $log) {
