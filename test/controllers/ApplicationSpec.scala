@@ -1,7 +1,7 @@
+package models;
+
 import collection.mutable.Stack
-
 import scala.concurrent.Future
-
 import org.scalatest._
 import org.scalatestplus.play._
 
@@ -17,7 +17,7 @@ class ApplicationSpec extends PlaySpec with Results {
 
   "ApplicationController#index" should  {
     "should be valid" in  {
-      var controller = new TestController()
+      val controller = new TestController()
       val result: Future[Result] = controller.index().apply(FakeRequest())
       status(result) mustEqual OK
     }

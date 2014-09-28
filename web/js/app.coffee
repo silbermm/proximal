@@ -8,7 +8,5 @@ angular.module 'proximal', ["templates-main", "ui.router","ui.router.state","ngA
       $rootScope.pageTitle = toState.data.pageTitle + ' | Poximal Learning Lab'
                    
   )
-
 .controller 'AppCtrl', ($scope, $state, $log) ->
   $scope.state = $state
-  $scope.copyright = new Date()

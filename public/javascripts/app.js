@@ -7,8 +7,7 @@
       }
     });
   }).controller('AppCtrl', function($scope, $state, $log) {
-    $scope.state = $state;
-    return $scope.copyright = new Date();
+    return $scope.state = $state;
   });
 
 }).call(this);

@@ -160,7 +160,17 @@ module.exports = function(grunt) {
         }
       }
     },
+    watch : {
+      scripts: {
+        files: ['web/js/**/*.coffee'],
+        tasks: ['default'],
+        options: {
+          spawn: false,
+        },
+      },
+    }
   });
-  grunt.registerTask('default', [ 'html2js','coffee','ngAnnotate','concat','less','copy','imagemin','cssmin','uglify' ]);
+  grunt.registerTask('default', [ 'html2js','coffee','ngAnnotate','concat','less','copy','imagemin','cssmin','uglify']);
+  grunt.registerTask('watchd',  [ 'html2js','coffee','ngAnnotate','concat','less','copy','imagemin','cssmin','uglify', 'watch'])
   grunt.registerTask('testem', ['html2js','coffee', 'concat','testem:ci:basic']);
 }
