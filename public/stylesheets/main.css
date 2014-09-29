@@ -7846,5 +7846,35 @@ button.close {
   display: none !important;
 }
 body {
-  padding-top: 70px;
+  padding-top: 51px;
+}
+.login-page {
+  background: url("../images/learning_lab.jpg");
+}
+.login-wrapper {
+  border-radius: 15px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  display: block;
+  margin-top: -185px;
+  margin-left: -235px;
+  padding: 25px;
+  width: 420px;
+  opacity: .97;
+  background: none repeat scroll 0% 0% #FFF;
+}
+.login-wrapper legend {
+  font-weight: 300;
+  color: #333;
+  margin-top: 5px;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+}
+.login-wrapper .body {
+  border-bottom: 1px solid #EEE;
+}
+.login-wrapper .footer {
+  margin-top: 20px;
 }

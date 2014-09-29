@@ -11,14 +11,14 @@ import play.api.test.Helpers._
 
 import controllers._
 
-class ApplicationSpec extends PlaySpec with Results {
+class AccountSpec extends PlaySpec with Results {
   
-  class TestController() extends Controller with ApplicationController
+  class TestController() extends Controller with AccountController
 
-  "ApplicationController#index" should  {
+  "AccountController#create" should  {
     "should be valid" in  {
       val controller = new TestController()
-      val result: Future[Result] = controller.index().apply(FakeRequest())
+      val result: Future[Result] = controller.create().apply(FakeRequest())
       status(result) mustEqual OK
     }
   }

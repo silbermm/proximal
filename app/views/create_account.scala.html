@@ -1,0 +1,80 @@
+@(registrationForm: Form[RegistrationData])
+
+@import java.util.Date
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(helpers.horizontalForm.f) }
+
+@main(title = "Login | Proximal Learning"){
+
+    <style type="text/css">
+        body {
+            background: url('@routes.Assets.at("images/learning_lab.jpg")') no-repeat fixed center center / cover transparent;
+        }
+    </style>
+
+    <header>
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand"> Proximal Learning </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container login-page">
+
+        <div class="login-wrapper">
+          @helper.form(action = routes.AccountController.createPost(), args = 'class -> "login-form form form-horizontal") {
+            <legend>Create an account for Proximal Learning </legend>
+            <div class="body"> 
+              @helper.inputText(registrationForm("firstname"), 'class->"form-control", 'placeholder->"First Name", '_label->"First Name")
+              @helper.inputText(registrationForm("lastname"), 'class->"form-control", 'placeholder->"Last Name", '_label->"Last Name")
+              @helper.inputText(registrationForm("email"), 'class->"form-control", 'placeholder->"Email Address", '_label->"Email")
+              @helper.inputPassword(registrationForm("password"), 'class->"form-control", 'placeholder->"Password", '_label->"Password")
+              @helper.inputPassword(registrationForm("confirmPassword"),'class->"form-control",'placeholder->"Verify Password",'_label->"Verify Password")
+
+              <div class="form-group">
+                <div class="col-xs-offset-4 col-xs-8">
+                  <button class="btn btn-primary" type="submit"> Create </button>
+                </div>
+              </div>
+
+            </div>
+          }
+          <div class="footer">
+           
+            <div class="col-xs-8">
+              <span> Already have an account? </span>
+            </div>
+
+            <div class="col-xs-4 ">
+              <a href="@routes.ApplicationController.login"> Login </a>
+            </div>
+
+
+          </div>
+  
+        </div>
+    </div>
+
+    <footer>
+        <style>
+            body { padding-bottom: 70px; }
+        </style>
+        <nav class="navbar navbar-default navbar-fixed-bottom"
+             role="navigation" style="background-color:#fff;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+            <span class="navbar-brand">
+              <span class="small copyright"> © Poximal Learning LLC @{new Date().format("yyyy")} </span>
+            </span>
+                </div>
+            </div>
+        </nav>
+    </footer>
+
+
+}

@@ -1,0 +1,28 @@
+@(elements: helper.FieldElements)
+
+<div class="form-group @if(elements.hasErrors){has-error}"> 
+  <label for="inputEmail3" class="col-xs-4 control-label">@elements.label(elements.lang)</label>
+  <div class="col-xs-8">
+    @elements.input 
+    @elements.errors(elements.lang).map { error =>
+      <p class="text-danger"> @error</p>
+    }
+  </div>
+</div>  
+
+<!--
+<dl class="@elements.args.get('_class) @if(elements.hasErrors) {error}" id="@elements.args.get('_id).getOrElse(elements.id + "_field")">
+  @if(elements.hasName) {
+  <dt>@elements.name(elements.lang)</dt>
+  } else {
+  <dt><label for="@elements.id">@elements.label(elements.lang)</label></dt>
+  }
+  <dd>@elements.input</dd>
+  @elements.errors(elements.lang).map { error =>
+  <dd class="error">@error</dd>
+  }
+  @elements.infos(elements.lang).map { info =>
+  <dd class="info">@info</dd>
+  }
+</dl>
+-->
