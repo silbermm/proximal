@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % "2.1.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-  "org.scalatestplus" %% "play" % "1.1.0" % "test"
+  "org.scalatestplus" %% "play" % "1.1.0" % "test",
+  "org.apache.oltu.oauth2" % "org.apache.oltu.oauth2.authzserver" % "1.0.0"
 )

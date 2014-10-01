@@ -162,7 +162,7 @@ module.exports = function(grunt) {
     },
     watch : {
       scripts: {
-        files: ['web/js/**/*.coffee', 'web/less/**/*.less', 'specs/**/*.coffee', 'Gruntfile.js'],
+        files: ['web/js/**/*.coffee', 'web/less/**/*.less', 'web/js/**/*.html', 'specs/**/*.coffee', 'Gruntfile.js'],
         tasks: ['default'],
         options: {
           spawn: false,

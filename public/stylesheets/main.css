@@ -7847,6 +7847,11 @@ button.close {
 }
 body {
   padding-top: 51px;
+  padding-bottom: 70px;
+}
+footer .navbar {
+  background: transparent;
+  color: white;
 }
 .login-page {
   background: url("../images/learning_lab.jpg");

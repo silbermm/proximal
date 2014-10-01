@@ -1,10 +1,7 @@
 (function() {
   angular.module('proximal', ["templates-main", "ui.router", "ui.router.state", "ngAnimate"]).run(['$rootScope', '$state', '$log', function($rootScope, $state, $log) {
     return $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-      $log.debug("state changed!");
-      if (angular.isDefined(toState.data.pageTitle)) {
-        return $rootScope.pageTitle = toState.data.pageTitle + ' | Poximal Learning Lab';
-      }
+      return $log.debug("state changed!");
     });
   }]).controller('AppCtrl', ['$scope', '$state', '$log', function($scope, $state, $log) {
     return $scope.state = $state;
@@ -17,20 +14,26 @@
     $stateProvider.state('home', {
       url: '/home',
       controller: "HomeCtrl as ctrl",
-      templateUrl: "../home/home.html",
-      data: {
-        "pageTitle": "HOME"
-      }
+      templateUrl: "../home/home.html"
     });
     $stateProvider.state('login', {
       url: '/login',
       controller: 'LoginCtrl as ctrl',
-      templateUrl: '../login/login.html',
-      data: {
-        "pageTitle": "Login"
-      }
+      templateUrl: '../login/login.html'
+    });
+    $stateProvider.state('dashboard', {
+      url: '/dashboard',
+      controller: 'DashboardCtrl as ctrl',
+      templateUrl: '../dashboard/dashboard.html'
     });
     return $urlRouterProvider.otherwise("/home");
+  }]);
+
+}).call(this);
+
+(function() {
+  angular.module("proximal").controller("DashboardCtrl", ['$log', function($log) {
+    return this.page = "Dashboard Page";
   }]);
 
 }).call(this);

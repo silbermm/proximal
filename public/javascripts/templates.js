@@ -1,4 +1,9 @@
-angular.module('templates-main', ['../home/home.html', '../login/login.html', '../shared/footer/footer.html', '../shared/header/header.html']);
+angular.module('templates-main', ['../dashboard/dashboard.html', '../home/home.html', '../login/login.html', '../shared/footer/footer.html', '../shared/header/header.html']);
+
+angular.module("../dashboard/dashboard.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../dashboard/dashboard.html",
+    "<h1>Dashboard</h1>");
+}]);
 
 angular.module("../home/home.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../home/home.html",
@@ -12,7 +17,7 @@ angular.module("../login/login.html", []).run(["$templateCache", function($templ
 
 angular.module("../shared/footer/footer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../shared/footer/footer.html",
-    "<footer><style>body { padding-bottom: 70px; }</style><nav class=\"navbar navbar-default navbar-fixed-bottom\" role=navigation style=background-color:#fff><div class=container-fluid><div class=navbar-header><span class=navbar-brand><span class=\"small copyright\">Poximal Learning LLC {{copyright}}</span></span></div></div></nav></footer>");
+    "<footer><style>body { padding-bottom: 70px; background: transparent; color: white; }</style><nav class=\"navbar navbar-default navbar-fixed-bottom\" role=navigation style=background-color:#fff><div class=container-fluid><div class=navbar-header><span class=navbar-brand><span class=\"small copyright\">Poximal Learning LLC {{copyright}}</span></span></div></div></nav></footer>");
 }]);
 
 angular.module("../shared/header/header.html", []).run(["$templateCache", function($templateCache) {
