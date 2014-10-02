@@ -25,11 +25,17 @@
     </header>
 
     <div class="container login-page">
-
         <div class="login-wrapper">
           @helper.form(action = routes.AccountController.createPost(), args = 'class -> "login-form form form-horizontal") {
             <legend>Create an account for Proximal Learning </legend>
             <div class="body"> 
+              @if(registrationForm.hasGlobalErrors) {
+              <div class="alert alert-danger" role="alert">  
+                 @for(error <- registrationForm.globalErrors) {
+                  <p> @error.message </p>
+                  }
+                </div>
+              } 
               @helper.inputText(registrationForm("firstname"), 'class->"form-control", 'placeholder->"First Name", '_label->"First Name")
               @helper.inputText(registrationForm("lastname"), 'class->"form-control", 'placeholder->"Last Name", '_label->"Last Name")
               @helper.inputText(registrationForm("email"), 'class->"form-control", 'placeholder->"Email Address", '_label->"Email")
