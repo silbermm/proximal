@@ -18,4 +18,5 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     templateUrl: '../dashboard/dashboard.html' 
   }
 
+
   $urlRouterProvider.otherwise "/home"
