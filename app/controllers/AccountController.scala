@@ -22,8 +22,7 @@ trait AccountController {
     }else {
       None
     }
-  }
-  
+  } 
   
   val emailUniqunessConstraint: Constraint[String] = Constraint("constraints.emailuniquness")({
       plainText => 
@@ -48,36 +47,43 @@ trait AccountController {
               case registrationData => validatePasswordsMatch(registrationData.firstname,registrationData.lastname,registrationData.email,registrationData.password,registrationData.confirmPassword).isDefined
         })
   )
-
    
-    def create() = Action {
-      Ok(views.html.create_account(registrationForm))
-    }
+  def create() = Action {
+    Ok(views.html.create_account(registrationForm))
+  }
 
-    def createPost() = Action { implicit request =>
-      registrationForm.bindFromRequest.fold(
-        formWithErrors => {
-          Logger.error("There was an error in the form")
-          Logger.error(formWithErrors.toString) 
-          BadRequest(views.html.create_account(formWithErrors))
-        },
-        registrationData => {
-          Logger.info("No errors!")
-          DB.withSession { implicit s => 
-            val u: User = new User(None, registrationData.firstname, 
-                                registrationData.lastname, registrationData.email, 
-                                BCrypt.hashpw(registrationData.password, BCrypt.gensalt()), None)
-            try {
-              Users.insert(u) 
-              Redirect(routes.ApplicationController.index())
-            } catch {
-              case e: Exception => BadRequest(views.html.create_account(registrationForm))   
-            }      
-          }
-          
-        }
-      )
-    }
+  def createPost() = Action { implicit request =>
+    registrationForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.error("There was an error in the form")
+        Logger.error(formWithErrors.toString) 
+        BadRequest(views.html.create_account(formWithErrors))
+      },
+      registrationData => {
+        Logger.info("No errors!")
+        DB.withSession { implicit s => 
+          val u: User = new User(None, registrationData.firstname, 
+                              registrationData.lastname, registrationData.email, 
+                              BCrypt.hashpw(registrationData.password, BCrypt.gensalt()), None)
+          try {
+            Users.insert(u) 
+            Redirect(routes.ApplicationController.index())
+          } catch {
+            case e: Exception => BadRequest(views.html.create_account(registrationForm))   
+          }      
+        }          
+      }
+    )
+  }
+
+  def login() = Action {
+    Ok(views.html.login())
+  }
+
+  def logout() = Action {
+    Ok(views.html.login())
+  }
+
 }
 
 object AccountController extends Controller with AccountController
