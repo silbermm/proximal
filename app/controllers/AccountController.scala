@@ -12,6 +12,7 @@ import play.api.Play.current
 import org.mindrot.jbcrypt._
 
 case class RegistrationData(firstname: String, lastname: String, email: String, password: String, confirmPassword: String)
+case class LoginData(email: String, password: String)
 
 trait AccountController {
   this: Controller =>
@@ -47,6 +48,13 @@ trait AccountController {
               case registrationData => validatePasswordsMatch(registrationData.firstname,registrationData.lastname,registrationData.email,registrationData.password,registrationData.confirmPassword).isDefined
         })
   )
+
+  val loginForm = Form(
+    mapping(
+      "email" -> nonEmptyText,
+      "password" -> nonEmptyText
+    )(LoginData.apply)(LoginData.unapply)
+  )
    
   def create() = Action {
     Ok(views.html.create_account(registrationForm))
@@ -77,7 +85,13 @@ trait AccountController {
   }
 
   def login() = Action {
-    Ok(views.html.login())
+    Ok(views.html.login(loginForm))
+  }
+
+  def loginPost() = Action {
+    // validate login...
+    // redirect to home page
+
   }
 
   def logout() = Action {

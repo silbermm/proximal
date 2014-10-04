@@ -14,5 +14,7 @@ libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.scalatestplus" %% "play" % "1.1.0" % "test",
-  "org.apache.oltu.oauth2" % "org.apache.oltu.oauth2.authzserver" % "1.0.0"
+  "ws.securesocial" %% "securesocial" % "master-SNAPSHOT"
 )
+
+resolvers += Resolver.sonatypeRepo("snapshots") 
