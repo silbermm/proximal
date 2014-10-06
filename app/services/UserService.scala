@@ -51,20 +51,38 @@ class SecureUserService extends UserService[SecureUser]  {
     }
   }
 
-  def link(current: models.SecureUser,to: securesocial.core.BasicProfile): scala.concurrent.Future[models.SecureUser] = ???
+  def link(current: SecureUser,to: BasicProfile): Future[models.SecureUser] = ???
   
   def passwordInfoFor(user: models.SecureUser): Future[Option[PasswordInfo]] = {
     DB.withSession{ implicit s => 
-      
+      SecureUsers.findById(user.uid.get) match {
+        case Some(found) => Future.successful(found.passwordInfo)
+        case _ => Future.successful(None)
+      }
     }
   }
  
-  def save(profile: securesocial.core.BasicProfile,mode: securesocial.core.services.SaveMode): scala.concurrent.Future[models.SecureUser] = ???
+  def save(profile: BasicProfile,mode: SaveMode): Future[models.SecureUser] = {
+    DB.withSession{ implicit s =>
+      val u = SecureUsers.save(profile,mode)
+      Future.successful(u)
+    }
+  }
  
-  def saveToken(token: securesocial.core.providers.MailToken): scala.concurrent.Future[securesocial.core.providers.MailToken] = ???
+  def saveToken(token: MailToken): Future[MailToken] = {
+    DB.withSession{ implicit s =>
+      Future.successful(Tokens.save(token))
+    }
+  }
  
-  def updatePasswordInfo(user: models.SecureUser,info: securesocial.core.PasswordInfo): scala.concurrent.Future[Option[securesocial.core.BasicProfile]] = ???
-
+  def updatePasswordInfo(user: SecureUser,info: PasswordInfo): Future[Option[BasicProfile]] = {
+    DB.withSession{ implicit s =>
+      SecureUsers.updatePasswordInfo(user, info) match {
+        case Some(u) => Future.successful(Some(ProfileFromUser(Some(u))))
+        case _ => Future.successful(None)
+      }
+    }
+  }
 
 }
 
