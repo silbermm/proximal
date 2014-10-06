@@ -5,131 +5,72 @@ import securesocial.core._
 import securesocial.core.providers.{ UsernamePasswordProvider, MailToken }
 import scala.concurrent.Future
 import securesocial.core.services.{ UserService, SaveMode }
+import models._
+import play.api.db.slick.DB
+import play.api.Play.current
+import org.joda.time.DateTime
 
-
-class UserService extends UserService[DemoUser] {
-  val logger = Logger("app.services.UserService")
-
-  var users = Map[(String, String), DemoUser]()
-
-  private var tokens = Map[String, MailToken]()
-
-  def find(providerId: String, userId: String): Future[Option[BasicProfile]] = {
-    if (logger.isDebugEnabled) {
-      logger.debug("users = %s".format(users))
-    }
-    val result = for (
-      user <- users.values;
-      basicProfile <- user.identities.find(su => su.providerId == providerId && su.userId == userId)
-    ) yield {
-      basicProfile
-    }
-    Future.successful(result.headOption)
-  }
-
-  def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
-    if (logger.isDebugEnabled) {
-      logger.debug("users = %s".format(users))
-    }
-    val someEmail = Some(email)
-    val result = for (
-      user <- users.values;
-    basicProfile <- user.identities.find(su => su.providerId == providerId && su.email == someEmail)
-  ) yield {
-    basicProfile
-  }
-    Future.successful(result.headOption)
-  }
-
-  def save(user: BasicProfile, mode: SaveMode): Future[DemoUser] = {
-    mode match {
-      case SaveMode.SignUp =>
-        val newUser = DemoUser(user, List(user))
-        users = users + ((user.providerId, user.userId) -> newUser)
-      case SaveMode.LoggedIn =>
-    }
-
-    val maybeUser = users.find {
-      case (key, value) if value.identities.exists(su => su.providerId == user.providerId && su.userId == user.userId) => true
-      case _ => false
-    }
-
-    maybeUser match {
-      case Some(existingUser) =>
-        val identities = existingUser._2.identities
-        val updatedList = identities.patch(identities.indexWhere(i => i.providerId == user.providerId && i.userId == user.userId), Seq(user), 1)
-        val updatedUser = existingUser._2.copy(identities = updatedList)
-        users = users + (existingUser._1 -> updatedUser)
-        Future.successful(updatedUser)
-      case None =>
-        val newUser = DemoUser(user, List(user))
-        users = users + ((user.providerId, user.userId) -> newUser)
-        Future.successful(newUser)
+class SecureUserService extends UserService[SecureUser]  {
+  
+  def deleteExpiredTokens(): Unit ={
+    DB.withSession{ implicit s=>
+      Tokens.deleteExpiredTokens(new DateTime)
     }
   }
 
-  def link(current: DemoUser, to: BasicProfile): Future[DemoUser] = {
-    if (current.identities.exists(i => i.providerId == to.providerId && i.userId == to.userId)) {
-      Future.successful(current)
-    } else {
-      val added = to :: current.identities
-      val updatedUser = current.copy(identities = added)
-      users = users + ((current.main.providerId, current.main.userId) -> updatedUser)
-      Future.successful(updatedUser)
-    }
-  }
-  def saveToken(token: MailToken): Future[MailToken] = {
-    Future.successful {
-      tokens += (token.uuid -> token)
-      token
-    }
-  }
-  def findToken(token: String): Future[Option[MailToken]] = {
-    Future.successful { tokens.get(token) }
-  }
   def deleteToken(uuid: String): Future[Option[MailToken]] = {
-    Future.successful {
-      tokens.get(uuid) match {
-        case Some(token) =>
-          tokens -= uuid
-          Some(token)
-        case None => None
+    DB.withSession{ implicit s=>
+      val t = Tokens.delete(uuid)
+      Future.successful(t)
+    }
+  }
+  
+  def find(providerId: String,userId: String): Future[Option[BasicProfile]] = {
+    DB.withSession{ implicit s => 
+      val u : Option[SecureUser] = SecureUsers.findByProviderIdAndUserId(providerId,userId)
+      u match {
+        case _: SecureUser => Future.successful(Some(ProfileFromUser(u)))
+        case _ => Future.successful(None)
       }
     }
   }
-
-
-  def deleteExpiredTokens() {
-    tokens = tokens.filter(!_._2.isExpired)
-  }
-  override def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Future[Option[BasicProfile]] = {
-    Future.successful {
-      for (
-           found <- users.values.find(_ == user);
-           identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
-         ) yield {
-           val idx = found.identities.indexOf(identityWithPasswordInfo)
-           val updated = identityWithPasswordInfo.copy(passwordInfo = Some(info))
-           val updatedIdentities = found.identities.patch(idx, Seq(updated), 1)
-           found.copy(identities = updatedIdentities)
-           updated
-         }
+ 
+  def findByEmailAndProvider(email: String,providerId: String): Future[Option[BasicProfile]] = {
+    DB.withSession{ implicit s => 
+      val u: Option[SecureUser] = SecureUsers.findByEmailAndProvider(email,providerId)
+      u match {
+        case _: SecureUser => Future.successful(Some(ProfileFromUser(u)))
+        case _ => Future.successful(None)
+      }
     }
   }
-  override def passwordInfoFor(user: DemoUser): Future[Option[PasswordInfo]] = {
-    Future.successful {
-      for (
-           found <- users.values.find(_ == user);
-           identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
-         ) yield {
-           identityWithPasswordInfo.passwordInfo.get
-         }
+  
+  def findToken(token: String): Future[Option[MailToken]] = {
+    DB.withSession{ implicit s =>
+      Future.successful(Tokens.findById(token))
     }
   }
+
+  def link(current: models.SecureUser,to: securesocial.core.BasicProfile): scala.concurrent.Future[models.SecureUser] = ???
+  
+  def passwordInfoFor(user: models.SecureUser): Future[Option[PasswordInfo]] = {
+    DB.withSession{ implicit s => 
+      
+    }
+  }
+ 
+  def save(profile: securesocial.core.BasicProfile,mode: securesocial.core.services.SaveMode): scala.concurrent.Future[models.SecureUser] = ???
+ 
+  def saveToken(token: securesocial.core.providers.MailToken): scala.concurrent.Future[securesocial.core.providers.MailToken] = ???
+ 
+  def updatePasswordInfo(user: models.SecureUser,info: securesocial.core.PasswordInfo): scala.concurrent.Future[Option[securesocial.core.BasicProfile]] = ???
+
+
 }
 
-
-// a simple User class that can have multiple identities
-case class DemoUser(main: BasicProfile, identities: List[BasicProfile])
-
-
+object ProfileFromUser {
+  def apply(i: Option[SecureUser]): BasicProfile = {
+    val user = i.get
+    BasicProfile(user.userId, user.providerId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
+  } 
+}
