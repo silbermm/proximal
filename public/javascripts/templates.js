@@ -2,7 +2,7 @@ angular.module('templates-main', ['../dashboard/dashboard.html', '../home/home.h
 
 angular.module("../dashboard/dashboard.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../dashboard/dashboard.html",
-    "<h1>Dashboard</h1>");
+    "<h1>Dashboard</h1><p>HEllo</p>");
 }]);
 
 angular.module("../home/home.html", []).run(["$templateCache", function($templateCache) {

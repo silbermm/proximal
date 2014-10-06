@@ -25,5 +25,8 @@
     "font-awesome": "~4.2.0",
     "angular-ui-router": "~0.2.11",
     "angular-ui-bootstrap-bower": "~0.11.0"
+  },
+  "devDependencies": {
+    "sizzle": "~2.0.0"
   }
 }
