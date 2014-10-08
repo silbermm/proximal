@@ -26,11 +26,18 @@ class SecureUserService extends UserService[SecureUser]  {
   }
   
   def find(providerId: String,userId: String): Future[Option[BasicProfile]] = {
+    Logger.info("looking for an account with " + providerId  + " and " + userId)    
     DB.withSession{ implicit s => 
       val u : Option[SecureUser] = SecureUsers.findByProviderIdAndUserId(providerId,userId)
       u match {
-        case _: SecureUser => Future.successful(Some(ProfileFromUser(u)))
-        case _ => Future.successful(None)
+        case Some(user) => {
+          Logger.info("found account!"); 
+          Future.successful(Some(ProfileFromUser(user)))
+        } 
+        case _ => {
+          Logger.info("unable to find account")
+          Future.successful(None)
+        } 
       }
     }
   }
@@ -39,7 +46,7 @@ class SecureUserService extends UserService[SecureUser]  {
     DB.withSession{ implicit s => 
       val u: Option[SecureUser] = SecureUsers.findByEmailAndProvider(email,providerId)
       u match {
-        case _: SecureUser => Future.successful(Some(ProfileFromUser(u)))
+        case Some(user) => Future.successful(Some(ProfileFromUser(user)))
         case _ => Future.successful(None)
       }
     }
@@ -51,7 +58,14 @@ class SecureUserService extends UserService[SecureUser]  {
     }
   }
 
-  def link(current: SecureUser,to: BasicProfile): Future[models.SecureUser] = ???
+  def link(current: SecureUser,to: BasicProfile): Future[models.SecureUser] = {
+    // get the current user from the database...
+    if (current.providerId == to.providerId && current.userId == to.userId) {
+      Future.successful(current)
+    } else {
+      Future.successful(current)
+    }
+  }
   
   def passwordInfoFor(user: models.SecureUser): Future[Option[PasswordInfo]] = {
     DB.withSession{ implicit s => 
@@ -78,7 +92,7 @@ class SecureUserService extends UserService[SecureUser]  {
   def updatePasswordInfo(user: SecureUser,info: PasswordInfo): Future[Option[BasicProfile]] = {
     DB.withSession{ implicit s =>
       SecureUsers.updatePasswordInfo(user, info) match {
-        case Some(u) => Future.successful(Some(ProfileFromUser(Some(u))))
+        case Some(u) => Future.successful(Some(ProfileFromUser(u)))
         case _ => Future.successful(None)
       }
     }
@@ -87,8 +101,7 @@ class SecureUserService extends UserService[SecureUser]  {
 }
 
 object ProfileFromUser {
-  def apply(i: Option[SecureUser]): BasicProfile = {
-    val user = i.get
+  def apply(user: SecureUser): BasicProfile = {
     BasicProfile(user.userId, user.providerId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
   } 
 }

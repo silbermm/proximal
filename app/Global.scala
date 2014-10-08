@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor
 import securesocial.core.RuntimeEnvironment
 import services._
 import models._
+import controllers.CustomTemplates
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
@@ -39,6 +40,7 @@ object Global extends GlobalSettings {
    * */
   object MyRuntimeEnvironment extends RuntimeEnvironment.Default[SecureUser] {
     //override lazy val routes = new CustomRoutesService()
+    override lazy val viewTemplates = new CustomTemplates(this) 
     override lazy val userService: SecureUserService = new SecureUserService()
     //override lazy val eventListeners = List(new MyEventListener())
   }

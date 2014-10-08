@@ -1,0 +1,106 @@
+@(loginForm: Form[(String,String)], errorMsg: Option[String] = None)(implicit request: RequestHeader, env:securesocial.core.RuntimeEnvironment[_])
+
+@import securesocial.core.providers.UsernamePasswordProvider.UsernamePassword
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import helper._
+@import play.api.Play
+@import java.util.Date
+
+@implicitFieldConstructor = @{ FieldConstructor(helpers.horizontalForm.f) }
+
+@main(title = "Login to Proximal") {
+
+  <style type="text/css">
+    body {
+      background: url('@routes.Assets.at("images/learning_lab.jpg")') no-repeat fixed center center / cover transparent;
+    }
+  </style>
+  <header>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand"> Proximal Learning </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  
+  @defining( env.providers.values.filter( _.id != UsernamePassword) ) { externalProviders =>
+  <div class="container login-page">
+    <div class="login-wrapper">
+       <form action = "@env.routes.authenticationUrl("userpass")" class="form-horizontal" autocomplete="off" method="POST">
+         <legend>Login to Proximal Learning </legend>
+         <div class="body"> 
+          @errorMsg.map { msg =>
+            <div class="alert alert-danger" role="alert">
+              @Messages(msg)
+            </div>
+           }
+
+          @request.flash.get("success").map { msg =>
+          <div class="alert alert-info">
+            @msg
+          </div>
+          }
+
+          @request.flash.get("error").map { msg =>
+          <div class="alert alert-danger">
+            @msg
+          </div>
+          }
+          @if( UsernamePasswordProvider.withUserNameSupport ) {
+            @helper.inputText( loginForm("username"),'_label -> Messages("securesocial.signup.username"),'class -> "input-xlarge form-control")
+          } else {
+            @helper.inputText( loginForm("username"), '_label -> Messages("securesocial.signup.email1"), 'class -> "input-xlarge form-control")
+         }
+         @helper.inputPassword(
+         loginForm("password"), '_label -> Messages("securesocial.signup.password1"), 'class -> "input-xlarge form-control")
+
+           <div class="form-group">
+             <div class="col-xs-offset-4 col-xs-8">
+              <button class="btn btn-primary btn-block" type="submit"> @Messages("securesocial.login.title") </button>
+             </div>
+           </div>
+         </div>
+
+         
+          <div class="clearfix">
+           <p><a href="@env.routes.resetPasswordUrl">@Messages("securesocial.login.forgotPassword") </a></p>
+         </div>
+         @if(Play.current.configuration.getBoolean("securesocial.registrationEnabled").getOrElse(true) ){
+         <div class="clearfix">
+           <p>@Messages("securesocial.login.signUp") <a href="@env.routes.signUpUrl">@Messages("securesocial.login.here")</a></p>
+         </div>
+         @if( externalProviders.size > 0 ) {
+          <div class="clearfix">
+            <p> Or @Messages("securesocial.login.instructions")</p>
+            <p>
+              @securesocial.views.html.provider("google")
+              @securesocial.views.html.provider("facebook")
+            </p>
+        </div>
+        }
+
+         }
+      </form>
+    </div>
+  </div>
+  
+     
+  }
+  <footer>
+    <nav class="navbar navbar-default navbar-fixed-bottom"
+                        role="navigation" style="background-color:#fff;">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <span class="navbar-brand">
+            <span class="small copyright"> © Poximal Learning LLC @{new Date().format("yyyy")} </span>
+          </span>
+        </div>
+      </div>
+    </nav>
+  </footer>
+
+}
