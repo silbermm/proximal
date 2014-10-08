@@ -77,8 +77,8 @@
           <div class="clearfix">
             <p> Or @Messages("securesocial.login.instructions")</p>
             <p>
-              @securesocial.views.html.provider("google")
-              @securesocial.views.html.provider("facebook")
+              <a href="@env.routes.authenticationUrl("google")">Google </a>
+              <a href="@env.routes.authenticationUrl("facebook")">Facebook </a>
             </p>
         </div>
         }
