@@ -1,9 +1,122 @@
+@(user: SecureUser)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[models.SecureUser])
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+
+
 @main(title = "Home"){
 <div data-ng-app="proximal" data-ng-controller="AppCtrl">
-  <div data-ui-view></div>
 
+  <div id="page-wrapper" ng-class="{'active': toggle}" ng-cloak>
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <ul class="sidebar">
+      <li class="sidebar-main">
+        <a href="" ng-click="toggleSidebar()"> 
+          <span class="menu-icon"><i class="fa fa-bars"></i></span>
+        </a>
+      </li>
+      <li class="sidebar-title"><span>NAVIGATION</span></li>
+      <li class="sidebar-list" ui-sref-active="active">
+        <a ui-sref="dashboard" >Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+      </li>
+      <li class="sidebar-list" ui-sref-active="active">
+        <a href="#"> Children <span class="menu-icon fa fa-child"></span></a>
+      </li>
+      <li class="sidebar-list">
+        <a href="#"> Library <span class="menu-icon fa fa-bank"></span></a>
+      </li>
+      <li class="sidebar-list">
+        <a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>
+      </li>
+      <li class="sidebar-title separator"><span>QUICK LINKS</span></li>
+      <li class="sidebar-list">
+        <a href="#" target="_blank"> <span class="menu-icon fa fa-external-link"></span></a>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="col-xs-4">
+        <a href="#" target="_blank">
+          Alternatives 
+        </a>
+      </div>
+      <div class="col-xs-4">
+        <a href="#" target="_blank">
+          About
+        </a>
+      </div>
+      <div class="col-xs-4">
+        <a href="#">
+          Support
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- End Sidebar -->
 
+  <div id="content-wrapper">
+    <div class="page-content">
+      <!-- Header Bar -->
+      <div class="row header">
+        <div class="col-xs-12">
+          <div class="user pull-right">
+            <div class="item dropdown">
+              <a href="" class="dropdown-toggle">
+                <img src="@user.avatarUrl.getOrElse("@routes.Assets.at('images/avatar.jpg')")" alt="@user.firstName.getOrElse("")" />
 
-
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-header">
+                  @user.fullName
+                </li>
+                <li class="divider"></li>
+                <li class="link">
+                  <a href="#">
+                    Profile
+                  </a>
+                </li>
+                <li class="divider"></li>
+                <li class="link">
+                  <a href="@securesocial.controllers.routes.LoginPage.logout()">
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="item dropdown">
+              <a href="#" class="dropdown-toggle">
+                <i class="fa fa-bell-o"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-header">
+                  Notifications
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="#">Server Down!</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="meta">
+            <div class="page">
+              Dashboard
+            </div>
+            <div class="breadcrumb-links">
+              Home / Dashboard
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Header Bar -->
+      <!-- Main Content -->
+      <section data-ui-view></section>  
+    
+    </div><!-- End Page Content -->
+  </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
 </div>
 }

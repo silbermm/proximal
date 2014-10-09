@@ -59,7 +59,9 @@ module.exports = function(grunt) {
             'web/bower_components/angular/angular.js',
             'web/bower_components/angular-resource/angular-resource.js',
             'web/bower_components/angular-animate/angular-animate.js',
+            'web/bower_components/angular-cookies/angular-cookies.js',
             'web/bower_components/angular-ui-router/release/angular-ui-router.js',
+            'web/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
             'web/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js'
           ],
           "public/javascripts/spec.js" : [

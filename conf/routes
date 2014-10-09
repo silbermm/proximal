@@ -3,7 +3,7 @@
 # ~~~~
 
 # index,login,logout
-GET     /                           controllers.ApplicationController.index()
+GET     /                           @controllers.ApplicationController.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

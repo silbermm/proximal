@@ -2,14 +2,15 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import securesocial.core._
+import models._
 
-trait ApplicationController {
-  this: Controller =>
 
-  def index() = Action {
-    Ok(views.html.index()) 
-  }
+class ApplicationController(override implicit val env: RuntimeEnvironment[SecureUser])  extends securesocial.core.SecureSocial[SecureUser] {
+
+   def index = SecuredAction { implicit request =>
+     Ok(views.html.index(request.user))
+   }
 
 }
 
-object ApplicationController extends Controller with ApplicationController
