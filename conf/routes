@@ -7,6 +7,7 @@ GET     /                           controllers.ApplicationController.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/securesocial/*file  securesocial.controllers.Assets.at(path="/public/securesocial", file)
 
 # Login page(s)
 GET     /logout                     @securesocial.controllers.LoginPage.logout
@@ -18,6 +19,7 @@ GET     /signup                     @securesocial.controllers.Registration.start
 POST    /signup                     @securesocial.controllers.Registration.handleStartSignUp
 GET     /signup/:token              @securesocial.controllers.Registration.signUp(token)
 POST    /signup/:token              @securesocial.controllers.Registration.handleSignUp(token)
+
 GET     /password                   @securesocial.controllers.PasswordChange.page
 POST    /password                   @securesocial.controllers.PasswordChange.handlePasswordChange
 GET     /reset                      @securesocial.controllers.PasswordReset.startResetPassword
@@ -25,7 +27,8 @@ POST    /reset                      @securesocial.controllers.PasswordReset.hand
 
 #
 # Providers entry points
-GET     /authenticate/:provider     @securesocial.controllers.ProviderController.authenticate(provider)
-POST    /authenticate/:provider     @securesocial.controllers.ProviderController.authenticateByPost(provider)
+GET     /authenticate/:provider     @securesocial.controllers.ProviderController.authenticate(provider, redirectTo: Option[String])
+POST    /authenticate/:provider     @securesocial.controllers.ProviderController.authenticateByPost(provider, redirectTo: Option[String])
+POST    /api/authenticate/:provider @securesocial.controllers.LoginApi.authenticate(provider, builder = "token")
 
-->      /auth                       securesocial.Routes
+#->      /auth                       securesocial.Routes
