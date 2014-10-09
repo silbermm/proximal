@@ -56,7 +56,7 @@ object Tokens {
       case Some(existingToken) => {
         val tokenRow = for{
           t <- tokens
-          if t.uuid is existingToken.uuid
+          if t.uuid === existingToken.uuid
         } yield t
         val updatedToken = token.copy(uuid = existingToken.uuid)
         tokenRow.update(updatedToken)
