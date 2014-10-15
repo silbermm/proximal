@@ -6,17 +6,41 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     templateUrl: "../home/home.html"
   }
 
-  $stateProvider.state 'login', {
-    url: '/login',
-    controller: 'LoginCtrl as ctrl',
-    templateUrl: '../login/login.html'
-  }
-
   $stateProvider.state 'dashboard', {
     url: '/dashboard',
     controller: 'DashboardCtrl as ctrl',
-    templateUrl: '../dashboard/dashboard.html' 
+    templateUrl: '../dashboard/dashboard.html',
+    data: {title: "Dashboard"}
   }
+
+  $stateProvider.state 'children', {
+    url: '/children',
+    controller: 'ChildrenCtrl as ctrl',
+    templateUrl: '../children/children.html',
+    data: {title: "Children"}
+  }
+
+  $stateProvider.state 'library', {
+    url: '/library',
+    controller: 'LibraryCtrl as ctrl',
+    templateUrl: '../library/library.html',
+    data: { title: 'Library' }
+  }
+
+  $stateProvider.state 'settings', {
+    url: '/settings',
+    controller: 'SettingsCtrl as ctrl',
+    templateUrl: '../settings/settings.html',
+    data: { title: 'Settings' }
+  }
+  
+  $stateProvider.state 'admin', {
+    url: '/admin',
+    controller: 'AdminCtrl as ctrl',
+    templateUrl: '../admin/admin.html',
+    data: { title: 'Administrative Tasks' }
+  }
+
 
 
   $urlRouterProvider.otherwise "/dashboard"

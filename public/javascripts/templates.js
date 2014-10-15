@@ -1,4 +1,9 @@
-angular.module('templates-main', ['../dashboard/dashboard.html', '../home/home.html', '../login/login.html', '../shared/footer/footer.html', '../shared/header/header.html']);
+angular.module('templates-main', ['../children/children.html', '../dashboard/dashboard.html', '../home/home.html', '../library/library.html', '../login/login.html', '../shared/footer/footer.html', '../shared/header/header.html']);
+
+angular.module("../children/children.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../children/children.html",
+    "");
+}]);
 
 angular.module("../dashboard/dashboard.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../dashboard/dashboard.html",
@@ -8,6 +13,11 @@ angular.module("../dashboard/dashboard.html", []).run(["$templateCache", functio
 angular.module("../home/home.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../home/home.html",
     "<h1>{{ctrl.home}}</h1>");
+}]);
+
+angular.module("../library/library.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../library/library.html",
+    "<h1>test</h1>");
 }]);
 
 angular.module("../login/login.html", []).run(["$templateCache", function($templateCache) {

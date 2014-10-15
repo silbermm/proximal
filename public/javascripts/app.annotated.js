@@ -45,17 +45,55 @@
       controller: "HomeCtrl as ctrl",
       templateUrl: "../home/home.html"
     });
-    $stateProvider.state('login', {
-      url: '/login',
-      controller: 'LoginCtrl as ctrl',
-      templateUrl: '../login/login.html'
-    });
     $stateProvider.state('dashboard', {
       url: '/dashboard',
       controller: 'DashboardCtrl as ctrl',
-      templateUrl: '../dashboard/dashboard.html'
+      templateUrl: '../dashboard/dashboard.html',
+      data: {
+        title: "Dashboard"
+      }
+    });
+    $stateProvider.state('children', {
+      url: '/children',
+      controller: 'ChildrenCtrl as ctrl',
+      templateUrl: '../children/children.html',
+      data: {
+        title: "Children"
+      }
+    });
+    $stateProvider.state('library', {
+      url: '/library',
+      controller: 'LibraryCtrl as ctrl',
+      templateUrl: '../library/library.html',
+      data: {
+        title: 'Library'
+      }
+    });
+    $stateProvider.state('settings', {
+      url: '/settings',
+      controller: 'SettingsCtrl as ctrl',
+      templateUrl: '../settings/settings.html',
+      data: {
+        title: 'Settings'
+      }
+    });
+    $stateProvider.state('admin', {
+      url: '/admin',
+      controller: 'AdminCtrl as ctrl',
+      templateUrl: '../admin/admin.html',
+      data: {
+        title: 'Administrative Tasks'
+      }
     });
     return $urlRouterProvider.otherwise("/dashboard");
+  }]);
+
+}).call(this);
+
+(function() {
+  angular.module("proximal").controller("ChildrenCtrl", ['$log', '$cookieStore', '$scope', function($log, $cookieStore, $scope) {
+    $scope.page = "Children Page";
+    return $log.debug($scope.state);
   }]);
 
 }).call(this);
@@ -70,6 +108,13 @@
 (function() {
   angular.module("proximal").controller("HomeCtrl", ['$log', function($log) {
     return this.page = "Home Page";
+  }]);
+
+}).call(this);
+
+(function() {
+  angular.module("proximal").controller("LibraryCtrl", ['$log', '$cookieStore', '$scope', function($log, $cookieStore, $scope) {
+    return $scope.page = "Library Page";
   }]);
 
 }).call(this);

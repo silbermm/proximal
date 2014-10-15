@@ -24,13 +24,16 @@
         <a ui-sref="dashboard" >Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
       </li>
       <li class="sidebar-list" ui-sref-active="active">
-        <a href="#"> Children <span class="menu-icon fa fa-child"></span></a>
+        <a ui-sref="children"> Children <span class="menu-icon fa fa-child"></span></a>
+      </li>
+      <li class="sidebar-list" ui-sref-active="active">
+        <a ui-sref="library"> Library <span class="menu-icon fa fa-bank"></span></a>
       </li>
       <li class="sidebar-list">
-        <a href="#"> Library <span class="menu-icon fa fa-bank"></span></a>
+        <a ui-sref="settings">Settings <span class="menu-icon fa fa-cogs"></span></a>
       </li>
       <li class="sidebar-list">
-        <a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>
+        <a ui-sref="admin">Admin <span class="menu-icon fa fa-lock"></span></a> 
       </li>
       <li class="sidebar-title separator"><span>QUICK LINKS</span></li>
       <li class="sidebar-list">
@@ -103,11 +106,11 @@
           </div>
           <div class="meta">
             <div class="page">
-              Dashboard
+              {{ state.current.data.title }} 
             </div>
-            <div class="breadcrumb-links">
-              Home / Dashboard
-            </div>
+            <!-- <div class="breadcrumb-links">
+              
+              </div> -->
           </div>
         </div>
       </div>
