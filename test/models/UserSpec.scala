@@ -16,6 +16,10 @@ import play.api.test.Helpers._
 import securesocial.core._
 import securesocial.core.services._
 
+import play.api.Logger
+
+import helpers._
+
 class UserSpec extends PlaySpec with Results {
   
   import models._
@@ -24,26 +28,42 @@ class UserSpec extends PlaySpec with Results {
     "insert and retrieve new record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession{ implicit s =>
-          val pwordInfo = new PasswordInfo("bcrypt", "9090909090", None)
-          val authMethod = new AuthenticationMethod("userPassword")
+          val u = UserProfileHelpers.fakeUser
+          SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn)
+          SecureUsers.findById(1) match {
+            case Some(us) => us.firstName.get mustEqual "Matt"
+            case None     => fail()
+          }
+        }
+      }
+    }
+
+    "update the password info" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession{ implicit s =>
+          val u = UserProfileHelpers.fakeUser
+          SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn) 
           
-          val u = new SecureUser(uid = None, providerId = "userpass", 
-                                 userId = "silbermm", firstName =Some("Matt"), lastName =Some("Silbernagel"), 
-                                 fullName=Some("Matt Silbernagel"), email = Some("silbermm@gmail.com"), avatarUrl = None, 
-                                 authMethod = authMethod, oAuth1Info=None, oAuth2Info=None, passwordInfo = Some(pwordInfo) 
-                                 )
-          SecureUsers.save(ProfileFromUser(u), SaveMode.LoggedIn);
-          val Some(us) = SecureUsers.findById(1)
-          us.firstName mustEqual "Matt"
+          val savedUser = SecureUsers.findById(1) match {
+            case Some(us) => us
+            case None    => fail("unable to find a user to update")
+          }
+          
+          val pword = new PasswordInfo("bcrypt", "new", None)
+          val uid = SecureUsers.updatePasswordInfo(savedUser, pword) match {
+            case Some(us) => us.uid.get
+            case None     => fail("the update failed to return a user id") 
+          }
+          Logger.debug("uid = " + uid)
+          SecureUsers.findById(uid) match {
+            case Some(us) => us.passwordInfo.get.password mustEqual "new"
+            case None => fail()
+          }
         }
       }
     }
   }
   
-  object ProfileFromUser {
-    def apply(user: SecureUser): BasicProfile = {
-      BasicProfile(user.userId, user.providerId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
-    } 
-  }  
+   
 
 }
