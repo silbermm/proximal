@@ -79,6 +79,12 @@ class SecureUserService extends UserService[SecureUser]  {
   def save(profile: BasicProfile,mode: SaveMode): Future[models.SecureUser] = {
     DB.withSession{ implicit s =>
       val u = SecureUsers.save(profile,mode)
+      val uid = u.uid match {
+        case Some(userId) => Some(userId)
+        case None => None
+      }
+      val person = new Person(None, u.firstName.get, u.lastName, None, uid)
+      People.insertPerson(person)
       Future.successful(u)
     }
   }
