@@ -8,7 +8,7 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import securesocial.core._
 import securesocial.core.services._
-
+import play.api.Logger
 
 case class SecureUser(uid: Option[Long] = None, providerId: String,userId: String,firstName: Option[String],lastName: Option[String],
                       fullName: Option[String], email: Option[String], avatarUrl: Option[String], authMethod: AuthenticationMethod,
@@ -144,9 +144,7 @@ object SecureUsers {
   def save(user: BasicProfile, mode: SaveMode)(implicit s: Session): SecureUser = { 
     findByProviderIdAndUserId(user.providerId,user.userId) match {
       case None => {
-        val u = UserFromProfile(user) 
-        secureUsers.insert(u) 
-        u 
+        (secureUsers returning secureUsers.map(_.uid) into ((secureUser,uid) => secureUser.copy(uid=Some(uid)))) += UserFromProfile(user) 
       }
       case Some(existingUser) => {
         existingUser 
