@@ -15,7 +15,17 @@ libraryDependencies ++= Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.scalatestplus" %% "play" % "1.1.0" % "test",
   "ws.securesocial" %% "securesocial" % "master-SNAPSHOT",
-  "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0"
+  "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
+  "org.webjars" % "bootstrap" % "3.2.0",
+  "org.webjars" % "jquery" % "2.1.1",
+  "org.webjars" % "angularjs" % "1.3.0",
+  "org.webjars" % "angular-ui" % "0.4.0-3",
+  "org.webjars" % "angular-ui-router" % "0.2.11-1",
+  "org.webjars" % "font-awesome" % "4.2.0", 
+  "org.webjars" % "lodash" % "2.4.1-6",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.2"
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
+
+pipelineStages := Seq(digest, gzip)

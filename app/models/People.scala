@@ -61,24 +61,27 @@ object People {
   val relationship_types = TableQuery[RelationshipTypes]
   val relationships = TableQuery[Relationships]
  
-  def insertPerson(p : Person)(implicit s: Session) = {
+  def insertPerson(p : Person)(implicit s: Session) : Person = {
     p.uid match {
       case Some(u) => {
         findPersonByUid(u) match {
           case Some(person) => {
-            Logger.debug("updating Person with new info") 
-            updatePerson(person.id.get, person)
+            updatePerson(person.id.get, person) match {
+              case Some(p) => p
+              case _ => throw new Exception("unable to insert/update the user")
+            }
           }
-          case None => people += p
+          case None => (people returning people.map(_.id) into ((people,id) => people.copy(id=Some(id)))) += p
         }
       }
-      case None =>  people += p
+      case None =>  (people returning people.map(_.id) into ((people,id) => people.copy(id=Some(id)))) += p
     }
   }
 
   def updatePerson(id: Long, p: Person)(implicit s: Session) = {
     val personToUpdate: Person = p.copy(Some(id))
     people.filter(_.id === id).update(personToUpdate)
+    findPerson(id) 
   }
 
   def findPersonByUid(uid: Long)(implicit s: Session) =
@@ -103,6 +106,9 @@ object People {
       }
     }
     // we now have an id of the relationship type... use it to insert the two people into the relationship table
+    val r = new Relationship(parent.id.get, child.id.get, childTypeId) 
+    relationships += r
+    r
   }
 
   def findChildrenFor(uid: Long)(implicit s: Session) = {

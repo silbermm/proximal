@@ -35,6 +35,28 @@ class PeopleSpec extends PlaySpec with Results {
     }
   }
 
+  "Relationship model" should {
+    "add a child to a parent" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val parent = People.insertPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
+          val child = People.insertPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+          val relationship = People.addChild(child,parent);
+          relationship.personId mustEqual parent.id.get
+          relationship.otherPersonId mustEqual child.id.get
+        }
+      }
+    }
+
+    "find children by parent" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          true mustEqual true
+        }
+      }
+    }
+  }
+
 
 
 
