@@ -51,7 +51,11 @@ class PeopleSpec extends PlaySpec with Results {
     "find children by parent" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
-          true mustEqual true
+          val parent = People.insertPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
+          val child = People.insertPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+          val relationship = People.addChild(child,parent); 
+          val listOfChildren = People.findChildrenFor(parent.id.get)
+          listOfChildren.size mustEqual 1
         }
       }
     }

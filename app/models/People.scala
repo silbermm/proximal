@@ -101,24 +101,23 @@ object People {
     val childTypeId : Long = findRelTypeByName("child") match {
       case Some(c) => c.id.get
       case None => {
-        // create a child type and return the generated id
         relationship_types returning relationship_types.map(_.id) += new RelationshipType(None, "child", "A child of a parent that is registered in the system") 
       }
     }
-    // we now have an id of the relationship type... use it to insert the two people into the relationship table
     val r = new Relationship(parent.id.get, child.id.get, childTypeId) 
     relationships += r
     r
   }
 
-  def findChildrenFor(uid: Long)(implicit s: Session) = {
+  def findChildrenFor(uid: Long)(implicit s: Session) : List[Person] = {
     val q3 = (for {
       ((p, r), t) <- people leftJoin relationships on (_.id === _.personId) leftJoin relationship_types on (_._2.typeId === _.id)
       if t.reltype === "child" 
       //t <- relationship_types if r.typeId === t.id     
     } yield (r.otherPersonId))
     val listOfChildIds = q3.list
-  
+    val listOfChildren : List[Person] = listOfChildIds.flatMap(id => findPerson(id)) 
+    listOfChildren
   }
 
   def findRelTypeById(id: Long)(implicit s: Session): Option[RelationshipType] = 

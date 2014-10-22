@@ -1,0 +1,11 @@
+<div>
+ 
+  <div data-ng-show="children.length < 1">
+    <span> You have not registered any children yet. </span>
+  </div>
+ 
+  <ul class="nav nav-pills nav-stacked" data-ng-repeat="child in children">
+    <li> {{child.firstName}} </li>
+  </ul>
+  
+</div>

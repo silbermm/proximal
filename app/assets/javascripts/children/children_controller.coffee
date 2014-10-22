@@ -1,3 +1,5 @@
-angular.module("proximal").controller "ChildrenCtrl", ($log,$cookieStore,$scope) ->
+angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,personService, $modal) ->
   $scope.page = "Children Page"
-  $log.debug($scope.state)
+ 
+  $scope.createChild = ->
+    $log.debug "create a new child"
