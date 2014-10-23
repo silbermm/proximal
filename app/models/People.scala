@@ -1,7 +1,6 @@
 package models
 
 import java.util.Date
-import java.sql.{ Date => SqlDate }
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import play.api.db.slick.Config.driver.simple._
@@ -95,15 +94,13 @@ object People {
   }
 
   def addChild(child: Person, parent: Person)(implicit s: Session) = {
-    // add a child to another person
-    // get the id of the relationship type that is a child... 
-    // if no type for child is found, create one
     val childTypeId : Long = findRelTypeByName("child") match {
       case Some(c) => c.id.get
       case None => {
         relationship_types returning relationship_types.map(_.id) += new RelationshipType(None, "child", "A child of a parent that is registered in the system") 
       }
     }
+    Logger.debug("childTypeId = " + childTypeId.toString())
     val r = new Relationship(parent.id.get, child.id.get, childTypeId) 
     relationships += r
     r
