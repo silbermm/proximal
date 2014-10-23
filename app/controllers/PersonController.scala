@@ -9,17 +9,17 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 
+case class Child(firstName: String, lastName: String, birthDate: DateTime)
+
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser])  extends securesocial.core.SecureSocial[SecureUser] {
 
   var personService = new PersonService()
 
-  implicit val peopleReads: Reads[Person] = (
-    (JsPath \ "id").read[Option[Long]] and
+  implicit val peopleReads: Reads[Child] = (
     (JsPath \ "firstName").read[String] and
-    (JsPath \ "lastName").read[Option[String]] and
-    (JsPath \ "birthDate").read[Option[DateTime]] and
-    (JsPath \ "uid").read[Option[Long]]
-  )(Person.apply _)
+    (JsPath \ "lastName").read[String] and
+    (JsPath \ "birthDate").read[DateTime]
+  )(Child.apply _)
 
   implicit val peopleWrites: Writes[Person] = (
     (JsPath \ "id").write[Option[Long]] and
@@ -36,7 +36,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   }
 
   def addChild = SecuredAction(BodyParsers.parse.json){ implicit request =>
-    val childToAdd = request.body.validate[Person] 
+    val childToAdd = request.body.validate[Child] 
     childToAdd.fold(
       errors => {
         BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))) 
