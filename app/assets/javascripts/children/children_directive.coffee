@@ -5,9 +5,10 @@ angular.module("proximal").directive "proxChildren",[
     return {
       restrict: "E"
       replace: true
-      templateUrl: "assets/javascripts/children/children_directive_template.html",
+      controller: "ChildrenCtrl"
+      templateUrl: "assets/javascripts/children/templates/children_directive_template.html",
       scope: {
-        children: '=' 
+        children: '='
       }
       link: (scope, el, attrs) ->
          

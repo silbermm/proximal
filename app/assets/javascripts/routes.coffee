@@ -16,7 +16,7 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
   $stateProvider.state 'children', {
     url: '/children',
     controller: 'ChildrenCtrl as ctrl',
-    templateUrl: '../assets/javascripts/children/children.html',
+    templateUrl: '../assets/javascripts/children/templates/children.html',
     data: {title: "Children"}
   }
 

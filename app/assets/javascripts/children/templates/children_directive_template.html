@@ -1,0 +1,23 @@
+<div>
+  <div class="widget">
+    <div class="widget-header">
+      Registered Children <button class="btn btn-sm btn-info pull-right" ng-click="createChild()"> Add </button>
+    </div>
+    <div class="widget-body medium no-padding">
+      <div data-ng-show="children.length < 1" class="message">
+        <span> You have not registered any children yet. </span>
+      </div>
+      <hr data-ng-show="children.length < 1" /> 
+
+      <div class="table-responsive" data-ng-show="children.length > 0">
+        <table class="table table-hover">
+          <tbody >
+            <tr data-ng-repeat="child in children">
+              <td> {{child.firstName}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>   
