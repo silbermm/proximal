@@ -15,19 +15,16 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
 
   var personService = new PersonService()
 
-  implicit val peopleReads: Reads[Child] = (
-    (JsPath \ "firstName").read[String] and
-    (JsPath \ "lastName").read[String] and
-    (JsPath \ "birthDate").read[Long]
-  )(Child.apply _)
+  implicit val childFormat = Json.format[Child] 
+  implicit val peopleFormat = Json.format[Person]
 
-  implicit val peopleWrites: Writes[Person] = (
-    (JsPath \ "id").write[Option[Long]] and
-    (JsPath \ "firstName").write[String] and
-    (JsPath \ "lastName").write[Option[String]] and
-    (JsPath \ "birthDate").write[Option[DateTime]] and
-    (JsPath \ "uid").write[Option[Long]]
-  )(unlift(Person.unapply))
+  //implicit val peopleWrites: Writes[Person] = (
+  //  (JsPath \ "id").write[Option[Long]] and
+  //  (JsPath \ "firstName").write[String] and
+  //  (JsPath \ "lastName").write[Option[String]] and
+  //  (JsPath \ "birthDate").write[Option[DateTime]] and
+  //  (JsPath \ "uid").write[Option[Long]]
+  //)(unlift(Person.unapply))
 
   def children = SecuredAction{ implicit request => 
     var c = personService.findChildren(request.user.uid.get)
@@ -42,22 +39,34 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
         BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))) 
       },
       person => {
-        val parent = personService.findPersonByUid(request.user.uid.get) match {
-          case Some(pr) => Some(pr)
-          case _ => None 
-        }
-        parent match {
-          case None => BadRequest
-          case _ => {
+        personService.findPersonByUid(request.user.uid.get) match {
+          case Some(pr) => {
             val p = new Person(None,person.firstName,Some(person.lastName),Some(new DateTime(person.birthDate)),None)
             val c = personService.createPerson(p)
-            personService.addChild(c, parent.get)
+            personService.addChild(c, pr)
             Logger.debug("got a person to add " + person.firstName)
-            Ok(Json.obj("status" ->"OK", "child" -> Json.toJson(c)))
+            Ok(Json.obj("status" ->"OK", "child" -> Json.toJson(c))) 
           }
-        }
+          case _ => BadRequest
+        } 
       }
     )
+  }
+
+  def removeChild(id: Long) = SecuredAction {implicit request =>
+    personService.findChildren(request.user.uid.get) match {
+      case children : List[Person] => {
+        Logger.debug(children.toString())
+        children.find {child => child.id.get == id } match {
+          case Some(c) => { 
+            personService.deletePerson(id)
+            Ok(Json.toJson(c))
+          }
+          case None => BadRequest(Json.obj("status" -> "KO", "message" -> ("No match in the list for id " + id.toString() )))
+        }
+      }
+      case _ => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
+    }
   }
 
 }

@@ -12,8 +12,15 @@
       <div class="table-responsive" data-ng-show="children.length > 0">
         <table class="table table-hover">
           <tbody >
-            <tr data-ng-repeat="child in children">
-              <td> {{child.firstName}} </td>
+            <tr data-ng-repeat="child in children" ui-sref-active="active">
+              <td> {{child.firstName}} </td> 
+              <td>
+                  <div class="col-md-offset-9 col-md-3">
+                   <a ui-sref="children.view({id:child.id})"> <i class="fa fa-eye text-primary"></i></a> 
+                   &nbsp;
+                   <a ng-click="removeChild(child.id)"> <i class="fa fa-trash text-danger"></i> </a> 
+                  </div>
+              </td> 
             </tr>
           </tbody>
         </table>

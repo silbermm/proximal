@@ -1,13 +1,23 @@
 angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,personService, $modal) ->
   $scope.page = "Children Page"
 
-  $scope.children = [] 
+  $scope.children = []
        
   personService.getChildren().success((data, status, headers, config) ->
     $scope.children = data.children
   ).error((data, status, headers, config)->
     $log.error(data)
   )
+
+  $scope.removeChild = (id)->
+    toRemove = _.findIndex($scope.children, (chr)-> 
+      chr.id is id
+    )
+    personService.removeChild(id).success((data,status,headers,config)->
+      $scope.children.splice(toRemove, 1)
+    ).error((data,status,headers,config)->
+      $log.error("there was an error " + data)
+    )
 
   $scope.createChild = ->
     #open a modal
@@ -28,7 +38,7 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
         $log.error(data)
       )
       return
-   
+
     modalInstance.result.then ((c)->
       addChild(c)
       return
@@ -63,3 +73,7 @@ angular.module("proximal").controller "AddChildCtrl", ($scope, $log, $modalInsta
 
   $scope.cancel = ->
     $modalInstance.dismiss("cancel")
+
+angular.module('proximal').controller "ViewChildCtrl", ($scope,$log,$stateParams) ->
+  $log($stateParams.id)
+

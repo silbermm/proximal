@@ -8,5 +8,8 @@ angular.module("proximal").factory "personService", [
           
       getChildren: ->
         return $http.get("/api/v1/children")
+
+      removeChild: (id)->
+        return $http.delete("/api/v1/children/" + id)
     }
 ]
