@@ -13,7 +13,7 @@ angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngCookies
     window.innerWidth
 
   $scope.$watch $scope.getWidth, (newValue, oldValue) ->
-   $log.debug "watch has fired" 
+   $log.debug "watch has fired"
    if newValue >= mobileView
      if angular.isDefined($cookieStore.get("toggle"))
        if $cookieStore.get("toggle") is false

@@ -2,7 +2,7 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
   $scope.page = "Children Page"
 
   $scope.children = []
-       
+
   personService.getChildren().success((data, status, headers, config) ->
     $scope.children = data.children
   ).error((data, status, headers, config)->
@@ -20,7 +20,6 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
     )
 
   $scope.createChild = ->
-    #open a modal
     modalInstance = $modal.open({
       templateUrl: '../assets/javascripts/children/templates/add_child.html',
       controller: 'AddChildCtrl'
@@ -44,7 +43,7 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
       return
     )
 
-angular.module("proximal").controller "AddChildCtrl", ($scope, $log, $modalInstance) ->
+.controller "AddChildCtrl", ($scope, $log, $modalInstance) ->
 
   $scope.clear = ->
     $scope.child.birthDate = null
@@ -56,7 +55,7 @@ angular.module("proximal").controller "AddChildCtrl", ($scope, $log, $modalInsta
     $scope.opened = true
 
   $scope.dateOptions = {
-    formatYear: 'yy',
+    formatYear: 'yyyy',
     startingDay: 1
   }
 
@@ -74,6 +73,13 @@ angular.module("proximal").controller "AddChildCtrl", ($scope, $log, $modalInsta
   $scope.cancel = ->
     $modalInstance.dismiss("cancel")
 
-angular.module('proximal').controller "ViewChildCtrl", ($scope,$log,$stateParams) ->
-  $log($stateParams.id)
+angular.module('proximal').controller "ViewChildCtrl", ($scope,$log,$stateParams, personService) ->
+  $log.info($stateParams.id)
+  personService.getChild($stateParams.id).success((data,status,headers,config) ->
+    $scope.child = data
+  ).error((data,status,headers,config) ->
+    $log "error!" 
+  )
+  return
+
 

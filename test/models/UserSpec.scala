@@ -29,8 +29,8 @@ class UserSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession{ implicit s =>
           val u = UserProfileHelpers.fakeUser
-          SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn)
-          SecureUsers.findById(1) match {
+          val saved = SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn)
+          SecureUsers.findById(saved.uid.get) match {
             case Some(us) => us.firstName.get mustEqual "Matt"
             case None     => fail()
           }
@@ -42,13 +42,8 @@ class UserSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession{ implicit s =>
           val u = UserProfileHelpers.fakeUser
-          SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn) 
-          
-          val savedUser = SecureUsers.findById(1) match {
-            case Some(us) => us
-            case None    => fail("unable to find a user to update")
-          }
-          
+          val savedUser = SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn) 
+                   
           val pword = new PasswordInfo("bcrypt", "new", None)
           val uid = SecureUsers.updatePasswordInfo(savedUser, pword) match {
             case Some(us) => us.uid.get
@@ -62,8 +57,23 @@ class UserSpec extends PlaySpec with Results {
         }
       }
     }
-  }
-  
-   
 
+    "findByProviderIdAndUserId" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession{ implicit s =>
+          val u = UserProfileHelpers.fakeUser
+          val saved = SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn)
+          
+          SecureUsers.findByProviderIdAndUserId(saved.providerId, saved.userId) match {
+            case Some(user) => user.firstName.get mustEqual u.firstName
+            case None       => fail("Not able to find a user")
+          }
+
+        }
+      }
+    }
+  
+  
+  
+  }
 }

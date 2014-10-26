@@ -17,19 +17,34 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
 
   implicit val childFormat = Json.format[Child] 
   implicit val peopleFormat = Json.format[Person]
+ 
+  implicit val authMethodFormat = Json.format[securesocial.core.AuthenticationMethod]
+  implicit val oAuth1Format = Json.format[securesocial.core.OAuth1Info]
+  implicit val oAuth2Format = Json.format[securesocial.core.OAuth2Info]
+  implicit val passwordInfoFormat = Json.format[securesocial.core.PasswordInfo]
 
-  //implicit val peopleWrites: Writes[Person] = (
-  //  (JsPath \ "id").write[Option[Long]] and
-  //  (JsPath \ "firstName").write[String] and
-  //  (JsPath \ "lastName").write[Option[String]] and
-  //  (JsPath \ "birthDate").write[Option[DateTime]] and
-  //  (JsPath \ "uid").write[Option[Long]]
-  //)(unlift(Person.unapply))
+  implicit val secureUserFormat = Json.format[SecureUser]
 
+    def profile = SecuredAction { implicit request =>
+    Ok(Json.toJson(request.user)) 
+  }
+  
   def children = SecuredAction{ implicit request => 
     var c = personService.findChildren(request.user.uid.get)
     var j = Json.obj("children" -> Json.toJson(c)) 
     Ok(j)
+  }
+
+  def child(id: Long) = SecuredAction{ implicit request =>
+    personService.findChildren(request.user.uid.get) match {
+      case children: List[Person] => {
+        children.find {child => child.id.get == id } match {
+          case c => Ok(Json.toJson(c))
+          case None => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
+        }
+      }
+      case _ => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
+    }
   }
 
   def addChild = SecuredAction(BodyParsers.parse.json){ implicit request =>

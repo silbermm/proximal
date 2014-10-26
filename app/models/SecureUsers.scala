@@ -156,8 +156,10 @@ object SecureUsers {
     val userToUpdate: SecureUser = user.copy(passwordInfo = Some(passwordInfo))
     val i = secureUsers.filter(_.uid === user.uid).update(userToUpdate)
     if(i > 0){
-      findByProviderIdAndUserId(user.providerId,user.userId)
+      Logger.debug("Update returned a row...")
+      Some(userToUpdate) 
     } else {
+      Logger.debug("Update did not return a row")
       None
     }
   }

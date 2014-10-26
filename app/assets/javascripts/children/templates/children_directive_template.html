@@ -1,9 +1,7 @@
 <div>
-  <div class="widget">
-    <div class="widget-header">
-      Registered Children <button class="btn btn-sm btn-info pull-right" ng-click="createChild()"> Add </button>
-    </div>
-    <div class="widget-body medium no-padding">
+  <prox-widget>
+    <prox-widget-header title="Registered Children"> </prox-widget-header>
+    <prox-widget-body>
       <div data-ng-show="children.length < 1" class="message">
         <span> You have not registered any children yet. </span>
       </div>
@@ -25,6 +23,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
-</div>   
+    </prox-widget-body>
+  </prox-widget>
+</div>
