@@ -25,8 +25,8 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
 
   implicit val secureUserFormat = Json.format[SecureUser]
 
-    def profile = SecuredAction { implicit request =>
-    Ok(Json.toJson(request.user)) 
+  def profile = SecuredAction { implicit request =>
+      Ok(Json.toJson(request.user)) 
   }
   
   def children = SecuredAction{ implicit request => 
@@ -39,7 +39,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
     personService.findChildren(request.user.uid.get) match {
       case children: List[Person] => {
         children.find {child => child.id.get == id } match {
-          case c => Ok(Json.toJson(c))
+          case Some(c) => Ok(Json.toJson(c))
           case None => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
         }
       }

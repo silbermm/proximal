@@ -138,15 +138,23 @@ object SecureUsers {
   def findByEmailAndProvider(email: String, providerId: String)(implicit s:Session): Option[SecureUser] =
     secureUsers.filter(x => x.email === email && x.providerId === providerId).firstOption
 
-  def findByProviderIdAndUserId(providerId: String,userId: String)(implicit s:Session): Option[SecureUser] =
-    secureUsers.filter(x => x.userId === userId && x.providerId === providerId).firstOption
+  def findByProviderIdAndUserId(providerId: String,userId: String)(implicit s:Session): Option[SecureUser] = { 
+    //val u = secureUsers.filter(x => x.providerId === providerId).firstOption
+    val u = for {
+      u <- secureUsers if u.providerId == providerId && u.userId == u.userId
+    } yield u
+    Logger.debug("returing " + u.firstOption)
+    u.firstOption
+  }
 
   def save(user: BasicProfile, mode: SaveMode)(implicit s: Session): SecureUser = { 
     findByProviderIdAndUserId(user.providerId,user.userId) match {
       case None => {
+        Logger.debug("User does not already exist, trying to create now")
         (secureUsers returning secureUsers.map(_.uid) into ((secureUser,uid) => secureUser.copy(uid=Some(uid)))) += UserFromProfile(user) 
       }
       case Some(existingUser) => {
+        Logger.debug("User does exist... just returning that user")
         existingUser 
       }
     }

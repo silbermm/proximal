@@ -32,7 +32,8 @@ class PeopleSpec extends PlaySpec with Results {
           }
         }
       }
-    }
+    } 
+
   }
 
   "Relationship model" should {

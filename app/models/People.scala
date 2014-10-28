@@ -10,6 +10,7 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
+
 case class Person(id: Option[Long] = None, firstName:String, lastName: Option[String], birthDate: Option[DateTime], uid: Option[Long])
 class People(tag: Tag) extends Table[Person](tag, "Person"){ 
 
@@ -59,7 +60,10 @@ object People {
   val people = TableQuery[People]
   val relationship_types = TableQuery[RelationshipTypes]
   val relationships = TableQuery[Relationships]
- 
+
+  val schools = Schools.schools
+  val attendences = Attendences.attendences 
+
   def insertPerson(p : Person)(implicit s: Session) : Person = {
     p.uid match {
       case Some(u) => {
@@ -122,5 +126,30 @@ object People {
 
   def findRelTypeByName(name: String)(implicit s: Session): Option[RelationshipType] = 
     relationship_types.filter(_.reltype === name).firstOption
+
+  def findSchoolsForChild(id: Long)(implicit s: Session): List[School] = {
+    val query = (for {
+      ((p,a), s) <- people leftJoin attendences on (_.id === _.personId) leftJoin schools on (_._2.schoolId === _.id)
+    } yield s)
+    query.list
+  }
+
+  def addSchoolToChild(child: Person, school: School, startDate: Option[Date], endDate: Option[Date], grade: Option[Long])(implicit s: Session) = { 
+    
+    def noId : School = {
+      Schools.findByNameCityState(school.name, school.city, school.state.get) match { 
+        case Some(sch) => sch
+        case None      => Schools.insert(school)
+      }
+    }
+  
+    val schoolToUse = school.id match {
+      case None => noId
+      case Some(id) => school
+    }
+    
+    val a: Attendence = new Attendence(child.id.get, school.id.get, startDate, endDate, grade)
+    attendences.insert(a);        
+  }
 
 }
