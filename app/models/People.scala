@@ -114,7 +114,6 @@ object People {
     val q3 = (for {
       ((p, r), t) <- people leftJoin relationships on (_.id === _.personId) leftJoin relationship_types on (_._2.typeId === _.id)
       if t.reltype === "child" 
-      //t <- relationship_types if r.typeId === t.id     
     } yield (r.otherPersonId))
     val listOfChildIds = q3.list
     val listOfChildren : List[Person] = listOfChildIds.flatMap(id => findPerson(id)) 
@@ -149,7 +148,7 @@ object People {
     }
     
     val a: Attendence = new Attendence(child.id.get, school.id.get, startDate, endDate, grade)
-    attendences.insert(a);        
+    attendences.insert(a)
   }
 
 }

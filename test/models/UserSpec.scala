@@ -64,8 +64,9 @@ class UserSpec extends PlaySpec with Results {
           val u = UserProfileHelpers.fakeUser
           val saved = SecureUsers.save(UserProfileHelpers.profileFromUser(u), SaveMode.LoggedIn)
           Logger.debug("got user saved = " + saved.toString()) 
+          Logger.debug("looking for " + u.providerId + " & " + u.userId)
           SecureUsers.findByProviderIdAndUserId(u.providerId, u.userId) match {
-            case Some(user) => user.firstName.get mustEqual u.firstName
+            case Some(user) => user.firstName.get mustEqual u.firstName.get
             case None       => fail("Not able to find a user")
             case _          => fail("Not sure what happened")
           }

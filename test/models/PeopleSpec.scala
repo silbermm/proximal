@@ -20,19 +20,89 @@ class PeopleSpec extends PlaySpec with Results {
 
   import models._
 
+  val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None)
+  val fakeSchool = new School(None,
+                              "Fairview German School",
+                              "999", 
+                              "Clifton", 
+                              "Cincinnati", 
+                              Some("OH"), 
+                              Some("Cincy Public"),  
+                              Some(1)
+                              )
+
   "Person model" should {
     "insert and retrieve a record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
-          val p = new Person(None, "Matthew", Some("Silbernagel"), None, None)
-          People.insertPerson(p)
-          People.findPerson(1L) match {
+          val person = People.insertPerson(fakePerson)
+          People.findPerson(person.id.get) match {
             case Some(per) => per.firstName mustEqual "Matthew"
             case None => fail("person not found")
           }
         }
       }
-    } 
+    }
+
+    "update a person" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val person = People.insertPerson(fakePerson);
+          val updated = person.copy(lastName = Some("Smith"))
+          People.updatePerson(person.id.get, updated) match {
+            case Some(per) => per.lastName.get mustEqual "Smith"
+            case _ => fail("failed to update person record")
+          }
+        }
+      }
+    }
+
+    "delete a person" in {
+       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val person = People.insertPerson(fakePerson);
+          People.deletePerson(person.id.get)
+          val res = People.findPerson(person.id.get) 
+          res mustBe empty
+        }
+       }
+    }
+
+    "add a school to a child" in {
+      import java.util.Date
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val child = People.insertPerson(fakePerson)
+          val school = Schools.insert(fakeSchool)
+          
+          val a =  People.addSchoolToChild(child,school,Some(new Date()), None, Some(1))
+          a mustBe 1
+
+        }
+      }
+    }
+
+    "find a list of schools for a child" in {
+      import java.util.Date
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val child = People.insertPerson(fakePerson)
+          val school = Schools.insert(fakeSchool)
+         
+          Logger.debug(school.toString)
+
+          val a =  People.addSchoolToChild(child,school,Some(new Date()), None, Some(1))
+          a mustBe 1
+          
+          val schools = People.findSchoolsForChild(child.id.get)
+          schools must not be empty
+          schools must contain (school)
+
+        }
+      }
+    }
+
+
 
   }
 

@@ -71,8 +71,7 @@ object Schools {
 object Attendences {
   val attendences = TableQuery[Attendences]
   
-  def insert(attendence: Attendence)(implicit s: Session) = {
-    attendences += attendence 
-  }
+  def insert(attendence: Attendence)(implicit s: Session) = 
+    (attendences returning attendences.map(_.personId))  += attendence
   
 }
