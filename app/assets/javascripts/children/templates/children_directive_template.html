@@ -1,6 +1,8 @@
 <div>
   <prox-widget>
-    <prox-widget-header title="Registered Children"> </prox-widget-header>
+    <prox-widget-header title="Registered Children"> 
+      <button class="btn btn-sm btn-primary" ng-click="createChild()"> Add Child </button> 
+    </prox-widget-header>
     <prox-widget-body>
       <div data-ng-show="children.length < 1" class="message">
         <span> You have not registered any children yet. </span>

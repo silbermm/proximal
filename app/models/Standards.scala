@@ -40,7 +40,7 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   def subject = column[String]("subject")
   def educationLevels = column[Option[String]]("education_levels")
   def language = column[Option[String]]("language")
-  def source = column[Option[String]]("language")
+  def source = column[Option[String]]("source")
   def dateValid = column[Option[Date]]("date_valid")
   def repositoryDate = column[Option[Date]]("repository_date")
   def rights = column[Option[String]]("rights")
@@ -53,7 +53,8 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
            publicationStatus,
            subject,
            educationLevels,
-           language,source,
+           language,
+           source,
            dateValid,
            repositoryDate,
            rights,
@@ -80,6 +81,6 @@ object Standards {
   def list(implicit s: Session) = 
     standards.list
 
-  def delete(standard: Standard)(implicit s: Session) = 
+  def delete(standard: Standard)(implicit s: Session): Int = 
     standards.filter(_.id === standard.id.get).delete
 }

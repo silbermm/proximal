@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-lg-4">
+    <prox-widget>
+      <prox-widget-header title="Available Standards">  
+        <button class="btn btn-sm btn-primary" ng-click="createStandard()"> Add Standard </button> 
+      </prox-widget-header>
+      <prox-widget-body>
+        <div data-ng-show="standards.length < 1" class="message">
+          <span> There are no standards to show </span>
+        </div>
+        
+        <div class="table-responsive" data-ng-show="standards.length > 0">
+          <table class="table table-hover">
+            <tbody>
+              <tr data-ng-repeat="s in standards" ui-sref-active="active">
+                <td> {{s.title}} </td>
+                <td>
+                  <ul class="inline pull-right">
+                    <li> <a ui-sref="admin.standards({id:s.id})"><i class="fa fa-eye text-primary"></i></a>
+                    </li>
+                    <li>
+                      <a> <i class="fa fa-trash text-danger"></i> </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </prox-widget-body>
+    </prox-widget>
+  </div>
+  <div ui-view class="col-lg-8"> </div>
+</div>
