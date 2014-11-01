@@ -20,7 +20,7 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
       errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
       standard => {
         standardsService.create(standard) match {
-          case s => Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
+          case s: Standard => Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
           case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the standard"))
         }
       }
@@ -37,10 +37,14 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
       standard => {
         standardsService.update(id, standard) match {
           case 1 => {
-            standardsService.find(id) match {
-              case Some(s) => Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
-              case None => BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
-            }
+            standardsService.find(id).map( st =>
+                Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
+              //case Some(s) => Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
+              //case None => BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
+              ).getOrElse(
+                BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
+              )
+            //}
           }
           case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "unable to update the recored at this time"))
         }
