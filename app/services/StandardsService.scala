@@ -7,17 +7,29 @@ import play.api.Play.current
 
 trait StandardsServiceTrait {
   def create(standard: Standard): Standard
+  def create(standard: Standard, educationLevel: EducationLevel): Standard 
   def update(id:Long, standard: Standard): Int
   def find(id: Long): Option[Standard]
   def find(title: String): List[Standard]
   def list: List[Standard]
   def delete(standard: Standard) : Int 
+  
+
+
 }
 
 class StandardsService extends StandardsServiceTrait {
 
   def create(standard: Standard) = {
     DB.withSession{ implicit s=>
+      Standards.insert(standard)
+    }
+  }
+
+  def create(standard: Standard, educationLevel: EducationLevel) = {
+    DB.withSession{ implicit s=>
+      
+
       Standards.insert(standard)
     }
   }

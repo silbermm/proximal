@@ -88,6 +88,26 @@ class StandardsSpec extends PlaySpec with Results {
         }
       }
     }
+
+    "get Education Levels that the standard applys to" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          e.id must not be empty
+
+          val standard = Standards.insert(StandardsHelpers.fakeStandard)
+          standard.id must not be empty
+
+          val standardLevel = StandardLevels.insert(new StandardLevel(None,e.id.get,standard.id.get))
+          standardLevel.id must not be empty
+         
+          val exists = Standards.findWithEducationLevels(standard.id.get)
+          exists._1 must not be empty
+          exists._2 must not be empty
+              
+        }
+      }
+    }
   }
 
 }

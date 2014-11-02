@@ -16,7 +16,6 @@ case class Standard(
   description: String,
   publicationStatus: String,
   subject: String,
-  educationLevels:Option[String],
   language:Option[String],
   source: Option[String],
   dateValid: Option[Date],
@@ -24,6 +23,7 @@ case class Standard(
   rights: Option[String],
   manifest: Option[String]
 )
+
 class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   
   implicit val JavaUtilDateMapper = {
@@ -38,7 +38,6 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   def description = column[String]("description")
   def publicationStatus = column[String]("publication_status")
   def subject = column[String]("subject")
-  def educationLevels = column[Option[String]]("education_levels")
   def language = column[Option[String]]("language")
   def source = column[Option[String]]("source")
   def dateValid = column[Option[Date]]("date_valid")
@@ -52,7 +51,6 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
            description,
            publicationStatus,
            subject,
-           educationLevels,
            language,
            source,
            dateValid,
@@ -64,7 +62,9 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
 
 object Standards {
   
-  val standards = TableQuery[Standards]
+  lazy val standards = TableQuery[Standards]
+  lazy val education_levels = EducationLevels.education_levels
+  lazy val standard_levels = EducationLevels.standard_levels
 
   def insert(standard: Standard)(implicit s: Session) =
     (standards returning standards.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += standard
@@ -80,6 +80,17 @@ object Standards {
 
   def list(implicit s: Session) = 
     standards.list
+
+  def findWithEducationLevels(id: Long)(implicit s: Session):(Option[Standard], List[EducationLevel] ) = {
+    val query = for {
+      l <- standard_levels if l.standardId === id
+      e <- l.educationLevel
+      s <- l.standard
+    } yield e
+    
+   return(find(id), query.list) 
+  }
+    
 
   def delete(standard: Standard)(implicit s: Session): Int = 
     standards.filter(_.id === standard.id.get).delete
