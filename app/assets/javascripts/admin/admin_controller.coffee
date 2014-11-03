@@ -14,12 +14,13 @@ angular.module("proximal").controller "AdminCtrl", ($log,$cookieStore,$scope, st
       controller: 'AddStandardCtrl'
     })
 
-    addStandard = (standard) ->
+    addStandard = (s) ->
       $log.info "adding"
-      $loginfo standard
+      $log.info s.standard
+      $log.info s.educationLevels
       return
-    modalInstance.result.then((c)->
-      addStandard(c)
+    modalInstance.result.then((standard, educationLevels)->
+      addStandard({standard,educationLevels})
       return
     )
  

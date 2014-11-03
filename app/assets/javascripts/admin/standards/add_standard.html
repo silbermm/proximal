@@ -3,32 +3,99 @@
   <h3 class="modal-title">Add a new Standard</h3>
 </div>
 <div class="modal-body">
-    <div class="form-group" data-ng-class="{'has-error': form.title.$invalid, 'has-success': !form.title.$invalid}" >
-      <label for="title" class="sr-only"> Title </label>
+    <div class="form-group" data-ng-class="{'has-error': form.title.$invalid && form.title.$dirty, 'has-success': !form.title.$invalid}" >
+      <label for="title"> Title </label>
       <input type="text" name="title"
              data-ng-model="standard.title"  
-             class="form-control" id="title" placeholder="Title" required>
+             class="form-control" id="title" ng-required>
     </div>
-    <div class="form-group" data-ng-class="{'has-error': form.description.$invalid, 'has-success': !form.description.$invalid}" >
-      <label for="description" class="sr-only"> Description </label>
-      <textarea data-ng-model="standard.description" name="description" class="form-control" id="description" placeholder="Description" required></textarea>
+    <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}" >
+      <label for="description" > Description </label>
+      <textarea data-ng-model="standard.description" name="description" class="form-control" id="description"  required></textarea>
     </div>
 
-    <div class="form-group" data-ng-class="{'has-error': form.birthDate.$invalid, 'has-success': !form.birthDate.$invalid}" >
-      <label for="birthDate" class="sr-only">Child's Date of Birth </label>
-      <p class="input-group">
-        <input type="text" class="form-control" name="birthDate" datepicker-popup="{{format}}" ng-model="child.birthDate" 
-               is-open="opened" datepicker-options="dateOptions" init-date="initDate"
-               ng-required="true" close-text="Close" placeholder="Child's date of birth" />
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
-        </span>
-      </p>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" data-ng-model="standard.publicationStatus" name="publicationStatus" 
+               data-ng-true-value="'published'" data-ng-false-value="'unpublished'"> Published?
+      </label>
+   </div>
 
-    </div>
+  <div class="form-group">
+    <label for="educationlevels"> Education Level(s) </label>
+     <ui-select multiple ng-model="educationLevels" theme="select2" ng-disabled="disabled" class="form-control">
+       <ui-select-match placeholder="Select all that apply..."> {{$item}} </ui-select-match>
+       <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
+         {{level}}
+       </ui-select-choices>
+     </ui-select>
+  </div>
+   
+   <div class="form-group" data-ng-class="{'has-error': form.subject.$invalid && form.subject.$dirty, 'has-success': !form.subject.$invalid}">
+     <label for="subject"> Subject </label>
+     <select class="form-control" data-ng-model="standard.subject" name="subject" data-ng-options="subject for subject in subjects" data-ng-required >
+      <option value="" disabled>-- Choose a Subject -- </option> 
+     </select>
+   </div>
+  
+   <div class="form-group" data-ng-class="{'has-error': form.language.$invalid && form.language.$dirty, 'has-success': !form.language.$invalid}">
+    <label for="language"> Language </label>
+    <select class="form-control" data-ng-model="standard.language" name="language" data-ng-options="language for language in languages" data-ng-required >
+      <option value="" disabled>-- Choose a Language --</option>
+    </select>
+   </div>
+
+   <div class="form-group" data-ng-class="{'has-error': form.source.$invalid && form.source.$dirty, 'has-success': !form.source.$invalid}">
+      <label for="source" > Source of the Standard </label>
+      <input type="text" name="source" class="form-control" data-ng-model="standard.source" /> 
+   </div>
+
+   <div class="form-group" data-ng-class="{'has-error': form.dateValid.$invalid && form.dateValid.$dirty, 'has-success': !form.dateValid.$invalid}">
+     <label for="dateValid" > Date Valid </label>
+     <p class="input-group">
+      <input type="text" class="form-control" name="dateValid" 
+                                              datepicker-popup="{{format}}" 
+                                              ng-model="standard.dateValid"
+                                              is-open="opened"
+                                              datepicker-options="dateOptions"
+                                              init-date="initDate"
+                                              ng-required="true"
+                                              close-text="Close" />
+       <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+       </span>
+     </p>
+   </div>
+
+  <div class="form-group" data-ng-class="{'has-error': form.repositoryDate.$invalid && form.repositoryDate.$dirty, 'has-success': !form.repositoryDate.$invalid}">
+    <label for="repositoryDate" class=""> Repository Date </label>
+    <p class="input-group">
+      <input type="text" class="form-control" name="repositoryDate"
+                                              datepicker-popup="{{format}}"
+                                              ng-model="standard.repositoryDate"
+                                              is-open="opened"
+                                              datepicker-options="dateOptions"
+                                              ng-required="true"
+                                              close-text="Close" />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+      </span>
+    </p>
+  </div>
+  
+  <div class="form-group" data-ng-class="{'has-error': form.rights.$invalid && form.rights.$dirty, 'has-success': !form.rights.$invalid}">
+    <label for="rights" class=""> Copyright </label>
+    <input type="text" class="form-control" data-ng-model="standard.rights" name="rights" data-ng-required />
+  </div>
+
+  <div class="form-group">
+    <label for="manifest" class=""> Manifest </label>
+    <input type="text" class="form-control" data-ng-model="standard.manifest" name="manifest"  />
+  </div>
+
 </div>
-<div class="modal-footer">
 
+<div class="modal-footer">
   <button class="btn btn-primary" ng-click="ok()" ng-disabled="form.$invalid">Add</button>
   <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 </div>
