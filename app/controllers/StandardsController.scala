@@ -8,7 +8,7 @@ import models._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class StandardWithEducationLevel(standard: Standard, educationLevel: EducationLevel)
+case class StandardWithEducationLevel(standard: Standard, levels: List[EducationLevel])
 
 class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
  
@@ -21,10 +21,10 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def create = SecuredAction(BodyParsers.parse.json){ implicit request =>
 
-    def doIt(stan: Standard, e: EducationLevel) = {
+    def doIt(stan: Standard, e: List[EducationLevel]) = {
       standardsService.create(stan) match {
         case s: Standard => {
-          educationLevelsService.createStandardLevel(new StandardLevel(None,e.id.get, stan.id.get))
+          for{ level <- e } educationLevelsService.createStandardLevel(new StandardLevel(None,level.id.get, s.id.get))
           Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
         }
         case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the standard"))
@@ -35,12 +35,8 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
       errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
       standard => {
         // does the education level exist?
-        educationLevelsService.find(standard.educationLevel.description).map( edu =>
-          doIt(standard.standard, edu) 
-        ).getOrElse({
-          val educa = educationLevelsService.create(standard.educationLevel) 
-          doIt(standard.standard,educa) 
-        })
+        val educationLevels = for { l <- standard.levels } yield educationLevelsService.create(l) 
+        doIt(standard.standard, educationLevels) 
       }
     ) 
   }

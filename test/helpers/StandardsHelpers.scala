@@ -18,21 +18,22 @@ object StandardsHelpers {
      Some(new Date()),
      Some(new Date()),
      None,
-     None
+     None,
+     Some("String identifier")
    )
   }
 
   def fakeEducationLevels : Seq[EducationLevel] = {
     Seq(
-      new EducationLevel(None,"k"),
-      new EducationLevel(None,"1"),
-      new EducationLevel(None,"2"),
-      new EducationLevel(None,"3")
+      new EducationLevel(None,"k", "kindergarten"),
+      new EducationLevel(None,"1", "first grade"),
+      new EducationLevel(None,"2", "second grade"),
+      new EducationLevel(None,"3", "third grade")
     )
   }
 
   def fakeEducationLevel = 
-    new EducationLevel(None,"k")
+    new EducationLevel(None,"k" ,"kindergarten")
 
    
 

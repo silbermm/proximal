@@ -21,7 +21,8 @@ case class Standard(
   dateValid: Option[Date],
   repositoryDate: Option[Date],
   rights: Option[String],
-  manifest: Option[String]
+  manifest: Option[String],
+  identifier: Option[String]
 )
 
 class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
@@ -35,7 +36,7 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def organizationId = column[Option[Long]]("organization_id")
   def title = column[String]("title")
-  def description = column[String]("description")
+  def description = column[String]("description", O.DBType("Text"))
   def publicationStatus = column[String]("publication_status")
   def subject = column[String]("subject")
   def language = column[Option[String]]("language")
@@ -44,6 +45,7 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   def repositoryDate = column[Option[Date]]("repository_date")
   def rights = column[Option[String]]("rights")
   def manifest = column[Option[String]]("manifest")
+  def identifier = column[Option[String]]("identifier")
 
   def * = (id.?,
            organizationId,
@@ -56,8 +58,11 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
            dateValid,
            repositoryDate,
            rights,
-           manifest
+           manifest,
+           identifier
            ) <> ( Standard.tupled,Standard.unapply _)
+
+
 }
 
 object Standards {

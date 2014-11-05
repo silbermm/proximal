@@ -9,13 +9,14 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class EducationLevel(id: Option[Long], description: String)
+case class EducationLevel(id: Option[Long], value: String, description: String)
 class EducationLevels(tag: Tag) extends Table[EducationLevel](tag, "education_levels"){
-  def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
+  def id = column[Long]("id", O.PrimaryKey,O.AutoInc) 
+  def value = column[String]("value")
   def description = column[String]("description")
-  def * = (id.?, description) <> (EducationLevel.tupled,EducationLevel.unapply _)
+  def * = (id.?, value, description) <> (EducationLevel.tupled,EducationLevel.unapply _)
 
-  def idx = index("idx_description", (description), unique = true)
+  def idx = index("idx_value", (value), unique = true)
 }
 
 object EducationLevels {

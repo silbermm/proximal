@@ -15,12 +15,14 @@ angular.module("proximal").controller "AdminCtrl", ($log,$cookieStore,$scope, st
     })
 
     addStandard = (s) ->
-      $log.info "adding"
-      $log.info s.standard
-      $log.info s.educationLevels
-      return
-    modalInstance.result.then((standard, educationLevels)->
-      addStandard({standard,educationLevels})
+      standardsService.addStandard(s).success((data,success,headers,config) ->
+        $log.debug data
+      ).error((data,status,headers,config) ->
+        $log.error("Unable to add standard: " + data)
+      )
+
+    modalInstance.result.then((standard)->
+      addStandard(standard)
       return
     )
  

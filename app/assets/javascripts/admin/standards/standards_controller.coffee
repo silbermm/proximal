@@ -8,15 +8,22 @@ angular.module("proximal").controller "AddStandardCtrl", [
   "prox.common"
   ($log, $scope, $modalInstance, common)->
 
+    $scope.edu = {}
+
     $scope.clear = ->
       $scope.standard.dateValid = null
       return
      
-    $scope.open = ($event)->
+    $scope.dateValidOpen = ($event)->
       $event.preventDefault()
       $event.stopPropagation()
-      $scope.opened = true
+      $scope.dateValidOpened = true
 
+    $scope.repoDateOpen = ($event)->
+      $event.preventDefault()
+      $event.stopPropagation()
+      $scope.repoDateOpened = true
+    
     $scope.dateOptions = {
       formatYear: 'yyyy',
       startingDay: 1
@@ -41,9 +48,10 @@ angular.module("proximal").controller "AddStandardCtrl", [
 
     $scope.availableEducationLevels = common.educationLevels
 
+    
+
     $scope.ok = ->
-      $log.debug($scope.educationLevels)
-      $modalInstance.close($scope.standard, $scope.educationLevels)
+      $modalInstance.close($scope.edu)
 
     $scope.cancel = ->
       $modalInstance.dismiss("cancel")
