@@ -100,3 +100,70 @@ object Standards {
   def delete(standard: Standard)(implicit s: Session): Int = 
     standards.filter(_.id === standard.id.get).delete
 }
+
+case class Statement(
+  id: Option[Long],
+  standardId: Long, 
+  asnUri: Option[String],
+  subject: Option[String],
+  notation: Option[String],
+  alternateNotation: Option[String],
+  label: Option[String],
+  description: Option[String],
+  alternateDescription: Option[String],
+  exactMatch: Option[String],
+  identifier: Option[String],
+  language: Option[String]
+)
+
+class Statements(tag: Tag) extends Table[Statement](tag, "statements"){
+
+  lazy val standards = Standards.standards
+
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def standardId = column[Long]("standardId")
+  def asnUri = column[Option[String]]("asn_uri")
+  def subject = column[Option[String]]("subject") 
+  def notation = column[Option[String]]("notation")
+  def alternateNotation = column[Option[String]]("alternate_notation")
+  def label = column[Option[String]]("label") 
+  def description = column[Option[String]]("description", O.DBType("Text"))
+  def alternateDescription = column[Option[String]]("alternate_description", O.DBType("Text")) 
+  def exactMatch = column[Option[String]]("exactMatch") 
+  def identifier = column[Option[String]]("identifier") 
+  def language = column[Option[String]]("language") 
+
+  def * = (id.?,
+           standardId,
+           asnUri,
+           subject,
+           notation,
+           alternateNotation,
+           label,
+           description,
+           alternateDescription,
+           exactMatch,
+           identifier,
+           language
+           ) <> ( Statement.tupled,Statement.unapply _)
+  
+  def standard = foreignKey("STANDARD_FK", standardId, standards)(_.id)
+}
+
+object Statements {
+
+  lazy val statements = TableQuery[Statements] 
+  
+  def insert(statement: Statement)(implicit s: Session) =
+    (statements returning statements.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += statement
+
+  def update(id: Long, statement: Statement)(implicit s: Session) =
+    statements.filter(_.id === id).update(statement.copy(Some(id))) 
+
+  def find(id: Long)(implicit s: Session) = 
+    statements.filter(_.id === id).firstOption
+
+  def list(implicit s: Session) = 
+    statements.list
+
+}
