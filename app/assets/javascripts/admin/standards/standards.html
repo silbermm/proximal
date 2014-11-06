@@ -1,0 +1,12 @@
+<div class="overlay">
+  
+<h4> Description <i data-ng-class="{'fa-caret-right': isDescriptionCollapsed, 'fa-caret-down': !isDescriptionCollapsed}" 
+                    class="fa" ng-click="isDescriptionCollapsed = !isDescriptionCollapsed"></i> </h4>
+  <p collapse="isDescriptionCollapsed"> {{standard.description}} </p>
+  
+  <h4> Education Levels <i data-ng-class="{'fa-caret-right': isEducationCollapsed, 'fa-caret-down': !isEducationCollapsed}" 
+                    class="fa" ng-click="isEducationCollapsed = !isEducationCollapsed"></i></h4>
+  <p collapse="isEducationCollapsed"> 
+    <span data-ng-repeat="level in educationLevels"> {{level.description}} <span data-ng-if="!$last"> | </span>  </span>
+  </p>
+</div>

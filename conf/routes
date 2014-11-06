@@ -14,6 +14,7 @@ DELETE  /api/v1/children/:id        @controllers.PersonController.removeChild(id
 GET     /api/v1/profile             @controllers.PersonController.profile()
 
 GET     /api/v1/standards           @controllers.StandardsController.list()
+GET     /api/v1/standards/:id       @controllers.StandardsController.view(id: Long)
 POST    /api/v1/standards           @controllers.StandardsController.create()
 PUT     /api/v1/standards/:id       @controllers.StandardsController.update(id: Long)
 DELETE  /api/v1/standards/:id       @controllers.StandardsController.delete(id: Long)
