@@ -80,9 +80,9 @@ class EducationLevelsSpec extends PlaySpec with Results {
     "not allow two levels with the same description" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s =>
-          EducationLevels.insert(StandardsHelpers.fakeEducationLevel)           
-          an [org.h2.jdbc.JdbcSQLException] must be thrownBy EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
-
+          val f = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)           
+          val g = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          g.id.get mustEqual f.id.get
         }
       }
     }

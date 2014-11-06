@@ -26,7 +26,7 @@ object EducationLevels {
   lazy val standard_levels = StandardLevels.standard_levels
 
   def insert(e: EducationLevel)(implicit s: Session) : EducationLevel = {
-    (education_levels returning education_levels.map(_.id) into ((level,id) => level.copy(id=Some(id)))) += e
+    find(e.description).getOrElse((education_levels returning education_levels.map(_.id) into ((level,id) => level.copy(id=Some(id)))) += e)
   }
 
   def insert(e: Seq[EducationLevel])(implicit s: Session): Option[Int] =

@@ -20,27 +20,25 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   val educationLevelsService = new EducationLevelsService()
 
   def create = SecuredAction(BodyParsers.parse.json){ implicit request =>
-
-    def doIt(stan: Standard, e: List[EducationLevel]) = {
-      standardsService.create(stan) match {
-        case s: Standard => {
-          for{ level <- e } educationLevelsService.createStandardLevel(new StandardLevel(None,level.id.get, s.id.get))
-          Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
-        }
-        case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the standard"))
-      }
-    }
-
     request.body.validate[StandardWithEducationLevel].fold(
       errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
-      standard => {
-        // does the education level exist?
-        val educationLevels = for { l <- standard.levels } yield educationLevelsService.create(l) 
-        doIt(standard.standard, educationLevels) 
+      standard => {   
+        standardsService.create(standard.standard, standard.levels).map( st => 
+          Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
+        ).getOrElse(
+          BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the standard"))
+        )
       }
     ) 
   }
-  
+
+  def view(id: Long) = SecuredAction{implicit request => 
+    standardsService.findWithEducationLevels(id) match {
+      case (Some(standard),levels:List[EducationLevel]) => Ok(Json.obj("standard" -> Json.toJson(standard), "levels" -> Json.toJson(levels)))
+      case (None,List(_*)) => NotFound(Json.obj("status" -> "KO", "message" -> "standard not found"))
+    }
+  }
+
   def list = SecuredAction{ implicit request => 
     Ok(Json.toJson(standardsService.list)) 
   }
@@ -53,12 +51,9 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
           case 1 => {
             standardsService.find(id).map( st =>
                 Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
-              //case Some(s) => Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(s)))
-              //case None => BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
               ).getOrElse(
                 BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
               )
-            //}
           }
           case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "unable to update the recored at this time"))
         }

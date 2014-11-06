@@ -1,5 +1,16 @@
-angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope) ->
+angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope, $stateParams, standardsService) ->
   $scope.page = "Standards Page"
+  $log.debug("getting the standard for " + $stateParams.id)
+  standardsService.getStandard($stateParams.id).success((data,status,headers,config)->
+    $scope.standard = data.standard
+    $scope.educationLevels = data.levels
+  ).error((data,status,headers,config) ->
+    $log.error "data"
+  )
+  
+  $scope.isDescriptionCollapsed = false;
+  $scope.isEducationCollapsed = false
+  return
 
 angular.module("proximal").controller "AddStandardCtrl", [
   "$log"

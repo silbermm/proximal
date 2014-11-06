@@ -11,6 +11,7 @@ trait StandardsServiceTrait {
   def update(id:Long, standard: Standard): Int
   def find(id: Long): Option[Standard]
   def find(title: String): List[Standard]
+  def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel]) 
   def list: List[Standard]
   def delete(standard: Standard) : Int 
   
@@ -24,6 +25,20 @@ class StandardsService extends StandardsServiceTrait {
     DB.withSession{ implicit s=>
       Standards.insert(standard)
     }
+  }
+
+  def create(standard: Standard, edLevels: List[EducationLevel]) : Option[Standard] = { 
+    DB.withSession{ implicit s=>
+      val educationLevels = for { l <- edLevels } yield EducationLevels.insert(l)
+      Standards.insert(standard) match {
+        case stan: Standard => {
+          for{ level <- educationLevels } StandardLevels.insert(new StandardLevel(None,level.id.get, stan.id.get))
+          Some(stan)
+        }
+        case _ => None 
+      }
+ 
+    } 
   }
 
   def create(standard: Standard, educationLevel: EducationLevel) = {
@@ -46,6 +61,12 @@ class StandardsService extends StandardsServiceTrait {
     }
   }
 
+  def findWithEducationLevels(id: Long) = {
+    DB.withSession{ implicit s=>
+      Standards.findWithEducationLevels(id);
+    }
+  }
+  
   def find(title: String) = {
     DB.withSession{ implicit s=>
       Standards.find(title)
