@@ -8,15 +8,14 @@ import play.api.Play.current
 trait StandardsServiceTrait {
   def create(standard: Standard): Standard
   def create(standard: Standard, educationLevel: EducationLevel): Standard 
+  def create(statement: Statement) : Statement 
+  def create(statements: Seq[Statement]) : Option[Int]
   def update(id:Long, standard: Standard): Int
   def find(id: Long): Option[Standard]
   def find(title: String): List[Standard]
-  def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel]) 
+  def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel])  
   def list: List[Standard]
-  def delete(standard: Standard) : Int 
-  
-
-
+  def delete(standard: Standard) : Int   
 }
 
 class StandardsService extends StandardsServiceTrait {
@@ -36,19 +35,28 @@ class StandardsService extends StandardsServiceTrait {
           Some(stan)
         }
         case _ => None 
-      }
- 
+      } 
     } 
   }
 
   def create(standard: Standard, educationLevel: EducationLevel) = {
     DB.withSession{ implicit s=>
-      
-
       Standards.insert(standard)
     }
   }
 
+  def create(statement: Statement) = {
+    DB.withSession{ implicit s=>
+      Statements.insert(statement)
+    }
+  }
+
+  def create(statements: Seq[Statement]) = {
+    DB.withSession{ implicit s=>
+      Statements.insert(statements)
+    }
+  } 
+    
   def update(id: Long, standard: Standard) = {
     DB.withSession{ implicit s=>
       Standards.update(id, standard)
