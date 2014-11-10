@@ -52,4 +52,11 @@ object StandardsHelpers {
     )
   }
 
+  def fakeStatements = {
+    Seq(
+      fakeStatement,
+      fakeStatement.copy(notation=Some("CcSS.ELA-Literacy.CCRA.R.2"), alternateNotation=Some("CCR.R.2"))
+    ) 
+  }
+
 }

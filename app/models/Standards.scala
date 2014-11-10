@@ -108,7 +108,6 @@ object Standards {
       e <- l.educationLevel
       s <- l.standard
     } yield e
-
     return (st_standards._1, st_standards._2, query.list)
   }
 
@@ -169,6 +168,7 @@ object Statements {
 
   lazy val statements = TableQuery[Statements] 
   lazy val standards = Standards.standards
+  lazy val statement_levels = StatementLevels.statement_levels
 
   def insert(statement: Statement)(implicit s: Session) =
     (statements returning statements.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += statement
@@ -188,6 +188,15 @@ object Statements {
       e <- l.standard
     } yield e 
     (find(id), query.firstOption)  
+  }
+
+  def findWithEducationLevels(id: Long)(implicit s: Session):(Option[Statement], List[EducationLevel] ) = {
+    val query = for {
+      l <- statement_levels if l.statementId === id
+      e <- l.educationLevel
+      s <- l.statement
+    } yield e 
+   return(find(id), query.list) 
   }
 
   def list(implicit s: Session) = 

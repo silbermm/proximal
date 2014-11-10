@@ -24,6 +24,7 @@ object EducationLevels {
   lazy val education_levels = TableQuery[EducationLevels] 
   lazy val standards = Standards.standards 
   lazy val standard_levels = StandardLevels.standard_levels
+  lazy val statement_levels = StatementLevels.statement_levels
 
   def insert(e: EducationLevel)(implicit s: Session) : EducationLevel = {
     find(e.description).getOrElse((education_levels returning education_levels.map(_.id) into ((level,id) => level.copy(id=Some(id)))) += e)
@@ -54,9 +55,56 @@ object EducationLevels {
     return query.list
   }
 
+  def findWithStatements(id: Long)(implicit s: Session) : List[(EducationLevel,Statement)] = {
+    val query = for {
+      l <- statement_levels if l.educationLevelId === id
+      e <- l.educationLevel
+      s <- l.statement
+    } yield (e,s)
+    return query.list
+  }
+
+  
   def delete(e: EducationLevel)(implicit s: Session) : Int = {
     education_levels.filter(_.id === e.id.get).delete
   }
+
+}
+
+case class StatementLevel(id: Option[Long], educationLevelId: Long, statementId: Long)
+class StatementLevels(tag: Tag) extends Table[StatementLevel](tag, "statement_levels") {
+  
+  def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
+  def educationLevelId = column[Long]("education_level_id")
+  def statementId = column[Long]("statement_id")
+
+  def * = (id.?, educationLevelId, statementId) <> (StatementLevel.tupled, StatementLevel.unapply _)
+
+  def educationLevel = foreignKey("education_level_statement",educationLevelId,EducationLevels.education_levels)(_.id)
+  def statement = foreignKey("statement", statementId, Statements.statements)(_.id)
+
+}
+
+object StatementLevels {
+  lazy val statement_levels = TableQuery[StatementLevels]
+
+  def insert(sl: StatementLevel)(implicit s: Session) : StatementLevel =
+    (statement_levels returning statement_levels.map(_.id) into ((statementLevel,id) => statementLevel.copy(id=Some(id)))) += sl
+
+  def delete(sl: StatementLevel)(implicit s: Session) : Int = 
+    statement_levels.filter(_.id === sl.id.get).delete
+  
+  def update(id: Long, sl: StatementLevel)(implicit s: Session) : Int = 
+    statement_levels.filter(_.id === id).update(sl.copy(Some(id)))
+
+  def find(id: Long)(implicit s: Session) = 
+    statement_levels.filter(_.id === id).firstOption
+
+  def findByEducationLevelId(id: Long)(implicit s: Session) =
+    statement_levels.filter(_.educationLevelId === id).list
+
+  def findByStatementId(id: Long)(implicit s: Session) = 
+    statement_levels.filter(_.statementId === id).list
 
 }
 
@@ -68,7 +116,7 @@ class StandardLevels(tag: Tag) extends Table[StandardLevel](tag, "standard_level
 
   def * = (id.?, educationLevelId, standardId) <> (StandardLevel.tupled, StandardLevel.unapply _)
 
-  def educationLevel = foreignKey("education_level",educationLevelId,EducationLevels.education_levels)(_.id)
+  def educationLevel = foreignKey("education_level_standard",educationLevelId,EducationLevels.education_levels)(_.id)
   def standard = foreignKey("standard", standardId, Standards.standards)(_.id)
 
 }

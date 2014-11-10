@@ -1,6 +1,7 @@
-angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope, $stateParams, standardsService) ->
+angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope,$rootScope, $state, $stateParams, standardsService) ->
   $scope.page = "Standards Page"
   $log.debug("getting the standard for " + $stateParams.id)
+
   standardsService.getStandard($stateParams.id).success((data,status,headers,config)->
     $scope.standard = data.standard
     $scope.educationLevels = data.levels

@@ -186,7 +186,7 @@ class StandardsSpec extends PlaySpec with Results {
       }
     }
     
-    "list all standards" in {
+    "list all statements" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
           Statements.insert(StandardsHelpers.fakeStatement)
@@ -197,7 +197,7 @@ class StandardsSpec extends PlaySpec with Results {
       }
     }
 
-    "update a standard" in {
+    "update a statement" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
           val statement = Statements.insert(StandardsHelpers.fakeStatement)
@@ -208,7 +208,7 @@ class StandardsSpec extends PlaySpec with Results {
       }
     }
 
-    "delete a standard" in {
+    "delete a statment" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
           val statement = Statements.insert(StandardsHelpers.fakeStatement)
@@ -218,6 +218,26 @@ class StandardsSpec extends PlaySpec with Results {
         }
       }
     }
+    
+    "get Education Levels that the statement applys to" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          e.id must not be empty
+
+          val statement = Statements.insert(StandardsHelpers.fakeStatement)
+          statement.id must not be empty
+
+          val statementLevel = StatementLevels.insert(new StatementLevel(None,e.id.get,statement.id.get))
+          statementLevel.id must not be empty
+         
+          val exists = Statements.findWithEducationLevels(statement.id.get)
+          exists._1 must not be empty
+          exists._2 must not be empty     
+        }
+      }
+    }
+
 
   }
 
