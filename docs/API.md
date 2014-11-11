@@ -7,13 +7,13 @@ To call an endpoint where authentication is required you will need an auth token
 
 ### Available EndPoints
 
-## Authentication
+#### Authentication
 | METHOD | URL | BODY | RESPONSE CODES | JSON EXPECTED |
 | ------ | --- | ---- | -------------- | ------------- |
 | GET    | 
 
 
-## Standards 
+#### Standards 
 | METHOD | URL | BODY | RESPONSE CODES | JSON EXPECTED |
 | ------ | --- | ---- | -------------- | ------------- |
 | GET    | 
