@@ -1,1 +1,22 @@
-<h1 class="pull-left"> Statements </h1> <button class="btn btn-primary pull-right" ng-click="addStatement()"> Add another statement </button>
+<prox-widget> 
+  <prox-widget-header title="Statements">
+    <input placeholder="Search" class="form-control input-sm pull-left" type="text">
+    <button class="btn btn-sm btn-primary pull-right" ng-click="addStatement()"> New Statement </button>
+  </prox-widget-header>
+  <prox-widget-body add="medium no-padding">
+    <div class="table-responsive">
+      <table class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th>  </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="statement in statements">
+            <td> </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </prox-widget-body>
+</prox-widget>

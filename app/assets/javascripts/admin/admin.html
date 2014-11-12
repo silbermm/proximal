@@ -1,5 +1,17 @@
 <div class="row">
-  <div class="col-lg-4">
+  <div class="col-sm-4 col-xs-4">
+    <div data-ng-if="standards.length < 1" class="message">
+      <span> There are no standards to show </span>
+    </div>
+   
+
+    <div class="list-group" ng-if="standards.length > 0">
+      <a href="#" class="list-group-item active" data-ng-repeat="s in standards" ui-sref-active="active" ui-sref="admin.standards({id:s.id})">
+        {{s.title}} 
+      </a>
+    </div>
+
+    <!--
     <prox-widget>
       <prox-widget-header title="Available Standards">  
         <button class="btn btn-sm btn-primary" ng-click="createStandard()"> Add Standard </button> 
@@ -29,6 +41,7 @@
         </div>
       </prox-widget-body>
     </prox-widget>
+    -->
   </div>
-  <div ui-view class="col-lg-8"> </div>
+  <div ui-view class="col-lg-8 col-sm-8 col-xs-8"> </div>
 </div>
