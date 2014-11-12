@@ -1,25 +1,23 @@
 [<< Back to API Docs](API.md)
 
-#Authenticate
+# Authentication Methods
 
-Method
------
+###[Login](#login)
+
+#### Method
 POST
 
-URL
------
+#### URL
+`/api/authenticate/userpass`
 
-BODY
------
+#### BODY
 `username=username&password=password`
 
-RETURN CODES
------
-200 -> Ok
-401 -> Failed
+#### RETURN CODES
+200 if the login was successful
+401 if the username/password combination was incorrect
 
-RETURNED JSON OBJECT
------
+#### RETURNED JSON OBJECT
 ```
 {
   "token": "",

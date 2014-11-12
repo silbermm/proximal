@@ -22,5 +22,5 @@ To call an endpoint where authentication is required you will need an auth token
 
 | DESCRIPTION                 | METHOD  | URL               | AUTH REQUIRED? | DETAILS |
 | -----------                 | ------- | ---               | -------------- | ------- | 
-| Get all available standards | GET     | /api/v1/standards | NO             | [View Details](standards.md#all)  
-| Get a specific standard     | GET     | /api/v1/standards/{id} | NO        | [View Details](standards.md#specific)
+| Get all available standards | GET     | /api/v1/standards | NO             | [View Details](standards.md#list-all-standards)  
+| Get a specific standard     | GET     | /api/v1/standards/{id} | NO        | [View Details](standards.md#get-a-specific-standard)
