@@ -2,4 +2,4 @@ Documentation!
 
 Table of Contents
 =================
-* [API Documentation](API.md)
+* [API Documentation](api/API.md)
