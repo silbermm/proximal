@@ -17,7 +17,7 @@ GET
 #### RETURNS
 A List of Standards Objects
 
-```
+```json
 [
   {"id":1,
    "title":"Common Core State Standards for Mathematics",
@@ -63,7 +63,7 @@ GET
 
 #### RETURNS
 A Standards Objects
-```
+```json
 {
   "id":2,
   "title":"Common Core State Standards for English Language Arts & Literacy in History/Social Studies, Science, and Technical Subjects",
