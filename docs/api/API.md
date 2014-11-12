@@ -11,7 +11,7 @@ To call an endpoint where authentication is required you will need an auth token
 
 | DESCRIPTION | METHOD  | URL | AUTH REQUIRED? | DETAILS |
 | ----------- | ------- | --- | -------------- | ------- | 
-| Login In    |  POST   | /api/authenticate/userpass username=username&password=password | NO | [View Details](authenticate.md)
+| Login In    |  POST   | /api/authenticate/userpass | NO | [View Details](authenticate.md#login)
 
 
 #### Children
@@ -23,3 +23,4 @@ To call an endpoint where authentication is required you will need an auth token
 | DESCRIPTION                 | METHOD  | URL               | AUTH REQUIRED? | DETAILS |
 | -----------                 | ------- | ---               | -------------- | ------- | 
 | Get all available standards | GET     | /api/v1/standards | NO             | [View Details](standards.md#all)  
+| Get a specific standard     | GET     | /api/v1/standards/{id} | NO        | [View Details](standards.md#specific)
