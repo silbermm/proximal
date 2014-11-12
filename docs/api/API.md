@@ -9,18 +9,33 @@ To call an endpoint where authentication is required you will need an auth token
 	
 #### Authentication
 
-| DESCRIPTION | METHOD  | URL | AUTH REQUIRED? | DETAILS |
-| ----------- | ------- | --- | -------------- | ------- | 
-| Login In    |  POST   | /api/authenticate/userpass | NO | [View Details](authenticate.md#login)
+| DESCRIPTION                 | METHOD  | URL                        | AUTH REQUIRED? | DETAILS |
+| -----------                 | ------- | ---                        | -------------- | ------- | 
+| Login In                    | POST    | /api/authenticate/userpass | NO             | [View Details](authenticate.md#login)
+| Get logged in users profile | GET     | /api/v1/profile            | YES            | [View Details](authenticate.md#profile)
 
 
 #### Children
-
-
+| DESCRIPTION                           | METHOD  | URL                   | AUTH REQUIRED? | DETAILS |
+| -----------                           | ------- | ---                   | -------------- | ------- | 
+| Get all children for logged in user   | GET     | /api/v1/children      | YES            |         | 
+| Get specific child for logged in user | GET     | /api/v1/children/{id} | YES            |         |
+| Add a child to the logged in user     | POST    | /api/v1/children/add  | YES            |         |
+| Delete a child from the logged in user| DELETE  | /api/v1/children/{id} | YES            |         |
 
 #### Standards
 
-| DESCRIPTION                 | METHOD  | URL               | AUTH REQUIRED? | DETAILS |
-| -----------                 | ------- | ---               | -------------- | ------- | 
-| Get all available standards | GET     | /api/v1/standards | NO             | [View Details](standards.md#list-all-standards)  
-| Get a specific standard     | GET     | /api/v1/standards/{id} | NO        | [View Details](standards.md#get-a-specific-standard)
+| DESCRIPTION                 | METHOD  | URL                     | AUTH REQUIRED? | DETAILS |
+| -----------                 | ------- | ---                     | -------------- | ------- | 
+| Get all available standards | GET     | /api/v1/standards       | NO             | [View Details](standards.md#list-all-standards)  
+| Get a specific standard     | GET     | /api/v1/standards/{id}  | NO             | [View Details](standards.md#get-a-specific-standard)
+| Create a standard           | POST    | /api/v1/standards       | YES            | [View Details](standards.md#create-a-standard)
+| Update a standard           | PUT     | /api/v1/standards/{id}  | YES            | [View Details](standards.md#update-a-standard)
+| Delete a standard           | DELETE  | /api/v1/standards/{id}  | YES            | [View Details](standards.md#delete-a-standard)
+| Get all statements in a standard | GET | /api/v1/standards/{standardid}statements | NO | |
+| Create a statement in a standard | POST | /api/v1/standards/{standardid}/statement | YES | |
+| Update a statement in a standard | PUT  | /api/v1/standards/{standardid}/statement/{statementid} | YES | |
+| Delete a statement in a standard | DELETE | /api/v1/standards/{standardid/statement/{statementid} | YES | |
+
+
+
