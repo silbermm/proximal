@@ -33,8 +33,30 @@ object StandardsHelpers {
   }
 
   def fakeEducationLevel = 
-    new EducationLevel(None,"k" ,"kindergarten")
+    new EducationLevel(None,"k" ,"kindergarten") 
 
-   
+  def fakeStatement = {
+    new Statement(
+      None, 
+      None,
+      Some("http://localhost"),
+      Some("English"),
+      Some("CCSS.ELA-Literacy.CCRA.R.1"),
+      Some("CCR.R.1"),
+      Some("Standard"),
+      Some("Read closely to determine what the text says explicitly and to make logical inferences from it; cite specific textual evidence when writing or speaking to support conclusions drawn from the text."),
+      None,
+      Some("http://corestandards.org/ELA-Literacy/CCRA/R/1, urn:guid:09AE13982394433796DE5BAAB40F60F5"),
+      Some("http://purl.org/ASN/resources/S114376D"),
+      Some("English") 
+    )
+  }
+
+  def fakeStatements = {
+    Seq(
+      fakeStatement,
+      fakeStatement.copy(notation=Some("CcSS.ELA-Literacy.CCRA.R.2"), alternateNotation=Some("CCR.R.2"))
+    ) 
+  }
 
 }

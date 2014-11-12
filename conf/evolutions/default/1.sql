@@ -15,13 +15,23 @@ create unique index "idx_value" on "education_levels" ("value");
 create table "school" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"name" VARCHAR(254) NOT NULL,"streetNumber" VARCHAR(254) NOT NULL,"street" VARCHAR(254) NOT NULL,"city" VARCHAR(254) NOT NULL,"state" VARCHAR(254),"district" VARCHAR(254),"public" INTEGER);
 create table "standard_levels" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"education_level_id" BIGINT NOT NULL,"standard_id" BIGINT NOT NULL);
 create table "standards" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"organization_id" BIGINT,"title" VARCHAR(254) NOT NULL,"description" Text NOT NULL,"publication_status" VARCHAR(254) NOT NULL,"subject" VARCHAR(254) NOT NULL,"language" VARCHAR(254),"source" VARCHAR(254),"date_valid" TIMESTAMP,"repository_date" TIMESTAMP,"rights" VARCHAR(254),"manifest" VARCHAR(254),"identifier" VARCHAR(254));
-alter table "standard_levels" add constraint "education_level" foreign key("education_level_id") references "education_levels"("id") on update NO ACTION on delete NO ACTION;
+create table "statement_levels" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"education_level_id" BIGINT NOT NULL,"statement_id" BIGINT NOT NULL);
+create table "statements" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"standardId" BIGINT,"asn_uri" VARCHAR(254),"subject" VARCHAR(254),"notation" VARCHAR(254),"alternate_notation" VARCHAR(254),"label" VARCHAR(254),"description" Text,"alternate_description" Text,"exactMatch" VARCHAR(254),"identifier" VARCHAR(254),"language" VARCHAR(254));
+alter table "standard_levels" add constraint "education_level_standard" foreign key("education_level_id") references "education_levels"("id") on update NO ACTION on delete NO ACTION;
 alter table "standard_levels" add constraint "standard" foreign key("standard_id") references "standards"("id") on update NO ACTION on delete NO ACTION;
+alter table "statement_levels" add constraint "education_level_statement" foreign key("education_level_id") references "education_levels"("id") on update NO ACTION on delete NO ACTION;
+alter table "statement_levels" add constraint "statement" foreign key("statement_id") references "statements"("id") on update NO ACTION on delete NO ACTION;
+alter table "statements" add constraint "STANDARD_FK" foreign key("standardId") references "standards"("id") on update NO ACTION on delete NO ACTION;
 
 # --- !Downs
 
-alter table "standard_levels" drop constraint "education_level";
+alter table "statements" drop constraint "STANDARD_FK";
+alter table "statement_levels" drop constraint "education_level_statement";
+alter table "statement_levels" drop constraint "statement";
+alter table "standard_levels" drop constraint "education_level_standard";
 alter table "standard_levels" drop constraint "standard";
+drop table "statements";
+drop table "statement_levels";
 drop table "standards";
 drop table "standard_levels";
 drop table "school";

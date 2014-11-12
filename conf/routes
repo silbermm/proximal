@@ -13,11 +13,18 @@ DELETE  /api/v1/children/:id        @controllers.PersonController.removeChild(id
 
 GET     /api/v1/profile             @controllers.PersonController.profile()
 
+#Standards
 GET     /api/v1/standards           @controllers.StandardsController.list()
 GET     /api/v1/standards/:id       @controllers.StandardsController.view(id: Long)
 POST    /api/v1/standards           @controllers.StandardsController.create()
 PUT     /api/v1/standards/:id       @controllers.StandardsController.update(id: Long)
 DELETE  /api/v1/standards/:id       @controllers.StandardsController.delete(id: Long)
+
+#Statements
+GET     /api/v1/standards/:id/statements              @controllers.StandardsController.getStatementsForStandard(id: Long)
+POST    /api/v1/standards/:id/statement               @controllers.StandardsController.createStatement(id: Long)
+PUT     /api/v1/standards/:id/statement               @controllers.StandardsController.updateStatement(id: Long)
+DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsController.deleteStatement(id: Long, stateId: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

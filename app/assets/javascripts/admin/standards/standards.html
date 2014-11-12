@@ -1,12 +1,16 @@
-<div class="overlay">
-  
-<h4> Description <i data-ng-class="{'fa-caret-right': isDescriptionCollapsed, 'fa-caret-down': !isDescriptionCollapsed}" 
-                    class="fa" ng-click="isDescriptionCollapsed = !isDescriptionCollapsed"></i> </h4>
+<div class="overlay standard_details" ng-show="!hideStandards"> 
+  <h4> Description <i data-ng-class="{'fa-caret-right': isDescriptionCollapsed, 'fa-caret-down': !isDescriptionCollapsed}" 
+                      class="fa" ng-click="isDescriptionCollapsed = !isDescriptionCollapsed"></i> </h4>
   <p collapse="isDescriptionCollapsed"> {{standard.description}} </p>
-  
+    
   <h4> Education Levels <i data-ng-class="{'fa-caret-right': isEducationCollapsed, 'fa-caret-down': !isEducationCollapsed}" 
-                    class="fa" ng-click="isEducationCollapsed = !isEducationCollapsed"></i></h4>
+                      class="fa" ng-click="isEducationCollapsed = !isEducationCollapsed"></i></h4>
   <p collapse="isEducationCollapsed"> 
     <span data-ng-repeat="level in educationLevels"> {{level.description}} <span data-ng-if="!$last"> | </span>  </span>
   </p>
+
+  <h4> hide Standards - {{hideStandards}} </h4>
+  <a class="btn btn-primary" ui-sref="admin.standards.statements({id:standard.id})">GO </a>
 </div>
+
+<div class="statements" ui-view> </div ui-view>

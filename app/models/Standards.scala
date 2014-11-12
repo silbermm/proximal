@@ -70,6 +70,7 @@ object Standards {
   lazy val standards = TableQuery[Standards]
   lazy val education_levels = EducationLevels.education_levels
   lazy val standard_levels = EducationLevels.standard_levels
+  lazy val statements = Statements.statements
 
   def insert(standard: Standard)(implicit s: Session) =
     (standards returning standards.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += standard
@@ -91,12 +92,117 @@ object Standards {
       l <- standard_levels if l.standardId === id
       e <- l.educationLevel
       s <- l.standard
-    } yield e
-    
+    } yield e 
    return(find(id), query.list) 
   }
-    
+   
+  def findWithStatements(id: Long)(implicit s: Session) : (Option[Standard], List[Statement]) = {
+    val qs = statements.filter(_.standardId === id) 
+    return (find(id), qs.list)
+  }
+
+  def findWithStatementsAndLevels(id: Long)(implicit s: Session): (Option[Standard], List[Statement], List[EducationLevel]) = {
+    val st_standards = findWithStatements(id)
+    val query = for {
+      l <- standard_levels if l.standardId === id
+      e <- l.educationLevel
+      s <- l.standard
+    } yield e
+    return (st_standards._1, st_standards._2, query.list)
+  }
 
   def delete(standard: Standard)(implicit s: Session): Int = 
     standards.filter(_.id === standard.id.get).delete
+}
+
+case class Statement(
+  id: Option[Long],
+  standardId: Option[Long], 
+  asnUri: Option[String],
+  subject: Option[String],
+  notation: Option[String],
+  alternateNotation: Option[String],
+  label: Option[String],
+  description: Option[String],
+  alternateDescription: Option[String],
+  exactMatch: Option[String],
+  identifier: Option[String],
+  language: Option[String]
+)
+
+class Statements(tag: Tag) extends Table[Statement](tag, "statements"){
+
+  lazy val standards = Standards.standards
+
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def standardId = column[Option[Long]]("standardId")
+  def asnUri = column[Option[String]]("asn_uri")
+  def subject = column[Option[String]]("subject") 
+  def notation = column[Option[String]]("notation")
+  def alternateNotation = column[Option[String]]("alternate_notation")
+  def label = column[Option[String]]("label") 
+  def description = column[Option[String]]("description", O.DBType("Text"))
+  def alternateDescription = column[Option[String]]("alternate_description", O.DBType("Text")) 
+  def exactMatch = column[Option[String]]("exactMatch") 
+  def identifier = column[Option[String]]("identifier") 
+  def language = column[Option[String]]("language") 
+
+  def * = (id.?,
+           standardId,
+           asnUri,
+           subject,
+           notation,
+           alternateNotation,
+           label,
+           description,
+           alternateDescription,
+           exactMatch,
+           identifier,
+           language
+           ) <> ( Statement.tupled,Statement.unapply _)
+  
+  def standard = foreignKey("STANDARD_FK", standardId, standards)(_.id)
+}
+
+object Statements {
+
+  lazy val statements = TableQuery[Statements] 
+  lazy val standards = Standards.standards
+  lazy val statement_levels = StatementLevels.statement_levels
+
+  def insert(statement: Statement)(implicit s: Session) =
+    (statements returning statements.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += statement
+
+  def insert(statement: Seq[Statement])(implicit s: Session) =
+    statements ++= statement
+   
+  def update(id: Long, statement: Statement)(implicit s: Session) =
+    statements.filter(_.id === id).update(statement.copy(Some(id))) 
+
+  def find(id: Long)(implicit s: Session) = 
+    statements.filter(_.id === id).firstOption
+
+  def findWithStandard(id: Long)(implicit s: Session) = {
+    val query = for {
+      l <- statements if l.id === id
+      e <- l.standard
+    } yield e 
+    (find(id), query.firstOption)  
+  }
+
+  def findWithEducationLevels(id: Long)(implicit s: Session):(Option[Statement], List[EducationLevel] ) = {
+    val query = for {
+      l <- statement_levels if l.statementId === id
+      e <- l.educationLevel
+      s <- l.statement
+    } yield e 
+   return(find(id), query.list) 
+  }
+
+  def list(implicit s: Session) = 
+    statements.list
+
+  def delete(statement: Statement)(implicit s: Session) = 
+    statements.filter(_.id === statement.id.get).delete
+
 }

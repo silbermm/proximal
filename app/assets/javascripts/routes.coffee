@@ -52,8 +52,16 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     url: '/standards/{id}'
     controller: 'StandardsCtrl'
     templateUrl: '../assets/javascripts/admin/standards/standards.html'
-    data: { title: 'Standards' }
+    data: { title: 'Standards', hideStandards: false}
   }
+
+  $stateProvider.state 'admin.standards.statements',{
+    url: '/statements'
+    controller: 'StatementsCtrl'
+    templateUrl: '../assets/javascripts/admin/standards/statements/statements.html'
+    data: { title: 'Statements', hideStandards: true, anotherData: 'blah'}
+  }
+
 
 
 

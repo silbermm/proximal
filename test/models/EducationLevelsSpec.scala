@@ -119,6 +119,28 @@ class EducationLevelsSpec extends PlaySpec with Results {
       }
     }
 
+    "get Statements that are in the education level" in { 
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s =>
+          val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          e.id must not be empty
+
+          val statement = Statements.insert(StandardsHelpers.fakeStatement)
+          statement.id must not be empty
+
+          val statementLevel = StatementLevels.insert(new StatementLevel(None,e.id.get,statement.id.get))
+          statementLevel.id must not be empty
+
+          val exists = EducationLevels.findWithStatements(e.id.get)
+          exists must not be empty
+
+          exists.head._2.id.get mustEqual statement.id.get
+          exists.head._1.id.get mustEqual e.id.get
+
+        }
+      }
+    }
+
 
   }
 

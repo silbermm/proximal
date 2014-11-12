@@ -7,27 +7,32 @@ import play.api.Play.current
 
 trait StandardsServiceTrait {
   def create(standard: Standard): Standard
-  def create(standard: Standard, educationLevel: EducationLevel): Standard 
+  def create(standard: Standard, educationLevel: EducationLevel): Option[Standard]
+  def create(standard: Standard, edLevels: List[EducationLevel]) : Option[Standard] 
+  def create(statement: Statement) : Statement
+  def create(statements: Seq[Statement]) : Option[Int]
+  def create(statement: Statement, edLevels: List[EducationLevel]): (Option[Statement], List[EducationLevel])
   def update(id:Long, standard: Standard): Int
+  def update(id: Long, statement: Statement): Int
   def find(id: Long): Option[Standard]
   def find(title: String): List[Standard]
-  def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel]) 
+  def findStatement(id: Long) : (Option[Statement], List[EducationLevel] ) 
+  def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel])  
+  def findWithStatements(id: Long): (Option[Standard], List[Statement])
+  def findWithStatementsAndLevels(id: Long): (Option[Standard], List[Statement], List[EducationLevel]) 
   def list: List[Standard]
-  def delete(standard: Standard) : Int 
-  
-
-
+  def delete(standard: Standard) : Int   
 }
 
 class StandardsService extends StandardsServiceTrait {
 
-  def create(standard: Standard) = {
+  override def create(standard: Standard) = {
     DB.withSession{ implicit s=>
       Standards.insert(standard)
     }
   }
 
-  def create(standard: Standard, edLevels: List[EducationLevel]) : Option[Standard] = { 
+  override def create(standard: Standard, edLevels: List[EducationLevel]) = { 
     DB.withSession{ implicit s=>
       val educationLevels = for { l <- edLevels } yield EducationLevels.insert(l)
       Standards.insert(standard) match {
@@ -36,40 +41,86 @@ class StandardsService extends StandardsServiceTrait {
           Some(stan)
         }
         case _ => None 
-      }
- 
+      } 
     } 
   }
 
-  def create(standard: Standard, educationLevel: EducationLevel) = {
+  override def create(standard: Standard, educationLevel: EducationLevel) = {
     DB.withSession{ implicit s=>
-      
-
-      Standards.insert(standard)
+      create(standard, List(educationLevel))     
     }
   }
 
-  def update(id: Long, standard: Standard) = {
+  override def create(statement: Statement) = {
+    DB.withSession{ implicit s=>
+      Statements.insert(statement)
+    }
+  }
+
+  override def create(statements: Seq[Statement]) = {
+    DB.withSession{ implicit s=>
+      Statements.insert(statements)
+    }
+  } 
+  
+  override def create(statement: Statement, edLevels: List[EducationLevel]) ={
+    DB.withSession{ implicit s=> 
+      val educationLevels = for { l <- edLevels } yield EducationLevels.insert(l)
+      Statements.insert(statement) match {
+        case state: Statement => {
+          for{ level <- educationLevels } StatementLevels.insert(new StatementLevel(None,level.id.get, state.id.get))
+          (Some(state),educationLevels)
+        }
+        case _ => (None,List.empty)
+      } 
+    }
+  }
+
+  override def update(id: Long, standard: Standard) = {
     DB.withSession{ implicit s=>
       Standards.update(id, standard)
     }
   }
+
+  override def update(id: Long, statement: Statement) = {
+    DB.withSession{ implicit s=>
+      Statements.update(id, statement)
+    }
+  }
   
-  def find(id: Long) = {
+  override def find(id: Long) = {
     DB.withSession{ implicit s=>
       Standards.find(id)
     }
   }
 
-  def findWithEducationLevels(id: Long) = {
+  override def findWithEducationLevels(id: Long) = {
     DB.withSession{ implicit s=>
       Standards.findWithEducationLevels(id);
     }
   }
   
-  def find(title: String) = {
+  override def find(title: String) = {
     DB.withSession{ implicit s=>
       Standards.find(title)
+    }
+  }
+
+  def findWithStatements(id: Long) = {
+    DB.withSession{ implicit s=>
+      Standards.findWithStatements(id)
+    }
+  }
+  
+  def findWithStatementsAndLevels(id: Long) = {
+    DB.withSession{ implicit s=>
+      Standards.findWithStatementsAndLevels(id)
+    }
+  }
+
+  def findStatement(id: Long) = {
+    DB.withSession{ implicit s=>
+      Statements.findWithEducationLevels(id)
     }
   }
 

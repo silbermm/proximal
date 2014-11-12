@@ -1,4 +1,4 @@
-We need to name our app
+Proximal Learning Suite
 =================================
 
 ##To get this up and running on your local machine:
@@ -19,3 +19,6 @@ We need to name our app
 3. Open a Command Prompt and CD into this repo
 4. Type `heroku login` to login to heroku
 5. Now add the heroku remote by typing `git remote add heroku git@heroku.com:intense-peak-3971.git`
+
+To interact with the application, look at the [API Docs](docs/README.md)
+
