@@ -22,8 +22,8 @@ DELETE  /api/v1/standards/:id       @controllers.StandardsController.delete(id: 
 
 #Statements
 GET     /api/v1/standards/:id/statements              @controllers.StandardsController.getStatementsForStandard(id: Long)
-POST    /api/v1/standards/:id/statement               @controllers.StandardsController.createStatement(id: Long)
-PUT     /api/v1/standards/:id/statement               @controllers.StandardsController.updateStatement(id: Long)
+POST    /api/v1/standards/:id/statements              @controllers.StandardsController.createStatement(id: Long)
+PUT     /api/v1/standards/:id/statements              @controllers.StandardsController.updateStatement(id: Long)
 DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsController.deleteStatement(id: Long, stateId: Long)
 
 #Dummy

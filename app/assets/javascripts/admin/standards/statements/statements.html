@@ -3,17 +3,19 @@
     <input placeholder="Search" class="form-control input-sm pull-left" type="text">
     <button class="btn btn-sm btn-primary pull-right" ng-click="addStatement()"> New Statement </button>
   </prox-widget-header>
-  <prox-widget-body add="medium no-padding">
+  <prox-widget-body >
     <div class="table-responsive">
       <table class="table table-hover table-striped">
         <thead>
           <tr>
-            <th>  </th>
+            <th> Notation </th>
+            <th> Description </th>
           </tr>
         </thead>
         <tbody>
           <tr data-ng-repeat="statement in statements">
-            <td> </td>
+            <td> {{statement.notation }}</td>
+            <td> {{statement.description }} </td>
           </tr>
         </tbody>
       </table>

@@ -93,7 +93,7 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     request.body.validate[StatementWithEducationLevel].fold(
       errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
       json => {   
-        standardsService.create(json.statement, json.levels) match {
+        standardsService.create(json.statement.copy(standardId=Some(id)), json.levels) match {
           case (Some(statement), edLevels) => Ok(Json.obj("statement" -> Json.toJson(statement), "levels" -> Json.toJson(edLevels)))
           case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the statement"))
         } 

@@ -24,6 +24,38 @@
         </ui-select-choices>    
     </ui-select>
   </div>
+
+  <div class="form-group" data-ng-class="{'has-error': form.notation.$invalid && form.notation.$dirty, 'has-success': !form.notation.$invalid}">
+    <label for="notation" class="sr-only"> Notation </label>
+    <input type="text" name="notation" class="form-control" data-ng-model="edu.statement.notation" placeholder="Notation" ng-required />
+  </div>
+ 
+  <div class="form-group" data-ng-class="{'has-error': form.alternateNotation.$invalid && form.alternateNotation.$dirty, 'has-success': !form.alternateNotation.$invalid}">
+    <label for="alternateNotation" class="sr-only">Alternate Notation </label>
+    <input type="text" name="alternateNotation" class="form-control" data-ng-model="edu.statement.alternateNotation" placeholder="Alternate Notation" />
+  </div>
+
+
+  <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}">
+    <label for="description" class="sr-only"> Description </label>
+    <textarea name="description" class="form-control" data-ng-model="edu.statement.description" placeholder="Description" ng-required>
+    </textarea>
+  </div>
+
+  <div class="form-group" data-ng-class="{'has-error': form.alternateDescription.$invalid && form.alternateDescription.$dirty, 'has-success': !form.alternateDescription.$invalid}">
+    <label for="alternateDescription" class="sr-only"> Alternate Description </label>
+    <textarea name="alternateDescription" class="form-control" data-ng-model="edu.statement.alternateDescription" placeholder="Alternate Description">
+    </textarea>
+  </div>
+
+  <div class="form-group" data-ng-class="{'has-error': form.identifier.$invalid && form.identifier.$dirty, 'has-success': !form.identifier.$invalid}">
+    <label for="identifier" class="sr-only"> Identifier </label>
+    <input type="text" name="identifier" class="form-control" data-ng-model="edu.statement.identifier" placeholder="Identifier" />
+  </div>
+
+  <input type="hidden" value="Engilish" data-ng-model="edu.statement.language" />
+  <input type="hidden" value="Standard" data-ng-model="edu.statement.label" />
+
 </div>
 
 <div class="modal-footer">

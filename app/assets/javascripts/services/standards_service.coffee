@@ -20,5 +20,8 @@ angular.module("proximal").factory "standardsService", [
 
       addStatement: (standardId, statement)->
         return $http.post("api/v1/standards/" + standardId + "/statements", statement)
+
+      getStatements: (standardId) ->
+        return $http.get("api/v1/standards/" + standardId + "/statements")
     }
 ]
