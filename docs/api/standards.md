@@ -1,4 +1,4 @@
-[<< Back to API Docs](API.md)
+[<-- Back to API Docs](API.md)
 
 #Standards Methods
 
@@ -20,15 +20,15 @@ A List of Standards Objects
 ```json
 [
   {"id":1,
-   "title":"Common Core State Standards for Mathematics",
-   "description":"These Standards define what students should understand and be able to do in their study of mathematics. Asking a student to understand something means asking a teacher to assess whether the student has understood it. But what does mathematical understanding look like? One hallmark of mathematical understanding is the ability to justify, in a way appropriate to the student's mathematical maturity, why a particular mathematical statement is true or where a mathematical rule comes from. There is a world of difference between a student who can summon a mnemonic device to expand a product such as (a + b)(x + y) and a student who can explain where the mnemonic comes from. The student who can explain the rule understands the mathematics, and may have a better chance to succeed at a less familiar task such as expanding (a + b + c)(x + y). Mathematical understanding and procedural skill are equally important, and both are assessable using mathematical tasks of sufficient richness.",
+   "title":"Standard Name",
+   "description":"Some long description",
    "publicationStatus":"published",
-   "subject":"math",
+   "subject":"subject name",
    "language":"English",
-   "source":"http://www.corestandards.org/assets/CCSSI_Math%20Standards.pdf",
+   "source":"url to a place where the standard is documented",
    "dateValid":1262322000000,
    "repositoryDate":1299560400000,
-   "rights":"© Copyright 2010. National Governors Association Center for Best Practices and Council of Chief State School Officers. All rights reserved.",
+   "rights":"© Copyright 2010",
    "manifest":"http://asn.jesandco.org/resources/D10003FB/manifest.json",
    "identifier":"http://purl.org/ASN/resources/D10003FB"
   },
@@ -80,4 +80,165 @@ A Standards Objects
 }
 ```
 
+###[Create a Standard](#create-a-standard)
+Create a publicially available standard
 
+#### METHOD
+`POST`
+
+#### URL
+`/api/v1/standards`
+
+#### BODY
+Send a *Standards* JSON object along as the body. The id should be empty since it will be auto generated.
+
+```json
+{
+  "id": null,
+  "title":"The title",
+  "description":"The Description",
+  "publicationStatus":"published", //leave emtpy if not published
+  "subject":"English",
+  "language":"English",
+  "source":"http://www.my.standards/standard.pdf",
+  "dateValid":1262322000000,
+  "repositoryDate":1299560400000,
+  "rights":"© Copyright 2010. Creative Commons",
+  "manifest":"",
+  "identifier":""
+}
+```
+#### RETURNS
+The object that was created with the id that was generated
+
+```json
+{
+  "id": 29809,
+  "title":"The title",
+  "description":"The Description",
+  "publicationStatus":"published", //leave emtpy if not published
+  "subject":"English",
+  "language":"English",
+  "source":"http://www.my.standards/standard.pdf",
+  "dateValid":1262322000000,
+  "repositoryDate":1299560400000,
+  "rights":"© Copyright 2010. Creative Commons",
+  "manifest":"",
+  "identifier":""
+}
+```
+
+###[Update a Standard](#update-a-standard)
+Update an already created *Standard* 
+
+#### METHOD
+`PUT`
+
+#### URL
+The {id} should be replaced with an actual id of the standard you are updating
+`/api/v1/standards/{id}
+
+#### BODY
+Send the whole *Standards* Json object that you want to update with the updated fields as the Body
+
+```json
+{
+  "id": 29809,
+  "title":"The NEW title",
+  "description":"The NEW Description",
+  "publicationStatus":null, //leave emtpy if not published
+  "subject":"English",
+  "language":"English",
+  "source":"http://www.my.standards/standard.pdf",
+  "dateValid":1262322000000,
+  "repositoryDate":1299560400000,
+  "rights":"© Copyright 2010. Creative Commons",
+  "manifest":"",
+  "identifier":""
+}
+```
+#### RETURNS
+The updated Standards Object
+```json
+{
+  "id": 29809,
+  "title":"The NEW title",
+  "description":"The NEW Description",
+  "publicationStatus":null, //leave emtpy if not published
+  "subject":"English",
+  "language":"English",
+  "source":"http://www.my.standards/standard.pdf",
+  "dateValid":1262322000000,
+  "repositoryDate":1299560400000,
+  "rights":"© Copyright 2010. Creative Commons",
+  "manifest":"",
+  "identifier":""
+}
+
+```
+
+###[Delete a Standard](#delete-a-standard)
+
+#### METHOD
+`DELETE`
+
+#### URL
+Replace {id} with the actual id of the standard you wish to delete
+`/api/v1/standards/{id}`
+
+#### RETURN CODE
+`200 OK`
+
+
+###[Get all Statements in a Standard](#)
+
+#### METHOD
+`GET`
+
+#### URL
+Replace {standardid} with the id of the standard that the standards belong too
+`/api/v1/standards/{standardid}/statements`
+
+#### RETURNS
+A list of objects that include the statement and education levels 
+
+```json
+
+```
+
+###[Create a Statement](#)
+
+#### METHOD
+`POST`
+
+#### URL
+Replace {standardid} with the id of the standard that this statement belongs too
+`/api/v1/standards/{standardid}/statements`
+
+#### BODY
+
+#### RETURNS
+
+###[Update a Statement](#)
+
+#### METHOD
+`PUT`
+
+#### URL
+ Replace {standardid} with the id of the standard that this statement belongs too 
+`/api/v1/standards/{standardid}/statements/statementid`
+
+#### BODY
+
+#### RETURNS
+
+
+###[Delete a Statement](#)
+
+#### METHOD
+`DELETE`
+
+#### URL
+
+#### RETURN CODE
+`200 OK`
