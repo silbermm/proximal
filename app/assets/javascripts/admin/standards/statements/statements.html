@@ -1,7 +1,6 @@
 <prox-widget> 
   <prox-widget-header title="Statements">
-    <input placeholder="Search" class="form-control input-sm pull-left" type="text">
-    <button class="btn btn-sm btn-primary pull-right" ng-click="addStatement()"> New Statement </button>
+  <button class="btn btn-sm btn-success btn-circle" ng-click="addStatement()"><i class="fa fa-plus"></i></button>
   </prox-widget-header>
   <prox-widget-body >
     <div class="table-responsive">
@@ -10,12 +9,14 @@
           <tr>
             <th> Notation </th>
             <th> Description </th>
+            <th> </th>
           </tr>
         </thead>
         <tbody>
           <tr data-ng-repeat="statement in statements">
             <td> {{statement.notation }}</td>
             <td> {{statement.description }} </td>
+            <td> <button class="btn btn-sm btn-info btn-circle"><i class="fa fa-edit"></i></button></td>
           </tr>
         </tbody>
       </table>

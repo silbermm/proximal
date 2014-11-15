@@ -19,6 +19,10 @@ angular.module("proximal").controller "StatementsCtrl",[
       modalInstance = $modal.open({
         templateUrl: "../assets/javascripts/admin/standards/statements/add_statement.html"
         controller: "AddStatementCtrl"
+        resolve: {
+          standardId: ->
+            return $stateParams.id
+        }
       })
 
       modalInstance.result.then((statement)->
@@ -39,11 +43,29 @@ angular.module("proximal").controller "AddStatementCtrl",[
   "$scope"
   "$modalInstance"
   "prox.common"
-  ($log,$scope,$modalInstance,common)-> 
+  "standardsService"
+  "standardId"
+  ($log,$scope,$modalInstance,common,standardsService,standardId)-> 
     $scope.availableEducationLevels = common.educationLevels
-
-    $scope.edu = {}
+  
+    $scope.edu = {
+      statement: {}
+    }
     $scope.edu.levels = {}
+
+    standardsService.getStandard(standardId).success((data)->
+      $scope.edu.statement.subject = data.standard.subject
+      $scope.availableEducationLevels = _.filter($scope.availableEducationLevels, (lev) ->
+        has = _.find(data.levels, (standardLevel) ->
+          standardLevel.description is lev.description
+          return
+        )
+        has is `undefined`
+      )
+    ).error((data)->
+      $log.error(data)
+    )
+
 
     $scope.ok = ->
       $modalInstance.close($scope.edu)
