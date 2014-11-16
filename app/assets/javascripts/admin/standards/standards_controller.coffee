@@ -1,4 +1,4 @@
-angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope,$rootScope, $state, $stateParams, standardsService) ->
+angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope,$rootScope, $state, $stateParams, standardsService, toaster) ->
   $scope.page = "Standards Page"
   $log.debug("getting the standard for " + $stateParams.id)
 
@@ -6,7 +6,7 @@ angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope
     $scope.standard = data.standard
     $scope.educationLevels = data.levels
   ).error((data,status,headers,config) ->
-    $log.error "data"
+    toaster.pop('error', "Failure", "Unable to get standareds");
   )
   
   $scope.isDescriptionCollapsed = false;
@@ -18,7 +18,8 @@ angular.module("proximal").controller "AddStandardCtrl", [
   "$scope"
   "$modalInstance"
   "prox.common"
-  ($log, $scope, $modalInstance, common)->
+  "toaster"
+  ($log, $scope, $modalInstance, common,toaster)->
 
     $scope.edu = {}
 

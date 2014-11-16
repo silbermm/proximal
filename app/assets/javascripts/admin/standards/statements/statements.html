@@ -1,4 +1,51 @@
-<prox-widget> 
+<div class="sub-container">
+  <div class="row col-md-12 toolbar">
+    <div class="col-md-2">
+      <h4> Statements </h4> 
+    </div>
+    <div class="col-md-8" style="padding-top:10px">
+      <!-- filters and search -->
+      <div class="col-md-6">
+        <select class="form-control">
+          <option value="0"> -- Filter by Grade Level -- </option>
+        </select>
+      </div>
+      <div class="input-group col-md-4">
+          <input type="text" class="form-control" placeholder="Search...">
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+      </div>
+    </div>
+    <div class="col-md-2" style="padding-top:10px"> 
+      <button class="btn btn-sm btn-success btn-circle" ng-click="addStatement()"><i class="fa fa-plus"></i></button>
+    </div>
+  </div>
+  <div class="row info">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th> Notation </th>
+              <th> Description </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="statement in statements">
+              <td> {{statement.notation }}</td>
+              <td> {{statement.description }} </td>
+              <td> <button class="btn btn-sm btn-info btn-circle"><i class="fa fa-edit"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- <prox-widget> 
   <prox-widget-header title="Statements">
   <button class="btn btn-sm btn-success btn-circle" ng-click="addStatement()"><i class="fa fa-plus"></i></button>
   </prox-widget-header>
@@ -23,3 +70,5 @@
     </div>
   </prox-widget-body>
 </prox-widget>
+-->
+<toaster-container></toaster-container>

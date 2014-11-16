@@ -6,7 +6,8 @@ angular.module("proximal").controller "StatementsCtrl",[
   "$stateParams"
   "$modal"
   "standardsService"
-  ($log,$cookieStore,$scope,$state,$stateParams,$modal,standardsService) ->
+  "toaster"
+  ($log,$cookieStore,$scope,$state,$stateParams,$modal,standardsService,toaster) ->
     $scope.page = "Statements Page"
     
     standardsService.getStatements($stateParams.id).success((data)->
@@ -28,9 +29,11 @@ angular.module("proximal").controller "StatementsCtrl",[
       modalInstance.result.then((statement)->
         standardsService.addStatement($stateParams.id, statement).success((data,status,headers,config)->
           $scope.statements.push(data.statement)
+          toaster.pop('success', null, "Successfully add the statement")
         ).error((data,status,headers,config)->
           $log.error(data)
           $log.error(status)
+          toaster.pop('error',null, "Failed to add the statement: " + data.message)
         )
         return
       )
