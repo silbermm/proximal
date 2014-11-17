@@ -70,6 +70,7 @@ object Standards {
   lazy val standards = TableQuery[Standards]
   lazy val education_levels = EducationLevels.education_levels
   lazy val standard_levels = EducationLevels.standard_levels
+  lazy val statement_levels = StatementLevels.statement_levels
   lazy val statements = Statements.statements
 
   def insert(standard: Standard)(implicit s: Session) =
@@ -99,16 +100,6 @@ object Standards {
   def findWithStatements(id: Long)(implicit s: Session) : (Option[Standard], List[Statement]) = {
     val qs = statements.filter(_.standardId === id) 
     return (find(id), qs.list)
-  }
-
-  def findWithStatementsAndLevels(id: Long)(implicit s: Session): (Option[Standard], List[Statement], List[EducationLevel]) = {
-    val st_standards = findWithStatements(id)
-    val query = for {
-      l <- standard_levels if l.standardId === id
-      e <- l.educationLevel
-      s <- l.standard
-    } yield e
-    return (st_standards._1, st_standards._2, query.list)
   }
 
   def delete(standard: Standard)(implicit s: Session): Int = 

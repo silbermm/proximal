@@ -9,8 +9,8 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 case class StandardWithEducationLevel(standard: Standard, levels: List[EducationLevel])
-case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel])
-
+case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel]) 
+case class TupleWithList(statement: Option[Statement], levels: List[EducationLevel])
 class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
  
   implicit val standardsFormat = Json.format[Standard]
@@ -18,6 +18,17 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   implicit val statementFormat = Json.format[Statement]
   implicit val standardsWithEducationLevel = Json.format[StandardWithEducationLevel]
   implicit val statementWithEducationLevel = Json.format[StatementWithEducationLevel]
+
+
+
+  implicit def tuple2Writes[Option[Statement], List[EducationLevel]](implicit aWrites: Writes[Option[Statement]], bWrites: Writes[List[EducationLevel]]): Writes[Tuple2[Option[Statement], List[EducationLevel]]] = {
+    new Writes[Tuple2[Option[Statement], List[EducationLevel]]] {
+      def writes(tuple: Tuple2[Option[Statement], List[EducationLevel]]) = Json.obj(
+        "statement" -> aWrites.writes(tuple._1),
+        "levels" -> bWrites.writes(tuple._2)
+      )
+    }
+  }
 
   val standardsService: StandardsServiceTrait = new StandardsService()
   val educationLevelsService: EducationLevelsServiceTrait = new EducationLevelsService()
@@ -80,8 +91,9 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def getStatementsForStandard(id: Long) = Action { request=>
-    standardsService.findWithStatements(id) match {
+    standardsService.findWithStatementsAndLevels(id) match {
       case (Some(stan), statementList) => {
+        
         Ok(Json.obj("standard" -> Json.toJson(stan), "statements" -> Json.toJson(statementList))) 
       }
       case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "there is no record with that id"))

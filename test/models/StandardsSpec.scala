@@ -139,10 +139,9 @@ class StandardsSpec extends PlaySpec with Results {
           val standardLevel = StandardLevels.insert(new StandardLevel(None,e.id.get,standard.id.get))
           standardLevel.id must not be empty
          
-          Standards.findWithStatementsAndLevels(standard.id.get) match {
-            case (Some(st), sta: List[Statement], lev: List[EducationLevel]) => {
+          Standards.findWithStatements(standard.id.get) match {
+            case (Some(st), sta) => {
               sta must not be empty
-              lev must not be empty
             }
             case _ => fail("didn't work")
           }

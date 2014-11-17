@@ -123,11 +123,11 @@ class StandardsServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         standardsService.create(StandardsHelpers.fakeStandard, StandardsHelpers.fakeEducationLevels.toList) match {
           case Some(standard) => {
-            val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId=standard.id))
+            val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId=standard.id),StandardsHelpers.fakeEducationLevels.toList)
             standardsService.findWithStatementsAndLevels(standard.id.get) match {
-              case (Some(stan), statements,levels) => {
+              case (Some(stan), statements) => {
                 statements must have length 1
-                levels must have length StandardsHelpers.fakeEducationLevels.length
+                statements.head._2 must have length StandardsHelpers.fakeEducationLevels.length
               }
               case _ => fail("unable to query for levels and statements...")
             }

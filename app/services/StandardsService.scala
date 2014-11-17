@@ -19,7 +19,7 @@ trait StandardsServiceTrait {
   def findStatement(id: Long) : (Option[Statement], List[EducationLevel] ) 
   def findWithEducationLevels(id: Long): (Option[Standard],List[EducationLevel])  
   def findWithStatements(id: Long): (Option[Standard], List[Statement])
-  def findWithStatementsAndLevels(id: Long): (Option[Standard], List[Statement], List[EducationLevel]) 
+  def findWithStatementsAndLevels(id: Long): (Option[Standard], List[(Option[Statement], List[EducationLevel])]) 
   def list: List[Standard]
   def delete(standard: Standard) : Int   
 }
@@ -114,7 +114,16 @@ class StandardsService extends StandardsServiceTrait {
   
   def findWithStatementsAndLevels(id: Long) = {
     DB.withSession{ implicit s=>
-      Standards.findWithStatementsAndLevels(id)
+      Standards.findWithStatements(id) match {
+        case (Some(st),statements) => {
+          val returnVal = statements.map( statement => 
+            Statements.findWithEducationLevels(statement.id.get)
+          )
+          (Some(st), returnVal)
+        }
+        case _ => (None, List((None,List.empty))) 
+      }
+
     }
   }
 

@@ -7,9 +7,12 @@ angular.module("proximal").controller "StatementsCtrl",[
   "$modal"
   "standardsService"
   "toaster"
-  ($log,$cookieStore,$scope,$state,$stateParams,$modal,standardsService,toaster) ->
+  "prox.common"
+  ($log,$cookieStore,$scope,$state,$stateParams,$modal,standardsService,toaster,common) ->
     $scope.page = "Statements Page"
-    
+   
+    $scope.edlevels = common.educationLevels
+
     standardsService.getStatements($stateParams.id).success((data)->
       $scope.statements = data.statements
     ).error((data,status)->
