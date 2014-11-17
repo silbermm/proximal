@@ -26,7 +26,7 @@ class PeopleServiceSpec extends PlaySpec with Results {
   "Person Service" should {
     "insert and retrieve a record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
-        val p = new Person(None, "Matthew", Some("Silbernagel"), None, None)
+        val p = new Person(None, "Matthew", Some("Silbernagel"), None,None, None)
         personService.createPerson(p)
         personService.findPerson(1L) match {
           case Some(per) => per.firstName mustEqual "Matthew"
@@ -37,8 +37,8 @@ class PeopleServiceSpec extends PlaySpec with Results {
     
     "add a child to a parent" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
-        val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
-        val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+        val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None,None, None))
+        val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None, None))
         val relationship = personService.addChild(child,parent);
         relationship.personId mustEqual parent.id.get
         relationship.otherPersonId mustEqual child.id.get
@@ -47,8 +47,8 @@ class PeopleServiceSpec extends PlaySpec with Results {
 
     "find children by parent" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
-        val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
-        val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+        val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None, None,None))
+        val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None, None))
         val relationship = personService.addChild(child,parent); 
         val listOfChildren = personService.findChildren(parent.id.get)
         listOfChildren.size mustEqual 1

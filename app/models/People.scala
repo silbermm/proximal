@@ -11,18 +11,20 @@ import play.api.Play.current
 import play.api.Logger
 
 
-case class Person(id: Option[Long] = None, firstName:String, lastName: Option[String], birthDate: Option[DateTime], uid: Option[Long])
+case class Person(id: Option[Long] = None, firstName:String, lastName: Option[String], birthDate: Option[DateTime], educationLevelId: Option[Long], uid: Option[Long])
 class People(tag: Tag) extends Table[Person](tag, "Person"){ 
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def firstName = column[String]("firstName")
   def lastName = column[Option[String]]("lastName")
   def birthDate = column[Option[DateTime]]("birthDate")
+  def educationLevelId = column[Option[Long]]("educationLevelId")
   def uid = column[Option[Long]]("uid")
 
-  def * = (id.?, firstName,lastName, birthDate, uid) <> (Person.tupled, Person.unapply _)  
+  def * = (id.?, firstName,lastName, birthDate, educationLevelId, uid) <> (Person.tupled, Person.unapply _)  
 
   def idx = index("idx_uid", (uid), unique = true)
+  def educationLevel = foreignKey("educationLevel", educationLevelId,EducationLevels.education_levels)(_.id)
 
 }
 
@@ -57,12 +59,12 @@ class Relationships(tag: Tag) extends Table[Relationship](tag, "Relationship") {
 
 
 object People {
-  val people = TableQuery[People]
-  val relationship_types = TableQuery[RelationshipTypes]
-  val relationships = TableQuery[Relationships]
-
-  val schools = Schools.schools
-  val attendences = Attendences.attendences 
+  lazy val people = TableQuery[People]
+  lazy val relationship_types = TableQuery[RelationshipTypes]
+  lazy val relationships = TableQuery[Relationships]
+  lazy val education_levels = EducationLevels.education_levels
+  lazy val schools = Schools.schools
+  lazy val attendences = Attendences.attendences 
 
   def insertPerson(p : Person)(implicit s: Session) : Person = {
     p.uid match {
@@ -89,6 +91,14 @@ object People {
 
   def findPersonByUid(uid: Long)(implicit s: Session) =
     people.filter(_.uid === uid).firstOption
+
+  def findWithEducationLevel(id: Long)(implicit s: Session):(Person,EducationLevel) = {
+    val query = for {
+      child <- people if child.id === id
+      level <- education_levels if level.id === child.educationLevelId
+    } yield (child,level)
+    return query.first
+  }
 
   def findPerson(id: Long)(implicit s: Session) =
     people.filter(_.id === id).firstOption

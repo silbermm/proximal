@@ -83,7 +83,7 @@ class SecureUserService extends UserService[SecureUser]  {
         case Some(userId) => Some(userId)
         case None => None
       }
-      val person = new Person(None, u.firstName.get, u.lastName, None, uid)
+      val person = new Person(None, u.firstName.get, u.lastName, None, None, uid)
       People.insertPerson(person)
       Future.successful(u)
     }

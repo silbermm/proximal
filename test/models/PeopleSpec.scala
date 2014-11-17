@@ -20,7 +20,8 @@ class PeopleSpec extends PlaySpec with Results {
 
   import models._
 
-  val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None)
+  val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None, None)
+  val fakeChild = new Person(None, "miles", Some("silbernagel"), None, None, None)
   val fakeSchool = new School(None,
                               "Fairview German School",
                               "999", 
@@ -101,7 +102,25 @@ class PeopleSpec extends PlaySpec with Results {
         }
       }
     }
+  
+    "include the education level of a child" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val edLevel = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
 
+          val parent = People.insertPerson(fakePerson)
+          val child = People.insertPerson(fakeChild.copy(educationLevelId=edLevel.id))
+          
+          People.findWithEducationLevel(child.id.get) match {
+            case (c, l) => {
+              l.id.get mustEqual edLevel.id.get
+            }
+            case _ => fail("did not get the correct results")
+          }
+
+        }
+      }
+    }
 
 
   }
@@ -110,8 +129,8 @@ class PeopleSpec extends PlaySpec with Results {
     "add a child to a parent" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
-          val parent = People.insertPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
-          val child = People.insertPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+          val parent = People.insertPerson(fakePerson)
+          val child = People.insertPerson(fakeChild)
           val relationship = People.addChild(child,parent);
           relationship.personId mustEqual parent.id.get
           relationship.otherPersonId mustEqual child.id.get
@@ -122,8 +141,8 @@ class PeopleSpec extends PlaySpec with Results {
     "find children by parent" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
         DB.withSession{ implicit s=>
-          val parent = People.insertPerson(new Person(None, "Matt", Some("Silbernagel"), None, None))
-          val child = People.insertPerson(new Person(None, "miles", Some("silbernagel"), None, None))
+          val parent = People.insertPerson(fakePerson)
+          val child = People.insertPerson(fakeChild)
           val relationship = People.addChild(child,parent); 
           val listOfChildren = People.findChildrenFor(parent.id.get)
           listOfChildren.size mustEqual 1

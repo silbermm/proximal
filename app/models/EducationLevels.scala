@@ -64,6 +64,12 @@ object EducationLevels {
     return query.list
   }
 
+  def findByChild(child: Person)(implicit s: Session) : Option[EducationLevel] = {
+    child.educationLevelId match {
+      case Some(i) => education_levels.filter(_.id === i).firstOption
+      case _ => None
+    }
+  }
   
   def delete(e: EducationLevel)(implicit s: Session) : Int = {
     education_levels.filter(_.id === e.id.get).delete
@@ -141,7 +147,4 @@ object StandardLevels {
 
   def findByStandardId(id: Long)(implicit s: Session) =
     standard_levels.filter(_.standardId === id).firstOption
-
 }
-
-

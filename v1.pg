@@ -1,0 +1,355 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Data for Name: dummies; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY dummies (id, name, description) FROM stdin;
+1	title	whatever
+2	title2	whatever2
+\.
+
+
+--
+-- Name: dummies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('dummies_id_seq', 2, true);
+
+
+--
+-- Data for Name: education_levels; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY education_levels (id, value, description) FROM stdin;
+1	k	Kindergarden
+2	1	1st Grade
+3	2	2nd Grade
+4	3	3rd Grade
+5	4	4th Grade
+6	5	5th Grade
+7	6	6th Grade
+8	7	7th Grade
+9	8	8th Grade
+10	9	9th Grade
+11	10	10th Grade
+12	11	11th Grade
+13	12	12th Grade
+\.
+
+
+--
+-- Name: education_levels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('education_levels_id_seq', 13, true);
+
+
+--
+-- Data for Name: standards; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY standards (id, organization_id, title, description, publication_status, subject, language, source, date_valid, repository_date, rights, manifest, identifier) FROM stdin;
+1	\N	Common Core State Standards for Mathematics	These Standards define what students should understand and be able to do in their study of mathematics. Asking a student to understand something means asking a teacher to assess whether the student has understood it. But what does mathematical understanding look like? One hallmark of mathematical understanding is the ability to justify, in a way appropriate to the student's mathematical maturity, why a particular mathematical statement is true or where a mathematical rule comes from. There is a world of difference between a student who can summon a mnemonic device to expand a product such as (a + b)(x + y) and a student who can explain where the mnemonic comes from. The student who can explain the rule understands the mathematics, and may have a better chance to succeed at a less familiar task such as expanding (a + b + c)(x + y). Mathematical understanding and procedural skill are equally important, and both are assessable using mathematical tasks of sufficient richness.	published	math	English	http://www.corestandards.org/assets/CCSSI_Math%20Standards.pdf	2010-01-01 00:00:00	2011-03-08 00:00:00	© Copyright 2010. National Governors Association Center for Best Practices and Council of Chief State School Officers. All rights reserved.	http://asn.jesandco.org/resources/D10003FB/manifest.json	http://purl.org/ASN/resources/D10003FB
+2	\N	Common Core State Standards for English Language Arts & Literacy in History/Social Studies, Science, and Technical Subjects	The Common Core State Standards for English Language Arts & Literacy in History/Social Studies, Science, and Technical Subjects ("the Standards") are the culmination of an extended, broad-based effort to fulfill the charge issued by the states to create the next generation of K—12 standards in order to help ensure that all students are college and career ready in literacy no later than the end of high school.	published	english	English	http://www.corestandards.org/assets/CCSSI_ELA%20Standards.pdf	2010-01-01 00:00:00	2011-03-08 00:00:00	© Copyright 2010. National Governors Association Center for Best Practices and Council of Chief State School Officers. All rights reserved.	http://asn.jesandco.org/resources/D10003FC/manifest.json	http://purl.org/ASN/resources/D10003FC
+\.
+
+
+--
+-- Data for Name: standard_levels; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY standard_levels (id, education_level_id, standard_id) FROM stdin;
+1	1	1
+2	2	1
+3	3	1
+4	4	1
+5	5	1
+6	6	1
+7	7	1
+8	8	1
+9	9	1
+10	10	1
+11	11	1
+12	12	1
+13	13	1
+14	1	2
+15	2	2
+16	3	2
+17	4	2
+18	5	2
+19	6	2
+20	7	2
+21	8	2
+22	9	2
+23	10	2
+24	11	2
+25	12	2
+26	13	2
+\.
+
+
+--
+-- Name: standard_levels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('standard_levels_id_seq', 26, true);
+
+
+--
+-- Name: standards_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('standards_id_seq', 2, true);
+
+
+--
+-- Data for Name: statements; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY statements (id, "standardId", asn_uri, subject, notation, alternate_notation, label, description, alternate_description, "exactMatch", identifier, language) FROM stdin;
+1	\N	http://asn.jesandco.org/resources/S2366906	Math	CCSS.Math.Practice.MP1	MP.1	\N	Make sense of problems and persevere in solving them	asf	\N	asd	\N
+2	1	http://asn.jesandco.org/resources/S2366907	Math	CCSS.Math.Practice.MP2	MP.2	\N	Reason abstractly and quantitatively.	Mathematically proficient students make sense of quantities and their relationships in problem situations. They bring two complementary abilities to bear on problems involving quantitative relationships: the ability to decontextualize—to abstract a given situation and represent it symbolically and manipulate the representing symbols as if they have a life of their own, without necessarily attending to their referents—and the ability to contextualize, to pause as needed during the manipulation process in order to probe into the referents for the symbols involved. Quantitative reasoning entails habits of creating a coherent representation of the problem at hand; considering the units involved; attending to the meaning of quantities, not just how to compute them; and knowing and flexibly using different properties of operations and objects.	\N	kjh	\N
+3	1	http://asn.jesandco.org/resources/S2366906	Math	CCSS.Math.Practice.MP1	MP.1	\N	Make sense of problems and persevere in solving them.	\N	\N	http://asn.jesandco.org/resources/S2366906	\N
+4	1	http://asn.jesandco.org/resources/S2366908	math	CCSS.Math.Practice.MP3	MP.3	\N	Construct viable arguments and critique the reasoning of others.	Mathematically proficient students understand and use stated assumptions, definitions, and previously established results in constructing arguments. They make conjectures and build a logical progression of statements to explore the truth of their conjectures. They are able to analyze situations by breaking them into cases, and can recognize and use counterexamples. They justify their conclusions, communicate them to others, and respond to the arguments of others. They reason inductively about data, making plausible arguments that take into account the context from which the data arose. Mathematically proficient students are also able to compare the effectiveness of two plausible arguments, distinguish correct logic or reasoning from that which is flawed, and—if there is a flaw in an argument—explain what it is. Elementary students can construct arguments using concrete referents such as objects, drawings, diagrams, and actions. Such arguments can make sense and be correct, even though they are not generalized or made formal until later grades. Later, students learn to determine domains to which an argument applies. Students at all grades can listen or read the arguments of others, decide whether they make sense, and ask useful questions to clarify or improve the arguments.	\N	http://asn.jesandco.org/resources/S2366908	\N
+5	1	http://asn.jesandco.org/resources/S2366909	math	CCSS.Math.Practice.MP4	MP.4	\N	Model with mathematics.	Mathematically proficient students can apply the mathematics they know to solve problems arising in everyday life, society, and the workplace. In early grades, this might be as simple as writing an addition equation to describe a situation. In middle grades, a student might apply proportional reasoning to plan a school event or analyze a problem in the community. By high school, a student might use geometry to solve a design problem or use a function to describe how one quantity of interest depends on another. Mathematically proficient students who can apply what they know are comfortable making assumptions and approximations to simplify a complicated situation, realizing that these may need revision later. They are able to identify important quantities in a practical situation and map their relationships using such tools as diagrams, two-way tables, graphs, flowcharts and formulas. They can analyze those relationships mathematically to draw conclusions. They routinely interpret their mathematical results in the context of the situation and reflect on whether the results make sense, possibly improving the model if it has not served its purpose.	\N	http://asn.jesandco.org/resources/S2366909	\N
+6	1	http://asn.jesandco.org/resources/S2366910	math	CCSS.Math.Practice.MP5	MP.5	\N	Use appropriate tools strategically.	Mathematically proficient students consider the available tools when solving a mathematical problem. These tools might include pencil and paper, concrete models, a ruler, a protractor, a calculator, a spreadsheet, a computer algebra system, a statistical package, or dynamic geometry software. Proficient students are sufficiently familiar with tools appropriate for their grade or course to make sound decisions about when each of these tools might be helpful, recognizing both the insight to be gained and their limitations. For example, mathematically proficient high school students analyze graphs of functions and solutions generated using a graphing calculator. They detect possible errors by strategically using estimation and other mathematical knowledge. When making mathematical models, they know that technology can enable them to visualize the results of varying assumptions, explore consequences, and compare predictions with data. Mathematically proficient students at various grade levels are able to identify relevant external mathematical resources, such as digital content located on a website, and use them to pose or solve problems. They are able to use technological tools to explore and deepen their understanding of concepts.	\N	http://asn.jesandco.org/resources/S2366910	\N
+7	1	http://asn.jesandco.org/resources/S2366911	math	CCSS.Math.Practice.MP6	MP.6	\N	Attend to precision.	\N	\N	http://asn.jesandco.org/resources/S2366911	\N
+8	1	http://asn.jesandco.org/resources/S2366912	math	CCSS.Math.Practice.MP7	MP.7	\N	Look for and make use of structure.	\N	\N	http://asn.jesandco.org/resources/S2366912	\N
+9	1	http://asn.jesandco.org/resources/S2366913	math	CCSS.Math.Practice.MP8	MP.8	\N	Look for and express regularity in repeated reasoning.	\N	\N	http://asn.jesandco.org/resources/S2366913	\N
+10	1	http://asn.jesandco.org/resources/S114340E	math	CCSS.Math.Content.K.CC.A	\N	\N	Know number names and the count sequence.	\N	\N	http://purl.org/ASN/resources/S114340E	\N
+11	1	http://asn.jesandco.org/resources/S1143417	math	CCSS.Math.Content.K.CC.A.1	K.CC.1	\N	Count to 100 by ones and by tens.	\N	\N	http://purl.org/ASN/resources/S1143417	\N
+12	1	http://asn.jesandco.org/resources/S1143418	math	CCSS.Math.Content.K.CC.A.2	K.CC.2	\N	Count forward beginning from a given number within the known sequence (instead of having to begin at 1).	\N	\N	http://purl.org/ASN/resources/S1143418	\N
+13	1	http://asn.jesandco.org/resources/S1143419	math	CCSS.Math.Content.K.CC.A.3	K.CC.3	\N	Write numbers from 0 to 20. Represent a number of objects with a written numeral 0-20 (with 0 representing a count of no objects).	\N	\N	http://purl.org/ASN/resources/S1143419	\N
+14	1	http://asn.jesandco.org/resources/S114340F	math	CCSS.Math.Content.K.CC.B	\N	\N	Count to tell the number of objects	\N	\N	http://purl.org/ASN/resources/S114340F	\N
+15	1	http://asn.jesandco.org/resources/S114341A	math	CCSS.Math.Content.K.CC.B.4	K.CC.4	\N	Understand the relationship between numbers and quantities; connect counting to cardinality.	\N	\N	http://purl.org/ASN/resources/S114341A	\N
+16	1	http://asn.jesandco.org/resources/S114341B	math	CCSS.Math.Content.K.CC.B.5	K.CC.5	CCSS.Math.Content.K.CC.B.5	Count to answer "how many?" questions about as many as 20 things arranged in a line, a rectangular array, or a circle, or as many as 10 things in a scattered configuration; given a number from 1—20, count out that many objects.	\N	\N	http://purl.org/ASN/resources/S114341B	\N
+17	1	http://asn.jesandco.org/resources/S1143410	math	CCSS.Math.Content.K.CC.C		\N	Compare numbers.	\N	\N	http://purl.org/ASN/resources/S1143410	\N
+18	1	http://asn.jesandco.org/resources/S114341C	math	CCSS.Math.Content.K.CC.C.6	K.CC.6	\N	Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in another group, e.g., by using matching and counting strategies.	\N	\N	http://purl.org/ASN/resources/S114341C	\N
+19	1	http://asn.jesandco.org/resources/S114341D	math	CCSS.Math.Content.K.CC.C.7	K.CC.7	\N	Compare two numbers between 1 and 10 presented as written numerals.	\N	\N	http://purl.org/ASN/resources/S114341D	\N
+20	1	http://asn.jesandco.org/resources/S1143411	math	CCSS.Math.Content.K.OA.A	\N	\N	Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.	\N	\N	http://purl.org/ASN/resources/S1143411	\N
+21	1	\N	math	CCSS.Math.Content.K.OA.A.1	K.OA.1	\N	Represent addition and subtraction with objects, fingers, mental images, drawings, sounds (e.g., claps), acting out situations, verbal explanations, expressions, or equations.	\N	\N	http://asn.jesandco.org/resources/S114341E	\N
+22	1	http://asn.jesandco.org/resources/S114341F	math	CCSS.Math.Content.K.OA.A.2	K.OA.2	\N	Solve addition and subtraction word problems, and add and subtract within 10, e.g., by using objects or drawings to represent the problem.	\N	\N	http://purl.org/ASN/resources/S114341F	\N
+23	1	http://asn.jesandco.org/resources/S1143420	math	CCSS.Math.Content.K.OA.A.3	K.OA.3	\N	Decompose numbers less than or equal to 10 into pairs in more than one way, e.g., by using objects or drawings, and record each decomposition by a drawing or equation (e.g., 5 = 2 + 3 and 5 = 4 + 1).	\N	\N	http://purl.org/ASN/resources/S1143420	\N
+24	1	http://asn.jesandco.org/resources/S1143421	math	CCSS.Math.Content.K.OA.A.4	K.OA.A.4	\N	For any number from 1 to 9, find the number that makes 10 when added to the given number, e.g., by using objects or drawings, and record the answer with a drawing or equation.	\N	\N	http://purl.org/ASN/resources/S1143421	\N
+25	1	http://asn.jesandco.org/resources/S1143422	math	CCSS.Math.Content.K.OA.A.5	K.OA.5	\N	Fluently add and subtract within 5	\N	\N	http://purl.org/ASN/resources/S1143422	\N
+26	1	http://asn.jesandco.org/resources/S114342D	math	CCSS.Math.Content.1.OA.A	\N	\N	Represent and solve problems involving addition and subtraction	\N	\N	http://purl.org/ASN/resources/S114342D	\N
+27	1	http://asn.jesandco.org/resources/S1143438	math	CCSS.Math.Content.1.OA.A.1	1.OA.1	\N	Use addition and subtraction within 20 to solve word problems involving situations of adding to, taking from, putting together, taking apart, and comparing, with unknowns in all positions, e.g., by using objects, drawings, and equations with a symbol for the unknown number to represent the problem.	\N	\N	http://purl.org/ASN/resources/S1143438	\N
+28	1	http://asn.jesandco.org/resources/S1143439	math	CCSS.Math.Content.1.OA.A.2	1.OA.2	\N	Solve word problems that call for addition of three whole numbers whose sum is less than or equal to 20, e.g., by using objects, drawings, and equations with a symbol for the unknown number to represent the problem.	\N	\N	http://purl.org/ASN/resources/S1143439	\N
+29	1	http://asn.jesandco.org/resources/S2390245	math	CCSS.Math.Content.2.OA.A	Cluster	\N	Represent and solve problems involving addition and subtraction.	\N	\N	\N	\N
+30	1	http://asn.jesandco.org/resources/S1143453	math	CCSS.Math.Content.2.OA.A.1	2.OA.1	\N	Use addition and subtraction within 100 to solve one- and two-step word problems involving situations of adding to, taking from, putting together, taking apart, and comparing, with unknowns in all positions, e.g., by using drawings and equations with a symbol for the unknown number to represent the problem		\N	http://purl.org/ASN/resources/S1143453	\N
+31	1	http://asn.jesandco.org/resources/S114342E	math	CCSS.Math.Content.1.OA.B	Cluster	\N	Understand and apply properties of operations and the relationship between addition and subtraction	\N	\N	http://purl.org/ASN/resources/S114342E	\N
+32	1	http://asn.jesandco.org/resources/S114343A	math	CCSS.Math.Content.1.OA.B.3	1.OA.3	\N	Apply properties of operations as strategies to add and subtract		\N	http://purl.org/ASN/resources/S114343A	\N
+33	1	http://asn.jesandco.org/resources/S114343B	math	CCSS.Math.Content.1.OA.B.4	1.OA.4	\N	Understand subtraction as an unknown-addend problem	\N	\N	http://purl.org/ASN/resources/S114343B	\N
+34	1	http://asn.jesandco.org/resources/S114342F	math	CCSS.Math.Content.1.OA.C	Cluster	\N	Add and subtract within 20	\N	\N	http://purl.org/ASN/resources/S114342F	\N
+35	1	http://asn.jesandco.org/resources/S114343C	math	CCSS.Math.Content.1.OA.C.5	1.OA.5	\N	Relate counting to addition and subtraction (e.g., by counting on 2 to add 2).	\N	\N	http://purl.org/ASN/resources/S114343C	\N
+36	1	http://asn.jesandco.org/resources/S114343D	math	CCSS.Math.Content.1.OA.C.6	1.OA.6	\N	Description\nen-US:\tAdd and subtract within 20, demonstrating fluency for addition and subtraction within 10. Use strategies such as counting on; making ten (e.g., 8 + 6 = 8 + 2 + 4 = 10 + 4 = 14); decomposing a number leading to a ten (e.g., 13 - 4 = 13 - 3 - 1 = 10 - 1 = 9); using the relationship between addition and subtraction (e.g., knowing that 8 + 4 = 12, one knows 12 - 8 = 4); and creating equivalent but easier or known sums (e.g., adding 6 + 7 by creating the known equivalent 6 + 6 + 1 = 12 + 1 = 13)	\N	\N	http://purl.org/ASN/resources/S114343D	\N
+37	1	http://asn.jesandco.org/resources/S2390246	math	CCSS.Math.Content.2.OA.B	Cluster	\N	Add and subtract within 20.	\N	\N	\N	\N
+38	1	http://asn.jesandco.org/resources/S1143454	math	CCSS.Math.Content.2.OA.B.2	2.OA.2	\N	Fluently add and subtract within 20 using mental strategies. By end of Grade 2, know from memory all sums of two one-digit numbers	\N	\N	http://purl.org/ASN/resources/S1143454	\N
+39	1	http://asn.jesandco.org/resources/S1143430	math	CCSS.Math.Content.1.OA.D	Cluster	\N	Work with addition and subtraction equations	\N	\N	http://purl.org/ASN/resources/S1143430	\N
+40	1	http://asn.jesandco.org/resources/S114343E	math	CCSS.Math.Content.1.OA.D.7	1.OA.7	\N	Understand the meaning of the equal sign, and determine if equations involving addition and subtraction are true or false	\N	\N	http://purl.org/ASN/resources/S114343E	\N
+41	1	http://asn.jesandco.org/resources/S114343F	math	CCSS.Math.Content.1.OA.D.8	1.OA.8	\N	Determine the unknown whole number in an addition or subtraction equation relating three whole numbers	\N	\N	http://purl.org/ASN/resources/S114343F	\N
+42	1	http://asn.jesandco.org/resources/S114344F	math	CCSS.Math.Content.2.OA.C	Cluster	\N	Work with equal groups of objects to gain foundations for multiplication	\N	\N	http://purl.org/ASN/resources/S114344F	\N
+43	1	http://asn.jesandco.org/resources/S1143455	math	CCSS.Math.Content.2.OA.C.3	2.OA.3	\N	Determine whether a group of objects (up to 20) has an odd or even number of members, e.g., by pairing objects or counting them by 2s; write an equation to express an even number as a sum of two equal addends	\N	\N	http://purl.org/ASN/resources/S1143455	\N
+44	1	http://asn.jesandco.org/resources/S1143456	math	CCSS.Math.Content.2.OA.C.4	2.OA.4	\N	Use addition to find the total number of objects arranged in rectangular arrays with up to 5 rows and up to 5 columns; write an equation to express the total as a sum of equal addends	\N	\N	http://purl.org/ASN/resources/S1143456	\N
+45	1	http://asn.jesandco.org/resources/S114346D	math	CCSS.Math.Content.3.OA.A	Cluster	\N	Represent and solve problems involving multiplication and division		\N	http://purl.org/ASN/resources/S114346D	\N
+46	1	http://asn.jesandco.org/resources/S1143477	math	CCSS.Math.Content.3.OA.A.1	3.OA.1	\N	Interpret products of whole numbers, e.g., interpret 5 × 7 as the total number of objects in 5 groups of 7 objects each	\N	\N	http://purl.org/ASN/resources/S1143477	\N
+47	1	http://asn.jesandco.org/resources/S1143478	math	CCSS.Math.Content.3.OA.A.2	3.OA.2	\N	Interpret whole-number quotients of whole numbers, e.g., interpret 56 ÷ 8 as the number of objects in each share when 56 objects are partitioned equally into 8 shares, or as a number of shares when 56 objects are partitioned into equal shares of 8 objects each	\N	\N	http://purl.org/ASN/resources/S1143478	\N
+48	1	http://asn.jesandco.org/resources/S1143479	math	CCSS.Math.Content.3.OA.A.3	3.OA.3	\N	Use multiplication and division within 100 to solve word problems in situations involving equal groups, arrays, and measurement quantities, e.g., by using drawings and equations with a symbol for the unknown number to represent the problem	\N	\N	http://purl.org/ASN/resources/S1143479	\N
+49	1	http://asn.jesandco.org/resources/S114347A	math	CCSS.Math.Content.3.OA.A.4	3.OA.4	\N	Determine the unknown whole number in a multiplication or division equation relating three whole numbers	\N	\N	http://purl.org/ASN/resources/S114347A	\N
+50	1	http://asn.jesandco.org/resources/S114346E	math	CCSS.Math.Content.3.OA.B	Cluster	\N	Understand properties of multiplication and the relationship between multiplication and division	\N	\N	http://purl.org/ASN/resources/S114346E	\N
+51	1	http://asn.jesandco.org/resources/S114347B	math	CCSS.Math.Content.3.OA.B.5	3.OA.5	\N	Apply properties of operations as strategies to multiply and divide	\N	\N	http://purl.org/ASN/resources/S114347B	\N
+52	1	http://asn.jesandco.org/resources/S114347C	math	CCSS.Math.Content.3.OA.B.6	\N	\N	Understand division as an unknown-factor problem	\N	\N	http://purl.org/ASN/resources/S114347C	\N
+53	1	http://asn.jesandco.org/resources/S114346F	math	CCSS.Math.Content.3.OA.C	Cluster	\N	Multiply and divide within 100	\N	\N	http://purl.org/ASN/resources/S114346F	\N
+54	1	http://asn.jesandco.org/resources/S114347D	math	CCSS.Math.Content.3.OA.C.7	3.OA.7	\N	Fluently multiply and divide within 100, using strategies such as the relationship between multiplication and division (e.g., knowing that 8 × 5 = 40, one knows 40 ÷ 5 = 8) or properties of operations. By the end of Grade 3, know from memory all products of two one-digit numbers	\N	\N	http://purl.org/ASN/resources/S114347D	\N
+55	1	http://asn.jesandco.org/resources/S1143470	math	CCSS.Math.Content.3.OA.D	Cluster	\N	Solve problems involving the four operations, and identify and explain patterns in arithmetic	\N	\N	http://purl.org/ASN/resources/S1143470	\N
+56	1	http://asn.jesandco.org/resources/S114347E	math	CCSS.Math.Content.3.OA.D.8	3.OA.8	\N	Solve two-step word problems using the four operations. Represent these problems using equations with a letter standing for the unknown quantity. Assess the reasonableness of answers using mental computation and estimation strategies including rounding	\N	\N	http://purl.org/ASN/resources/S114347E	\N
+57	1	http://asn.jesandco.org/resources/S114347F	math	CCSS.Math.Content.3.OA.D.9	3.OA.9	\N	Identify arithmetic patterns (including patterns in the addition table or multiplication table), and explain them using properties of operations	\N	\N	http://purl.org/ASN/resources/S114347F	\N
+\.
+
+
+--
+-- Data for Name: statement_levels; Type: TABLE DATA; Schema: public; Owner: silbermm
+--
+
+COPY statement_levels (id, education_level_id, statement_id) FROM stdin;
+1	1	1
+2	2	1
+3	3	1
+4	4	1
+5	5	1
+6	6	1
+7	7	1
+8	1	2
+9	2	2
+10	1	3
+11	2	3
+12	3	3
+13	4	3
+14	5	3
+15	6	3
+16	7	3
+17	8	3
+18	9	3
+19	10	3
+20	11	3
+21	12	3
+22	13	3
+23	1	4
+24	2	4
+25	3	4
+26	4	4
+27	5	4
+28	6	4
+29	7	4
+30	8	4
+31	9	4
+32	10	4
+33	11	4
+34	12	4
+35	13	4
+36	1	5
+37	2	5
+38	3	5
+39	4	5
+40	5	5
+41	6	5
+42	7	5
+43	8	5
+44	9	5
+45	10	5
+46	11	5
+47	12	5
+48	13	5
+49	1	6
+50	2	6
+51	3	6
+52	4	6
+53	5	6
+54	6	6
+55	7	6
+56	8	6
+57	9	6
+58	10	6
+59	11	6
+60	12	6
+61	13	6
+62	1	7
+63	2	7
+64	3	7
+65	4	7
+66	5	7
+67	6	7
+68	7	7
+69	8	7
+70	9	7
+71	10	7
+72	11	7
+73	12	7
+74	13	7
+75	1	8
+76	2	8
+77	3	8
+78	4	8
+79	5	8
+80	6	8
+81	7	8
+82	8	8
+83	9	8
+84	10	8
+85	11	8
+86	12	8
+87	13	8
+88	1	9
+89	2	9
+90	3	9
+91	4	9
+92	5	9
+93	6	9
+94	7	9
+95	8	9
+96	9	9
+97	10	9
+98	11	9
+99	12	9
+100	13	9
+101	1	10
+102	1	11
+103	1	12
+104	1	13
+105	1	14
+106	1	15
+107	1	16
+108	1	17
+109	1	18
+110	1	19
+111	1	20
+112	1	21
+113	1	22
+114	1	23
+115	1	24
+116	1	25
+117	2	26
+118	2	27
+119	2	28
+120	3	29
+121	3	30
+122	2	31
+123	2	32
+124	2	33
+125	2	34
+126	2	35
+127	2	36
+128	3	37
+129	3	38
+130	2	39
+131	2	40
+132	2	41
+133	3	42
+134	3	43
+135	3	44
+136	4	45
+137	4	46
+138	4	47
+139	4	48
+140	4	49
+141	4	50
+142	4	51
+143	4	52
+144	4	53
+145	4	54
+146	4	55
+147	4	56
+148	4	57
+\.
+
+
+--
+-- Name: statement_levels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('statement_levels_id_seq', 148, true);
+
+
+--
+-- Name: statements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: silbermm
+--
+
+SELECT pg_catalog.setval('statements_id_seq', 57, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

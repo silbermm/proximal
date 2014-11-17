@@ -2,22 +2,23 @@ package controllers
 
 import play.api._
 import play.api.mvc._
-import services.PersonService
+import services._
 import securesocial.core._
 import models._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 
-case class Child(firstName: String, lastName: String, birthDate: Long)
+case class Child(id: Option[Long], firstName: String, lastName: String, birthDate: Long, educationLevel: Option[EducationLevel])
 
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser])  extends securesocial.core.SecureSocial[SecureUser] {
 
   var personService = new PersonService()
+  var educationLevelService = new EducationLevelsService()
 
+  implicit val edLevelFormat = Json.format[EducationLevel] 
   implicit val childFormat = Json.format[Child] 
   implicit val peopleFormat = Json.format[Person]
- 
   implicit val authMethodFormat = Json.format[securesocial.core.AuthenticationMethod]
   implicit val oAuth1Format = Json.format[securesocial.core.OAuth1Info]
   implicit val oAuth2Format = Json.format[securesocial.core.OAuth2Info]
@@ -38,8 +39,14 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   def child(id: Long) = SecuredAction{ implicit request =>
     personService.findChildren(request.user.uid.get) match {
       case children: List[Person] => {
-        children.find {child => child.id.get == id } match {
-          case Some(c) => Ok(Json.toJson(c))
+        children.find{ child => child.id.get == id } match {
+          case Some(c) => {
+            educationLevelService.findByChild(c).map( e =>
+              Ok(Json.toJson(new Child(c.id, c.firstName,c.lastName.get,c.birthDate.get.getMillis,Some(e))))
+            ).getOrElse(
+              Ok(Json.toJson(new Child(c.id,c.firstName,c.lastName.get,c.birthDate.get.getMillis,None)))
+            )
+          } 
           case None => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
         }
       }
@@ -56,8 +63,11 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
       person => {
         personService.findPersonByUid(request.user.uid.get) match {
           case Some(pr) => {
-            val p = new Person(None,person.firstName,Some(person.lastName),Some(new DateTime(person.birthDate)),None)
-            val c = personService.createPerson(p)
+            val p = new Person(None,person.firstName,Some(person.lastName),Some(new DateTime(person.birthDate)),None,None)
+            val c = person.educationLevel match { 
+              case Some(e) => personService.createPerson(p,e)
+              case None => personService.createPerson(p)
+            }
             personService.addChild(c, pr)
             Logger.debug("got a person to add " + person.firstName)
             Ok(Json.obj("status" ->"OK", "child" -> Json.toJson(c))) 

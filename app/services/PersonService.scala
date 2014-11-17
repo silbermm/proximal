@@ -14,6 +14,12 @@ class PersonService {
     }
   }
 
+  def findChildWithEducationLevel(id: Long) : (Person,EducationLevel) = {
+    DB.withSession{ implicit s=>
+      People.findWithEducationLevel(id)
+    }
+  }
+
   def findPersonByUid(uid: Long) : Option[Person] = {
     DB.withSession{implicit s =>
       People.findPersonByUid(uid)
@@ -29,6 +35,17 @@ class PersonService {
   def createPerson(p: Person) = {
     DB.withSession{implicit s =>
       People.insertPerson(p)
+    }
+  }
+
+  def createPerson(p: Person, e: EducationLevel) = {
+    DB.withSession{implicit s=>
+      EducationLevels.find(e.description).map( ed=>
+        People.insertPerson(p.copy(educationLevelId = ed.id))
+      ).getOrElse({
+        val newEd = EducationLevels.insert(e)
+        People.insertPerson(p.copy(educationLevelId = newEd.id))
+      })
     }
   }
 

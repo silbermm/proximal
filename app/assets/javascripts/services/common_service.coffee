@@ -1,6 +1,7 @@
 angular.module('proximal').factory "prox.common",[
   "$log"
-  ($log) ->
+  "$http"
+  ($log,$http) ->
     @educationLevels = [
       { value: "k", description: "Kindergarden"}
       { value: "1", description: "1st Grade" }

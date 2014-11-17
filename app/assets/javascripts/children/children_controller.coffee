@@ -43,43 +43,55 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
       return
     )
 
-.controller "AddChildCtrl", ($scope, $log, $modalInstance) ->
+.controller "AddChildCtrl",[
+  "$scope"
+  "$log"
+  "$modalInstance"
+  "prox.common"
+  ($scope, $log, $modalInstance,common) ->
+ 
+    $scope.availableLevels = common.educationLevels
 
-  $scope.clear = ->
-    $scope.child.birthDate = null
+    $scope.clear = ->
+      $scope.child.birthDate = null
+      return
+     
+    $scope.open = ($event)->
+      $event.preventDefault()
+      $event.stopPropagation()
+      $scope.opened = true
+
+    $scope.dateOptions = {
+      formatYear: 'yyyy',
+      startingDay: 1
+    }
+
+    $scope.initDate = new Date("Jan 1, 2008")
+
+    $log.debug($scope.initDate)
+    
+    $scope.format = 'mediumDate'
+
+    $scope.ok = ->
+      d = $scope.child.birthDate.getTime()/1000
+      $modalInstance.close({'firstName': $scope.child.firstName,'lastName': $scope.child.lastName,'birthDate': d, "educationLevel": $scope.child.gradeLevel})
+
+    $scope.cancel = ->
+      $modalInstance.dismiss("cancel")
+]
+
+angular.module('proximal').controller "ViewChildCtrl", [
+  "$scope"
+  "$log"
+  "$stateParams"
+  "personService"
+  ($scope,$log,$stateParams, personService) ->
+    $log.info($stateParams.id)
+    personService.getChild($stateParams.id).success((data,status,headers,config) ->
+      $scope.child = data
+    ).error((data,status,headers,config) ->
+      $log "error!" 
+    )
     return
-   
-  $scope.open = ($event)->
-    $event.preventDefault()
-    $event.stopPropagation()
-    $scope.opened = true
-
-  $scope.dateOptions = {
-    formatYear: 'yyyy',
-    startingDay: 1
-  }
-
-  $scope.initDate = new Date("Jan 1, 2008")
-
-  $log.debug($scope.initDate)
-
-  
-  $scope.format = 'mediumDate'
-
-  $scope.ok = ->
-    d = $scope.child.birthDate.getTime()/1000
-    $modalInstance.close({'firstName': $scope.child.firstName,'lastName': $scope.child.lastName,'birthDate': d})
-
-  $scope.cancel = ->
-    $modalInstance.dismiss("cancel")
-
-angular.module('proximal').controller "ViewChildCtrl", ($scope,$log,$stateParams, personService) ->
-  $log.info($stateParams.id)
-  personService.getChild($stateParams.id).success((data,status,headers,config) ->
-    $scope.child = data
-  ).error((data,status,headers,config) ->
-    $log "error!" 
-  )
-  return
-
+]
 

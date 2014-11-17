@@ -12,6 +12,7 @@ trait EducationLevelsServiceTrait {
   def find(id: Long): Option[EducationLevel]
   def find(description: String): Option[EducationLevel]
   def findWithStandards(id: Long): List[(EducationLevel,Standard)]
+  def findByChild(child: Person): Option[EducationLevel] 
   def list: List[EducationLevel]
   def delete(e:EducationLevel) : Int 
 
@@ -60,6 +61,12 @@ class EducationLevelsService extends EducationLevelsServiceTrait {
     DB.withSession{ implicit s => 
       EducationLevels.findWithStandards(id)  
     } 
+  }
+
+  def findByChild(child: Person) = {
+    DB.withSession{ implicit s=>
+      EducationLevels.findByChild(child)
+    }
   }
 
   def list = {

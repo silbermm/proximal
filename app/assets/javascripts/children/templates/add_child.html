@@ -27,6 +27,14 @@
       </p>
 
     </div>
+  
+    <div class="form-group" data-ng-class="{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}" > 
+      <label for="educationLevel" class="sr-only"> Current Grade Level </label>
+      <select name="educationLevel" class="forn-control" ng-model="child.gradeLevel" ng-options="a.description for a in availableLevels"  required >
+         <option value=""> -- Current Grade Level -- </option>
+      </select>
+    </div>
+
 </div>
 <div class="modal-footer">
 
