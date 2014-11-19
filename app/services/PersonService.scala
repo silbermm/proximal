@@ -55,6 +55,12 @@ class PersonService {
     }
   }
 
+  def addAdminRole(p: Person) : Int = {
+    DB.withSession{ implicit s =>
+      People.addAdminRole(p)
+    }
+  }
+
   def addChild(child: Person, parent: Person) : Relationship = {
     DB.withSession{implicit s =>
       People.addChild(child,parent)
@@ -70,4 +76,51 @@ class PersonService {
       People.findChildrenFor(uid)
     }
   }
+
+  def createRole(role: Role) : Role = {
+    DB.withSession{implicit s =>
+      Roles.insert(role) 
+    }
+  }
+
+  def findRoles(id: Long) = {
+    DB.withSession{implicit s =>
+      People.findPerson(id) match {
+        case Some(person) => People.findRoles(person)
+        case _ => List.empty
+      }
+    }
+  }
+
+  def listRoles : List[Role] = {
+    DB.withSession{ implicit s =>
+      Roles.list
+    }
+  }
+
+  def isAdmin(id: Long) : Boolean = {
+    DB.withSession{ implicit s=> 
+      People.findPerson(id).map(person => {
+        People.findRoles(person).find(_.name == "admin") match {
+          case Some(role) => true
+          case _ => false
+        }
+      }).getOrElse(
+        false
+      )
+    }      
+  }
+
+  def updateRole(id: Long, r: Role) : Int = {
+    DB.withSession{ implicit s=>
+      Roles.update(id, r)
+    }
+  }
+
+  def deleteRole(id: Long) : Int = {
+    DB.withSession { implicit s =>
+      Roles.delete(id)
+    }
+  }
+
 }

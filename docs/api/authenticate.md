@@ -43,23 +43,29 @@ An object that includes a token and expiresOn fields
 A Json object representing the user
 ```json
 {
-  "uid": 1,
-  "providerId":"107327837380848557656",
-  "userId":"google",
-  "firstName":"Matt",
-  "lastName":"Silbernagel",
-  "fullName":"Matt Silbernagel",
-  "email":"silbermm@email.com",
-  "avatarUrl":"https://lh6.googleusercontent.com/avatar.jpg",
-  "authMethod":
-    {
-      "method":"oauth2"
-    },
-  "oAuth2Info":
-    {
-      "accessToken":"some long token string",
-      "tokenType":"Bearer",
-      "expiresIn":3599
-    }
-}
+  "user" 
+  {
+    "uid": 1,
+    "providerId":"107327837380848557656",
+    "userId":"google",
+    "firstName":"Matt",
+    "lastName":"Silbernagel",
+    "fullName":"Matt Silbernagel",
+    "email":"silbermm@email.com",
+    "avatarUrl":"https://lh6.googleusercontent.com/avatar.jpg",
+    "authMethod":
+      {
+        "method":"oauth2"
+      },
+    "oAuth2Info":
+      {
+        "accessToken":"some long token string",
+        "tokenType":"Bearer",
+        "expiresIn":3599
+      }
+  },
+  "roles" : [
+    { "id" : 1, "name": "admin", "description": "a small desc of the role" }
+  ]
+ }
 ```

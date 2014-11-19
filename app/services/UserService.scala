@@ -26,16 +26,13 @@ class SecureUserService extends UserService[SecureUser]  {
   }
   
   def find(providerId: String,userId: String): Future[Option[BasicProfile]] = {
-    Logger.info("looking for an account with " + providerId  + " and " + userId)    
     DB.withSession{ implicit s => 
       val u : Option[SecureUser] = SecureUsers.findByProviderIdAndUserId(providerId,userId)
       u match {
         case Some(user) => {
-          Logger.info("found account!"); 
           Future.successful(Some(ProfileFromUser(user)))
         } 
         case _ => {
-          Logger.info("unable to find account")
           Future.successful(None)
         } 
       }
@@ -108,6 +105,10 @@ class SecureUserService extends UserService[SecureUser]  {
 
 object ProfileFromUser {
   def apply(user: SecureUser): BasicProfile = {
-    BasicProfile(user.userId, user.providerId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
+    //Logger.debug("Converting secure user to basic profile");
+    //Logger.debug(user.toString)
+    val profile = BasicProfile(user.providerId,user.userId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
+    Logger.debug(profile.toString)
+    return profile
   } 
 }

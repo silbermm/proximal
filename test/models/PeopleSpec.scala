@@ -32,6 +32,8 @@ class PeopleSpec extends PlaySpec with Results {
                               Some(1)
                               )
 
+  val fakeRole = new Role(None,"user","Just a user of the system")
+
   "Person model" should {
     "insert and retrieve a record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
@@ -121,8 +123,49 @@ class PeopleSpec extends PlaySpec with Results {
         }
       }
     }
+  }
 
+  "Role model" should {
 
+    "add a role" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val r = Roles.insert(fakeRole)
+          val p = People.insertPerson(fakePerson)
+          r.id must not be empty
+          p.id must not be empty
+
+          People.addRole(p,r) mustEqual 1
+        }
+      }
+    }
+
+    "add the admin role to a user" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val p = People.insertPerson(fakePerson)
+          p.id must not be empty
+          val i = People.addAdminRole(p)
+          i mustEqual 1
+          val roles = People.findRoles(p)
+          roles must have length 1
+        }
+      }
+    }
+    "remove role from user" in {
+       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        DB.withSession{ implicit s=>
+          val p = People.insertPerson(fakePerson)
+          p.id must not be empty
+          val i = People.addAdminRole(p)
+          i mustEqual 1 
+          val roles = People.findRoles(p)
+          roles must have length 1
+          People.removeRole(p,roles.head)
+          People.findRoles(p) must have length 0
+        }
+       }
+    }
   }
 
   "Relationship model" should {

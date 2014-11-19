@@ -3,6 +3,7 @@ package helpers
 import  models._
 import securesocial.core._
 
+
 object UserProfileHelpers {
   
   def profileFromUser(user: SecureUser): BasicProfile = {

@@ -49,14 +49,70 @@ class Relationships(tag: Tag) extends Table[Relationship](tag, "Relationship") {
   def typeId = column[Long]("typeId")
 
   def * = (personId, otherPersonId, typeId) <> (Relationship.tupled, Relationship.unapply _)
-/*
-  def person = foreignKey("PERSON_FK", personId, people)(_.id)
-  def otherPerson = foreignKey("OTHER_PERSON_FK", otherPersonId, people)(_.id)
-  def relationshipType = foreignKey("RELTYPE_FK", typeId, relationship_types)(_.id) 
-*/
 }
 
+case class Role(id: Option[Long], name: String, description: String)
+class Roles(tag: Tag) extends Table[Role](tag, "roles") {
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def name = column[String]("name")
+  def description = column[String]("description")
 
+  def * = (id.?, name, description) <> (Role.tupled, Role.unapply _)
+}
+
+object Roles {
+  
+  lazy val roles = TableQuery[Roles]
+  lazy val person_roles = PersonRoles.person_roles
+
+  def insert(r: Role)(implicit s: Session) : Role = {
+    (roles returning roles.map(_.id) into ((roles,id) => roles.copy(id=Some(id)))) += r 
+  }
+
+  def update(id: Long, r: Role)(implicit s: Session) : Int = {
+    val roleToUpdate = r.copy(Some(id))
+    roles.filter(_.id === id).update(roleToUpdate)
+  }
+  
+  def delete(id: Long)(implicit s: Session) : Int = {
+    roles.filter(_.id === id).delete
+  }
+
+  def list(implicit s: Session) : List[Role] = {
+    roles.list
+  }
+
+  def find(name: String)(implicit s: Session) = {
+    roles.filter(_.name === name).firstOption
+  }
+
+  def find(id: Long)(implicit s: Session) = {
+    roles.filter(_.id === id).firstOption
+  }
+
+}
+
+case class PersonRole(id: Option[Long], personId: Long, roleId: Long)
+class PersonRoles(tag: Tag) extends Table[PersonRole](tag, "person_roles") {
+
+  lazy val people = People.people
+  lazy val roles = Roles.roles
+
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def personId = column[Long]("person_id")
+  def roleId = column[Long]("role_id")
+
+  def * = (id.?,personId,roleId) <> (PersonRole.tupled,PersonRole.unapply _)
+
+  def person = foreignKey("person_id", personId, people)(_.id)
+  def role = foreignKey("role_id", roleId, roles)(_.id)
+  
+
+}
+
+object PersonRoles {
+  lazy val person_roles = TableQuery[PersonRoles]
+}
 
 object People {
   lazy val people = TableQuery[People]
@@ -65,6 +121,8 @@ object People {
   lazy val education_levels = EducationLevels.education_levels
   lazy val schools = Schools.schools
   lazy val attendences = Attendences.attendences 
+  lazy val roles = Roles.roles
+  lazy val person_roles = PersonRoles.person_roles
 
   def insertPerson(p : Person)(implicit s: Session) : Person = {
     p.uid match {
@@ -114,10 +172,30 @@ object People {
         relationship_types returning relationship_types.map(_.id) += new RelationshipType(None, "child", "A child of a parent that is registered in the system") 
       }
     }
-    Logger.debug("childTypeId = " + childTypeId.toString())
     val r = new Relationship(parent.id.get, child.id.get, childTypeId) 
     relationships += r
     r
+  }
+
+  def addRole(person: Person, role: Role)(implicit s: Session) = {
+    person_roles += new PersonRole(None,person.id.get,role.id.get)
+  }
+
+  def removeRole(person: Person, role: Role)(implicit s:  Session) = {
+    person_roles.filter(_.personId === person.id).filter(_.roleId === role.id).delete
+  }
+
+  def findRoles(person: Person)(implicit s: Session) : List[Role] = {
+    val query = for {
+      pr <-  person_roles if pr.personId === person.id.get
+      r <-  pr.role
+    } yield r
+    query.list
+  }
+
+  def addAdminRole(person: Person)(implicit s: Session) = {
+    val admin: Role = Roles.find("admin").getOrElse(Roles.insert(new Role(None,"admin", "Administrator of the entire system")))
+    person_roles += new PersonRole(None,person.id.get,admin.id.get)
   }
 
   def findChildrenFor(uid: Long)(implicit s: Session) : List[Person] = {

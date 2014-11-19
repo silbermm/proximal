@@ -62,9 +62,9 @@ class SecureUsers(tag: Tag) extends Table[SecureUser](tag, "SecureUser"){
   def salt = column[Option[String]]("salt")
 
   def * : ProvenShape[SecureUser] = {
-    val shapedValue = (uid.?,
-         userId,
+    val shapedValue = (uid.?, 
          providerId,
+         userId, 
          firstName,
          lastName,
          fullName,
@@ -125,7 +125,7 @@ class SecureUsers(tag: Tag) extends Table[SecureUser](tag, "SecureUser"){
 }
 
 object UserFromProfile {
-  def apply(i: BasicProfile): SecureUser = SecureUser(None, i.userId, i.providerId, i.firstName, i.lastName, i.fullName,
+  def apply(i: BasicProfile): SecureUser = SecureUser(None, i.providerId, i.userId, i.firstName, i.lastName, i.fullName,
     i.email, i.avatarUrl, i.authMethod, i.oAuth1Info, i.oAuth2Info, i.passwordInfo)
 }
 
@@ -136,7 +136,7 @@ object SecureUsers {
     secureUsers.filter(_.uid === uid).firstOption
 
   def findByEmailAndProvider(email: String, providerId: String)(implicit s:Session): Option[SecureUser] =
-    secureUsers.filter(x => x.email === email && x.providerId === providerId).firstOption
+    secureUsers.filter(_.email === email).filter(_.providerId === providerId).firstOption
 
   def findByProviderIdAndUserId(providerId: String,userId: String)(implicit s:Session): Option[SecureUser] = { 
     //val u = secureUsers.filter(x => x.providerId === providerId).firstOption
@@ -144,12 +144,16 @@ object SecureUsers {
       u <- secureUsers if u.userId === userId
     } yield u
     Logger.debug(u.selectStatement)
-    Logger.debug("returing " + u.firstOption)
+    //Logger.debug("returing " + u.firstOption)
     u.firstOption
   }
 
   def save(user: BasicProfile, mode: SaveMode)(implicit s: Session): SecureUser = {
     val p = UserFromProfile(user)
+   
+    Logger.debug(user.toString)
+    //Logger.debug("looking for " + p.providerId + " and " + p.userId)
+    
     findByProviderIdAndUserId(p.providerId,p.userId) match {
       case None => {
         Logger.debug("User does not already exist, trying to create now")

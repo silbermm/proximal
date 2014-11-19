@@ -10,7 +10,7 @@ import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 
 case class Child(id: Option[Long], firstName: String, lastName: String, birthDate: Long, educationLevel: Option[EducationLevel])
-
+case class Profile(user: SecureUser, roles: List[Role])
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser])  extends securesocial.core.SecureSocial[SecureUser] {
 
   var personService = new PersonService()
@@ -25,9 +25,12 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   implicit val passwordInfoFormat = Json.format[securesocial.core.PasswordInfo]
 
   implicit val secureUserFormat = Json.format[SecureUser]
+  implicit val roleFormat = Json.format[Role]
+  implicit val profileFormat = Json.format[Profile]
 
   def profile = SecuredAction { implicit request =>
-      Ok(Json.toJson(request.user)) 
+    val roles = personService.findRoles(request.user.uid.get) 
+    Ok(Json.toJson(new Profile(request.user, roles))) 
   }
   
   def children = SecuredAction{ implicit request => 
