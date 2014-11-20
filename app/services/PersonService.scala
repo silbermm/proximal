@@ -100,7 +100,7 @@ class PersonService {
 
   def isAdmin(id: Long) : Boolean = {
     DB.withSession{ implicit s=> 
-      People.findPerson(id).map(person => {
+      People.findPersonByUid(id).map(person => {
         People.findRoles(person).find(_.name == "admin") match {
           case Some(role) => true
           case _ => false

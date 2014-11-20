@@ -31,8 +31,8 @@ angular.module("proximal").controller "StatementsCtrl",[
 
       modalInstance.result.then((statement)->
         standardsService.addStatement($stateParams.id, statement).success((data,status,headers,config)->
-          $scope.statements.push(data.statement)
-          toaster.pop('success', null, "Successfully add the statement")
+          $scope.statements.push(data)
+          toaster.pop('success', null, "Successfully added the statement")
         ).error((data,status,headers,config)->
           $log.error(data)
           $log.error(status)
