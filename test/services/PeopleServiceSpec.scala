@@ -23,6 +23,8 @@ class PeopleServiceSpec extends PlaySpec with Results {
   
   var personService = new PersonService() 
 
+  var fakePerson = new Person(None, "Matt", Some("Silbernagel"), None,None, None)
+
   "Person Service" should {
     "insert and retrieve a record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
@@ -52,6 +54,16 @@ class PeopleServiceSpec extends PlaySpec with Results {
         val relationship = personService.addChild(child,parent); 
         val listOfChildren = personService.findChildren(parent.id.get)
         listOfChildren.size mustEqual 1
+      }
+    }
+
+    "add the admin role to user" in {    
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+        val admin = personService.createPerson(fakePerson)
+        admin.id must not be empty
+        val addAdmin = personService.addAdminRole(admin)
+        addAdmin mustEqual 1
+        personService.isAdmin(admin.id.get) mustEqual true
       }
     }
   }

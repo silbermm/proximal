@@ -83,9 +83,9 @@ class PersonService {
     }
   }
 
-  def findRoles(id: Long) = {
+  def findRoles(secureUserId: Long) = {
     DB.withSession{implicit s =>
-      People.findPerson(id) match {
+      People.findPersonByUid(secureUserId) match {
         case Some(person) => People.findRoles(person)
         case _ => List.empty
       }

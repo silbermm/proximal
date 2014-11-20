@@ -29,7 +29,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   implicit val profileFormat = Json.format[Profile]
 
   def profile = SecuredAction { implicit request =>
-    val roles = personService.findRoles(request.user.uid.get) 
+    val roles = personService.findRoles(request.user.uid.get)
     Ok(Json.toJson(new Profile(request.user, roles))) 
   }
   
