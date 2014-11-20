@@ -25,7 +25,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "lodash" % "2.4.1-6",
   "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
   "org.webjars" % "select2" % "3.5.1",
-  "org.webjars" % "angular-ui-select" % "0.8.3"
+  "org.webjars" % "angular-ui-select" % "0.8.3",
+  "com.newrelic.agent.java" % "newrelic-agent" % "3.7.0"
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
