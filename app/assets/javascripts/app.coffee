@@ -2,7 +2,6 @@ angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngCookies
 .run ($rootScope, $state, $log) ->
 
   $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
-    #$log.debug(toState)
     $rootScope.hideStandards = toState.data.hideStandards
   )
 .controller 'AppCtrl', ($scope, $state, $log, $cookieStore) ->

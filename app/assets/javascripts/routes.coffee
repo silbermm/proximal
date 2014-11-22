@@ -45,21 +45,38 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     url: '/admin',
     controller: 'AdminCtrl as ctrl',
     templateUrl: '../assets/javascripts/admin/admin.html',
-    data: { title: 'Administrative Tasks' }
+    data: { title: 'Administrative Tasks', hideAdmin: false }
   }
    
   $stateProvider.state 'admin.standards', {
     url: '/standards/{id}'
     controller: 'StandardsCtrl'
     templateUrl: '../assets/javascripts/admin/standards/standards.html'
-    data: { title: 'Standards', hideStandards: false}
+    data: { 
+      title: 'Standards',
+      hideStandards: false,
+      hideAdmin: true
+      breadcrumbs: [
+        {"path" : "admin", "text" : "Admin" },
+      ]
+
+    }
   }
 
   $stateProvider.state 'admin.standards.statements',{
     url: '/statements'
     controller: 'StatementsCtrl'
     templateUrl: '../assets/javascripts/admin/standards/statements/statements.html'
-    data: { title: 'Statements', hideStandards: true, anotherData: 'blah'}
+    data: { 
+      title: 'Statements', 
+      hideStandards: true, 
+      anotherData: 'blah', 
+      hideAdmin: true
+      breadcrumbs: [
+        {"path" : "admin", "text" : "Admin" },
+        {"path" : "admin.standards", "text": "Standards"}
+      ]
+    }
   }
 
 

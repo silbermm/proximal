@@ -1,15 +1,5 @@
-<div class="row">
-  <div class="col-md-3">
-    <div data-ng-if="standards.length < 1" class="message">
-      <span> There are no standards to show </span>
-    </div>
-   
-
-    <div class="list-group" ng-if="standards.length > 0">
-      <a href="#" class="list-group-item active" data-ng-repeat="s in standards" ui-sref-active="active" ui-sref="admin.standards({id:s.id})">
-        {{s.title}} 
-      </a>
-    </div>
-  </div>
-  <div ui-view class="col-md-9"> </div>
+<div class="row" ng-if="!state.current.data.hideAdmin">
+  {{state.current.data.hideAdmin}}
+  <a ui-sref="admin.standards"> Manage Standards </a>
 </div>
+<div ui-view class="row col-md-12"> </div>
