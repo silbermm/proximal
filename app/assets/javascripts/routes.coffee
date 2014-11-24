@@ -79,7 +79,18 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     }
   }
 
-
+  $stateProvider.state 'admin.questions',{
+    url: '/questions'
+    controller: 'QuestionsCtrl'
+    templateUrl: '../assets/javascripts/admin/questions/questions.html'
+    data: {
+      title: "Questions"
+      hideAdmin: true
+      breadcrumbs: [
+        {"path": "admin", "text": "Admin"}
+      ]
+    }
+  }
 
 
 

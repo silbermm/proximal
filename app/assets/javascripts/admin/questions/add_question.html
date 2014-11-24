@@ -1,0 +1,31 @@
+<form novalidate role="form" name="form">
+<div class="modal-header">
+  <h3 class="modal-title">Add a Quesiton </h3>
+</div>
+<div class="modal-body">
+    <div class="form-group" data-ng-class="{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}" >
+      <label for="text" class="sr-only"> Write your Question </label>
+      <textarea name="text" data-ng-model="question.text" class="form-control" id="questionText" placeholder="Write Your Question" required></textarea>
+    </div>
+
+    <div class="form-group" data-ng-class="{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}" >
+      <label for="picture"> Add a photo </label>
+      <input type="file" name="picture" id="picture" data-ng-model="picture" base-sixty-four-input accept="image/gif, image/jpeg, image/png, image/jpg">
+    </div>
+   
+
+    <!--
+    <div class="form-group" data-ng-class="{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}" > 
+      <label for="educationLevel" class="sr-only"> Current Grade Level </label>
+      <select name="educationLevel" class="forn-control" ng-model="child.gradeLevel" ng-options="a.description for a in availableLevels"  required >
+         <option value=""> -- For Grade Level -- </option>
+      </select>
+    </div>
+    -->
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="ok()" ng-disabled="form.$invalid">Create</button>
+  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+</form>

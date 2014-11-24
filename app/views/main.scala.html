@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/select2/select2.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/select2/select2-bootstrap.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/toaster.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/ui-grid/ui-grid.css")">
   </head>
   <body>
     @content 
@@ -30,6 +31,8 @@
     <script type="text/javascript" src="@routes.Assets.at("lib/lodash/lodash.min.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("lib/select2/select2.min.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("lib/angular-ui-select/select.min.js")"> </script>
+    <script type="text/javascript" src="@routes.Assets.at("lib/ui-grid/ui-grid.min.js")"> </script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/angular-base64-upload.js")"> </script>
 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/app.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/routes.js")"> </script>
@@ -45,17 +48,19 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/services/person_service.js")"> </script> 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/services/standards_service.js")"> </script> 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/services/common_service.js")"> </script> 
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/questions_service.js")"> </script> 
 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/children_directive.js")"> </script>
 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/admin_controller.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/standards/standards_controller.js")"> </script> 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/standards/statements/statements_controller.js")"> </script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/questions/questions_controller.js")"> </script> 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/children/children_controller.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/dashboard/dashboard_controller.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/home/home_controller.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/library/library_controller.js")"> </script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/settings/settings_controller.js")"> </script>
+    
   </body>
 </html>
 

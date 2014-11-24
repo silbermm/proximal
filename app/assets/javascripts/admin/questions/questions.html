@@ -1,0 +1,24 @@
+<div class="row col-md-12 toolbar">
+ 
+  <div class="col-md-2" style="padding-top:10px"> 
+    <button class="btn btn-sm btn-success btn-circle" ng-click="addQuestion()"><i class="fa fa-plus"></i></button>
+  </div>
+
+  <div class="input-group col-md-4">
+    <input type="text" class="form-control" placeholder="Search..." data-ng-model="searchText" >
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+  </div>
+
+  <div class="col-md-6" style="padding-top:10px">
+    <!-- filters and search -->
+    <div class="col-md-6">
+      <!-- <select class="form-control" data-ng-model="gradeLevel.levels" data-ng-options="level.description for level in edlevels">
+        <option value=""> -- Filter by Grade Level -- </option>
+        </select> -->
+    </div>
+  </div>
+
+   <div ui-grid="gridOptions" class="question-table"></div>
+
+</div>
+<toaster> </toaster>

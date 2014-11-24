@@ -23,7 +23,7 @@ class PeopleServiceSpec extends PlaySpec with Results {
   
   var personService = new PersonService() 
 
-  var fakePerson = new Person(None, "Matt", Some("Silbernagel"), None,None, None)
+  var fakePerson = new Person(None, "Matt", Some("Silbernagel"), None,None, Some(1998))
 
   "Person Service" should {
     "insert and retrieve a record by id" in {
@@ -63,7 +63,7 @@ class PeopleServiceSpec extends PlaySpec with Results {
         admin.id must not be empty
         val addAdmin = personService.addAdminRole(admin)
         addAdmin mustEqual 1
-        personService.isAdmin(admin.id.get) mustEqual true
+        personService.isAdmin(admin.uid.get) mustEqual true
       }
     }
   }

@@ -1,4 +1,4 @@
-angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngCookies', 'ngSanitize', 'ui.bootstrap', 'ui.select', 'toaster']
+angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngCookies', 'ngSanitize', 'ui.bootstrap', 'ui.select', 'ui.grid', 'ui.grid.selection', 'toaster', 'naif.base64']
 .run ($rootScope, $state, $log) ->
 
   $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->

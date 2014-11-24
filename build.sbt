@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %% "play" % "1.1.0" % "test",
   "ws.securesocial" %% "securesocial" % "master-SNAPSHOT",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
+  "com.amazonaws" % "aws-java-sdk" % "1.9.7", 
   "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "angularjs" % "1.3.0",
@@ -26,7 +27,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
   "org.webjars" % "select2" % "3.5.1",
   "org.webjars" % "angular-ui-select" % "0.8.3",
-  "com.newrelic.agent.java" % "newrelic-agent" % "3.7.0"
+  "org.webjars" % "ui-grid" % "3.0.0-rc.11"
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
