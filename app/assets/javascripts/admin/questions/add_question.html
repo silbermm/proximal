@@ -5,7 +5,7 @@
 <div class="modal-body">
     <div class="form-group" data-ng-class="{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}" >
       <label for="text" class="sr-only"> Write your Question </label>
-      <textarea name="text" data-ng-model="question.text" class="form-control" id="questionText" placeholder="Write Your Question" required></textarea>
+      <textarea name="text" rows="10" data-ng-model="question.text" class="form-control" id="questionText" placeholder="Write Your Question" required></textarea>
     </div>
 
     <div class="form-group" data-ng-class="{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}" >
@@ -13,6 +13,36 @@
       <input type="file" name="picture" id="picture" data-ng-model="picture" base-sixty-four-input accept="image/gif, image/jpeg, image/png, image/jpg">
     </div>
    
+     
+    <div class="form-group" data-ng-class="">
+      <label for="standard"> Align with a Standard </label>
+      <select name="standard" ng-model="standardSelected" class="form-control" ng-options="standard.title for standard in availableStandards" ng-change="getStatements()" >
+        <option value=""> -- Choose a Standard -- </option>
+      </select>
+    </div>
+
+    <div class="form-group" data-ng-if="showEducationLevels()">
+      <label for="educationlevels"> Filter by Education Level(s) </label>
+      <ui-select multiple data-ng-model="select2.educationLevels" theme="select2" 
+                 ng-disabled="disabled" class="form-control" ng-change="educationLevelChange()" >
+        <ui-select-match placeholder="Education levels that this statement applys"> {{$item.description}} </ui-select-match>
+         <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
+           <div ng-bind-html="level.description | highlight: $select.search"></div>
+         </ui-select-choices>    
+      </ui-select>
+    </div>
+
+    <div class="form-group" data-ng-class="" data-ng-if="showStatements()">
+      <label for="statements"> Available Statements </label>
+      <ui-select multiple data-ng-model="select2.statements" theme="select2" ng-disabled="disabled" class="form-control">
+        <ui-select-match placeholder="Statements that this question covers"> {{$item.statement.description}} </ui-select-match>
+         <ui-select-choices repeat="statement in availableStatements| filter:$select.search">
+           <div ng-bind-html="statement.statement.description | highlight: $select.search"></div>
+         </ui-select-choices>    
+      </ui-select>
+    </div>
+
+   </div>
 
     <!--
     <div class="form-group" data-ng-class="{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}" > 

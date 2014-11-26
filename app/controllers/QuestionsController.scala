@@ -10,10 +10,11 @@ import models._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long])
+case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], statements:Option[List[Statement]])
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
 
+  implicit val statementFormat = Json.format[Statement]
   implicit val questionFormat = Json.format[JsonQuestion]
 
   // initalize the services
@@ -28,11 +29,18 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
         errors => BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))),
         question => {
           val ques = convertToQuestion(question)
-          questionsService.create(ques).map(q =>
+          if(question.statements.isEmpty) {
+            questionsService.create(ques).map(q =>
               Ok(Json.toJson(convertToJsonQuestion(q)))
-          ).getOrElse(
-            BadRequest(Json.obj("message" -> "Unable to create the question"))
-          )
+            ).getOrElse(
+              BadRequest(Json.obj("message" -> "Unable to create the question"))
+            )
+          } else {
+            questionsService.create(ques,question.statements.get) match {
+              case (Some(qs), ss) => Ok(Json.toJson(convertToJsonQuestion(qs,ss)))
+              case _  => BadRequest(Json.obj("message" -> "Unable to create the question"))
+            }
+          }
         }
       )
     } else {
@@ -42,8 +50,8 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def list = SecuredAction {implicit request =>
     val questions = for { 
-      q <- questionsService.all
-    } yield convertToJsonQuestion(q) 
+      (q, l)<- questionsService.allWithStatements
+    } yield convertToJsonQuestion(q.get, l) 
     Ok(Json.toJson(questions))
   } 
 
@@ -52,7 +60,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
       Some(Base64.decodeBase64(pic))
     ).getOrElse(
       None
-    ) 
+    )
     Question(q.id,q.text,p,q.typeId) 
   }
 
@@ -62,7 +70,12 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
     ).getOrElse(
       None
     )
-    JsonQuestion(q.id,q.text,p,q.typeId)
+    JsonQuestion(q.id,q.text,p,q.typeId,None)
+  }
+
+  def convertToJsonQuestion(q: Question, l: List[Statement]) : JsonQuestion = {
+    val jsonQuestion : JsonQuestion = convertToJsonQuestion(q)
+    jsonQuestion.copy(statements = Some(l))
   }
 
 }

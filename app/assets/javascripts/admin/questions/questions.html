@@ -1,24 +1,44 @@
-<div class="row col-md-12 toolbar">
- 
+<section ng-if="!state.current.data.hideQuestions">
+<div class="row col-md-12 toolbar" > 
   <div class="col-md-2" style="padding-top:10px"> 
     <button class="btn btn-sm btn-success btn-circle" ng-click="addQuestion()"><i class="fa fa-plus"></i></button>
   </div>
 
-  <div class="input-group col-md-4">
+  <div class="input-group col-md-4 " style="padding-top:8px">
     <input type="text" class="form-control" placeholder="Search..." data-ng-model="searchText" >
     <span class="input-group-addon"><i class="fa fa-search"></i></span>
   </div>
-
-  <div class="col-md-6" style="padding-top:10px">
-    <!-- filters and search -->
-    <div class="col-md-6">
-      <!-- <select class="form-control" data-ng-model="gradeLevel.levels" data-ng-options="level.description for level in edlevels">
-        <option value=""> -- Filter by Grade Level -- </option>
-        </select> -->
-    </div>
-  </div>
-
-   <div ui-grid="gridOptions" class="question-table"></div>
-
 </div>
+  <!-- <div ui-grid="gridOptions" class="question-table"></div> -->
+<div class="table-responsive row">
+  <table class="table table-hover table-striped table-condensed">
+    <thead>
+      <tr>
+        <th> Question Text </th>
+        <th> Picture </th>
+        <th> Statements </th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="question in questions" >
+        <td> {{question.text}} </td>
+        <td> <img src="data:image/png;base64,{{question.picture}}" style="width:100px; height:100px"> </td>
+        <td> 
+          <ul>
+            <li data-ng-repeat="statement in question.statements">
+              {{ statement.description }}
+            </li>
+          </ul>
+        </td> 
+        <td style="vertical-align:middle">
+          <a ui-sref="admin.questions.edit({questionId:question.id})" class="btn btn-sm btn-info btn-circle"> <i class="fa fa-edit"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</section>
+<div ui-view> </div>
+
 <toaster> </toaster>

@@ -22,6 +22,7 @@ class Questions(tag: Tag) extends Table[Question](tag,"questions"){
 object Questions {
   
   lazy val questions = TableQuery[Questions]
+  lazy val questionsWithStatements = QuestionsWithStatements.qWithS
 
   def create(q: Question)(implicit s: Session) = 
     (questions returning  questions.map(_.id) into ((question,id) => question.copy(Some(id)))) += q
@@ -29,10 +30,25 @@ object Questions {
   def update(q: Question)(implicit s: Session) = 
     questions.filter(_.id === q.id.get).update(q)
 
-  def find(id: Long)(implicit s: Session) = 
-    questions.filter(_.id === id).firstOption
+  def find(id: Long)(implicit s: Session) = questions.filter(_.id === id).firstOption
 
   def all(implicit s: Session) = 
     questions.list
+
+  def findWithStatements(id: Long)(implicit s: Session) : (Option[Question], List[Statement])= {
+    var query = for {
+      qws <- questionsWithStatements if qws.questionId === id
+      s <- qws.statements
+    } yield s
+    return (find(id), query.list)
+  }
+
+  def findByStatement(statementId: Long)(implicit s: Session) : (List[Question], Option[Statement])= {
+    var query = for {
+      qws <- questionsWithStatements if qws.statementId === statementId
+      q <- qws.questions
+    } yield q
+    (query.list, Statements.find(statementId))
+  }
 
 }

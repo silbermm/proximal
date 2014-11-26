@@ -92,6 +92,22 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     }
   }
 
+  $stateProvider.state 'admin.questions.edit',{
+    url: '/{questionId}'
+    controller: 'QuestionsCtrl'
+    templateUrl: '../assets/javascripts/admin/questions/edit_question.html'
+    data: {
+      title: "Edit"
+      hideAdmin: true
+      hideQuestions: true
+      breadcrumbs: [
+        {"path": "admin", "text": "Admin"}
+        {"path": "admin.questions", "text": "Questions"}
+      ]
+    }
+
+  }
+
 
 
 
