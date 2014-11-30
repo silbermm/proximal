@@ -23,8 +23,9 @@ QuestionPictureDirective = ($log,$q)->
           elem.css("background-image": "url(/assets/images/emptyImage.png)") 
       return
     ), true
-    elem.css("background-size": "cover")
+    elem.css("background-size": "contain")
     elem.css("background-repeat": "no-repeat")
+    elem.css("padding-bottom": "74%")
 
 angular.module("proximal").directive "question", QuestionDirective
 angular.module("proximal").directive "questionPicture", ['$log', '$q', QuestionPictureDirective]
