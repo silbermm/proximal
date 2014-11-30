@@ -37,3 +37,9 @@ To call an endpoint where authentication is required you will need an auth token
 | Update a statement in a standard | PUT  | /api/v1/standards/{standardid}/statements/{statementid} | YES            | [View Details](standards.md#update-a-statement) |
 | Delete a statement in a standard | DELETE | /api/v1/standards/{standardid/statements/{statementid}| YES            | [View Details](standards.md#delete-a-statement) |
 
+#### Questions
+| DESCRIPTION                 | METHOD  | URL                                                       | AUTH REQUIRED? | DETAILS |
+| -----------                 | ------- | ---                                                       | -------------- | ------- | 
+| Get all Questions           | GET     | /api/v1/questions                                         | NO             | [View Details](questions.md#list-all-questions)
+| Get a Specific Question     | GET     | /api/v1/questions/{id}                                    | NO             | [View Details](questions.md#get-a-specific-question)
+| Get all Questions for a statement | GET | ???                                                     | NO             | [View Details](questions.md#get-all-questions-for-a-statement)

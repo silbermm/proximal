@@ -20,6 +20,12 @@ POST    /api/v1/standards           @controllers.StandardsController.create()
 PUT     /api/v1/standards/:id       @controllers.StandardsController.update(id: Long)
 DELETE  /api/v1/standards/:id       @controllers.StandardsController.delete(id: Long)
 
+#Standards
+GET     /api/v2/standards           @controllers.StandardsController.list()
+GET     /api/v2/standards/:id       @controllers.StandardsController.viewV2(id: Long)
+POST    /api/v2/standards           @controllers.StandardsController.createV2()
+
+
 #Statements
 GET     /api/v1/standards/:id/statements              @controllers.StandardsController.getStatementsForStandard(id: Long)
 POST    /api/v1/standards/:id/statements              @controllers.StandardsController.createStatement(id: Long)
@@ -30,7 +36,7 @@ DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsCont
 #Questions
 GET   /api/v1/questions                               @controllers.QuestionsController.list
 POST  /api/v1/questions                               @controllers.QuestionsController.create
-
+GET   /api/v1/questions/:id                           @controllers.QuestionsController.get(id: Long)
 
 
 #Dummy

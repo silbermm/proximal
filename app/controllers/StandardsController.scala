@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.Date
 import play.api._
 import play.api.mvc._
 import services._
@@ -11,15 +12,32 @@ import play.api.libs.functional.syntax._
 case class StandardWithEducationLevel(standard: Standard, levels: List[EducationLevel])
 case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel]) 
 case class TupleWithList(statement: Option[Statement], levels: List[EducationLevel])
+
+case class JsonStandard(
+  id: Option[Long], 
+  organizationId:Option[Long],
+  title: Option[String],
+  description: Option[String],
+  publicationStatus: Option[String],
+  subject: Option[String],
+  language:Option[String],
+  source: Option[String],
+  dateValid: Option[Date],
+  repositoryDate: Option[Date],
+  rights: Option[String],
+  manifest: Option[String],
+  identifier: Option[String],
+  levels: Option[List[EducationLevel]]
+)
+
 class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
  
   implicit val standardsFormat = Json.format[Standard]
   implicit val educationLevelFormat = Json.format[EducationLevel] 
+  implicit val jsonStandardsFormat = Json.format[JsonStandard]
   implicit val statementFormat = Json.format[Statement]
   implicit val standardsWithEducationLevel = Json.format[StandardWithEducationLevel]
   implicit val statementWithEducationLevel = Json.format[StatementWithEducationLevel]
-
-
 
   implicit def tuple2Writes[Option[Statement], List[EducationLevel]](implicit aWrites: Writes[Option[Statement]], bWrites: Writes[List[EducationLevel]]): Writes[Tuple2[Option[Statement], List[EducationLevel]]] = {
     new Writes[Tuple2[Option[Statement], List[EducationLevel]]] {
@@ -51,10 +69,37 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
+  def createV2 = SecuredAction(BodyParsers.parse.json){implicit request =>
+    if (personService.isAdmin(request.user.uid.get)) { 
+      request.body.validate[JsonStandard].fold(
+        errors => { BadRequest(JsError.toFlatJson(errors))},
+        standard => {
+          val s = convertFromJsonStandard(standard)
+          standardsService.create(s._1, s._2).map( st => 
+            Ok(Json.toJson(st))
+          ).getOrElse(
+            BadRequest(Json.obj("message" -> "Unable to add the standard"))
+          )
+        }
+      )
+    } else {
+      Unauthorized
+    }
+  }
+
   def view(id: Long) = Action { request =>
     standardsService.findWithEducationLevels(id) match {
       case (Some(standard),levels:List[EducationLevel]) => Ok(Json.obj("standard" -> Json.toJson(standard), "levels" -> Json.toJson(levels)))
       case (None,List(_*)) => NotFound(Json.obj("status" -> "KO", "message" -> "standard not found"))
+    }
+  }
+
+  def viewV2(id: Long) = Action { request =>
+    standardsService.findWithEducationLevels(id) match {
+      case (Some(standard),levels:List[EducationLevel]) => {
+        Ok(Json.toJson(convertToJsonStandard(standard,levels)))
+      }
+      case (None,List(_*)) => NotFound(Json.obj("message" -> "standard not found"))
     }
   }
 
@@ -132,6 +177,45 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def importData = SecuredAction{ implicit request =>
    ??? 
+  }
+
+  def convertFromJsonStandard(standard: JsonStandard) : (Standard,List[EducationLevel]) = {
+    val stan = Standard(
+      standard.id,
+      standard.organizationId,
+      standard.title.getOrElse(""),
+      standard.description.getOrElse(""),
+      standard.publicationStatus.getOrElse(""),
+      standard.subject.getOrElse(""),
+      standard.language,
+      standard.source,
+      standard.dateValid,
+      standard.repositoryDate,
+      standard.rights,
+      standard.manifest,
+      standard.identifier
+    )
+    val edLevels = standard.levels.getOrElse(List.empty)
+    (stan,edLevels)
+  }
+
+  def convertToJsonStandard(standard:Standard,edLevels:List[EducationLevel]) : JsonStandard = {
+    JsonStandard(
+      standard.id,
+      standard.organizationId,
+      Some(standard.title),
+      Some(standard.description),
+      Some(standard.publicationStatus),
+      Some(standard.subject),
+      standard.language,
+      standard.source,
+      standard.dateValid,
+      standard.repositoryDate,
+      standard.rights,
+      standard.manifest,
+      standard.identifier,
+      Some(edLevels)
+    )
   }
 
 }

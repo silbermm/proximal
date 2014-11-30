@@ -48,12 +48,20 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
-  def list = SecuredAction {implicit request =>
+  def list = Action {implicit request =>
     val questions = for { 
       (q, l)<- questionsService.allWithStatements
     } yield convertToJsonQuestion(q.get, l) 
     Ok(Json.toJson(questions))
   } 
+  
+  def get(id: Long) = Action{ implicit request => 
+    questionsService.findWithStatements(id) match {
+      case (Some(question), statements) => Ok(Json.toJson(convertToJsonQuestion(question,statements)))
+      case _ => BadRequest(Json.obj("message" -> "Unable to find a question with that id"))
+    }
+  }
+
 
   def convertToQuestion(q : JsonQuestion): Question = {
     val p =  q.picture.map(pic =>

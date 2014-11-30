@@ -1,3 +1,50 @@
+<div class="row col-md-12" >
+  <div class="col-md-4">
+    <div class="thumbnail" question-picture style="height:400px;"> </div>
+    <button class="btn btn-primary"> Change Picture </button>
+  </div>
+  <div class="col-md-8">
+    <div class="form-group">
+      <label for="question-text"> Question </label>
+      <textarea id="question-text" name="question-text" class="form-control" ng-model="question.text" style="width: 100%;" rows="10" required> </textarea> 
+    </div>
+
+    <div class="form-group">
+      <label for="question-standard"> Standard </label>
+      <select name="standard" ng-model="standard" class="form-control" ng-options="standard.title for standard in availableStandards" >
+        <option value=""> -- None -- </option>
+      </select> 
+    </div>
+    
+    <div class="form-group">
+      <label for="educationlevels"> Education Level(s) </label>
+      <ui-select multiple data-ng-model="select2.educationLevels" theme="select2" 
+             ng-disabled="disabled" class="form-control" >
+      <ui-select-match placeholder="None Selected"> {{$item.description}} </ui-select-match>
+       <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
+         <div ng-bind-html="level.description | highlight: $select.search"></div>
+       </ui-select-choices>    
+      </ui-select>
+    </div>
+    
+    <div class="form-group" >
+      <label for="statements"> Associated Statements </label>
+      <ui-select multiple data-ng-model="select2.statements" theme="select2" ng-disabled="disabled" class="form-control">
+        <ui-select-match placeholder="Statements that this question covers"> {{$item.statement.description}} </ui-select-match>
+         <ui-select-choices repeat="statement in availableStatements| filter:$select.search">
+           <div ng-bind-html="statement.statement.description | highlight: $select.search"></div>
+         </ui-select-choices>    
+      </ui-select>
+    </div>
+
+  </div>
+</div>
+
 <div class="row col-md-12">
-  edit and view a question
+  <div class="col-md-4">
+  </div>
+  <div class="col-md-8">
+    <button class="btn btn-success btn-lg"> Update  </button>
+    <button class="btn btn-danger btn-lg"> Delete Question </button>
+  </div>
 </div>

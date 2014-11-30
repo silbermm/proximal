@@ -1,8 +1,13 @@
 angular.module("proximal").factory "standardsService", [
   "$log"
+  "$resource"
   "$http"
-  ($log, $http) ->
+  ($log, $resource, $http) ->
+    Standards = $resource("/api/v2/standards/:id") 
     return {
+      standards: ->
+        return Standards
+
       addStandard: (c) ->
         return $http.post("/api/v1/standards", c)
       

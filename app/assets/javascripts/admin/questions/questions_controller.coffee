@@ -8,32 +8,30 @@ angular.module("proximal").controller "QuestionsCtrl",[
   "uiGridConstants"
   "prox.common"
   "questionsService"
-  ($log,$scope,$state, $stateParams, $modal, toaster, uiGridConstants,common, questionsService) ->
-    $scope.page = "Questions Page"
-  
-    questionsService.getQuestions().success((data)->
-      #$scope.gridOptions.data = data
-      $scope.questions = data
-    ).error((data)->
-      $log.error(data)
-    )
+  "standardsService"
+  ($log,$scope,$state, $stateParams, $modal, toaster, uiGridConstants,common, questionsService, standardsService) ->
 
-    $scope.gridOptions = {
-      showFooter: true,
-      enableFiltering: true,
-      enableRowSelection: true,
-      enableSelectAll: true,
-      enableSorting: true,
-      selectionRowHeaderWidth: 35,
-      multiSelect: true,
-      columnDefs: [
-         { name: 'id' },
-         { name: 'text'},
-         { name: 'picture'}
-         { name: 'standards'}
-      ],
-    }
+    initQuestionPage = ->
+      $scope.question = questionsService.getQuestion($stateParams.questionId)
+      $scope.availableStandards = standardsService.standards().query()
+      $scope.availableStandards.$promise.then((s)->
+        $scope.question.$promise.then((q)->
+          if !_.isUndefined($scope.question.statements[0]) 
+            $scope.standard = _.find(s, (stan)->
+              return stan.id is $scope.question.statements[0].standardId 
+            )
+        )
+      )
+    init = ->
+      $scope.questions = questionsService.getQuestions()
 
+    if !_.isUndefined($stateParams.questionId)
+      initQuestionPage()       
+    else
+      init() 
+    
+    $scope.availableEducationLevels = common.educationLevels
+    
     $scope.addQuestion = ->
       modalInstance = $modal.open({
         templateUrl: "../assets/javascripts/admin/questions/add_question.html"
@@ -44,11 +42,15 @@ angular.module("proximal").controller "QuestionsCtrl",[
       })
       modalInstance.result.then((question)->
         #add the question
-        questionsService.addQuestion(question).success((data)->
+        q = questionsService.question(question)
+        $log.debug(q) 
+        q.$save((ques,headers)->
+          $scope.questions.push(ques)
           toaster.pop('success', "Success", "Added the question") 
-          $scope.gridOptions.data.push(data); 
-        ).error((data,status)->
-          toaster.pop('error', "Failure", "Unable to add the question" + data);
+          return
+        ,(err)->
+          toaster.pop('error', "Failure", "Unable to add the question" + err)
+          return
         )
         return
       )
@@ -83,9 +85,7 @@ angular.module("proximal").controller "AddQuestionCtrl",[
       )
 
     $scope.educationLevelChange = ->
-      $log.debug($scope.select2.educationLevels)
       if(_.isUndefined($scope.select2.educationLevels) || _.isNull($scope.select2.educationLevels) || _.isEmpty($scope.select2.educationLevels)) 
-        $log.debug("educationLevels is undefined!")
         $scope.getStatements()
         return
       $scope.availableStatements = _.filter($scope.availableStatements, (s) ->
@@ -97,7 +97,6 @@ angular.module("proximal").controller "AddQuestionCtrl",[
         )
         return test.length > 0
       ) 
-      $log.debug($scope.availableStatements)
       return
 
     $scope.showEducationLevels = ->
