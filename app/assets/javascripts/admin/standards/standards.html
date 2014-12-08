@@ -1,27 +1,20 @@
 <div class="col-md-3">
-    <div data-ng-if="standards.length < 1" class="message">
-      <span> There are no standards to show </span>
-    </div>
-   
+    
+  <div class="row" data-ng-if="standards.length < 1" class="message">
+    <span> There are no standards to show </span>
+  </div>
+ 
+  <div class="row">
+    <button class="btn btn-success btn-circle" ng-click="addStandard()"> <i class="fa fa-plus"></i> </button>
+  </div> 
+
+  <div class="row">
     <div class="list-group" ng-if="standards.length > 0">
-      <a href="#" class="list-group-item active" data-ng-repeat="s in standards" ui-sref-active="active" ui-sref="admin.standards({id:s.id})">
-        {{s.title}} 
-      </a>
+     <a class="list-group-item active" data-ng-repeat="s in standards" ui-sref-active="active" ui-sref="admin.standards.detail({id:s.id})">
+       {{s.title}} 
+     </a>
     </div>
+  </div>
 </div>
 
-<div class="col-md-9" ng-show="standard != null">
-    <div class="overlay standard_details" ng-show="!state.current.data.hideStandards"> 
-    <h4> Description <i data-ng-class="{'fa-caret-right': isDescriptionCollapsed, 'fa-caret-down': !isDescriptionCollapsed}" 
-                        class="fa" ng-click="isDescriptionCollapsed = !isDescriptionCollapsed"></i> </h4>
-    <p collapse="isDescriptionCollapsed"> {{standard.description}} </p>
-      
-    <h4> Education Levels <i data-ng-class="{'fa-caret-right': isEducationCollapsed, 'fa-caret-down': !isEducationCollapsed}" 
-                        class="fa" ng-click="isEducationCollapsed = !isEducationCollapsed"></i></h4>
-    <p collapse="isEducationCollapsed"> 
-      <span data-ng-repeat="level in educationLevels"> {{level.description}} <span data-ng-if="!$last"> | </span>  </span>
-    </p>
-    <a class="btn btn-primary" ui-sref="admin.standards.statements({id:standard.id})">Show Statements </a>
-  </div>
-  <div class="statements" ui-view> </div ui-view>
-</div>
+<div ui-view> </div>

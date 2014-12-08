@@ -1,10 +1,14 @@
+import com.typesafe.sbt.SbtGit._
+
 name := """IT5041-web"""
 
-version := "1.0-SNAPSHOT"
+versionWithGit
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.1"
+
+seq(bowerSettings : _*)
 
 libraryDependencies ++= Seq(
   cache,
@@ -33,3 +37,11 @@ libraryDependencies ++= Seq(
 resolvers += Resolver.sonatypeRepo("snapshots") 
 
 pipelineStages := Seq(digest, gzip)
+
+BowerKeys.frontendDependencies ++= Seq(
+  "angular" %%% "=1.2.0-rc.2"  
+)
+
+BowerKeys.sourceDirectory <<= baseDirectory(_ / "app" / "assets") 
+
+BowerKeys.installDirectory <<= sourceDirectory(_ / "lib")

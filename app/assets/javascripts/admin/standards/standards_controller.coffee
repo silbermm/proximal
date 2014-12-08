@@ -1,18 +1,83 @@
-angular.module("proximal").controller "StandardsCtrl", ($log,$cookieStore,$scope,$rootScope, $state, $stateParams, standardsService, toaster) ->
-  $scope.page = "Standards Page"
-  $log.debug("getting the standard for " + $stateParams.id)
+angular.module("proximal").controller "StandardsCtrl",[
+  "$log"
+  "$scope"
+  "$state"
+  "$stateParams"
+  "$modal"
+  "standardsService"
+  "toaster"
+  ($log,$scope, $state, $stateParams,$modal,standardsService, toaster) ->
 
-  standardsService.getStandard($stateParams.id).success((data,status,headers,config)->
-    $scope.standard = data.standard
-    $scope.educationLevels = data.levels
-  ).error((data,status,headers,config) ->
-    toaster.pop('error', "Failure", "Unable to get standareds");
-  )
-  
-  $scope.isDescriptionCollapsed = false;
-  $scope.isEducationCollapsed = false
-  return
+    initWithId = ->
+      standardsService.getStandard($stateParams.id).success((data,status,headers,config)->
+        $scope.standard = data.standard
+        $scope.educationLevels = data.levels
+      ).error((data,status,headers,config) ->
+        toaster.pop('error', "Failure", "Unable to get standareds");
+      )
+      standardsService.getStatements($stateParams.id).success((data)->
+        $scope.statements = data.statements
+      ).error((data,status)->
+        $log.error(data)
+      )
 
+    init = ->
+      standardsService.getAllStandards().success((data,status)->
+        $scope.standards = data
+      ).error((data,status)->
+        toaster.pop('error', "Failure", "Unable to get standards")
+      )
+
+    $scope.isDescriptionCollapsed = false
+    $scope.isEducationCollapsed = false
+   
+    $scope.addStatement = ->
+      modalInstance = $modal.open({
+        templateUrl: "../assets/javascripts/admin/standards/add_statement.html"
+        controller: "AddStatementCtrl"
+        resolve: {
+          standardId: ->
+            return $stateParams.id
+        }
+      })
+      modalInstance.result.then((statement)->
+        standardsService.addStatement($stateParams.id, statement).success((data,status,headers,config)->
+          $scope.statements.push(data)
+          toaster.pop('success', null, "Successfully added the statement")
+        ).error((data,status,headers,config)->
+          $log.error(data)
+          $log.error(status)
+          toaster.pop('error',null, "Failed to add the statement: " + data.message)
+        )
+        return
+      )
+    
+    $scope.addStandard = ->
+      $log.debug("create a new standard")
+      modalInstance = $modal.open({
+        templateUrl: '../assets/javascripts/admin/standards/add_standard.html',
+        controller: 'AddStandardCtrl'
+      })
+
+      addStandard = (s) ->
+        standardsService.addStandard(s).success((data,success,headers,config) ->
+          $log.debug data
+        ).error((data,status,headers,config) ->
+          $log.error("Unable to add standard: " + data)
+        )
+
+      modalInstance.result.then((standard)->
+        addStandard(standard)
+        return
+      )
+ 
+    if !_.isUndefined($stateParams.id)
+      initWithId()
+    else
+      init()
+
+    return
+]
 angular.module("proximal").controller "AddStandardCtrl", [
   "$log"
   "$scope"
@@ -57,15 +122,42 @@ angular.module("proximal").controller "AddStandardCtrl", [
       "Spanish"
       "French"
     ]
-
-
     $scope.availableEducationLevels = common.educationLevels
-
-    
-
     $scope.ok = ->
       $modalInstance.close($scope.edu)
 
     $scope.cancel = ->
       $modalInstance.dismiss("cancel")
 ]
+angular.module("proximal").controller "AddStatementCtrl",[
+  "$log"
+  "$scope"
+  "$modalInstance"
+  "prox.common"
+  "standardsService"
+  "standardId"
+  ($log,$scope,$modalInstance,common,standardsService,standardId)-> 
+    $scope.availableEducationLevels = common.educationLevels 
+    $scope.edu = {
+      statement: {}
+    }
+    $scope.edu.levels = {}
+    standardsService.getStandard(standardId).success((data)->
+      $scope.edu.statement.subject = data.standard.subject
+      $scope.availableEducationLevels = _.filter($scope.availableEducationLevels, (lev) ->
+        has = _.find(data.levels, (standardLevel) ->
+          standardLevel.description is lev.description
+          return
+        )
+        has is `undefined`
+      )
+    ).error((data)->
+      $log.error(data)
+    )
+    $scope.ok = ->
+      $modalInstance.close($scope.edu)
+
+    $scope.cancel = ->
+      $modalInstance.dismiss("cancel")
+]
+
