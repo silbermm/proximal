@@ -1,4 +1,4 @@
-angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngResource','ngCookies', 'ngSanitize', 'ui.bootstrap', 'ui.select', 'ui.grid', 'ui.grid.selection', 'toaster', 'naif.base64']
+angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngResource','ngCookies', 'ngSanitize', 'ui.bootstrap', 'ui.select', 'toaster', 'naif.base64']
 .run ($rootScope, $state, $log) ->
 
   $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
@@ -12,7 +12,6 @@ angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngResourc
     window.innerWidth
 
   $scope.$watch $scope.getWidth, (newValue, oldValue) ->
-   $log.debug "watch has fired"
    if newValue >= mobileView
      if angular.isDefined($cookieStore.get("toggle"))
        if $cookieStore.get("toggle") is false
@@ -26,7 +25,7 @@ angular.module 'proximal', ["ui.router","ui.router.state","ngAnimate",'ngResourc
      return
 
   $scope.toggleSidebar = ()->
-    $log.debug "toggle called"
+    $log.debug "toggle calld: " + $scope.toggle
     $scope.toggle = !$scope.toggle
     $cookieStore.put('toggle', $scope.toggle)
 

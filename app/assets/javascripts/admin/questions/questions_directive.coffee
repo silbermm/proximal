@@ -9,12 +9,19 @@ QuestionDirective = ->
     outerDiv.append(innerDiv)
     elem.append(outerDiv)
 
+QuestionDetailsDirective = ($log, $state,common)->
+  restrict: "E"
+  scope: true
+  replace: true
+  controller: "QuestionsCtrl as ctrl"
+  templateUrl: "../assets/javascripts/admin/questions/detail_question.html"
+  link : (scope,elem,attr)->
+    
 QuestionPictureDirective = ($log,$q)->
   restrict: "A"
   scope: true
   controller: "QuestionsCtrl"
   link: (scope,elem,attr) -> 
-    $log.debug(scope.question)
     scope.$watch "question", ((newVal) ->
       if newVal
         if scope.question.picture
@@ -25,8 +32,10 @@ QuestionPictureDirective = ($log,$q)->
     ), true
     elem.css("background-size": "contain")
     elem.css("background-repeat": "no-repeat")
-    elem.css("padding-bottom": "74%")
-    
+    console.log(attr);
+    if(!_.isUndefined(attr.picturePadding))
+      elem.css("padding-bottom" : attr.picturePadding)
 
 angular.module("proximal").directive "question", QuestionDirective
 angular.module("proximal").directive "questionPicture", ['$log', '$q', QuestionPictureDirective]
+angular.module("proximal").directive "questionDetails", ['$log', '$state', 'prox.common' ,QuestionDetailsDirective]

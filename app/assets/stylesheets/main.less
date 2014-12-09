@@ -21,6 +21,10 @@
 }
 
 /* Base */
+
+body,html {
+  height: 100%;
+}
 html {
 overflow-y: scroll;
 }
@@ -126,3 +130,31 @@ footer .navbar {
   width: 100%;
   height: 85vh;
 }
+
+.content-page {
+  position: absolute;
+  height: 100%;
+  .top {
+    padding-top: 20px;
+  }
+  &.level-1 {   
+    top: 0;
+    background: @mainBackgroundColor;    
+    left: 16%;
+    .box-shadow(-3px 1px 6px -4px rgb(61, 61, 61));
+  }
+}
+
+.sidebar-open {
+  width: 77.944%;
+}
+
+.sidebar-closed {
+  width: 93.94434%;
+}
+
+.fade {
+  opacity: .2;
+}
+
+

@@ -1,8 +1,8 @@
-<div class="row" ng-if="!state.current.data.hideAdmin">
+<div class="row top" ng-if="!state.current.data.hideAdmin">
   <ul>
     <li> <a ui-sref="admin.standards"> Manage Standards </a> </li>
     <li> <a ui-sref="admin.questions"> Manage Questions </a> </li>
   </ul>
 </div>
-<div ui-view class="row col-md-12"> </div>
+<div ui-view class="row content-page col-md-12" style="width:98%" > </div>
 <toaster-container> </toaster-container>

@@ -17,7 +17,12 @@ angular.module('proximal').factory "prox.common",[
       { value: "11", description: "11th Grade" }
       { value: "12", description: "12th Grade" }
     ]
+    
+    #commonly used html elements
+    @div_col_12 = $("<div>", {class: "col-md-12"})
+
     return {
       educationLevels: @educationLevels
+      div_col_12: @div_col_12
     }
 ]

@@ -5,11 +5,10 @@ angular.module("proximal").controller "QuestionsCtrl",[
   "$stateParams"
   "$modal"
   "toaster"
-  "uiGridConstants"
   "prox.common"
   "questionsService"
   "standardsService"
-  ($log,$scope,$state, $stateParams, $modal, toaster, uiGridConstants,common, questionsService, standardsService) ->
+  ($log,$scope,$state, $stateParams, $modal, toaster,common, questionsService, standardsService) ->
 
     initQuestionPage = ->
       $scope.question = questionsService.getQuestion($stateParams.questionId)
