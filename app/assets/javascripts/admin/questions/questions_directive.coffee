@@ -32,7 +32,6 @@ QuestionPictureDirective = ($log,$q)->
     ), true
     elem.css("background-size": "contain")
     elem.css("background-repeat": "no-repeat")
-    console.log(attr);
     if(!_.isUndefined(attr.picturePadding))
       elem.css("padding-bottom" : attr.picturePadding)
 

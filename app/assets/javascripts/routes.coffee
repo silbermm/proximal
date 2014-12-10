@@ -99,7 +99,7 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
       hideAdmin: true
       hideQuestions: true
       breadcrumbs: [
-        {"path": "admin", "text": "Admin"}
+        {"path": "admin", "text": "Admin", "close-inner-page":"admin-submenu" }
         {"path": "admin.questions", "text": "Questions"}
       ]
     }
