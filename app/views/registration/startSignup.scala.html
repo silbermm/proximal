@@ -4,60 +4,39 @@
 @import java.util.Date
 @implicitFieldConstructor = @{ FieldConstructor(helpers.horizontalForm.f) }
 
-@main(title = "Provide a valid email"){
-
-  <style type="text/css">
-    body {
-      background: url('@routes.Assets.at("images/learning_lab.jpg")') no-repeat fixed center center / cover transparent;
-      padding-top: 51px;
-      padding-bottom: 70px;
-    }
-  </style>
-  <header>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand"> Proximal Learning </a>
-        </div>
-      </div>
-    </nav>
-  </header>
-
-   
-
-  <div class="container login-page">
-    <div class="login-wrapper">
-      <form action="@env.routes.signUpUrl" class="form-horizontal" autocomplete="off" method="post" >
-        <legend> Provide a valid email address </legend>
-          @request.flash.get("error").map { msg =>
-          <div class="alert alert-danger">
-            @Messages(msg)
+@layouts.registration_layout(title = "Provide a valid email"){
+  
+     <div class="container" id="login-block">
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4"> 
+          <h3 class="animated bounceInDown">Login to Proximal</h3> 
+          <div class="login-box clearfix animated flipInY">
+            <div class="login-logo">
+              <a><img src="@routes.Assets.at("images/company-logo.png")" alt="Proximal" /></a>
+            </div> 
+            <hr />
+       
+            <div class="login-form">
+              @request.flash.get("error").map { msg =>
+                <div class="alert alert-danger">
+                  @msg
+                </div>
+              }
+              
+              <form action="@env.routes.signUpUrl" class="form-horizontal" autocomplete="off" method="post" > 
+                @helper.inputText( startForm("email"), '_label -> Messages("securesocial.signup.email1"), 'placeholder -> "Provide a Valid Email")
+                <button type="submit" class="btn btn-login">Submit</button> 
+              </form> 
+              <div class="login-links"> 
+                <a href="@env.routes.loginPageUrl">
+                     Cancel
+                </a>
+                <br />
+               </div> 
+            </div>
           </div>
-          }
-          @helper.inputText( startForm("email"), '_label -> Messages("securesocial.signup.email1"), 'class -> "input-xlarge form-control"
-          )
-           <div class="form-group">
-             <div class="col-xs-offset-4 col-xs-8">
-              <button class="btn btn-primary" type="submit"> @Messages("securesocial.signup.createAccount") </button>
-              <a class="btn" href="@env.routes.loginPageUrl">@Messages("securesocial.signup.cancel")</a>
-             </div>
-           </div> 
-      </form>
+        </div>   
+      </div>
     </div>
   </div>
-  <footer>
-    <nav class="navbar navbar-default navbar-fixed-bottom"
-                        role="navigation" style="background-color:#fff;">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <span class="navbar-brand">
-            <span class="small copyright"> © Poximal Learning LLC @{new Date().format("yyyy")} </span>
-          </span>
-        </div>
-      </div>
-    </nav>
-  </footer>
-
-
-
 }

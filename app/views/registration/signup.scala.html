@@ -6,26 +6,7 @@
 @import java.util.Date
 @implicitFieldConstructor = @{ FieldConstructor(helpers.horizontalForm.f) }
 
-@main(title = "Sign up for an account") {
-
-  <style type="text/css">
-    body {
-      background: url('@routes.Assets.at("images/learning_lab.jpg")') no-repeat fixed center center / cover transparent;
-      padding-top: 51px;
-      padding-bottom: 70px;
-
-    }
-  </style>
-
-  <header>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand"> Proximal Learning </a>
-        </div>
-      </div>
-    </nav>
-  </header>
+@layouts.registration_layout(title = "Sign up for an account") {
 
   <div class="container login-page">
     <div class="login-wrapper">
