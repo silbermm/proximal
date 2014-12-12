@@ -12,5 +12,7 @@ class ApplicationController(override implicit val env: RuntimeEnvironment[Secure
      Ok(views.html.index(request.user))
    }
 
+   
+
 }
 
