@@ -143,24 +143,18 @@ object SecureUsers {
     val u = for {
       u <- secureUsers if u.userId === userId
     } yield u
-    Logger.debug(u.selectStatement)
-    //Logger.debug("returing " + u.firstOption)
     u.firstOption
   }
 
   def save(user: BasicProfile, mode: SaveMode)(implicit s: Session): SecureUser = {
     val p = UserFromProfile(user)
    
-    Logger.debug(user.toString)
-    //Logger.debug("looking for " + p.providerId + " and " + p.userId)
     
     findByProviderIdAndUserId(p.providerId,p.userId) match {
       case None => {
-        Logger.debug("User does not already exist, trying to create now")
         (secureUsers returning secureUsers.map(_.uid) into ((secureUser,uid) => secureUser.copy(uid=Some(uid)))) += p 
       }
       case Some(existingUser) => {
-        Logger.debug("User does exist... just returning that user")
         existingUser 
       }
     }
@@ -170,10 +164,8 @@ object SecureUsers {
     val userToUpdate: SecureUser = user.copy(passwordInfo = Some(passwordInfo))
     val i = secureUsers.filter(_.uid === user.uid).update(userToUpdate)
     if(i > 0){
-      Logger.debug("Update returned a row...")
       Some(userToUpdate) 
     } else {
-      Logger.debug("Update did not return a row")
       None
     }
   }

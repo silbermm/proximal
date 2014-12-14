@@ -9,8 +9,6 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 
-case class Child(id: Option[Long], firstName: String, lastName: String, birthDate: Long, educationLevel: Option[EducationLevel])
-case class Profile(user: SecureUser, roles: List[Role])
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser])  extends securesocial.core.SecureSocial[SecureUser] {
 
   var personService = new PersonService()
@@ -35,8 +33,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   
   def children = SecuredAction{ implicit request => 
     var c = personService.findChildren(request.user.uid.get)
-    var j = Json.obj("children" -> Json.toJson(c)) 
-    Ok(j)
+    Ok(Json.toJson(c))
   }
 
   def child(id: Long) = SecuredAction{ implicit request =>
@@ -58,6 +55,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   }
 
   def addChild = SecuredAction(BodyParsers.parse.json){ implicit request =>
+    Logger.debug("Validating the Json sent it")
     val childToAdd = request.body.validate[Child] 
     childToAdd.fold(
       errors => {
@@ -67,9 +65,10 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
         personService.findPersonByUid(request.user.uid.get) match {
           case Some(pr) => {
             val p = new Person(None,person.firstName,Some(person.lastName),Some(new DateTime(person.birthDate)),None,None)
+            Logger.debug("Checking if education level was sent in") 
             val c = person.educationLevel match { 
               case Some(e) => personService.createPerson(p,e)
-              case None => personService.createPerson(p)
+              case _ => personService.createPerson(p)
             }
             personService.addChild(c, pr)
             Logger.debug("got a person to add " + person.firstName)

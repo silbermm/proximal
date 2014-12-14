@@ -4,7 +4,7 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
   $scope.children = []
 
   personService.getChildren().success((data, status, headers, config) ->
-    $scope.children = data.children
+    $scope.children = data
   ).error((data, status, headers, config)->
     $log.error(data)
   )
@@ -21,7 +21,7 @@ angular.module("proximal").controller "ChildrenCtrl",($log,$cookieStore,$scope,p
 
   $scope.createChild = ->
     modalInstance = $modal.open({
-      templateUrl: '../assets/javascripts/children/templates/add_child.html',
+      templateUrl: '../assets/javascripts/children/add_child.html',
       controller: 'AddChildCtrl'
     })
 

@@ -105,10 +105,7 @@ class SecureUserService extends UserService[SecureUser]  {
 
 object ProfileFromUser {
   def apply(user: SecureUser): BasicProfile = {
-    //Logger.debug("Converting secure user to basic profile");
-    //Logger.debug(user.toString)
     val profile = BasicProfile(user.providerId,user.userId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
-    Logger.debug(profile.toString)
     return profile
   } 
 }
