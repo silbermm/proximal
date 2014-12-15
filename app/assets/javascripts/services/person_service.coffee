@@ -4,7 +4,7 @@ angular.module("proximal").factory "personService", [
   ($log, $http) ->
     return {
       addChild: (c) ->
-        return $http.post("/api/v1/children/add", c)
+        return $http.post("/api/v1/children", c)
           
       getChildren: ->
         return $http.get("/api/v1/children")

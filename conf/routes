@@ -8,7 +8,7 @@ GET     /                           @controllers.ApplicationController.index()
 # API
 GET     /api/v1/children            @controllers.PersonController.children()
 GET     /api/v1/children/:id        @controllers.PersonController.child(id: Long)
-POST    /api/v1/children/add        @controllers.PersonController.addChild()
+POST    /api/v1/children            @controllers.PersonController.addChild()
 DELETE  /api/v1/children/:id        @controllers.PersonController.removeChild(id: Long)
 
 GET     /api/v1/profile             @controllers.PersonController.profile()

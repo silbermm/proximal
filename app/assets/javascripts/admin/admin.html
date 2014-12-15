@@ -4,12 +4,12 @@
     <div ui-view class="row col-md-12"> </div>
   </inner-page-element>
 
-  <div class="row" ng-class="{'fade': state.current.data.hideAdmin}">
+  <section inner-page-parent class="row">
   <!-- <div class="row">  -->
     <ul>
       <li> <a ui-sref="admin.standards" open-inner-page="admin-submenu"> Manage Standards </a> </li>
       <li> <a ui-sref="admin.questions" open-inner-page="admin-submenu"> Manage Questions </a> </li>
     </ul>
-  </div>
+  </section>
 </inner-page> 
 <toaster-container> </toaster-container>

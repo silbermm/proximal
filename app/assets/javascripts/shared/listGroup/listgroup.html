@@ -1,0 +1,8 @@
+<div class="list-group" ng-controller="ListGroupCtrl">
+  <a ui-sref="ctrl.createEditUrl(i)" class="list-group-item" ng-repeat="i in ctrl.items">
+    <h4 class="list-group-item-heading"> {{item.text}} </h4>
+    <p class="list-group-item-text">
+      <div ng-transclude></div> 
+    </p> 
+  </a>
+</div>

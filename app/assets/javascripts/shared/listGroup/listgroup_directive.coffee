@@ -4,7 +4,7 @@ ListGroupController = ($log)->
 ListGroup = ($log)->
   restrict: "E"
   scope: {
-
+    item: '=item'
   }
   transclude: true
   replace: true

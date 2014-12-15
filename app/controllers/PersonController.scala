@@ -71,8 +71,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
               case _ => personService.createPerson(p)
             }
             personService.addChild(c, pr)
-            Logger.debug("got a person to add " + person.firstName)
-            Ok(Json.obj("status" ->"OK", "child" -> Json.toJson(c))) 
+            Ok(Json.toJson(c))
           }
           case _ => BadRequest
         } 

@@ -46,10 +46,8 @@ class PersonControllerSpec  extends PlaySpec with Results {
           val Some(edLevel) = EducationLevels.find(e.id.get)
           edLevel.id.get mustEqual e.id.get
           val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get) 
-          
-          val Some(resp) = route(FakeRequest(POST, "/api/v1/children").withCookies(creds1.get("id").get).withJsonBody(ChildGenerator.child(edLevel)))
-          status(resp) mustEqual OK
-          
+          val resp = route(FakeRequest(POST, "/api/v1/children").withCookies(creds1.get("id").get).withJsonBody(ChildGenerator.child(edLevel))).get
+          status(resp) mustEqual OK 
         }
       }
     }

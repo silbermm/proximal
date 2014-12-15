@@ -109,7 +109,7 @@
               {{ state.current.data.title }} 
             </div>
             <div class="breadcrumb-links" ng-if="state.current.data.breadcrumbs != null">
-              <a ui-sref={{breadcrumb.path}} close-inner-page="{{breadcrumb.close-inner-page}}" ng-repeat="breadcrumb in state.current.data.breadcrumbs" >
+              <a ui-sref={{breadcrumb.path}} ng-repeat="breadcrumb in state.current.data.breadcrumbs" >
                 {{breadcrumb.text}} /
               </a> 
               {{state.current.data.title}}
