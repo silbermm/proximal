@@ -124,3 +124,9 @@ class PersonService {
   }
 
 }
+
+object PersonService {
+  
+  
+
+}
