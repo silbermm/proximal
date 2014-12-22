@@ -17,6 +17,8 @@ case class Score(id: Option[Long],
                  compentency: Int, 
                  timestamp: Timestamp)
 
+case class ScoreWithQuestionAndStudent(score: Score, question:Question, student: Person);
+
 class Scores(tag: Tag) extends Table[Score](tag, "scores"){
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def studentId = column[Long]("studentId")
@@ -50,7 +52,15 @@ object Scores {
     scores.filter(_.id === id).firstOption
 
   def findByStudent(studentId: Long)(implicit s: Session) = {
-    scores.filter(_.studentId === studentId).list 
+    val q = for { 
+      sc <- scores if sc.studentId === studentId
+      ques <- sc.question
+      stu <- sc.student
+    } yield (sc,ques,stu)
+    val ret = for {
+      (s,q,st) <- q.list
+    } yield ScoreWithQuestionAndStudent(s,q,st)
+    ret
   }
 }
 
