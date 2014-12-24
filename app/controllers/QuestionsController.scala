@@ -12,7 +12,7 @@ import play.api.libs.functional.syntax._
 
 case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], statements:Option[List[Statement]])
 
-class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
+class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
   implicit val statementFormat = Json.format[Statement]
   implicit val questionFormat = Json.format[JsonQuestion]
@@ -20,26 +20,32 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   // initalize the services
   // TODO: make use of dependency injection for this
   val personService = new PersonService()
-  val questionsService : QuestionsService = new QuestionsDBService()
-
-
   def create = SecuredAction(BodyParsers.parse.json) { implicit request =>  
     if (personService.isAdmin(request.user.uid.get)) { 
       request.body.validate[JsonQuestion].fold(
-        errors => BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))),
+        errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
         question => {
-          val ques = convertToQuestion(question)
+          //val ques = convertToQuestion(question)
           if(question.statements.isEmpty) {
-            questionsService.create(ques).map(q =>
-              Ok(Json.toJson(convertToJsonQuestion(q)))
+            Questions.create(question) map (q =>
+              Ok(Json.toJson(q))
             ).getOrElse(
               BadRequest(Json.obj("message" -> "Unable to create the question"))
             )
+            //QuestionsService.create(ques).map(q =>
+            //  Ok(Json.toJson(convertToJsonQuestion(q)))
+            //).getOrElse(
+            //  BadRequest(Json.obj("message" -> "Unable to create the question"))
+            //)
           } else {
-            questionsService.create(ques,question.statements.get) match {
-              case (Some(qs), ss) => Ok(Json.toJson(convertToJsonQuestion(qs,ss)))
+            Questions.create(question, question.statements.get) match {
+              case (Some(qs), ss) => Ok(Json.toJson()
               case _  => BadRequest(Json.obj("message" -> "Unable to create the question"))
             }
+            //QuestionsService.create(ques,question.statements.get) match {
+            //  case (Some(qs), ss) => Ok(Json.toJson(convertToJsonQuestion(qs,ss)))
+            //  case _  => BadRequest(Json.obj("message" -> "Unable to create the question"))
+            //}
           }
         }
       )
@@ -50,13 +56,13 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def list = Action {implicit request =>
     val questions = for { 
-      (q, l)<- questionsService.allWithStatements
+      (q, l)<- QuestionsService.allWithStatements
     } yield convertToJsonQuestion(q.get, l) 
     Ok(Json.toJson(questions))
   } 
   
   def get(id: Long) = Action{ implicit request => 
-    questionsService.findWithStatements(id) match {
+    QuestionsService.findWithStatements(id) match {
       case (Some(question), statements) => Ok(Json.toJson(convertToJsonQuestion(question,statements)))
       case _ => BadRequest(Json.obj("message" -> "Unable to find a question with that id"))
     }

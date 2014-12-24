@@ -1,5 +1,6 @@
 package models
 
+import org.apache.commons.codec.binary.Base64
 import java.util.Date
 import java.sql.Timestamp
 import play.api.db.slick.Config.driver.simple._
@@ -9,7 +10,11 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
+
 case class Question(id: Option[Long], text: String, picture: Option[Array[Byte]], typeId: Option[Long])
+
+case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], statements:Option[List[Statement]])
+
 class Questions(tag: Tag) extends Table[Question](tag,"questions"){
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def text = column[String]("text", O.DBType("Text"))
@@ -26,21 +31,46 @@ object Questions {
 
   def create(q: Question)(implicit s: Session) = 
     (questions returning  questions.map(_.id) into ((question,id) => question.copy(Some(id)))) += q
+  
+  def create(q: JsonQuestion)(implicit s: Session) = {
+    val question = create(convertToQuestion(q))      
+    convertToJsonQuestion(question, None)
+  }
 
+  def create(q: JsonQuestion, statements: List[Statement]) : (Option[Question], List[Statement]) = {
+    create(q) match {
+      case question: JsonQuestion => {
+        val qs = for ( st <- statements) yield QuestionWithStatements(None,question.id.get,st.id.get)
+        for (st <- qs) QuestionsWithStatements.create(st)
+        (Some(question), statements)    
+      }
+      case _ => (None, List.empty)
+    }
+  }
+  
   def update(q: Question)(implicit s: Session) = 
     questions.filter(_.id === q.id.get).update(q)
 
-  def find(id: Long)(implicit s: Session) = questions.filter(_.id === id).firstOption
+  def update(q: JsonQuestion)(implicit s: Session) = {
+    update(convertToQuestion(q))
+  }
+  
+  def find(id: Long)(implicit s: Session) = 
+    questions.filter(_.id === id).firstOption
 
-  def all(implicit s: Session) = 
-    questions.list
+  def all(implicit s: Session) = {
+    val query = for {
+      q <- questions
+    } yield convertToJsonQuestion(q, None)
+    query.list
+  }
 
-  def findWithStatements(id: Long)(implicit s: Session) : (Option[Question], List[Statement])= {
+  def findWithStatements(id: Long)(implicit s: Session) : JsonQuestion = {
     var query = for {
       qws <- questionsWithStatements if qws.questionId === id
       s <- qws.statements
     } yield s
-    return (find(id), query.list)
+    convertToJsonQuestion(find(id), Some(query.list)) 
   }
 
   def findByStatement(statementId: Long)(implicit s: Session) : (List[Question], Option[Statement])= {
@@ -51,4 +81,22 @@ object Questions {
     (query.list, Statements.find(statementId))
   }
 
+  def convertToQuestion(q : JsonQuestion): Question = {
+    val p =  q.picture.map(pic =>
+      Some(Base64.decodeBase64(pic))
+    ).getOrElse(
+      None
+    )
+    Question(q.id,q.text,p,q.typeId) 
+  }
+
+  def convertToJsonQuestion(q: Question, l: Option[List]): JsonQuestion = {
+    val p = q.picture.map(pic =>
+      Some(Base64.encodeBase64String(pic))
+    ).getOrElse(
+      None
+    )
+    JsonQuestion(q.id,q.text,p,q.typeId, l)
+  }
+  
 }

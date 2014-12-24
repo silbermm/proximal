@@ -22,7 +22,6 @@ class QuestionsServiceSpec extends PlaySpec with Results {
   import QuestionsHelpers._
   import StandardsHelpers._
 
-  val questionsService: QuestionsService = new QuestionsDBService()
   val standardsService = new StandardsService() 
 
   "Questions Service" should {
@@ -31,7 +30,7 @@ class QuestionsServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){ 
         val s1 =  standardsService.create(fakeStatement) 
         val s2 = standardsService.create(fakeStatement2)
-        questionsService.create(fakeQuestion, List(s1,s2)) match {
+        QuestionsService.create(fakeQuestion, List(s1,s2)) match {
           case (Some(q), statements) => statements must have length fakeStatements.size
           case _ => fail("failure is not an option")
         }
@@ -42,8 +41,8 @@ class QuestionsServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){ 
         val s1 =  standardsService.create(fakeStatement) 
         val s2 = standardsService.create(fakeStatement2)
-        val que = questionsService.create(fakeQuestion, List(s1,s2))
-        questionsService.findWithStatements(que._1.get.id.get) match {
+        val que = QuestionsService.create(fakeQuestion, List(s1,s2))
+        QuestionsService.findWithStatements(que._1.get.id.get) match {
           case (Some(q), statementList) => statementList must have length 2
           case _ => fail("your such a failure")
         }
@@ -54,8 +53,8 @@ class QuestionsServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())){ 
         val s1 =  standardsService.create(fakeStatement) 
         val s2 = standardsService.create(fakeStatement2)
-        val que = questionsService.create(fakeQuestion, List(s1,s2))
-        questionsService.allWithStatements match {
+        val que = QuestionsService.create(fakeQuestion, List(s1,s2))
+        QuestionsService.allWithStatements match {
           case res: List[(Option[Question], List[Statement])] => {
             res must have length 1 
             res.head._2 must have length 2
