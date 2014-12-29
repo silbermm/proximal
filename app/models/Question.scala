@@ -29,15 +29,15 @@ object Questions {
   lazy val questions = TableQuery[Questions]
   lazy val questionsWithStatements = QuestionsWithStatements.qWithS
 
-  def create(q: Question)(implicit s: Session) = 
+  def create(q: Question)(implicit s: Session) : Question = 
     (questions returning  questions.map(_.id) into ((question,id) => question.copy(Some(id)))) += q
   
-  def create(q: JsonQuestion)(implicit s: Session) = {
+  def create(q: JsonQuestion)(implicit s: Session) : JsonQuestion = {
     val question = create(convertToQuestion(q))      
     convertToJsonQuestion(question, None)
   }
 
-  def create(q: JsonQuestion, statements: List[Statement]) : (Option[Question], List[Statement]) = {
+  def create(q: JsonQuestion, statements: List[Statement])(implicit s: Session) : (Option[JsonQuestion], List[Statement]) = {
     create(q) match {
       case question: JsonQuestion => {
         val qs = for ( st <- statements) yield QuestionWithStatements(None,question.id.get,st.id.get)
@@ -48,10 +48,10 @@ object Questions {
     }
   }
   
-  def update(q: Question)(implicit s: Session) = 
+  def update(q: Question)(implicit s: Session): Int = 
     questions.filter(_.id === q.id.get).update(q)
 
-  def update(q: JsonQuestion)(implicit s: Session) = {
+  def update(q: JsonQuestion)(implicit s: Session): Int = {
     update(convertToQuestion(q))
   }
   
@@ -61,8 +61,11 @@ object Questions {
   def all(implicit s: Session) = {
     val query = for {
       q <- questions
-    } yield convertToJsonQuestion(q, None)
-    query.list
+    } yield q
+    val jquestions = for {
+      question <- query.list
+    } yield convertToJsonQuestion(question,None)
+    jquestions
   }
 
   def findWithStatements(id: Long)(implicit s: Session) : JsonQuestion = {
@@ -70,7 +73,7 @@ object Questions {
       qws <- questionsWithStatements if qws.questionId === id
       s <- qws.statements
     } yield s
-    convertToJsonQuestion(find(id), Some(query.list)) 
+    convertToJsonQuestion(find(id).get, Some(query.list)) 
   }
 
   def findByStatement(statementId: Long)(implicit s: Session) : (List[Question], Option[Statement])= {
@@ -90,7 +93,7 @@ object Questions {
     Question(q.id,q.text,p,q.typeId) 
   }
 
-  def convertToJsonQuestion(q: Question, l: Option[List]): JsonQuestion = {
+  def convertToJsonQuestion(q: Question, l: Option[List[Statement]]): JsonQuestion = {
     val p = q.picture.map(pic =>
       Some(Base64.encodeBase64String(pic))
     ).getOrElse(

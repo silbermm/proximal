@@ -32,7 +32,6 @@ object BasicProfileGenerator {
 
 object ChildGenerator {
 
-
   implicit val edlevelFormater = Json.format[EducationLevel]
 
   val nameGen = for {
@@ -44,5 +43,18 @@ object ChildGenerator {
   def child(edLevel: EducationLevel) : JsValue = { 
     val json = Json.obj("firstName" -> nameGen.sample.get, "lastName"->nameGen.sample.get, "birthDate"-> (new Date()).getTime(), "educationLevel" -> Json.toJson(edLevel)) 
     return json
+  }
+}
+
+
+object QuestionGenerator {
+  val nameGen = for {
+      head <- Gen.alphaUpperChar
+      size<- Gen.choose(1,10)
+      tail <- Gen.listOfN(size,Gen.alphaLowerChar)
+  } yield (head +: tail).mkString("")
+  
+  def question : JsValue = {
+    Json.obj("id"->JsNull, "text" -> nameGen.sample.get, "picture"-> JsNull,"typeId" -> JsNull, "statements" -> JsNull)
   }
 }

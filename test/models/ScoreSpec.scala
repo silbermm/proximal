@@ -33,7 +33,7 @@ class ScoreSpec extends PlaySpec with Results {
         DB.withSession{ implicit s =>
           val person = People.insertPerson(fakePerson)
           val question = Questions.create(fakeQuestion) 
-          val t = new Timestamp(Platform.currentTime) 
+          val t = Platform.currentTime
 
           person.id must not be empty
           question.id must not be empty

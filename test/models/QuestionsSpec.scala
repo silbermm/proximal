@@ -80,12 +80,9 @@ class QuestionsSpec extends PlaySpec with Results {
           val qs = QuestionsWithStatements.create(questionWithStatemnents) 
           qs.id must not be empty
 
-          Questions.findWithStatements(qs.id.get) match {
-            case (Some(q), statements) => {
-              statements must have length 1
-            }
-            case _ => fail("did not get the correct data")
-          }
+          val questionsWithStatements = Questions.findWithStatements(qs.id.get)
+          questionsWithStatements.statements.get must have length 1
+
         }
       }
     }

@@ -7,7 +7,6 @@ import scala.slick.SlickException
 import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
-import java.sql.Timestamp
 import scala.compat.Platform
 import models._
 
@@ -15,16 +14,16 @@ case class Score(id: Option[Long],
                  studentId: Long, 
                  questionId: Long, 
                  compentency: Int, 
-                 timestamp: Timestamp)
+                 timestamp: Long)
 
-case class ScoreWithQuestionAndStudent(score: Score, question:Question, student: Person);
+case class ScoreWithQuestionAndStudent(score: Score, question:JsonQuestion, student: Person);
 
 class Scores(tag: Tag) extends Table[Score](tag, "scores"){
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def studentId = column[Long]("studentId")
   def questionId = column[Long]("questionId")
   def compentency = column[Int]("compentency")
-  def timestamp = column[Timestamp]("timestamp", O.Default(new Timestamp(Platform.currentTime)))
+  def timestamp = column[Long]("timestamp", O.Default(Platform.currentTime))
   def * = (id.?, studentId, questionId, compentency, timestamp) <>  (Score.tupled, Score.unapply _)
 
   def student = foreignKey("student", studentId, People.people)(_.id)
@@ -59,7 +58,7 @@ object Scores {
     } yield (sc,ques,stu)
     val ret = for {
       (s,q,st) <- q.list
-    } yield ScoreWithQuestionAndStudent(s,q,st)
+    } yield ScoreWithQuestionAndStudent(s,Questions.convertToJsonQuestion(q,None),st)
     ret
   }
 }

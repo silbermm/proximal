@@ -39,8 +39,7 @@ class PersonControllerSpec  extends PlaySpec with Results {
     }
 
     "allow a logged in user to add a child" in {
-      running(SecureSocialHelper.app){
-        
+      running(SecureSocialHelper.app){ 
         DB.withSession{ implicit s =>
           val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
           val Some(edLevel) = EducationLevels.find(e.id.get)
@@ -51,6 +50,5 @@ class PersonControllerSpec  extends PlaySpec with Results {
         }
       }
     }
-
   }
 }
