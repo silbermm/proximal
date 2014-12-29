@@ -25,14 +25,14 @@ class QuestionControllerSpec extends PlaySpec with Results {
 
 
   "Question Controller" should {
-    "allow a logged in user to create a new question" in {
+    "not allow a non admin to create a new question" in {
       running(SecureSocialHelper.app){
         val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
         Logger.debug(creds1.get("id").get.toString)
         val qu = QuestionGenerator.question
         val Some(resp) = route(FakeRequest(POST, "/api/v1/questions").withCookies(creds1.get("id").get).withJsonBody(QuestionGenerator.question))
 
-        status(resp) mustEqual OK 
+        status(resp) mustEqual UNAUTHORIZED
       }
     }
   }

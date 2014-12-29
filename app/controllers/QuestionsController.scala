@@ -16,8 +16,6 @@ import helpers.ImplicitJsonFormat._
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
-  // initalize the services
-  // TODO: make use of dependency injection for this
   val personService = new PersonService()
   
   def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
@@ -44,43 +42,16 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def list = Action {implicit request =>
-    //val questions = for { 
-    //  (q, l)<- QuestionsService.allWithStatements
-    //} yield convertToJsonQuestion(q.get, l) 
-    //Ok(Json.toJson(questions))
-    Ok
+    DB.withSession{ implicit s=>
+      val q = Questions.allWithStatements
+      Ok(Json.toJson(q))
+    }
   } 
   
   def get(id: Long) = Action{ implicit request => 
-    //QuestionsService.findWithStatements(id) match {
-    //  case (Some(question), statements) => Ok(Json.toJson(convertToJsonQuestion(question,statements)))
-     // case _ => BadRequest(Json.obj("message" -> "Unable to find a question with that id"))
-      Ok 
-    //}
+    DB.withSession{ implicit s=> 
+      val q = Questions.findWithStatements(id) 
+      Ok(Json.toJson(q)) 
+    }
   }
-
-/*
-  def convertToQuestion(q : JsonQuestion): Question = {
-    val p =  q.picture.map(pic =>
-      Some(Base64.decodeBase64(pic))
-    ).getOrElse(
-      None
-    )
-    Question(q.id,q.text,p,q.typeId) 
-  }
-
-  def convertToJsonQuestion(q: Question): JsonQuestion = {
-    val p = q.picture.map(pic =>
-      Some(Base64.encodeBase64String(pic))
-    ).getOrElse(
-      None
-    )
-    JsonQuestion(q.id,q.text,p,q.typeId,None)
-  }
-
-  def convertToJsonQuestion(q: Question, l: List[Statement]) : JsonQuestion = {
-    val jsonQuestion : JsonQuestion = convertToJsonQuestion(q)
-    jsonQuestion.copy(statements = Some(l))
-  }
-*/
 }

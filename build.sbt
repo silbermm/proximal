@@ -2,6 +2,8 @@ import com.typesafe.sbt.SbtGit._
 
 name := """IT5041-web"""
 
+javaOptions in Test += "-Dconfig.file=conf/test.conf"
+
 versionWithGit
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

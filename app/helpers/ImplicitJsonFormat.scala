@@ -9,4 +9,5 @@ object ImplicitJsonFormat {
   implicit val statementFormat = Json.format[Statement]
   implicit val questionFormat = Json.format[JsonQuestion]
   implicit val scoresExtendedFormat = Json.format[ScoreWithQuestionAndStudent]
+  implicit val answersFormat = Json.format[Answer]
 }
