@@ -21,7 +21,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
     DB.withSession{ implicit s =>
       Logger.debug(request.user.toString)
-      if (personService.isAdmin(request.user.uid.get)) { 
+      if ( People.isAdminByUid(request.user.uid.get)) {
         request.body.validate[JsonQuestion].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           question => {
@@ -38,6 +38,15 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
       } else {
         Unauthorized(Json.obj("message" -> "You do not have permission to perform that action"))
       }
+    }
+  }
+
+  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    DB.withSession{ implicit s=> 
+      if ( People.isAdminByUid(request.user.uid.get)) {
+        Ok;
+      }
+      Unauthorized;
     }
   }
 

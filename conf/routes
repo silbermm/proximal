@@ -34,14 +34,13 @@ DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsCont
 
 
 #Questions
-GET   /api/v1/questions                               @controllers.QuestionsController.list
-POST  /api/v1/questions                               @controllers.QuestionsController.create
-GET   /api/v1/questions/:id                           @controllers.QuestionsController.get(id: Long)
-
-
+GET   /api/v1/questions       @controllers.QuestionsController.list
+POST  /api/v1/questions       @controllers.QuestionsController.create
+PUT   /api/v1/questions/:id   @controllers.QuestionsController.update(id: Long)
+GET   /api/v1/questions/:id   @controllers.QuestionsController.get(id: Long)
 
 #Dummy
-GET     /api/v1/dummies             @controllers.DummyController.listDummies()
+GET     /api/v1/dummies       @controllers.DummyController.listDummies()
 
 
 

@@ -150,6 +150,17 @@ object People {
   def findPersonByUid(uid: Long)(implicit s: Session) =
     people.filter(_.uid === uid).firstOption
 
+  def isAdminByUid(uid: Long)(implicit s: Session) : Boolean = {
+    people.filter(_.uid === uid).firstOption.map(person => {
+      People.findRoles(person).find(_.name == "admin") match {
+          case Some(role) => true
+          case _ => false
+        } 
+    }).getOrElse(
+      false
+    )
+  }
+
   def findWithEducationLevel(id: Long)(implicit s: Session):(Person,EducationLevel) = {
     val query = for {
       child <- people if child.id === id
