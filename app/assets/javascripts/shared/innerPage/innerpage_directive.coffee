@@ -61,7 +61,7 @@ InnerPageElement = ($log)->
   link: (scope, el, attr,ctrl)->
     scope.elementId = el.attr('id')
     $(document).click((event)->
-      if !$(event.target).closest('#' + scope.elementId).length
+      if( !$(event.target).closest('#' + scope.elementId).length) 
         if ctrl.isOpen() 
           ctrl.closeInnerPage()
     )

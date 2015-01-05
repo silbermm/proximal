@@ -10,8 +10,7 @@ import scala.concurrent.Future
 
 class AlwaysValidIdentityProvider extends IdentityProvider{
     val logger = Logger("securesocial.stubs.AlwaysValidIdentityProvider")
-      def authMethod: AuthenticationMethod = AuthenticationMethod("naive")
-
+    def authMethod: AuthenticationMethod = AuthenticationMethod("naive")
         override def authenticate()(implicit request: Request[play.api.mvc.AnyContent]): Future[AuthenticationResult] ={
               Future.successful(Authenticated(BasicProfileGenerator.basicProfile()))
                 }
@@ -19,7 +18,6 @@ class AlwaysValidIdentityProvider extends IdentityProvider{
           val id: String = "naive"
 }
 object AlwaysValidIdentityProvider{
-
     abstract class RuntimeEnvironment[U] extends RuntimeEnvironment.Default[U]{
           override lazy val providers: ListMap[String, IdentityProvider] = ListMap(include(new AlwaysValidIdentityProvider))
             }

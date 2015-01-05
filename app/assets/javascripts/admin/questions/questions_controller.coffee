@@ -59,11 +59,9 @@ angular.module("proximal").controller "QuestionsCtrl",[
 angular.module("proximal").controller "AddQuestionCtrl",[
   "$log"
   "$scope"
-  "$modalInstance"
   "prox.common"
   "standardsService"
-  "obj"
-  ($log,$scope,$modalInstance,common,standardsService, obj)->
+  ($log,$scope,common,standardsService)->
     
     $scope.select2 = {}
 
@@ -110,13 +108,13 @@ angular.module("proximal").controller "AddQuestionCtrl",[
       statements = _.map($scope.select2.statements, (st)->
         st.statement
       )
-      $modalInstance.close({
-        "text" : $scope.question.text
-        "picture" : pic
-        "statements" : statements
-      })
+      #$modalInstance.close({
+      #  "text" : $scope.question.text
+      #  "picture" : pic
+      #  "statements" : statements
+      #})
 
     $scope.cancel = ->
-      $modalInstance.dismiss("cancel")
+      #$modalInstance.dismiss("cancel")
 
 ]

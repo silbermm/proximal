@@ -6,6 +6,9 @@ import play.api.GlobalSettings
 import play.api.test.{FakeRequest, WithApplication, FakeApplication, PlaySpecification}
 import securesocial.core.RuntimeEnvironment
 
+import securesocial.core._
+import securesocial.core.services._
+
 import collection.mutable.Stack
 import scala.concurrent.Future
 import org.scalatest._
@@ -32,10 +35,8 @@ class QuestionControllerSpec extends PlaySpec with Results {
     "not allow a non admin to create a new question" in {
       running(SecureSocialHelper.app){
         val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
-        Logger.debug(creds1.get("id").get.toString)
         val qu = QuestionGenerator.question
         val Some(resp) = route(FakeRequest(POST, "/api/v1/questions").withCookies(creds1.get("id").get).withJsonBody(QuestionGenerator.question))
-
         status(resp) mustEqual UNAUTHORIZED
       }
     }
@@ -44,7 +45,11 @@ class QuestionControllerSpec extends PlaySpec with Results {
       running(SecureSocialHelper.app) {
         DB.withSession{ implicit s=>
           val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
+      
+        Logger.debug(creds1.get("id").get.toString); 
 
+        //SecureUsers.save(UserProfileHelpers.profileFromUser(creds1.get("id").get), SaveMode.LoggedIn)
+          
           val fakeRole = new Role(None,"admin","Administrator of the system")
           val r = Roles.insert(fakeRole)
           r.id must not be empty

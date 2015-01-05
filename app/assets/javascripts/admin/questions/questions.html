@@ -1,12 +1,18 @@
 <!-- <section ng-if="!state.current.data.hideQuestions"> -->
-<section class="col-lg-12 col-sm-12 col-xs-12 col-md-12" ng-if="!state.current.data.hideQuestions">
-  
+<section class="col-lg-12 col-sm-12 col-xs-12 col-md-12" ng-if="!state.current.data.hideQuestions">  
+ 
+  <div class="row top" ng-if="addQuestion">
+    <div class="col-lg-12">
+      <question-add></question-add>  
+    </div>
+  </div>
+
   <div class="row top">
     <div class="col-lg-12">
       <div class="widget">
         <div class="widget-header">
           <i class="fa fa-question"></i> Questions
-          <button class="btn btn-sm btn-success" style="margin: 0px 10px" ng-click="addQuestion()"> 
+          <button class="btn btn-sm btn-success" style="margin: 0px 10px" ng-click="addQuestion=!addQuestion"> 
             Add a Question 
           </button>
           <input type="text" placeholder="Search" class="form-control input-sm pull-right" data-ng-model="searchText"/>

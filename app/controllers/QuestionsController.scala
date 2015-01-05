@@ -1,12 +1,10 @@
 package controllers
 
-
-import org.apache.commons.codec.binary.Base64
 import play.api._
 import play.api.mvc._
-import services._
 import securesocial.core._
 import models._
+import helpers.RolesHelper
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -15,13 +13,10 @@ import play.api.Play.current
 import helpers.ImplicitJsonFormat._
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
-
-  val personService = new PersonService()
-  
+ 
   def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
     DB.withSession{ implicit s =>
-      Logger.debug(request.user.toString)
-      if ( People.isAdminByUid(request.user.uid.get)) {
+      RolesHelper.admin(request.user.uid.get, uid => {
         request.body.validate[JsonQuestion].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           question => {
@@ -35,18 +30,24 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
             }
           }
         )
-      } else {
-        Unauthorized(Json.obj("message" -> "You do not have permission to perform that action"))
-      }
+      })
     }
   }
 
   def update(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     DB.withSession{ implicit s=> 
-      if ( People.isAdminByUid(request.user.uid.get)) {
-        Ok;
-      }
-      Unauthorized;
+      RolesHelper.admin(request.user.uid.get, uid => {
+        request.body.validate[JsonQuestion].fold(
+          errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
+          question => {
+            Questions.update(question) match {
+              case 1 => Ok
+              case 0 => NoContent
+              case _ => BadRequest
+            }
+          }
+        )   
+      })
     }
   }
 

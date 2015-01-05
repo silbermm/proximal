@@ -17,6 +17,15 @@ QuestionDetailsDirective = ($log, $state,common)->
   templateUrl: "../assets/javascripts/admin/questions/detail_question.html"
   link : (scope,elem,attr)->
     
+QuestionAddDirective = ($log, common)->
+  restrict: "E"
+  scope: {}
+  replace: true
+  templateUrl: "../assets/javascripts/admin/questions/add_question.html"
+  controller: "AddQuestionCtrl" 
+  link: (scope,elem,attr) ->
+
+
 QuestionPictureDirective = ($log,$q)->
   restrict: "A"
   scope: true
@@ -38,3 +47,4 @@ QuestionPictureDirective = ($log,$q)->
 angular.module("proximal").directive "question", QuestionDirective
 angular.module("proximal").directive "questionPicture", ['$log', '$q', QuestionPictureDirective]
 angular.module("proximal").directive "questionDetails", ['$log', '$state', 'prox.common' ,QuestionDetailsDirective]
+angular.module("proximal").directive "questionAdd", ["$log", "prox.common", QuestionAddDirective]
