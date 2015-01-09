@@ -1,58 +1,52 @@
 <form novalidate role="form" name="form">
+  <div class="modal-header">
+    <h3 class="modal-title">Add a Quesiton </h3>
+  </div>
   <div class="modal-body">
     <div class="form-group" data-ng-class="{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}" >
       <label for="text" class="sr-only"> Write your Question </label>
-      <textarea name="text" rows="10" data-ng-model="question.text" class="form-control" id="questionText" placeholder="Write Your Question" required></textarea>
+      <textarea name="text" rows="5" data-ng-model="question.text" class="form-control" id="questionText" placeholder="Write Your Question" required></textarea>
     </div>
 
+    <div class="form-group" data-ng-class="{'has-error': form.answer.$invalid, 'has-success': !form.answer.$invalid}" >
+      <label for="Answer" class="sr-only"> Give an answer (Optional) </label>
+      <textarea name="answer" rows="5" data-ng-model="question.answer" class="form-control" id="questionAnswer" placeholder="Give an Answer (Optional)" > </textarea>
+    </div>
+   
     <div class="form-group" data-ng-class="{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}" >
       <label for="picture"> Add a photo </label>
       <input type="file" name="picture" id="picture" data-ng-model="picture" base-sixty-four-input accept="image/gif, image/jpeg, image/png, image/jpg">
     </div>
-   
-     
+    
     <div class="form-group" data-ng-class="">
       <label for="standard"> Align with a Standard </label>
       <select name="standard" ng-model="standardSelected" class="form-control" ng-options="standard.title for standard in availableStandards" ng-change="getStatements()" >
         <option value=""> -- Choose a Standard -- </option>
       </select>
     </div>
-
+    
     <div class="form-group" data-ng-if="showEducationLevels()">
       <label for="educationlevels"> Filter by Education Level(s) </label>
-      <ui-select multiple data-ng-model="select2.educationLevels" theme="select2" 
-                 ng-disabled="disabled" class="form-control" ng-change="educationLevelChange()" >
+      <ui-select multiple data-ng-model="select2.educationLevels" theme="select2" ng-disabled="disabled" class="form-control" ng-change="educationLevelChange()" >
         <ui-select-match placeholder="Education levels that this statement applys"> {{$item.description}} </ui-select-match>
-         <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
-           <div ng-bind-html="level.description | highlight: $select.search"></div>
-         </ui-select-choices>    
+          <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search"> <div ng-bind-html="level.description | highlight: $select.search"></div>
+          </ui-select-choices>
       </ui-select>
-    </div>
-
-    <div class="form-group" data-ng-class="" data-ng-if="showStatements()">
-      <label for="statements"> Available Statements </label>
+    </div> 
+    
+    <div class="form-group" data-ng-class="" data-ng-if="showStatements()"> <label for="statements"> Available Statements </label>
       <ui-select multiple data-ng-model="select2.statements" theme="select2" ng-disabled="disabled" class="form-control">
         <ui-select-match placeholder="Statements that this question covers"> {{$item.statement.description}} </ui-select-match>
-         <ui-select-choices repeat="statement in availableStatements| filter:$select.search">
-           <div ng-bind-html="statement.statement.description | highlight: $select.search"></div>
-         </ui-select-choices>    
+        <ui-select-choices repeat="statement in availableStatements| filter:$select.search">
+          <div ng-bind-html="statement.statement.description | highlight: $select.search"></div>
+        </ui-select-choices>
       </ui-select>
     </div>
+  
+  </div> 
 
-   </div>
-
-    <!--
-    <div class="form-group" data-ng-class="{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}" > 
-      <label for="educationLevel" class="sr-only"> Current Grade Level </label>
-      <select name="educationLevel" class="forn-control" ng-model="child.gradeLevel" ng-options="a.description for a in availableLevels"  required >
-         <option value=""> -- For Grade Level -- </option>
-      </select>
-    </div>
-    -->
-
-</div>
-<div class="modal-footer">
-  <button class="btn btn-primary" ng-click="ok()" ng-disabled="form.$invalid">Create</button>
-  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-</div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()" ng-disabled="form.$invalid">Create</button> 
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
 </form>
