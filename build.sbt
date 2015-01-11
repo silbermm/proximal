@@ -22,7 +22,6 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %% "play" % "1.1.0" % "test",
   "ws.securesocial" %% "securesocial" % "master-SNAPSHOT",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
-  "com.amazonaws" % "aws-java-sdk" % "1.9.7", 
   "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "angularjs" % "1.3.0",
@@ -39,12 +38,3 @@ libraryDependencies ++= Seq(
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
 
-pipelineStages := Seq(digest, gzip)
-
-BowerKeys.frontendDependencies ++= Seq(
-  "angular" %%% "=1.2.0-rc.2"  
-)
-
-BowerKeys.sourceDirectory <<= baseDirectory(_ / "app" / "assets") 
-
-BowerKeys.installDirectory <<= sourceDirectory(_ / "lib")

@@ -34,14 +34,14 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
-  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def update = SecuredAction(BodyParsers.parse.json) { implicit request =>
     DB.withSession{ implicit s=> 
       RolesHelper.admin(request.user.uid.get, uid => {
         request.body.validate[JsonQuestion].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           question => {
             Questions.update(question) match {
-              case 1 => Ok
+              case 1 => Ok(Json.toJson(question))
               case 0 => NoContent
               case _ => BadRequest
             }
@@ -63,5 +63,16 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
       val q = Questions.findWithStatements(id) 
       Ok(Json.toJson(q)) 
     }
+  }
+
+  def delete(id: Long) = SecuredAction{ implicit request => 
+   DB.withSession{ implicit s=> 
+    RolesHelper.admin(request.user.uid.get, uid => {
+      Questions.delete(id) match {
+        case 1 => Ok
+        case _ => BadRequest(Json.obj("message" -> "Did not delete the record"))
+      }
+    })
+   }
   }
 }

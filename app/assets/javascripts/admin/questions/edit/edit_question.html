@@ -1,6 +1,6 @@
-<div class="row top col-md-12" >
+<div class="row top col-md-12" ng-init="init()">
   <div class="col-md-4">
-    <div class="thumbnail" question-picture picture-padding="74%"> </div>
+    <div class="thumbnail" > </div>
     <button class="btn btn-primary"> Change Picture </button>
   </div>
   <div class="col-md-8">
@@ -15,18 +15,7 @@
         <option value=""> -- None -- </option>
       </select> 
     </div>
-    
-    <div class="form-group">
-      <label for="educationlevels"> Education Level(s) </label>
-      <ui-select multiple data-ng-model="select2.educationLevels" theme="select2" 
-             ng-disabled="disabled" class="form-control" >
-      <ui-select-match placeholder="None Selected"> {{$item.description}} </ui-select-match>
-       <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
-         <div ng-bind-html="level.description | highlight: $select.search"></div>
-       </ui-select-choices>    
-      </ui-select>
-    </div>
-    
+        
     <div class="form-group" >
       <label for="statements"> Associated Statements </label>
       <ui-select multiple data-ng-model="select2.statements" theme="select2" ng-disabled="disabled" class="form-control">
@@ -44,7 +33,7 @@
   <div class="col-md-4">
   </div>
   <div class="col-md-8">
-    <button class="btn btn-success btn-lg"> Update  </button>
-    <button class="btn btn-danger btn-lg"> Delete Question </button>
+    <button class="btn btn-success" ng-click="update()"> Update  </button>
+    <button class="btn btn-danger" ng-click="delete()"> Delete Question </button>
   </div>
 </div>

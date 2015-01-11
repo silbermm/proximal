@@ -11,23 +11,19 @@ import play.api.Play.current
 import play.api.Logger
 
 
-case class Question(id: Option[Long], text: String, picture: Option[Array[Byte]], typeId: Option[Long], answerId: Option[Long])
+case class Question(id: Option[Long], text: String, picture: Option[Array[Byte]], typeId: Option[Long], answer: Option[String])
 
-case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], answerId: Option[Long], statements:Option[List[Statement]])
+case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], answer: Option[String], statements:Option[List[Statement]])
 
 class Questions(tag: Tag) extends Table[Question](tag,"questions"){
-  
-  lazy val answers = Answers.answers
    
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def text = column[String]("text", O.DBType("Text"))
   def picture = column[Option[Array[Byte]]]("picture")
   def typeId = column[Option[Long]]("type_id")
-  def answerId = column[Option[Long]]("answer_id")
+  def answer = column[Option[String]]("answer", O.DBType("Text"))
 
-  def * = (id.?, text, picture, typeId, answerId) <> (Question.tupled, Question.unapply _)
-
-  def answer = foreignKey("answer", answerId, answers)(_.id)
+  def * = (id.?, text, picture, typeId, answer) <> (Question.tupled, Question.unapply _)
 }
 
 object Questions {
@@ -63,14 +59,25 @@ object Questions {
   
   def find(id: Long)(implicit s: Session) : Option[Question] = 
     questions.filter(_.id === id).firstOption
- 
+
+  def delete(id: Long)(implicit s: Session): Int = {
+    find(id) match {
+      case Some(ques) => {
+        for (
+          qws <- QuestionsWithStatements.findByQuestionId(ques.id.get)
+        ) QuestionsWithStatements.delete(qws.id.get)
+        questions.filter(_.id === id).delete 
+      }
+      case None => 0
+    }
+  }
+
   def findJsonQuestion(id: Long)(implicit s: Session) : Option[JsonQuestion] = 
     questions.filter(_.id === id).firstOption match {
       case Some(q) => Some(convertToJsonQuestion(q, None))
       case _       => None
     }
     
-
   def all(implicit s: Session) = {
     val query = for {
       q <- questions
@@ -109,7 +116,7 @@ object Questions {
     ).getOrElse(
       None
     )
-    Question(q.id,q.text,p,q.typeId, q.answerId) 
+    Question(q.id,q.text,p,q.typeId, q.answer) 
   }
 
   def convertToJsonQuestion(q: Question, l: Option[List[Statement]]): JsonQuestion = {
@@ -118,7 +125,7 @@ object Questions {
     ).getOrElse(
       None
     )
-    JsonQuestion(q.id,q.text,p,q.typeId,q.answerId, l)
+    JsonQuestion(q.id,q.text,p,q.typeId,q.answer,l)
   }
   
 }
