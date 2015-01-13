@@ -34,7 +34,7 @@
           }
 
           @if( UsernamePasswordProvider.withUserNameSupport ) {
-            @helper.inputText(signUpForm("userName"), '_label -> Messages("securesocial.signup.username"), class -> "input-xlarge form-control")
+            @helper.inputText(signUpForm("userName"), '_label -> Messages("securesocial.signup.username"), 'class -> "input-xlarge form-control")
           }
           @helper.inputText( signUpForm("firstName"), '_label -> Messages("securesocial.signup.firstName"),'placeholder -> "Firstname" 
           )
