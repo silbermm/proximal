@@ -1,4 +1,5 @@
 @(signUpForm:Form[securesocial.controllers.RegistrationInfo], mailToken: String)(implicit request: RequestHeader, lang: Lang, env: securesocial.core.RuntimeEnvironment[_])
+
 @import securesocial.core.providers.UsernamePasswordProvider
 @import securesocial.core.IdentityProvider
 @import helper._
@@ -8,8 +9,22 @@
 
 @layouts.registration_layout(title = "Sign up for an account") {
 
-  <div class="container login-page">
-    <div class="login-wrapper">
+  <div class="container login-block">
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4"> 
+          <h3 class="animated bounceInDown">Login to Proximal</h3> 
+          <div class="login-box clearfix animated flipInY">
+            <div class="login-logo">
+              <a><img src="@routes.Assets.at("images/company-logo.png")" alt="Proximal" /></a>
+            </div> 
+            <hr />
+       
+            <div class="login-form">
+              @request.flash.get("error").map { msg =>
+                <div class="alert alert-danger">
+                  @msg
+                </div>
+              }
        <form action="@securesocial.controllers.routes.Registration.handleSignUp(mailToken).absoluteURL(IdentityProvider.sslEnabled)" class="form-horizontal" autocomplete= "off" method="POST" >
          <legend>Create an account for Proximal Learning </legend>
           @request.flash.get("error").map { msg =>
@@ -19,38 +34,26 @@
           }
 
           @if( UsernamePasswordProvider.withUserNameSupport ) {
-            @helper.inputText(signUpForm("userName"), '_label -> Messages("securesocial.signup.username"), 'class -> "input-xlarge form-control")
+            @helper.inputText(signUpForm("userName"), '_label -> Messages("securesocial.signup.username"), class -> "input-xlarge form-control")
           }
-          @helper.inputText( signUpForm("firstName"), '_label -> Messages("securesocial.signup.firstName"), 'class -> "input-xlarge form-control"
+          @helper.inputText( signUpForm("firstName"), '_label -> Messages("securesocial.signup.firstName"),'placeholder -> "Firstname" 
           )
-          @helper.inputText( signUpForm("lastName"), '_label -> Messages("securesocial.signup.lastName"), 'class -> "input-xlarge form-control"
+          @helper.inputText( signUpForm("lastName"), '_label -> Messages("securesocial.signup.lastName"), 'placeholder -> "Lastname"
           )
-          @helper.inputPassword( signUpForm("password.password1"), '_label -> Messages("securesocial.signup.password1"), 'class -> "input-xlarge form-control")
-          @helper.inputPassword( signUpForm("password.password2"), '_label -> Messages("securesocial.signup.password2"), '_error -> signUpForm.error("password"), 'class -> "input-xlarge form-control"
+          @helper.inputPassword( signUpForm("password.password1"), '_label -> Messages("securesocial.signup.password1"), 'placeholder -> "Password")
+          @helper.inputPassword( signUpForm("password.password2"), '_label -> Messages("securesocial.signup.password2"), '_error -> signUpForm.error("password"), 'placeholder -> "Confirm Password"
           )
-         <div class="form-group">
-           <div class="col-xs-offset-4 col-xs-8">
-             <button class="btn btn-primary" type="submit"> @Messages("securesocial.signup.createAccount") </button>
-             <a class="btn" href="@env.routes.loginPageUrl">@Messages("securesocial.signup.cancel")</a>
+          <button class="btn btn-primary" type="submit"> @Messages("securesocial.signup.createAccount") </button>
            </div>
          </div>
        </form>
-    </div>
-
-  </div>
-
-  <footer>
-    <nav class="navbar navbar-default navbar-fixed-bottom"
-    role="navigation" style="background-color:#fff;">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <span class="navbar-brand">
-            <span class="small copyright"> © Poximal Learning LLC @{new Date().format("yyyy")} </span>
-          </span>
-        </div>
+       <div class="login-links"> 
+         <a href="@env.routes.loginPageUrl"> Cancel </a>
+         <br />
+       </div> 
       </div>
-    </nav>
-  </footer>
-
-
+    </div>
+  </div> 
+    </div>
+  </div>
 }
