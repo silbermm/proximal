@@ -15,8 +15,19 @@
         <option value=""> -- None -- </option>
       </select> 
     </div>
-        
-    <div class="form-group" >
+       
+    <div class="row">
+      <!-- Put each statement that applys -->
+    </div>
+
+    <div class="form-group">
+      <!-- 
+        Put all statements as checkboxes available in this standard 
+        organized by grade level   
+      -->
+    </div>
+
+    <!-- <div class="form-group" >
       <label for="statements"> Associated Statements </label>
       <ui-select multiple data-ng-model="select2.statements" theme="select2" ng-disabled="disabled" class="form-control">
         <ui-select-match placeholder="Statements that this question covers"> {{$item.statement.description}} </ui-select-match>
@@ -24,7 +35,7 @@
            <div ng-bind-html="statement.statement.description | highlight: $select.search"></div>
          </ui-select-choices>    
       </ui-select>
-    </div>
+      </div> -->
 
   </div>
 </div>
