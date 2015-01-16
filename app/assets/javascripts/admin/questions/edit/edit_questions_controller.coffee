@@ -56,7 +56,16 @@ angular.module("proximal").controller "EditQuestionsCtrl",[
         )
       )
 
-    
+    $scope.changeStandard = ->
+      $log.debug("Change standard!")
+      if !_.isUndefined($scope.standard)
+        standardsService.getStatements($scope.standard.id).success((data)->
+          $scope.availableStatements = data.statements
+        ).error((data)->
+          $log.error("unable to retrieve statements")
+        )
+      else
+        $scope.availableStatements = []
 
     $scope.update = ->
       $log.debug($scope.question)

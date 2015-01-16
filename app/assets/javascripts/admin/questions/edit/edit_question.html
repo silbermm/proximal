@@ -10,21 +10,39 @@
     </div>
 
     <div class="form-group">
+      <label for="answer-text"> Answer </label>
+      <textarea id="answer-text" name="answer-text" class="form-control" ng-model="question.answer" style="width: 100%;" rows="10" > </textarea> 
+    </div>
+
+    <div class="form-group">
       <label for="question-standard"> Standard </label>
-      <select name="standard" ng-model="standard" class="form-control" ng-options="standard.title for standard in availableStandards" >
+      <select name="standard" ng-model="standard" class="form-control" ng-options="standard.title for standard in availableStandards" ng-change="changeStandard()">
         <option value=""> -- None -- </option>
       </select> 
     </div>
        
     <div class="row">
       <!-- Put each statement that applys -->
+       
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="standard">
+      <label for="available-statements"> Available Statements </label>
       <!-- 
         Put all statements as checkboxes available in this standard 
         organized by grade level   
       -->
+       
+      <div ng-repeat="st in availableStatements">
+        <div class="col-md-4">
+           <div class="checkbox">
+              <label>
+                <input type="checkbox"> {{st.statement.description}} 
+              </label>
+            </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- <div class="form-group" >

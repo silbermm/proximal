@@ -1,44 +1,38 @@
-<inner-page inner-page-width="85%" item-id="state.params.id">
-  
-  <inner-page-element id="child-view">
-    <div ui-view class="row col-md-12"></div>
-  </inner-page-element>
-
-  <section inner-page-parent > 
-    <div class="row" ng-controller="ChildrenCtrl as childCtrl">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="widget">
-          <div class="widget-header">
-            <i class="fa fa-child"></i> Your Registered Children
-            <button class="btn btn-sm btn-success" style="margin: 0px 10px" ng-click="childCtrl.createChild()">
-              <i class="fa fa-plus"></i> Add Child
-            </button>
-          </div>
-          <div class="widget-body no-padding large">
-            <div class="list-group">
-              <a class="list-group-item" ng-repeat="c in childCtrl.children" ui-sref-active="active" ui-sref="children.view({id:c.id})" open-inner-page="child-view">
-                <p class-"list-group-item-text">
-                  <div class="col-md-12">
-                    <div class="col-md-2">
-                      <div child-picture child="c" style="width:100px;height:100px;"></div>           
-                    </div>
-                    <div class="col-md-8">
-                      <h4> {{c.firstName}} {{c.lastName}} </h4>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
+<section ng-if="!state.current.data.hideChildren"> 
+  <div class="row" ng-controller="ChildrenCtrl as childCtrl">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="widget">
+        <div class="widget-header">
+          <i class="fa fa-child"></i> Your Registered Children
+          <button class="btn btn-sm btn-success" style="margin: 0px 10px" ng-click="childCtrl.createChild()">
+            <i class="fa fa-plus"></i> Add Child
+          </button>
+        </div>
+        <div class="widget-body no-padding large">
+          <div class="list-group">
+            <a class="list-group-item" ng-repeat="c in childCtrl.children" ui-sref-active="active" ui-sref="children.view({id:c.id})" >
+              <p class-"list-group-item-text">
+                <div class="col-md-12">
+                  <div class="col-md-2">
+                    <div child-picture child="c" style="width:100px;height:100px;"></div>           
                   </div>
-                  <span class="clearfix"></span>
-                </p>
-              </a>
-            </div>
-          </div>
-          <div class="widget-footer">
-            
+                  <div class="col-md-8">
+                    <h4> {{c.firstName}} {{c.lastName}} </h4>
+                  </div>
+                  <div class="col-md-2">
+                  </div>
+                </div>
+                <span class="clearfix"></span>
+              </p>
+            </a>
           </div>
         </div>
+        <div class="widget-footer">
+      
+        </div>
       </div>
-    </div> 
-  </section>
-</inner-page>
+    </div>
+  </div> 
+</section>
+<div ui-view class="row col-md-12"></div>
 <toaster> </toaster>

@@ -17,14 +17,24 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     url: '/children',
     controller: 'ChildrenCtrl as childCtrl',
     templateUrl: '../assets/javascripts/children/children.html',
-    data: {title: "Children"}
+    data: {
+      title: "Children"
+      hideChildren: false 
+    }
   }
 
   $stateProvider.state 'children.view',{
     url: "/{id}",
     controller: 'ViewChildCtrl',
-    templateUrl: '../assets/javascripts/children/view_child.html',
-    data: {title: "Children"}
+    templateUrl: '../assets/javascripts/children/view/view_child.html',
+    data: {
+      title: "Children"
+      hideChildren: true
+      breadcrumbs: [
+        {"path" : "children", "text" : "Children" },
+      ]
+
+    }
   }
 
   $stateProvider.state 'library', {
@@ -99,7 +109,7 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
       hideAdmin: true
       hideQuestions: true
       breadcrumbs: [
-        {"path": "admin", "text": "Admin", "close-inner-page":"admin-submenu" }
+        {"path": "admin", "text": "Admin"}
         {"path": "admin.questions", "text": "Questions"}
       ]
     }
