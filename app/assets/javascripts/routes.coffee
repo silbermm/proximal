@@ -31,7 +31,22 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
       title: "Children"
       hideChildren: true
       breadcrumbs: [
-        {"path" : "children", "text" : "Children" },
+        {"path" : "children", "text" : "All Children" },
+      ]
+
+    }
+  }
+  
+  $stateProvider.state 'children.view.assesment',{
+    url: "/assesment",
+    controller: 'AssesmentCtrl'
+    controllerAs: 'assesment' 
+    templateUrl: '../assets/javascripts/children/view/assesments/assesment.html'
+    data: {
+      title: "New Assesment"
+      hideChildren: true
+      breadcrumbs: [
+        {"path" : "children", "text" : "All Children" }
       ]
 
     }

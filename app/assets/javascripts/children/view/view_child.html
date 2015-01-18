@@ -7,16 +7,15 @@
     <h4> {{child.educationLevel.description}} </h4>
   </div>
 </div>
-<tabset>
-  
-  <tab heading="New Assessment">
-    Static content 
+
+<tabset>  
+  <tab heading="New Assessment" ui-sref="children.view.assesment" ui-active="active">
+    <tab-heading>
+      Assesments
+    </tab-heading>
+    <ui-view></ui-view>
   </tab>
 
-
-  <tab ng-repeat="tab in childCtrl.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-    {{tab.content}}
-  </tab>
   <tab select="alertMe()">
     <tab-heading>
       <i class="glyphicon glyphicon-bell"></i> Alert!
