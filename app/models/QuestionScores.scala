@@ -1,7 +1,5 @@
 package models
 
-import java.util.Date
-import java.sql.Timestamp
 import play.api.db.slick.Config.driver.simple._
 import scala.slick.lifted.Tag
 import scala.slick.SlickException
@@ -9,15 +7,16 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class QuestionScore(id: Option[Long], studentId: Long, questionId: Long, timestamp: Long)
+case class QuestionScore(id: Option[Long], studentId: Long, questionId: Long, compentency: Long, timestamp: Long)
 
 class QuestionScores(tag: Tag) extends Table[QuestionScore](tag, "question_scores") { 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
   def studentId = column[Long]("studentId")
   def questionId = column[Long]("questionId")
+  def compentency = column[Long]("compentency") 
   def timestamp = column[Long]("timestamp")
 
-  def * = (id.?, studentId, questionId, timestamp)
+  def * = (id.?, studentId, questionId, compentency, timestamp)
 
   def student = foreignKey("student_fk", studentId, People.people)(_.id)
   def question = foreignKey("question_fk", questionId, Questions.questions)(_.id)
@@ -43,6 +42,9 @@ object QuestionScores {
   def findByQuestion(questionId: Long)(implicit s: Session) = 
     questionScores.filter(_.questionId === questionId).list
   
+  def findByStudentAndQuestion(studentId: Long, questionId: Long) =
+    questionScores.filter(x => x.studentId === studentId && x.questionId === questionId).firstOption
+
   def delete(id: Long)(implicit s: Session) : Int = 
     questionScores.filter(_.id === id).delete
 
