@@ -11,23 +11,29 @@ import play.api.Logger
 
 case class QuestionScore(id: Option[Long], studentId: Long, questionId: Long, timestamp: Long)
 
+case class QuestionScoreQuestion(questionScoreId: Long, 
+                                 timestamp: Long,
+                                 question: JsonQuestion
+)
+
 class QuestionScores(tag: Tag) extends Table[QuestionScore](tag, "question_scores") { 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
   def studentId = column[Long]("studentId")
   def questionId = column[Long]("questionId")
   def timestamp = column[Long]("timestamp")
 
-  def * = (id.?, studentId, questionId, timestamp)
+  def * = (id.?, studentId, questionId, timestamp) <> (QuestionScore.tupled,QuestionScore.unapply _)
 
-  def student = foreignKey("student_fk", studentId, People.people)(_.id)
-  def question = foreignKey("question_fk", questionId, Questions.questions)(_.id)
+  def student = foreignKey("questionscores_student_fk", studentId, People.people)(_.id)
+  def question = foreignKey("questionscores_question_fk", questionId, Questions.questions)(_.id)
 
 }
 
 object QuestionScores {
 
   lazy val questionScores = TableQuery[QuestionScores]
-  
+  lazy val questions = Questions.questions 
+
   def create(qs: QuestionScore)(implicit s: Session) : QuestionScore =
     (questionScores returning questionScores.map(_.id) into ((questionScores,id) => questionScores.copy(Some(id)))) += qs
  
@@ -42,9 +48,39 @@ object QuestionScores {
 
   def findByQuestion(questionId: Long)(implicit s: Session) = 
     questionScores.filter(_.questionId === questionId).list
-  
+
+  def findWithQuestions(id: Long)(implicit s: Session) : QuestionScoreQuestion = {
+    val query = for {
+      qs <- questionScores if qs.id === id
+      q <- qs.question
+    } yield (qs.timestamp, q)
+    val resp = query.first
+    QuestionScoreQuestion(id,resp._1,Questions.convertToJsonQuestion(resp._2,None))
+  }
+
+  def findByStudentWithQuestions(studentId: Long)(implicit s: Session) : List[QuestionScoreQuestion] = {
+    val query = for {
+      qs <- questionScores if qs.studentId === studentId
+      q <- qs.question
+    } yield (qs.id, qs.timestamp, q)
+    val resp = query.list
+    resp.map{ old =>
+      QuestionScoreQuestion(old._1, old._2, Questions.convertToJsonQuestion(old._3,None))
+    }
+  }
+
   def delete(id: Long)(implicit s: Session) : Int = 
     questionScores.filter(_.id === id).delete
+
+  def all(implicit s: Session) : List[QuestionScore] = 
+    questionScores.list
+
+  def allWithQuestions(implicit s: Session) : List[QuestionScoreQuestion] = {
+    all.map{ qs =>
+      findWithQuestions(qs.id.get) 
+    }
+  }
+
 
 }
 

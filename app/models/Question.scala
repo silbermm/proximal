@@ -95,7 +95,7 @@ object Questions {
   }
   
   def findWithStatements(id: Long)(implicit s: Session) : JsonQuestion = {
-    var query = for {
+    val query = for {
       qws <- questionsWithStatements if qws.questionId === id
       s <- qws.statements
     } yield s
