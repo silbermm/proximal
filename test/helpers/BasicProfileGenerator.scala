@@ -39,7 +39,7 @@ object ChildGenerator {
       size<- Gen.choose(1,10)
       tail <- Gen.listOfN(size,Gen.alphaLowerChar)
   } yield (head +: tail).mkString("")
-  
+ 
   def child(edLevel: EducationLevel) : JsValue = { 
     val json = Json.obj("firstName" -> nameGen.sample.get, "lastName"->nameGen.sample.get, "birthDate"-> (new Date()).getTime(), "educationLevel" -> Json.toJson(edLevel)) 
     return json

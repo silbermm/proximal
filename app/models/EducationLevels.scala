@@ -112,6 +112,14 @@ object StatementLevels {
   def findByStatementId(id: Long)(implicit s: Session) = 
     statement_levels.filter(_.statementId === id).list
 
+  def findStatements(edLevelId: Long)(implicit s: Session) : List[Statement] = {
+    val q = for {
+      level <- statement_levels if level.educationLevelId === edLevelId
+      statement <- level.statement
+    } yield statement
+    q.list
+  }
+
 }
 
 case class StandardLevel(id: Option[Long], educationLevelId: Long, standardId: Long)
