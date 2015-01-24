@@ -126,7 +126,17 @@ class PersonService {
 }
 
 object PersonService {
+
+  val personService = new PersonService
   
+  def MyChildAction( f: Long => Result, uid: Long, childId: Long) : Result = {
+    // get the children for this person
+    personService.findChildren(uid) match {
+      case List =>
+      case _    => 
+    }
+
+  }
   
 
 }
