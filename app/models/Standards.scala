@@ -61,8 +61,6 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
            manifest,
            identifier
            ) <> ( Standard.tupled,Standard.unapply _)
-
-
 }
 
 object Standards {
