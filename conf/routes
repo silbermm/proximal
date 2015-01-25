@@ -40,6 +40,9 @@ PUT    /api/v1/questions       @controllers.QuestionsController.update
 GET    /api/v1/questions/:id   @controllers.QuestionsController.get(id: Long)
 DELETE /api/v1/questions/:id   @controllers.QuestionsController.delete(id:Long)
 
+#Assesments
+GET   /api/v1/assesments/:childId @controllers.AssesmentController.newAssesment(childId: Long) 
+
 #Dummy
 GET     /api/v1/dummies       @controllers.DummyController.listDummies()
 

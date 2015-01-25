@@ -23,7 +23,7 @@ class Assesments(tag: Tag) extends Table[Assesment](tag, "assesments"){
 
 }
 
-object Assesmsnets {
+object Assesments {
   
   lazy val assesments = TableQuery[Assesments]
 

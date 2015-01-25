@@ -5,10 +5,28 @@ import models._
 import play.api.db.slick.DB
 import play.api.Play.current
 import scala.util.Random
+import play.api._
+import play.api.mvc._
+import scala.compat.Platform
 
 object AssesmentService {
 
   private val random = new Random
+
+  def newAssesment(studentId: Long) : (Assesment, JsonQuestion) = {
+    val asses = DB.withSession{ implicit s =>
+      Assesments.create(Assesment(None,Platform.currentTime,None))
+    }
+    (asses, nextQuestion(studentId))
+  }
+
+  def createQuestionScore(assesmentId: Long, questionScore: QuestionScore,studentId: Long) : (Assesment, JsonQuestion) = {
+    DB.withSession {implicit s =>
+      val qscore = QuestionScores.create(questionScore); 
+      AssesmentQuestionScores.create(AssesmentQuestionScore(None,assesmentId, qscore.id.get))
+      (Assesments.find(assesmentId), nextQuestion(studentId));
+    }
+  }
 
   def nextQuestion(studentId:Long) : JsonQuestion = {
     DB.withSession{ implicit s => 

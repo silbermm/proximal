@@ -127,15 +127,25 @@ class PersonService {
 
 object PersonService {
 
+  import play.api._
+  import play.api.mvc._
+  import play.api.Play.current
+  
   val personService = new PersonService
   
-  def MyChildAction( f: Long => Result, uid: Long, childId: Long) : Result = {
+  def childAction( uid: Long, childId: Long, f: Long => Result ) : Result = {
     // get the children for this person
     personService.findChildren(uid) match {
-      case List =>
-      case _    => 
+      case children: List[Person] => {
+        children.find(c => c.id.get == childId) match {
+          case Some(ch) => f(ch.id.get)
+          case None => play.api.mvc.Results.Unauthorized
+          case _ => play.api.mvc.Results.Ok
+        } 
+      }
+      case List() => play.api.mvc.Results.NoContent
     }
-
+    
   }
   
 
