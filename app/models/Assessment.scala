@@ -7,7 +7,7 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class Assesment(id: Option[Long], startDate: Long, endDate: Option[Long])
+case class Assesment(id: Option[Long], studentId: Long, startDate: Long, endDate: Option[Long])
 case class AssesmentWithQuestionsAndScores(id: Long, 
                                            startDate: Long,
                                            endDate: Option[Long] 
@@ -16,11 +16,13 @@ case class AssesmentWithQuestionsAndScores(id: Long,
 
 class Assesments(tag: Tag) extends Table[Assesment](tag, "assesments"){
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
+  def studentId = column[Long]("studentId")
   def startDate = column[Long]("startDate")
   def endDate = column[Option[Long]]("endDate")
 
-  def * = (id.?, startDate, endDate) <> (Assesment.tupled,Assesment.unapply _)
-
+  def * = (id.?, studentId, startDate, endDate) <> (Assesment.tupled,Assesment.unapply _)
+  
+  def student = foreignKey("assessment_student_fk", studentId, People.people)(_.id)
 }
 
 object Assesments {
@@ -33,6 +35,6 @@ object Assesments {
   def delete(id: Long)(implicit s: Session) : Int =
     assesments.filter(_.id === id).delete
 
-  def find(id: Long)(implicit s: Session) =
+  def find(id: Long)(implicit s: Session) : Option[Assesment] = 
     assesments.filter(_.id === id).firstOption
 }

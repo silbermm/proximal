@@ -41,10 +41,9 @@ GET    /api/v1/questions/:id   @controllers.QuestionsController.get(id: Long)
 DELETE /api/v1/questions/:id   @controllers.QuestionsController.delete(id:Long)
 
 #Assesments
-GET   /api/v1/assesments/:childId @controllers.AssesmentController.newAssesment(childId: Long) 
+POST   /api/v1/assessments 	   						@controllers.AssesmentController.newAssesment()
+PUT	   /api/v1/assessments/:assessmentId			@controllers.AssesmentController.newScore(assessmentId: Long)
 
-#Dummy
-GET     /api/v1/dummies       @controllers.DummyController.listDummies()
 
 
 
@@ -58,7 +57,7 @@ GET     /logout                     @securesocial.controllers.LoginPage.logout
 GET     /login                      @securesocial.controllers.LoginPage.login
 #GET     /custom/authenticate/:provider @controllers.CustomAuthController.authenticate(provider)
 
-# User Registration and password handlingGET     /signup                     @securesocial.controllers.Registration.startSignUp
+# User Registration and password handling
 GET     /signup                     @securesocial.controllers.Registration.startSignUp
 POST    /signup                     @securesocial.controllers.Registration.handleStartSignUp
 GET     /signup/:token              @securesocial.controllers.Registration.signUp(token)
