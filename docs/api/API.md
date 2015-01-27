@@ -16,12 +16,12 @@ To call an endpoint where authentication is required you will need an auth token
 
 
 #### Children
-| DESCRIPTION                           | METHOD  | URL                   | AUTH REQUIRED? | DETAILS |
-| -----------                           | ------- | ---                   | -------------- | -------                                                | 
-| Get all children for logged in user   | GET     | /api/v1/children      | YES            |  [View Details](children.md#list-all-children)       | 
-| Get specific child for logged in user | GET     | /api/v1/children/{id} | YES            |  [View Details](children.md#get-specific-child)       |
-| Add a child to the logged in user     | POST    | /api/v1/children/add  | YES            |  [View Details](children.md#add-a-child)       |
-| Delete a child from the logged in user| DELETE  | /api/v1/children/{id} | YES            |  [View Details](children.md#delete-a-child)       |
+| DESCRIPTION                           | METHOD  | URL                   | AUTH REQUIRED? | DETAILS 										 |
+| -----------                           | ------- | ---                   | -------------- | -------                                         | 
+| Get all children for logged in user   | GET     | /api/v1/children      | YES            |  [View Details](children.md#list-all-children)  | 
+| Get specific child for logged in user | GET     | /api/v1/children/{id} | YES            |  [View Details](children.md#get-specific-child) |
+| Add a child to the logged in user     | POST    | /api/v1/children/add  | YES            |  [View Details](children.md#add-a-child)        |
+| Delete a child from the logged in user| DELETE  | /api/v1/children/{id} | YES            |  [View Details](children.md#delete-a-child)     |
 
 #### Standards
 
@@ -43,3 +43,19 @@ To call an endpoint where authentication is required you will need an auth token
 | Get all Questions           | GET     | /api/v1/questions                                         | NO             | [View Details](questions.md#list-all-questions)
 | Get a Specific Question     | GET     | /api/v1/questions/{id}                                    | NO             | [View Details](questions.md#get-a-specific-question)
 | Get all Questions for a statement | GET | ???                                                     | NO             | [View Details](questions.md#get-all-questions-for-a-statement)
+
+#### Assessments
+| DESCRIPTION					   | METHOD | URL 								| AUTH REQUIRED? |  |
+| -----------					   | ------ | ---								| -------------- |  |
+| Start a new Assessment           | POST   | /api/v1/assessments				| YES			 | [View Details](assessments.md#new-dynamic-assessment)
+| Rate a Question on an assessment | PUT	| /api/v1/assessments/{assessmentid}| YES			 | [View Details](assessments.md#score-a-question)
+
+
+
+
+
+
+
+
+
+
