@@ -5,6 +5,9 @@ import models._
 import play.api.db.slick.DB
 import play.api.Play.current
 import org.joda.time.DateTime
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.Future
+
 
 class PersonService {
 
@@ -147,6 +150,18 @@ object PersonService {
     }
     
   }
-  
+
+  def childActionAsync(uid: Long, childId: Long, f: Long => Future[Result]) : Future[Result] = {
+    personService.findChildren(uid) match {
+      case children: List[Person] => {
+        children.find(c => c.id.get == childId) match {
+          case Some(ch) => f(ch.id.get)
+          case None => scala.concurrent.Future { play.api.mvc.Results.Unauthorized }
+          case _ => scala.concurrent.Future { play.api.mvc.Results.Ok }
+        } 
+      }
+      case List() => scala.concurrent.Future { play.api.mvc.Results.NoContent }
+    }
+  }
 
 }

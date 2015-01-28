@@ -2,6 +2,7 @@ package helpers
 
 import play.api.libs.json._
 import models._
+import services._
 
 object ImplicitJsonFormat {
   implicit val scoresFormat = Json.format[Score]
@@ -12,5 +13,5 @@ object ImplicitJsonFormat {
   implicit val questionScoresFormat = Json.format[QuestionScore]
   implicit val assesmentFormat = Json.format[Assesment]
   implicit val assesmentQuestionScoreFormat = Json.format[AssesmentQuestionScore]
-  
+  implicit val assessmentQuestionFormat = Json.format[AssessmentQuestion]
 }

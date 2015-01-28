@@ -1,10 +1,11 @@
-AssesmentController = ($scope,$log,Child) ->
+AssesmentController = ($scope,$log,Child,Assesments, $stateParams) ->
   
-
   $scope.test = "test"
-  $log.debug("Hello from the assesment controller")
+  $log.debug($stateParams.id)
+
+  $scope.child = Child.get({"id": $stateParams.id})
 
   $scope.begin = ->
-    $log.debug("Beginning a new assesment!")
+  	Assesments.save($scope.child)
 
-angular.module('proximal').controller "AssesmentCtrl",['$scope','$log','Child', AssesmentController]
+angular.module('proximal').controller "AssesmentCtrl",['$scope','$log','Child', 'Assesments', '$stateParams', AssesmentController]
