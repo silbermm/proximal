@@ -14,16 +14,14 @@ List all of the children for the currently logged in user
 #### RETURNS
 A list of children JSON Objects
 ```json
-{
-  "children": [
-    {
-      "id":22,
-      "firstName":"FirstName",
-      "lastName":"LastName",
-      "birthDate":1207281600
+[
+  {
+    "id":22,
+    "firstName":"FirstName",
+    "lastName":"LastName",
+    "birthDate":1207281600
     }
-  ]
-}
+]
 ```
 
 ###[Get Specific Child](#get-specific-child)
@@ -50,10 +48,10 @@ The specific child object
 Add a new child to the currently logged in user
 
 #### METHOD
-`GET`
+`POST`
 
 #### URL
-`/api/v1/children/add`
+`/api/v1/children`
 
 #### BODY
 Send a child JSON object as the BODY
@@ -68,14 +66,11 @@ Send a child JSON object as the BODY
 #### RETURNS
 The child json object that was created
 ```json
-{
-  "status": "OK",
-  "child": {
+{  
     "id": 23,
     "firstName":"asdfasdfasdf",
     "lastName":"asdfasdf",
     "birthDate":1415163600
-  }
 }
 ```
 
@@ -83,7 +78,7 @@ The child json object that was created
 Delete a child for the currently logged in user
 
 #### METHOD
-`GET`
+`DELETE`
 
 #### URL
 Replace {id} with the actual id of the child to delete
