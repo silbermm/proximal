@@ -30,7 +30,7 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def newAssesment = SecuredAction.async(BodyParsers.parse.json) { implicit request => 
     
-    var childId: Long = request.body.validate[Person].fold(
+    val childId: Long = request.body.validate[Person].fold(
       errors => -1,
       child => {
         child.id match {
@@ -44,7 +44,8 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
       scala.concurrent.Future { BadRequest(Json.obj("message" -> "You do not have access to this student")) }
     } else {
       PersonService.childActionAsync(request.user.uid.get, childId, c =>  {
-        ask(newAssessmentActor, ParentAndChild(c, request.user.uid.get)).mapTo[Option[AssessmentQuestion]] map { x =>
+        val parent =  PersonService.findPersonByUid(request.user.uid.get).get;
+        ask(newAssessmentActor, ParentAndChild(c, parent.id.get)).mapTo[Option[AssessmentQuestion]] map { x =>
           x match {
             case Some(obj) => Ok(Json.toJson(obj))
             case None => BadRequest(Json.obj("message" -> "Sorry, unable to create the assessment."))
