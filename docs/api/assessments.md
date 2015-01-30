@@ -11,13 +11,11 @@
 `/api/v1/assessments`
 
 #### BODY
-Send an exisiting child JSON object as the BODY (this child must already exist in the system)
+Send a childId and standardId as a JSON object as the BODY (the child and standard must already exist in the system)
 ```json
 {
-  "id" : 340,	
-  "firstName":"asdfasdfasdf",
-  "lastName":"asdfasdf",
-  "birthDate":1415163600
+  "childId" : 340,	
+  "standardId" : 4569
 }
 ```
 #### RETURNS
