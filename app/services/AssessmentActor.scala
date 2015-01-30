@@ -68,7 +68,7 @@ class AssessmentActor extends Actor {
 		      Questions.convertToJsonQuestion(finalQuestion, None) 
 		    } catch {
 		    	case e: java.util.NoSuchElementException => JsonQuestion(None,"No questions available!", None,None,None, None)
-		    	case _ => JsonQuestion(None,"No questions available!", None,None,None,None)
+		    	case _ : Throwable => JsonQuestion(Some(-1),"No questions available!", None,None,None,None)
 		    }     
 	  	}
 	} 
