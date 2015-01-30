@@ -9,6 +9,11 @@
           <div class="widget-content pull-left"> 
             <div class="title"> Ready to start a new assesment? </div>
             <div class="comment"> 
+              <div class="form-group" >
+                <select name="standard" ng-model="standardSelected" class="form-control" ng-options="standard.title for standard in availableStandards" >
+                  <option value=""> -- Choose a Standard -- </option>
+                </select>
+              </div>
               <button class="btn btn-primary" ng-click="begin()"> Start here </button> 
             </div>
           </div>

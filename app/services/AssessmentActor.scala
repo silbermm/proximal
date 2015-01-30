@@ -3,7 +3,6 @@ package services
 import play.api.libs.concurrent.Akka
 import play.api.Logger
 import services._
-import models.actors._
 import models._
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -22,6 +21,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.util.Random
 
+case class ChildAndStandard(childId: Long, standardId: Long)
 case class AssessmentQuestion(assessment: Assesment, question: JsonQuestion)
 
 class AssessmentActor extends Actor {
@@ -29,17 +29,17 @@ class AssessmentActor extends Actor {
 	private val random = new Random
 
 	def receive = {
-		case parentChild: ParentAndChild => {			
+		case childAndStandard: ChildAndStandard => {			
 			val asses = DB.withSession{ implicit s =>
-				Assesments.create(Assesment(None,parentChild.childId, Platform.currentTime,None))
+				Assesments.create(Assesment(None,childAndStandard.childId, Platform.currentTime,None))
 			}    	
-			sender ! Some(AssessmentQuestion(asses, nextQuestion(parentChild.childId)))		
+			sender ! Some(AssessmentQuestion(asses, nextQuestion(childAndStandard.childId, childAndStandard.standardId)))		
 		}
 		case _ => sender ! None
 	}
 
 
-	def nextQuestion(studentId:Long) : JsonQuestion = {
+	def nextQuestion(studentId:Long, standardId: Long) : JsonQuestion = {
 	    DB.withSession{ implicit s => 
 	    	try {
 		      // Find the student and his/her grade level 
@@ -67,8 +67,8 @@ class AssessmentActor extends Actor {
 		      val finalQuestion = filteredQuestions(random.nextInt(filteredQuestions.length))
 		      Questions.convertToJsonQuestion(finalQuestion, None) 
 		    } catch {
-		    	case e: java.util.NoSuchElementException => JsonQuestion(None,"No questions available!", None,None,None, None)
-		    	case _ : Throwable => JsonQuestion(Some(-1),"No questions available!", None,None,None,None)
+		    	case e: java.util.NoSuchElementException => JsonQuestion(Some(-1),"No questions available!", None,None,None, None)
+		    	case e2 : Throwable => JsonQuestion(Some(-1),e2.getMessage(), None,None,None,None)
 		    }     
 	  	}
 	} 
