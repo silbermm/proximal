@@ -147,8 +147,7 @@ object PersonService {
         } 
       }
       case List() => play.api.mvc.Results.NoContent
-    }
-    
+    } 
   }
 
   def childActionAsync(uid: Long, childId: Long, f: Long => Future[Result]) : Future[Result] = {
@@ -162,6 +161,10 @@ object PersonService {
       }
       case List() => scala.concurrent.Future { play.api.mvc.Results.NoContent }
     }
+  }
+
+  def findPersonByUid(uid: Long) = {
+    personService.findPersonByUid(uid);
   }
 
 }
