@@ -32,7 +32,7 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
     
     val childId: Long = request.body.validate[Person].fold(
       errors => -1,
-      child => {
+      child => {        
         child.id match {
           case Some(i) => i
           case None => -1
@@ -45,7 +45,7 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
     } else {
       PersonService.childActionAsync(request.user.uid.get, childId, c =>  {
         val parent =  PersonService.findPersonByUid(request.user.uid.get).get;
-        ask(newAssessmentActor, ParentAndChild(c, parent.id.get)).mapTo[Option[AssessmentQuestion]] map { x =>
+        ask(newAssessmentActor, ParentAndChild(parent.id.get,c)).mapTo[Option[AssessmentQuestion]] map { x =>
           x match {
             case Some(obj) => Ok(Json.toJson(obj))
             case None => BadRequest(Json.obj("message" -> "Sorry, unable to create the assessment."))
