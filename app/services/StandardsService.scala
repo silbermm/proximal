@@ -141,8 +141,18 @@ class StandardsService extends StandardsServiceTrait {
 
   def delete(standard: Standard) : Int = {
     DB.withSession{ implicit s=>
+      val statements = findWithStatements(standard.id.get)
+      for {
+        st <- statements._2
+        st_level <- StatementLevels.findByStatementId(st.id.get)
+      } StatementLevels.delete(st_level)
+      for {
+        st <- statements._2
+      } Statements.delete(st) 
+      for {
+        st_level <- StandardLevels.findListByStandardId(standard.id.get)
+      } StandardLevels.delete(st_level)
       Standards.delete(standard)
     }
   }
-
 }

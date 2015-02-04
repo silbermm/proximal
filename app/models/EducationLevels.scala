@@ -155,4 +155,7 @@ object StandardLevels {
 
   def findByStandardId(id: Long)(implicit s: Session) =
     standard_levels.filter(_.standardId === id).firstOption
+
+  def findListByStandardId(id: Long)(implicit s: Session) =
+    standard_levels.filter(_.standardId === id).list
 }

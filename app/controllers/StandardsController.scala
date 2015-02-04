@@ -126,18 +126,22 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def delete(id: Long) = SecuredAction{implicit request =>
-    standardsService.find(id) match {
-      case Some(standard) => {
-        //TODO: make sure the user has privledges to delete this record!!!
-        val deleted : Int = standardsService.delete(standard)
-        if(deleted < 1){
-          Ok(Json.obj("status" -> "OK", "message" -> "successfully deleted standard"))
-        } else {
-          BadRequest(Json.obj("status" -> "KO", "message" -> "unable to delete standard"))
+    if (personService.isAdmin(request.user.uid.get)) {
+      standardsService.find(id) match {
+        case Some(standard) => {
+          val deleted: Int = standardsService.delete(standard)
+          Logger.debug(s"deleted: $deleted") 
+          if (deleted > 0) {
+            Ok(Json.obj("status" -> "OK", "message" -> "successfully deleted standard"))
+          } else {
+            BadRequest(Json.obj("status" -> "KO", "message" -> "unable to delete standard"))
+          }
         }
+        case None => BadRequest(Json.obj("status" -> "KO", "message" -> "there is no record with that id"))
       }
-      case None => BadRequest(Json.obj("status" -> "KO", "message" -> "there is no record with that id"))
-    } 
+    } else {
+      Unauthorized
+    }
   }
 
   def getStatementsForStandard(id: Long) = Action { request=>

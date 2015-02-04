@@ -19,12 +19,11 @@ import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout 
 import scala.concurrent.duration._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 
 case class ChildWithStandard(childId: Long, standardId: Long)
 
-class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
+class AssessmentController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
   
   implicit val childWithStandardFormat = Json.format[ChildWithStandard]
 
@@ -44,7 +43,7 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
     )
 
     if(webReq.childId < 1 || webReq.standardId < 1){
-      scala.concurrent.Future { BadRequest(Json.obj("message" -> s"Something went wrong! $webReq.childId" )) }
+      Future { BadRequest(Json.obj("message" -> s"Something went wrong! $webReq.childId" )) }
     } else {
       PersonService.childActionAsync(request.user.uid.get, webReq.childId, c =>  {        
         ask(newAssessmentActor, ChildAndStandard(c, webReq.standardId)).mapTo[Option[AssessmentQuestion]] map { x =>
