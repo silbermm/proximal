@@ -34,5 +34,18 @@ class Activities(tag: Tag) extends Table[Activity](tag, "activities"){
 
 object Activities {
   lazy val activities = TableQuery[Activities]
+
+  def create(a: Activity)(implicit s: Session): Activity = 
+    (activities returning activities.map(_.id) into ((activity,id)=> activity.copy(Some(id)))) += a
+
+  def delete(a: Activity)(implicit s: Session): Int =
+    activities.filter(_.id === a.id.get).delete
+
+  def all(implicit s: Session) =
+    activities.list
+
+  def find(id: Long)(implicit s: Session) =
+    activities.filter(_.id === id).firstOption
+ 
 }
 
