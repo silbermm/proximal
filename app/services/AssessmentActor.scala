@@ -7,19 +7,11 @@ import models._
 import play.api.db.slick.DB
 import play.api.Play.current
 import scala.util.Random
-import play.api._
-import play.api.mvc._
 import scala.compat.Platform
-import helpers.ImplicitJsonFormat._
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
-import play.api._
-import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.util.Random
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class AssessmentQuestion(assessment: Assesment, question: JsonQuestion)
