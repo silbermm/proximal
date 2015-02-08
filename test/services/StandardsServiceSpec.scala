@@ -12,7 +12,6 @@ import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
 
-
 import play.api.Logger
 import helpers._
 
@@ -21,13 +20,13 @@ class StandardsServiceSpec extends PlaySpec with Results {
   import models._
 
   val standardsService: StandardsServiceTrait = new StandardsService()
-  
+
   "Standards Service" should {
     "create a standard and find by id" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val standard = StandardsHelpers.fakeStandard
         val st = standardsService.create(standard)
-        standardsService.find(st.id.get).map( s => 
+        standardsService.find(st.id.get).map(s =>
           st.title mustEqual s.title
         ).getOrElse(
           fail("standard not created")
@@ -36,36 +35,36 @@ class StandardsServiceSpec extends PlaySpec with Results {
     }
 
     "update a standard" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val standard = StandardsHelpers.fakeStandard
         val st = standardsService.create(standard)
-        val stUpdate = st.copy(title="Stupid Title")
-        val stUpdated = standardsService.update(st.id.get,stUpdate)
+        val stUpdate = st.copy(title = "Stupid Title")
+        val stUpdated = standardsService.update(st.id.get, stUpdate)
         stUpdated mustEqual 1
       }
     }
- 
+
     "list the standards" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
-        val listOfStandards = standardsService.list    
-        listOfStandards.size  mustEqual 0
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val listOfStandards = standardsService.list
+        listOfStandards.size mustEqual 0
         standardsService.create(StandardsHelpers.fakeStandard)
         standardsService.list.size mustEqual 1
       }
     }
 
     "delete a standard" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val standard = standardsService.create(StandardsHelpers.fakeStandard)
         val deleted = standardsService.delete(standard)
         deleted mustEqual 1
       }
     }
 
-    "create a standard with education level" in { 
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+    "create a standard with education level" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         standardsService.create(StandardsHelpers.fakeStandard, StandardsHelpers.fakeEducationLevel) match {
-          case Some(stan) => { 
+          case Some(stan) => {
             standardsService.findWithEducationLevels(stan.id.get) match {
               case (Some(stan), edLevels) => edLevels must not be empty
               case _ => fail("did not create or retrieve the standard correctly")
@@ -77,7 +76,7 @@ class StandardsServiceSpec extends PlaySpec with Results {
     }
 
     "create a standard with a list of education levels" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         standardsService.create(StandardsHelpers.fakeStandard, StandardsHelpers.fakeEducationLevels.toList) match {
           case Some(stan) => {
             standardsService.findWithEducationLevels(stan.id.get) match {
@@ -85,29 +84,29 @@ class StandardsServiceSpec extends PlaySpec with Results {
               case _ => fail("did not create or retrieve the standard correctly")
             }
           }
-          case _ => fail("unable to create the standard with a list of ed Levels") 
-        } 
+          case _ => fail("unable to create the standard with a list of ed Levels")
+        }
       }
     }
 
-    "create a list of statements" in { 
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+    "create a list of statements" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val numInserted = standardsService.create(StandardsHelpers.fakeStatements)
         numInserted.get mustEqual StandardsHelpers.fakeStatements.length
       }
     }
 
-    "update a statement" in { 
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+    "update a statement" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val numInserted = standardsService.create(StandardsHelpers.fakeStatement)
         numInserted.id must not be empty
       }
     }
 
-    "find a standard with statements" in { 
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+    "find a standard with statements" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val standard = standardsService.create(StandardsHelpers.fakeStandard)
-        val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId=standard.id))
+        val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId = standard.id))
         statement.standardId.get mustEqual standard.id.get
         standardsService.findWithStatements(standard.id.get) match {
           case (Some(stan), statements) => {
@@ -119,11 +118,11 @@ class StandardsServiceSpec extends PlaySpec with Results {
       }
     }
 
-    "find a standard with statements and education levels" in { 
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
+    "find a standard with statements and education levels" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         standardsService.create(StandardsHelpers.fakeStandard, StandardsHelpers.fakeEducationLevels.toList) match {
           case Some(standard) => {
-            val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId=standard.id),StandardsHelpers.fakeEducationLevels.toList)
+            val statement = standardsService.create(StandardsHelpers.fakeStatement.copy(standardId = standard.id), StandardsHelpers.fakeEducationLevels.toList)
             standardsService.findWithStatementsAndLevels(standard.id.get) match {
               case (Some(stan), statements) => {
                 statements must have length 1

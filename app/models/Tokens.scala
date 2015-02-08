@@ -44,17 +44,17 @@ object Tokens {
 
   val tokens = TableQuery[Tokens]
 
-  def findById(tokenId: String)(implicit s:Session): Option[MailToken] =
-    tokens.filter(_.uuid === tokenId).firstOption    
-     
-  def save(token: MailToken)(implicit s:Session): MailToken = {
+  def findById(tokenId: String)(implicit s: Session): Option[MailToken] =
+    tokens.filter(_.uuid === tokenId).firstOption
+
+  def save(token: MailToken)(implicit s: Session): MailToken = {
     findById(token.uuid) match {
       case None => {
         tokens.insert(token)
         token
       }
       case Some(existingToken) => {
-        val tokenRow = for{
+        val tokenRow = for {
           t <- tokens
           if t.uuid === existingToken.uuid
         } yield t
@@ -62,25 +62,25 @@ object Tokens {
         tokenRow.update(updatedToken)
         updatedToken
       }
-    }   
+    }
   }
 
   def delete(uuid: String)(implicit s: Session): Option[MailToken] = {
     findById(uuid) match {
       case None => None
       case Some(existing) => {
-        tokens.filter(_.uuid === uuid).delete 
+        tokens.filter(_.uuid === uuid).delete
         Some(existing)
       }
     }
   }
- 
- def deleteExpiredTokens(currentDate: DateTime)(implicit s: Session) = {
-   val q = for {
-     t <- tokens
-     if t.expirationTime < currentDate
-   } yield t
-   q.delete
- }
+
+  def deleteExpiredTokens(currentDate: DateTime)(implicit s: Session) = {
+    val q = for {
+      t <- tokens
+      if t.expirationTime < currentDate
+    } yield t
+    q.delete
+  }
 
 }

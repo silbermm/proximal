@@ -11,22 +11,22 @@ import controllers.CustomTemplates
 import play.api.libs.concurrent.Akka
 import akka.actor.Props
 import play.api.Play.current
-import akka.util.Timeout 
+import akka.util.Timeout
 import scala.concurrent.duration._
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
     Logger.info("Application has started")
-    
+
   }
 
   override def onStop(app: Application) {
     Logger.info("Application shutdown...")
   }
-  
+
   override def onError(request: RequestHeader, ex: Throwable) = {
     Future.successful(InternalServerError(
-        views.html.error(ex)
+      views.html.error(ex)
     ))
   }
 
@@ -40,25 +40,24 @@ object Global extends GlobalSettings {
     Future.successful(BadRequest("Bad Request: " + error))
   }
 
- 
   /**
    * * The runtime environment for this sample app.
-   * */
+   */
   object MyRuntimeEnvironment extends RuntimeEnvironment.Default[SecureUser] {
     //override lazy val routes = new CustomRoutesService()
-    override lazy val viewTemplates = new CustomTemplates(this) 
+    override lazy val viewTemplates = new CustomTemplates(this)
     override lazy val userService: SecureUserService = new SecureUserService()
     //override lazy val eventListeners = List(new MyEventListener())
   }
 
-   override def getControllerInstance[A](controllerClass: Class[A]): A = {
-     val instance = controllerClass.getConstructors.find { c =>
-       val params = c.getParameterTypes
-       params.length == 1 && params(0) == classOf[RuntimeEnvironment[SecureUser]]
-     }.map {
-       _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment)
-     }
-     instance.getOrElse(super.getControllerInstance(controllerClass))
-   }
+  override def getControllerInstance[A](controllerClass: Class[A]): A = {
+    val instance = controllerClass.getConstructors.find { c =>
+      val params = c.getParameterTypes
+      params.length == 1 && params(0) == classOf[RuntimeEnvironment[SecureUser]]
+    }.map {
+      _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment)
+    }
+    instance.getOrElse(super.getControllerInstance(controllerClass))
+  }
 
 }

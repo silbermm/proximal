@@ -3,7 +3,7 @@ package controllers;
 import java.lang.reflect.Constructor
 import services.SecureUserService
 import play.api.GlobalSettings
-import play.api.test.{FakeRequest, WithApplication, FakeApplication, PlaySpecification}
+import play.api.test.{ FakeRequest, WithApplication, FakeApplication, PlaySpecification }
 import securesocial.core.RuntimeEnvironment
 
 import play.api.db.slick.DB
@@ -23,14 +23,14 @@ import play.api.libs.json._
 import play.api.Logger
 import helpers._
 
-class PersonControllerSpec  extends PlaySpec with Results {
- 
+class PersonControllerSpec extends PlaySpec with Results {
+
   import models._
 
   "Person Controller" should {
 
     "allow a logged in user to see their children" in {
-      running(SecureSocialHelper.app){
+      running(SecureSocialHelper.app) {
         val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
         val Some(resp) = route(FakeRequest(GET, "/api/v1/children").withCookies(creds1.get("id").get))
         status(resp) mustEqual OK
@@ -39,14 +39,14 @@ class PersonControllerSpec  extends PlaySpec with Results {
     }
 
     "allow a logged in user to add a child" in {
-      running(SecureSocialHelper.app){ 
-        DB.withSession{ implicit s =>
+      running(SecureSocialHelper.app) {
+        DB.withSession { implicit s =>
           val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
           val Some(edLevel) = EducationLevels.find(e.id.get)
           edLevel.id.get mustEqual e.id.get
-          val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get) 
+          val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
           val resp = route(FakeRequest(POST, "/api/v1/children").withCookies(creds1.get("id").get).withJsonBody(ChildGenerator.child(edLevel))).get
-          status(resp) mustEqual OK 
+          status(resp) mustEqual OK
         }
       }
     }

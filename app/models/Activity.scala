@@ -7,32 +7,30 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
+case class Activity(id: Option[Long],
+  creator: Option[String],
+  date: Long,
+  description: Option[String],
+  rights: Option[String],
+  source: Option[String],
+  subject: Option[String],
+  title: Option[String],
+  category: Option[String])
 
-case class Activity(id: Option[Long], 
-                    creator: String, 
-                    date: Long, 
-                    description: Option[String], 
-                    rights: Option[String], 
-                    source: Option[String], 
-                    subject: Option[String], 
-                    title: Option[String],
-                    category: Option[String])
+case class ActivityWithStatements(id: Option[Long],
+  creator: Option[String],
+  date: Long,
+  description: Option[String],
+  rights: Option[String],
+  source: Option[String],
+  subject: Option[String],
+  title: Option[String],
+  category: Option[String],
+  statements: List[Statement])
 
-case class ActivityWithStatements(id: Option[Long], 
-                                  creator: String, 
-                                  date: Long, 
-                                  description: Option[String], 
-                                  rights: Option[String], 
-                                  source: Option[String], 
-                                  subject: Option[String], 
-                                  title: Option[String],
-                                  category: Option[String],
-                                  statements: List[Statement] 
-                                  )
-
-class Activities(tag: Tag) extends Table[Activity](tag, "activities"){
-  def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
-  def creator = column[String]("creator")
+class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
+  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def creator = column[Option[String]]("creator")
   def date = column[Long]("date")
   def description = column[Option[String]]("description")
   def rights = column[Option[String]]("rights")
@@ -49,8 +47,8 @@ object Activities {
   lazy val activities = TableQuery[Activities]
   lazy val activityStatements = ActivityStatements.activityStatements
 
-  def create(a: Activity)(implicit s: Session): Activity = 
-    (activities returning activities.map(_.id) into ((activity,id)=> activity.copy(Some(id)))) += a
+  def create(a: Activity)(implicit s: Session): Activity =
+    (activities returning activities.map(_.id) into ((activity, id) => activity.copy(Some(id)))) += a
 
   def delete(a: Activity)(implicit s: Session): Int =
     activities.filter(_.id === a.id.get).delete
@@ -61,14 +59,14 @@ object Activities {
   def find(id: Long)(implicit s: Session) =
     activities.filter(_.id === id).firstOption
 
-  def findWithStatements(id: Long)(implicit s: Session) : Option[ActivityWithStatements] = {
-    val query = for{
+  def findWithStatements(id: Long)(implicit s: Session): Option[ActivityWithStatements] = {
+    val query = for {
       as <- activityStatements if as.activityId === id
-      a  <- as.statement
+      a <- as.statement
     } yield a
-    
+
     find(id) match {
-      case Some(act) => Some(ActivityWithStatements(act.id,act.creator,act.date,act.description,act.rights,act.source,act.subject,act.title,act.category,query.list))
+      case Some(act) => Some(ActivityWithStatements(act.id, act.creator, act.date, act.description, act.rights, act.source, act.subject, act.title, act.category, query.list))
       case _ => None
     }
   }

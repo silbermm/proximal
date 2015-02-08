@@ -13,19 +13,19 @@ import play.api.Play.current
 import helpers.ImplicitJsonFormat._
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
- 
+
   def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    DB.withSession{ implicit s =>
+    DB.withSession { implicit s =>
       RolesHelper.admin(request.user.uid.get, uid => {
         request.body.validate[JsonQuestion].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           question => {
-            if(question.statements.isEmpty) {    
+            if (question.statements.isEmpty) {
               Ok(Json.toJson(Questions.create(question)))
             } else {
               Questions.create(question, question.statements.get) match {
                 case (Some(qs), ss) => Ok(Json.toJson(qs))
-                case _  => BadRequest(Json.obj("message" -> "Unable to create the question"))
+                case _ => BadRequest(Json.obj("message" -> "Unable to create the question"))
               }
             }
           }
@@ -35,7 +35,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def update = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    DB.withSession{ implicit s=> 
+    DB.withSession { implicit s =>
       RolesHelper.admin(request.user.uid.get, uid => {
         request.body.validate[JsonQuestion].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
@@ -46,33 +46,33 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
               case _ => BadRequest
             }
           }
-        )   
+        )
       })
     }
   }
 
-  def list = Action {implicit request =>
-    DB.withSession{ implicit s=>
+  def list = Action { implicit request =>
+    DB.withSession { implicit s =>
       val q = Questions.allWithStatements
       Ok(Json.toJson(q))
     }
-  } 
-  
-  def get(id: Long) = Action{ implicit request => 
-    DB.withSession{ implicit s=> 
-      val q = Questions.findWithStatements(id) 
-      Ok(Json.toJson(q)) 
+  }
+
+  def get(id: Long) = Action { implicit request =>
+    DB.withSession { implicit s =>
+      val q = Questions.findWithStatements(id)
+      Ok(Json.toJson(q))
     }
   }
 
-  def delete(id: Long) = SecuredAction{ implicit request => 
-   DB.withSession{ implicit s=> 
-    RolesHelper.admin(request.user.uid.get, uid => {
-      Questions.delete(id) match {
-        case 1 => Ok
-        case _ => BadRequest(Json.obj("message" -> "Did not delete the record"))
-      }
-    })
-   }
+  def delete(id: Long) = SecuredAction { implicit request =>
+    DB.withSession { implicit s =>
+      RolesHelper.admin(request.user.uid.get, uid => {
+        Questions.delete(id) match {
+          case 1 => Ok
+          case _ => BadRequest(Json.obj("message" -> "Did not delete the record"))
+        }
+      })
+    }
   }
 }

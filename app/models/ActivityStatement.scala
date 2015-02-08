@@ -9,9 +9,9 @@ import play.api.Logger
 
 case class ActivityStatement(id: Option[Long], activityId: Long, statementId: Long)
 
-class ActivityStatements(tag: Tag) extends Table[ActivityStatement](tag, "activity_statements"){
+class ActivityStatements(tag: Tag) extends Table[ActivityStatement](tag, "activity_statements") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def activityId =column[Long]("activityId")
+  def activityId = column[Long]("activityId")
   def statementId = column[Long]("statementId")
   def * = (id.?, activityId, statementId) <> (ActivityStatement.tupled, ActivityStatement.unapply _)
 
@@ -23,10 +23,10 @@ object ActivityStatements {
 
   lazy val activityStatements = TableQuery[ActivityStatements]
 
-  def create(a: ActivityStatement)(implicit s: Session) : ActivityStatement =
-    (activityStatements returning activityStatements.map(_.id) into ((as,id) => as.copy(Some(id)))) += a
+  def create(a: ActivityStatement)(implicit s: Session): ActivityStatement =
+    (activityStatements returning activityStatements.map(_.id) into ((as, id) => as.copy(Some(id)))) += a
 
-  def delete(a: ActivityStatement)(implicit s: Session) : Int =
+  def delete(a: ActivityStatement)(implicit s: Session): Int =
     activityStatements.filter(_.id === a.id.get).delete
 
   def all(implicit s: Session) =

@@ -6,6 +6,8 @@ javaOptions in Test += "-Dconfig.file=conf/test.conf"
 
 versionWithGit
 
+scalariformSettings
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.1"
@@ -33,7 +35,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "select2" % "3.5.1",
   "org.webjars" % "angular-ui-select" % "0.8.3",
   "org.webjars" % "ui-grid" % "3.0.0-rc.11",
-  "org.scalacheck" %% "scalacheck" % "1.11.1" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.11.1" % "test",
+  "com.typesafe.akka" % "akka-testkit_2.11" % "2.3.9" % "test"
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 

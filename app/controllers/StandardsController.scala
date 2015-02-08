@@ -10,30 +10,29 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 case class StandardWithEducationLevel(standard: Standard, levels: List[EducationLevel])
-case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel]) 
+case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel])
 case class TupleWithList(statement: Option[Statement], levels: List[EducationLevel])
 
 case class JsonStandard(
-  id: Option[Long], 
-  organizationId:Option[Long],
+  id: Option[Long],
+  organizationId: Option[Long],
   title: Option[String],
   description: Option[String],
   publicationStatus: Option[String],
   subject: Option[String],
-  language:Option[String],
+  language: Option[String],
   source: Option[String],
   dateValid: Option[Date],
   repositoryDate: Option[Date],
   rights: Option[String],
   manifest: Option[String],
   identifier: Option[String],
-  levels: Option[List[EducationLevel]]
-)
+  levels: Option[List[EducationLevel]])
 
-class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser]{
- 
+class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
+
   implicit val standardsFormat = Json.format[Standard]
-  implicit val educationLevelFormat = Json.format[EducationLevel] 
+  implicit val educationLevelFormat = Json.format[EducationLevel]
   implicit val jsonStandardsFormat = Json.format[JsonStandard]
   implicit val statementFormat = Json.format[Statement]
   implicit val standardsWithEducationLevel = Json.format[StandardWithEducationLevel]
@@ -52,12 +51,12 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   val educationLevelsService: EducationLevelsServiceTrait = new EducationLevelsService()
   val personService = new PersonService()
 
-  def create = SecuredAction(BodyParsers.parse.json){ implicit request =>
-    if (personService.isAdmin(request.user.uid.get)) { 
+  def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    if (personService.isAdmin(request.user.uid.get)) {
       request.body.validate[StandardWithEducationLevel].fold(
         errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
-        standard => {   
-          standardsService.create(standard.standard, standard.levels).map( st => 
+        standard => {
+          standardsService.create(standard.standard, standard.levels).map(st =>
             Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
           ).getOrElse(
             BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the standard"))
@@ -69,13 +68,13 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
-  def createV2 = SecuredAction(BodyParsers.parse.json){implicit request =>
-    if (personService.isAdmin(request.user.uid.get)) { 
+  def createV2 = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    if (personService.isAdmin(request.user.uid.get)) {
       request.body.validate[JsonStandard].fold(
-        errors => { BadRequest(JsError.toFlatJson(errors))},
+        errors => { BadRequest(JsError.toFlatJson(errors)) },
         standard => {
           val s = convertFromJsonStandard(standard)
-          standardsService.create(s._1, s._2).map( st => 
+          standardsService.create(s._1, s._2).map(st =>
             Ok(Json.toJson(st))
           ).getOrElse(
             BadRequest(Json.obj("message" -> "Unable to add the standard"))
@@ -89,35 +88,35 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def view(id: Long) = Action { request =>
     standardsService.findWithEducationLevels(id) match {
-      case (Some(standard),levels:List[EducationLevel]) => Ok(Json.obj("standard" -> Json.toJson(standard), "levels" -> Json.toJson(levels)))
-      case (None,List(_*)) => NotFound(Json.obj("status" -> "KO", "message" -> "standard not found"))
+      case (Some(standard), levels: List[EducationLevel]) => Ok(Json.obj("standard" -> Json.toJson(standard), "levels" -> Json.toJson(levels)))
+      case (None, List(_*)) => NotFound(Json.obj("status" -> "KO", "message" -> "standard not found"))
     }
   }
 
   def viewV2(id: Long) = Action { request =>
     standardsService.findWithEducationLevels(id) match {
-      case (Some(standard),levels:List[EducationLevel]) => {
-        Ok(Json.toJson(convertToJsonStandard(standard,levels)))
+      case (Some(standard), levels: List[EducationLevel]) => {
+        Ok(Json.toJson(convertToJsonStandard(standard, levels)))
       }
-      case (None,List(_*)) => NotFound(Json.obj("message" -> "standard not found"))
+      case (None, List(_*)) => NotFound(Json.obj("message" -> "standard not found"))
     }
   }
 
-  def list = Action{ request =>
-    Ok(Json.toJson(standardsService.list)) 
+  def list = Action { request =>
+    Ok(Json.toJson(standardsService.list))
   }
 
-  def update(id: Long) = SecuredAction(BodyParsers.parse.json){implicit request =>
+  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     request.body.validate[Standard].fold(
       errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
       standard => {
         standardsService.update(id, standard) match {
           case 1 => {
-            standardsService.find(id).map( st =>
-                Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
-              ).getOrElse(
-                BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
-              )
+            standardsService.find(id).map(st =>
+              Ok(Json.obj("status" -> "OK", "standard" -> Json.toJson(st)))
+            ).getOrElse(
+              BadRequest(Json.obj("status" -> "KO", "message" -> "Update was successful, unable to return the object"))
+            )
           }
           case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "unable to update the recored at this time"))
         }
@@ -125,12 +124,12 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     )
   }
 
-  def delete(id: Long) = SecuredAction{implicit request =>
+  def delete(id: Long) = SecuredAction { implicit request =>
     if (personService.isAdmin(request.user.uid.get)) {
       standardsService.find(id) match {
         case Some(standard) => {
           val deleted: Int = standardsService.delete(standard)
-          Logger.debug(s"deleted: $deleted") 
+          Logger.debug(s"deleted: $deleted")
           if (deleted > 0) {
             Ok(Json.obj("status" -> "OK", "message" -> "successfully deleted standard"))
           } else {
@@ -144,46 +143,45 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
-  def getStatementsForStandard(id: Long) = Action { request=>
+  def getStatementsForStandard(id: Long) = Action { request =>
     standardsService.findWithStatementsAndLevels(id) match {
       case (Some(stan), statementList) => {
-        
-        Ok(Json.obj("standard" -> Json.toJson(stan), "statements" -> Json.toJson(statementList))) 
+        Ok(Json.obj("standard" -> Json.toJson(stan), "statements" -> Json.toJson(statementList)))
       }
       case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "there is no record with that id"))
 
     }
   }
 
-  def createStatement(id: Long) = SecuredAction(BodyParsers.parse.json){ implicit request => 
-    if (personService.isAdmin(request.user.uid.get)) { 
+  def createStatement(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    if (personService.isAdmin(request.user.uid.get)) {
       request.body.validate[StatementWithEducationLevel].fold(
         errors => { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors))) },
-        json => {   
-          standardsService.create(json.statement.copy(standardId=Some(id)), json.levels) match {
+        json => {
+          standardsService.create(json.statement.copy(standardId = Some(id)), json.levels) match {
             case (Some(statement), edLevels) => Ok(Json.obj("statement" -> Json.toJson(statement), "levels" -> Json.toJson(edLevels)))
             case _ => BadRequest(Json.obj("status" -> "KO", "message" -> "Unable to add the statement"))
-          } 
+          }
         }
-      ) 
-    }else {
+      )
+    } else {
       Unauthorized
     }
   }
 
-  def updateStatement(id: Long) = SecuredAction(BodyParsers.parse.json){ implicit request =>
+  def updateStatement(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     ???
   }
 
-  def deleteStatement(id: Long, statementId: Long) = SecuredAction{ implicit request =>
+  def deleteStatement(id: Long, statementId: Long) = SecuredAction { implicit request =>
     ???
   }
 
-  def importData = SecuredAction{ implicit request =>
-   ??? 
+  def importData = SecuredAction { implicit request =>
+    ???
   }
 
-  def convertFromJsonStandard(standard: JsonStandard) : (Standard,List[EducationLevel]) = {
+  def convertFromJsonStandard(standard: JsonStandard): (Standard, List[EducationLevel]) = {
     val stan = Standard(
       standard.id,
       standard.organizationId,
@@ -200,10 +198,10 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
       standard.identifier
     )
     val edLevels = standard.levels.getOrElse(List.empty)
-    (stan,edLevels)
+    (stan, edLevels)
   }
 
-  def convertToJsonStandard(standard:Standard,edLevels:List[EducationLevel]) : JsonStandard = {
+  def convertToJsonStandard(standard: Standard, edLevels: List[EducationLevel]): JsonStandard = {
     JsonStandard(
       standard.id,
       standard.organizationId,

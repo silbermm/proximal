@@ -2,28 +2,28 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 # index
-GET     /                           @controllers.ApplicationController.index()
+GET     /                           									@controllers.ApplicationController.index()
 
 
 # API
-GET     /api/v1/children            @controllers.PersonController.children()
-GET     /api/v1/children/:id        @controllers.PersonController.child(id: Long)
-POST    /api/v1/children            @controllers.PersonController.addChild()
-DELETE  /api/v1/children/:id        @controllers.PersonController.removeChild(id: Long)
+GET     /api/v1/children            									@controllers.PersonController.children()
+GET     /api/v1/children/:id        									@controllers.PersonController.child(id: Long)
+POST    /api/v1/children            									@controllers.PersonController.addChild()
+DELETE  /api/v1/children/:id        									@controllers.PersonController.removeChild(id: Long)
 
-GET     /api/v1/profile             @controllers.PersonController.profile()
-
-#Standards
-GET     /api/v1/standards           @controllers.StandardsController.list()
-GET     /api/v1/standards/:id       @controllers.StandardsController.view(id: Long)
-POST    /api/v1/standards           @controllers.StandardsController.create()
-PUT     /api/v1/standards/:id       @controllers.StandardsController.update(id: Long)
-DELETE  /api/v1/standards/:id       @controllers.StandardsController.delete(id: Long)
+GET     /api/v1/profile             									@controllers.PersonController.profile()
 
 #Standards
-GET     /api/v2/standards           @controllers.StandardsController.list()
-GET     /api/v2/standards/:id       @controllers.StandardsController.viewV2(id: Long)
-POST    /api/v2/standards           @controllers.StandardsController.createV2()
+GET     /api/v1/standards           									@controllers.StandardsController.list()
+GET     /api/v1/standards/:id       									@controllers.StandardsController.view(id: Long)
+POST    /api/v1/standards           									@controllers.StandardsController.create()
+PUT     /api/v1/standards/:id       									@controllers.StandardsController.update(id: Long)
+DELETE  /api/v1/standards/:id       									@controllers.StandardsController.delete(id: Long)
+
+#Standards
+GET     /api/v2/standards           									@controllers.StandardsController.list()
+GET     /api/v2/standards/:id       									@controllers.StandardsController.viewV2(id: Long)
+POST    /api/v2/standards           									@controllers.StandardsController.createV2()
 
 
 
@@ -35,17 +35,19 @@ DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsCont
 
 
 #Questions
-GET    /api/v1/questions       @controllers.QuestionsController.list
-POST   /api/v1/questions       @controllers.QuestionsController.create
-PUT    /api/v1/questions       @controllers.QuestionsController.update
-GET    /api/v1/questions/:id   @controllers.QuestionsController.get(id: Long)
-DELETE /api/v1/questions/:id   @controllers.QuestionsController.delete(id:Long)
+GET    /api/v1/questions       												@controllers.QuestionsController.list
+POST   /api/v1/questions       												@controllers.QuestionsController.create
+PUT    /api/v1/questions       												@controllers.QuestionsController.update
+GET    /api/v1/questions/:id   												@controllers.QuestionsController.get(id: Long)
+DELETE /api/v1/questions/:id   												@controllers.QuestionsController.delete(id:Long)
 
 #Assesments
-POST   /api/v1/assessments 	   						@controllers.AssessmentController.newAssesment()
-PUT	   /api/v1/assessments/:assessmentId			@controllers.AssessmentController.newScore(assessmentId: Long)
+POST   /api/v1/assessments 	   												@controllers.AssessmentController.newAssesment()
+PUT	   /api/v1/assessments/:assessmentId							@controllers.AssessmentController.newScore(assessmentId: Long)
 
 
+#Activities
+POST 	/api/v1/activities/homework											@controllers.ActivityController.newHomeworkActivity
 
 
 

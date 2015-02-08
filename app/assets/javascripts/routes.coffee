@@ -53,6 +53,20 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
     }
   }
 
+  $stateProvider.state 'children.view.homework', {
+    url: "/homework"
+    controller: "HomeworkCtrl"
+    controllerAs: 'homework'
+    templateUrl: '../assets/javascripts/children/view/homework/homework.html'
+    data: {
+      title: "Homework"
+      hideChildren: true
+      breadcrumbs: [
+        {"path" : "children", "text" : "All Children" }
+      ]
+    }
+  }
+
   $stateProvider.state 'library', {
     url: '/library',
     controller: 'LibraryCtrl as ctrl',

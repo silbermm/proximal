@@ -10,52 +10,52 @@ import play.api.db.slick.DB
 import play.api.Play.current
 import org.joda.time.DateTime
 
-class SecureUserService extends UserService[SecureUser]  {
-  
-  def deleteExpiredTokens(): Unit ={
-    DB.withSession{ implicit s=>
+class SecureUserService extends UserService[SecureUser] {
+
+  def deleteExpiredTokens(): Unit = {
+    DB.withSession { implicit s =>
       Tokens.deleteExpiredTokens(new DateTime)
     }
   }
 
   def deleteToken(uuid: String): Future[Option[MailToken]] = {
-    DB.withSession{ implicit s=>
+    DB.withSession { implicit s =>
       val t = Tokens.delete(uuid)
       Future.successful(t)
     }
   }
-  
-  def find(providerId: String,userId: String): Future[Option[BasicProfile]] = {
-    DB.withSession{ implicit s => 
-      val u : Option[SecureUser] = SecureUsers.findByProviderIdAndUserId(providerId,userId)
+
+  def find(providerId: String, userId: String): Future[Option[BasicProfile]] = {
+    DB.withSession { implicit s =>
+      val u: Option[SecureUser] = SecureUsers.findByProviderIdAndUserId(providerId, userId)
       u match {
         case Some(user) => {
           Future.successful(Some(ProfileFromUser(user)))
-        } 
+        }
         case _ => {
           Future.successful(None)
-        } 
+        }
       }
     }
   }
- 
-  def findByEmailAndProvider(email: String,providerId: String): Future[Option[BasicProfile]] = {
-    DB.withSession{ implicit s => 
-      val u: Option[SecureUser] = SecureUsers.findByEmailAndProvider(email,providerId)
+
+  def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
+    DB.withSession { implicit s =>
+      val u: Option[SecureUser] = SecureUsers.findByEmailAndProvider(email, providerId)
       u match {
         case Some(user) => Future.successful(Some(ProfileFromUser(user)))
         case _ => Future.successful(None)
       }
     }
   }
-  
+
   def findToken(token: String): Future[Option[MailToken]] = {
-    DB.withSession{ implicit s =>
+    DB.withSession { implicit s =>
       Future.successful(Tokens.findById(token))
     }
   }
 
-  def link(current: SecureUser,to: BasicProfile): Future[models.SecureUser] = {
+  def link(current: SecureUser, to: BasicProfile): Future[models.SecureUser] = {
     // get the current user from the database...
     if (current.providerId == to.providerId && current.userId == to.userId) {
       Future.successful(current)
@@ -63,19 +63,19 @@ class SecureUserService extends UserService[SecureUser]  {
       Future.successful(current)
     }
   }
-  
+
   def passwordInfoFor(user: models.SecureUser): Future[Option[PasswordInfo]] = {
-    DB.withSession{ implicit s => 
+    DB.withSession { implicit s =>
       SecureUsers.findById(user.uid.get) match {
         case Some(found) => Future.successful(found.passwordInfo)
         case _ => Future.successful(None)
       }
     }
   }
- 
-  def save(profile: BasicProfile,mode: SaveMode): Future[models.SecureUser] = {
-    DB.withSession{ implicit s =>
-      val u = SecureUsers.save(profile,mode)
+
+  def save(profile: BasicProfile, mode: SaveMode): Future[models.SecureUser] = {
+    DB.withSession { implicit s =>
+      val u = SecureUsers.save(profile, mode)
       val uid = u.uid match {
         case Some(userId) => Some(userId)
         case None => None
@@ -85,15 +85,15 @@ class SecureUserService extends UserService[SecureUser]  {
       Future.successful(u)
     }
   }
- 
+
   def saveToken(token: MailToken): Future[MailToken] = {
-    DB.withSession{ implicit s =>
+    DB.withSession { implicit s =>
       Future.successful(Tokens.save(token))
     }
   }
- 
-  def updatePasswordInfo(user: SecureUser,info: PasswordInfo): Future[Option[BasicProfile]] = {
-    DB.withSession{ implicit s =>
+
+  def updatePasswordInfo(user: SecureUser, info: PasswordInfo): Future[Option[BasicProfile]] = {
+    DB.withSession { implicit s =>
       SecureUsers.updatePasswordInfo(user, info) match {
         case Some(u) => Future.successful(Some(ProfileFromUser(u)))
         case _ => Future.successful(None)
@@ -105,7 +105,7 @@ class SecureUserService extends UserService[SecureUser]  {
 
 object ProfileFromUser {
   def apply(user: SecureUser): BasicProfile = {
-    val profile = BasicProfile(user.providerId,user.userId, user.firstName, user.lastName, user.fullName,user.email,user.avatarUrl,user.authMethod,user.oAuth1Info,user.oAuth2Info,user.passwordInfo)
+    val profile = BasicProfile(user.providerId, user.userId, user.firstName, user.lastName, user.fullName, user.email, user.avatarUrl, user.authMethod, user.oAuth1Info, user.oAuth2Info, user.passwordInfo)
     return profile
-  } 
+  }
 }

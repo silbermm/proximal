@@ -11,28 +11,27 @@ import play.api.Logger
 
 case class Standard(
   id: Option[Long],
-  organizationId:Option[Long],
+  organizationId: Option[Long],
   title: String,
   description: String,
   publicationStatus: String,
   subject: String,
-  language:Option[String],
+  language: Option[String],
   source: Option[String],
   dateValid: Option[Date],
   repositoryDate: Option[Date],
   rights: Option[String],
   manifest: Option[String],
-  identifier: Option[String]
-)
+  identifier: Option[String])
 
-class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
-  
+class Standards(tag: Tag) extends Table[Standard](tag, "standards") {
+
   implicit val JavaUtilDateMapper = {
-    MappedColumnType .base[java.util.Date, java.sql.Timestamp] (
+    MappedColumnType.base[java.util.Date, java.sql.Timestamp](
       d => new java.sql.Timestamp(d.getTime),
-      d => new java.util.Date(d.getTime)) 
+      d => new java.util.Date(d.getTime))
   }
-  
+
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def organizationId = column[Option[Long]]("organization_id")
   def title = column[String]("title")
@@ -48,23 +47,23 @@ class Standards(tag: Tag) extends Table[Standard](tag, "standards"){
   def identifier = column[Option[String]]("identifier")
 
   def * = (id.?,
-           organizationId,
-           title,
-           description,
-           publicationStatus,
-           subject,
-           language,
-           source,
-           dateValid,
-           repositoryDate,
-           rights,
-           manifest,
-           identifier
-           ) <> ( Standard.tupled,Standard.unapply _)
+    organizationId,
+    title,
+    description,
+    publicationStatus,
+    subject,
+    language,
+    source,
+    dateValid,
+    repositoryDate,
+    rights,
+    manifest,
+    identifier
+  ) <> (Standard.tupled, Standard.unapply _)
 }
 
 object Standards {
-  
+
   lazy val standards = TableQuery[Standards]
   lazy val education_levels = EducationLevels.education_levels
   lazy val standard_levels = EducationLevels.standard_levels
@@ -72,41 +71,41 @@ object Standards {
   lazy val statements = Statements.statements
 
   def insert(standard: Standard)(implicit s: Session) =
-    (standards returning standards.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += standard
+    (standards returning standards.map(_.id) into ((st, id) => st.copy(id = Some(id)))) += standard
 
   def update(id: Long, standard: Standard)(implicit s: Session) =
-    standards.filter(_.id === id).update(standard.copy(Some(id))) 
+    standards.filter(_.id === id).update(standard.copy(Some(id)))
 
-  def find(id: Long)(implicit s: Session) = 
+  def find(id: Long)(implicit s: Session) =
     standards.filter(_.id === id).firstOption
 
   def find(title: String)(implicit s: Session) =
     standards.filter(_.title like "%" + title + "%").list
 
-  def list(implicit s: Session) = 
+  def list(implicit s: Session) =
     standards.list
 
-  def findWithEducationLevels(id: Long)(implicit s: Session):(Option[Standard], List[EducationLevel] ) = {
+  def findWithEducationLevels(id: Long)(implicit s: Session): (Option[Standard], List[EducationLevel]) = {
     val query = for {
       l <- standard_levels if l.standardId === id
       e <- l.educationLevel
       s <- l.standard
-    } yield e 
-   return(find(id), query.list) 
+    } yield e
+    return (find(id), query.list)
   }
-   
-  def findWithStatements(id: Long)(implicit s: Session) : (Option[Standard], List[Statement]) = {
-    val qs = statements.filter(_.standardId === id) 
+
+  def findWithStatements(id: Long)(implicit s: Session): (Option[Standard], List[Statement]) = {
+    val qs = statements.filter(_.standardId === id)
     return (find(id), qs.list)
   }
 
-  def delete(standard: Standard)(implicit s: Session): Int = 
+  def delete(standard: Standard)(implicit s: Session): Int =
     standards.filter(_.id === standard.id.get).delete
 }
 
 case class Statement(
   id: Option[Long],
-  standardId: Option[Long], 
+  standardId: Option[Long],
   asnUri: Option[String],
   subject: Option[String],
   notation: Option[String],
@@ -116,82 +115,81 @@ case class Statement(
   alternateDescription: Option[String],
   exactMatch: Option[String],
   identifier: Option[String],
-  language: Option[String]
-)
+  language: Option[String])
 
-class Statements(tag: Tag) extends Table[Statement](tag, "statements"){
+class Statements(tag: Tag) extends Table[Statement](tag, "statements") {
 
   lazy val standards = Standards.standards
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def standardId = column[Option[Long]]("standardId")
   def asnUri = column[Option[String]]("asn_uri")
-  def subject = column[Option[String]]("subject") 
+  def subject = column[Option[String]]("subject")
   def notation = column[Option[String]]("notation")
   def alternateNotation = column[Option[String]]("alternate_notation")
-  def label = column[Option[String]]("label") 
+  def label = column[Option[String]]("label")
   def description = column[Option[String]]("description", O.DBType("Text"))
-  def alternateDescription = column[Option[String]]("alternate_description", O.DBType("Text")) 
-  def exactMatch = column[Option[String]]("exactMatch") 
-  def identifier = column[Option[String]]("identifier") 
-  def language = column[Option[String]]("language") 
+  def alternateDescription = column[Option[String]]("alternate_description", O.DBType("Text"))
+  def exactMatch = column[Option[String]]("exactMatch")
+  def identifier = column[Option[String]]("identifier")
+  def language = column[Option[String]]("language")
 
   def * = (id.?,
-           standardId,
-           asnUri,
-           subject,
-           notation,
-           alternateNotation,
-           label,
-           description,
-           alternateDescription,
-           exactMatch,
-           identifier,
-           language
-           ) <> ( Statement.tupled,Statement.unapply _)
-  
+    standardId,
+    asnUri,
+    subject,
+    notation,
+    alternateNotation,
+    label,
+    description,
+    alternateDescription,
+    exactMatch,
+    identifier,
+    language
+  ) <> (Statement.tupled, Statement.unapply _)
+
   def standard = foreignKey("STANDARD_FK", standardId, standards)(_.id)
 }
 
 object Statements {
 
-  lazy val statements = TableQuery[Statements] 
+  lazy val statements = TableQuery[Statements]
   lazy val standards = Standards.standards
   lazy val statement_levels = StatementLevels.statement_levels
 
   def insert(statement: Statement)(implicit s: Session) =
-    (statements returning statements.map(_.id) into ((st,id) => st.copy(id=Some(id)))) += statement
+    (statements returning statements.map(_.id) into ((st, id) => st.copy(id = Some(id)))) += statement
 
   def insert(statement: Seq[Statement])(implicit s: Session) =
     statements ++= statement
-   
-  def update(id: Long, statement: Statement)(implicit s: Session) =
-    statements.filter(_.id === id).update(statement.copy(Some(id))) 
 
-  def find(id: Long)(implicit s: Session) = 
+  def update(id: Long, statement: Statement)(implicit s: Session) =
+    statements.filter(_.id === id).update(statement.copy(Some(id)))
+
+  def find(id: Long)(implicit s: Session) =
     statements.filter(_.id === id).firstOption
 
   def findWithStandard(id: Long)(implicit s: Session) = {
     val query = for {
       l <- statements if l.id === id
       e <- l.standard
-    } yield e 
-    (find(id), query.firstOption)  
+    } yield e
+    (find(id), query.firstOption)
   }
 
-  def findWithEducationLevels(id: Long)(implicit s: Session):(Option[Statement], List[EducationLevel] ) = {
+  def findWithEducationLevels(id: Long)(implicit s: Session): (Option[Statement], List[EducationLevel]) = {
     val query = for {
       l <- statement_levels if l.statementId === id
       e <- l.educationLevel
       s <- l.statement
-    } yield e 
-   return(find(id), query.list) 
+    } yield e
+    return (find(id), query.list)
   }
 
-  def list(implicit s: Session) = 
+  def list(implicit s: Session) =
     statements.list
 
-  def delete(statement: Statement)(implicit s: Session) = 
+  def delete(statement: Statement)(implicit s: Session) =
     statements.filter(_.id === statement.id.get).delete
 
 }
