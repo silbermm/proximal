@@ -37,7 +37,7 @@ class ActivityServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ActivityActor)
-        ask(actorRef, CreateHomeworkActivity(ActivityHelpers.activityGen.sample.get, ActivityHelpers.homeworkGen.sample.get)).mapTo[Option[CreateHomeworkActivity]] map { x =>
+        ask(actorRef, CreateHomeworkActivity(List.empty, ActivityHelpers.activityGen.sample.get, ActivityHelpers.homeworkGen.sample.get)).mapTo[Option[CreateHomeworkActivity]] map { x =>
           x match {
             case Some(cha) => {
               cha.homework.id must not be empty

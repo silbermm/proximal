@@ -1,7 +1,7 @@
 <div class="modal-header">
   <!-- <h3 class="modal-title">Add Homework</h3> -->
   <br />
-  <ul class="steps-indicator steps-3">
+  <ul class="steps-indicator steps-2">
       <li ng-class="{default: !step.completed && !step.selected, 
                      current: step.selected && !step.completed, 
                      done: step.completed && !step.selected, 
@@ -32,7 +32,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-click="addHomework.statement = statement.statement" 
+                <tr ng-click="addHomework.statement = statement.statement;addHomework.entity.statementId = statement.statement.id" 
                     ng-class="{'success': addHomework.statement.id == statement.statement.id}" data-ng-repeat="statement in addHomework.statements | filter: searchText">
                   <td> {{statement.statement.notation }}</td>
                   <td> {{statement.statement.description }} </td>
@@ -47,7 +47,7 @@
 
   <div class="row" ng-show="addHomework.steps[1].selected == true">
     <form name="homeworkForm"  class="form-horizontal" ng-init="addHomework.setForm(this)" >
-
+      <input type="hidden" ng-model="addHomework.entity.statementId" value="{{addHomework.statement.id}}" />
       <div class="form-group">
         <label for="title" class="col-sm-2 control-label">Title</label>
         <div class="col-sm-10">
@@ -73,21 +73,23 @@
       <div class="form-group">
         <label for="status" class="col-sm-2 control-label">Status</label>
         <div class="col-sm-10">
-          <input type="text" ng-model="addHomework.entity.homework.status" class="form-control" id="status" placeholder="Status">
+          <select class="form-control"  ng-model="addHomework.entity.homework.status" ng-options="status.text as status.text for status in addHomework.status">
+            <option value=""> -- Select a Status -- </option>
+          </select>
         </div>
       </div>
 
       <div class="form-group">
         <label for="date-given" class="col-sm-2 control-label">Date Given</label>
         <div class="col-sm-10">
-          <input type="date" ng-model="addHomework.entity.homework.dateGiven" class="form-control" id="date-given" placeholder="Date Given" ng-required>
+          <input type="date" ng-model="addHomework.dateGiven" class="form-control" id="date-given" placeholder="Date Given" ng-required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="date-due" class="col-sm-2 control-label">Due Date</label>
         <div class="col-sm-10">
-          <input type="date" ng-model="addHomework.entity.homework.dateDue" class="form-control" id="date-due" placeholder="Due Date">
+          <input type="date" ng-model="addHomework.dateDue" class="form-control" id="date-due" placeholder="Due Date">
         </div>
       </div>
 
@@ -95,7 +97,6 @@
   </div>
 
 </div>
-<pre> {{addHomework.forms.homeworkForm.$invalid}} </pre>
 <div class="modal-footer">
   <button class="btn btn-primary" ng-show="addHomework.steps[addHomework.steps.length-1].selected == true" ng-click="addHomework.ok()">Submit </button>
   <button class="btn btn-primary" 

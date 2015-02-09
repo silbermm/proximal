@@ -23,7 +23,7 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.concurrent.Future
 
-case class ChildAndActivity(childId: Long, activity: Activity, homework: Homework)
+case class ChildAndActivity(childId: Long, statementId: Long, activity: Activity, homework: Homework)
 
 class ActivityController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
@@ -34,12 +34,26 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
   def newHomeworkActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
-    request.body.validate[ChildAndActivity].fold(
-      errors => { Future { BadRequest(Json.obj("message" -> s"Something went wrong! $errors.toString()")) } },
-      obj => { Future { Ok(Json.obj("message" -> s"Good Request")) } }
-    )
+    def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {
+      PersonService.childActionAsync(request.user.uid.get, childAndActivity.childId, c => {
+        val hwact = CreateHomeworkActivity(List(childAndActivity.statementId), childAndActivity.activity, childAndActivity.homework)
+        ask(activityActor, hwact).mapTo[Option[CreateHomeworkActivity]] map { x =>
+          x match {
+            case Some(obj) => Ok(Json.toJson(obj))
+            case None => BadRequest(Json.obj("message" -> "Sorry, unable to create add the homework."))
+          }
+        }
+      })
+    }
 
-    // here create the method when everything is good
+    request.body.validate[ChildAndActivity].fold(
+      errors => { Future { BadRequest(Json.obj("message" -> s"Something went wrong! $errors")) } },
+      obj => {
+        val activity = obj.activity.copy(creator = Some(request.user.userId))
+        val childAndActivity = obj.copy(activity = activity)
+        createHomework(childAndActivity)
+      }
+    )
 
   }
 

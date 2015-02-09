@@ -1,26 +1,28 @@
 "use strict()";
 (function(){
 
-	function AddHomeworkCtrl($log, $modalInstance, Standards, Child, $stateParams, items){
+	function AddHomeworkCtrl($log, $modalInstance, Standards, Child, Common, $stateParams, items){
 		var _this = this;
 
 		_this.child = Child.get({"id": $stateParams.id});
 		_this.standard = items;
 
+		_this.status = Common.homeworkStatuses;
+
 		_this.entity = {
-			childId : $stateParams.id,
+			childId : Number($stateParams.id),
+			statementId : null,
 			activity : {
 
 			},
 			homework : {
-
+				studentId: Number($stateParams.id)
 			}
 		};
 
 		_this.steps = [
 			{step: 1, title: "Choose Statement", completed: false, selected: true},
-			{step: 2, title: "Add Information", completed: false, selected: false},
-			{step: 3, title: "Review and Complete", completed: false, selected: false}
+			{step: 2, title: "Add Information", completed: false, selected: false}
 		];
 
 		_this.setForm = function(f){
@@ -29,9 +31,10 @@
 
 		//Get statements for this standard and grade level of the child
 		Standards.getStatements(_this.standard.id).success(function(d){
-			_this.statements = _.filter(d.statements, function(st){
-				return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
-			});
+			_this.statements = d.statements;
+			//_this.statements = _.filter(d.statements, function(st){
+			//return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
+			//});
 		}).error(function(d){
 			$log.error(d);
 		});
@@ -41,7 +44,6 @@
 			var currentStep = _.find(_this.steps, function(s){
 				return s.selected === true;
 			});
-
 			_this.steps[currentStep.step -1].completed = true;
 			_this.steps[currentStep.step -1].selected = false;
 			_this.steps[currentStep.step].selected = true;
@@ -50,7 +52,6 @@
 		};
 
 		_this.isNextDisabled = function(){
-			$log.debug(_this.forms.homeworkForm);
 			return (_this.steps[0].selected && _this.statement === undefined) || (_this.steps[1].selected && !_this.isEntityValid());
 		};
 
@@ -66,7 +67,11 @@
 		};
 
 		_this.ok = function () {
-			$modalInstance.close({"retval" : 1});
+			_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();
+			if(_this.dateDue !== undefined) 
+				_this.entity.homework.dateDue = new Date(_this.dateDue).getTime();
+			_this.entity.activity.date = new Date().getTime();
+			$modalInstance.close(_this.entity);
 		};
 
 		_this.cancel = function () {
@@ -74,9 +79,10 @@
 		};
 
 		_this.isEntityValid = function(){
+			//TODO: Validate all required fields
 			return (_this.entity.activity.title !== undefined && _this.entity.activity.subject !== undefined);
 		};
 	}
 
-	angular.module("proximal").controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "$stateParams", "items", AddHomeworkCtrl]);
+	angular.module("proximal").controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "prox.common", "$stateParams", "items", AddHomeworkCtrl]);
 })();

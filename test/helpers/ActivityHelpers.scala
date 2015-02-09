@@ -17,7 +17,7 @@ object ActivityHelpers {
     subject <- Arbitrary.arbitrary[String]
     title <- Arbitrary.arbitrary[String]
     category <- Arbitrary.arbitrary[String]
-  } yield Activity(None, creator, currentTime, Some(description), Some(rights), Some(source), Some(subject), Some(title), Some(category))
+  } yield Activity(None, Some(creator), currentTime, Some(description), Some(rights), Some(source), Some(subject), Some(title), Some(category))
 
   def homeworkGen = for {
     status <- Arbitrary.arbitrary[String]
