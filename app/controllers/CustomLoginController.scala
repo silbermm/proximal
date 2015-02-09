@@ -9,20 +9,20 @@ import play.api.i18n.Lang
 import securesocial.controllers._
 import models._
 
-class CustomTemplates(env:RuntimeEnvironment[_]) extends ViewTemplates {
-  
+class CustomTemplates(env: RuntimeEnvironment[_]) extends ViewTemplates {
+
   implicit val implicitEnv = env
 
-  override def getLoginPage(form: Form[(String, String)],msg: Option[String] = None)(implicit request: RequestHeader, lang: Lang): Html = {
+  override def getLoginPage(form: Form[(String, String)], msg: Option[String] = None)(implicit request: RequestHeader, lang: Lang): Html = {
     views.html.login(form, msg)(request, env)
   }
-  
+
   override def getSignUpPage(form: Form[RegistrationInfo], token: String)(implicit request: RequestHeader, lang: Lang): Html = {
     views.html.registration.signup(form, token)(request, lang, env)
   }
 
   override def getStartSignUpPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {
-    views.html.registration.startSignup(form)(request, lang, env) 
+    views.html.registration.startSignup(form)(request, lang, env)
   }
 
   override def getStartResetPasswordPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {

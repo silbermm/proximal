@@ -12,7 +12,6 @@ import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
 
-
 import play.api.Logger
 import helpers.StandardsHelpers._
 
@@ -22,12 +21,12 @@ class StandardsLevelsSpec extends PlaySpec with Results {
   "Standards Levels " should {
 
     "insert a row and find it by id" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
-        DB.withSession{ implicit s =>
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
           //first we need an education level and standard level 
           val e = EducationLevels.insert(fakeEducationLevel)
           e.id must not be empty
-          
+
           val standard = Standards.insert(fakeStandard)
           standard.id must not be empty
 
@@ -35,11 +34,11 @@ class StandardsLevelsSpec extends PlaySpec with Results {
           val standardLevel = StandardLevels.insert(st)
           standardLevel.id must not be empty
 
-          StandardLevels.find(standardLevel.id.get).map( level =>
+          StandardLevels.find(standardLevel.id.get).map(level =>
             level.id must not be empty
           ).getOrElse(
-              fail("unable to find by id")
-          ) 
+            fail("unable to find by id")
+          )
         }
       }
     }

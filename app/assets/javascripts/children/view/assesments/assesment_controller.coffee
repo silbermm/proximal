@@ -11,6 +11,6 @@ AssesmentController = ($scope,$log,Child,Assesments, standardsService, $statePar
    )
 
   $scope.begin = ->
-  	Assesments.save({"childId": $stateParams.id, "standardId": $scope.standardSelected.id})
+  	Assesments.save({"childId": Number($stateParams.id), "standardId": $scope.standardSelected.id})
 
 angular.module('proximal').controller "AssesmentCtrl",['$scope','$log','Child', 'Assesments', 'standardsService', '$stateParams', AssesmentController]

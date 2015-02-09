@@ -17,36 +17,35 @@ import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.pattern.ask
-import akka.util.Timeout 
+import akka.util.Timeout
 import scala.concurrent.duration._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 
 case class ChildWithStandard(childId: Long, standardId: Long)
 
-class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
-  
+class AssessmentController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
+
   implicit val childWithStandardFormat = Json.format[ChildWithStandard]
 
   val newAssessmentActor = Akka.system.actorOf(Props[AssessmentActor])
   implicit val timeout = Timeout(30 seconds)
 
-  def newAssesment = SecuredAction.async(BodyParsers.parse.json) { implicit request => 
-    
+  def newAssesment = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val webReq: ChildWithStandard = request.body.validate[ChildWithStandard].fold(
       errors => {
         Logger.error(errors.toString())
-        ChildWithStandard(-1,-1)
+        ChildWithStandard(-1, -1)
       },
-      obj => {        
+      obj => {
         obj
-      } 
+      }
     )
 
-    if(webReq.childId < 1 || webReq.standardId < 1){
-      scala.concurrent.Future { BadRequest(Json.obj("message" -> s"Something went wrong! $webReq.childId" )) }
+    if (webReq.childId < 1 || webReq.standardId < 1) {
+      Future { BadRequest(Json.obj("message" -> s"Something went wrong! $webReq.childId")) }
     } else {
-      PersonService.childActionAsync(request.user.uid.get, webReq.childId, c =>  {        
+      PersonService.childActionAsync(request.user.uid.get, webReq.childId, c => {
         ask(newAssessmentActor, ChildAndStandard(c, webReq.standardId)).mapTo[Option[AssessmentQuestion]] map { x =>
           x match {
             case Some(obj) => Ok(Json.toJson(obj))
@@ -56,17 +55,15 @@ class AssesmentController(override implicit val env: RuntimeEnvironment[SecureUs
       })
     }
 
-    
   }
-
 
   def newScore(assesmentId: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     // Make sure assessment exists and get the childId that belongs to this assessment
     val childId = AssesmentService.findChildForAssessment(assesmentId);
-    if(childId < 1) {
+    if (childId < 1) {
       BadRequest(Json.obj("message" -> s"assessment not found"))
     } else {
-      PersonService.childAction(request.user.uid.get, childId, c => { 
+      PersonService.childAction(request.user.uid.get, childId, c => {
         request.body.validate[QuestionScore].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           qscore => {

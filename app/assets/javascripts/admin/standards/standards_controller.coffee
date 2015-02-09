@@ -28,6 +28,34 @@ angular.module("proximal").controller "StandardsCtrl",[
         toaster.pop('error', "Failure", "Unable to get standards")
       )
 
+    $scope.deleteStandard = ->
+      # confirmation dialog!
+      modalInstance = $modal.open({
+        templateUrl: "../assets/javascripts/admin/standards/delete_standard.html",
+        controller: ($scope, $modalInstance)->
+          $scope.ok = -> 
+            $modalInstance.close();
+
+          $scope.cancel = ->
+            $modalInstance.dismiss('cancel'); 
+      })
+      modalInstance.result.then( ()->
+        standardsService.removeStandard($scope.standard.id).success((data)-> 
+          toaster.pop("success", null, "Successfully deleted standard") 
+          $scope.standards = _.filter($scope.standards, (st)->
+            return st.id is not $scope.standard.id
+          )
+          $state.go("admin.standards")
+        ).error((data)->
+          $log.debug("Error: ")
+          $log.debug(data)
+        )
+        return
+      ,()->
+        $log.info("dismissed delete modal")
+        return
+      )
+ 
     $scope.isDescriptionCollapsed = false
     $scope.isEducationCollapsed = false
    
@@ -61,9 +89,11 @@ angular.module("proximal").controller "StandardsCtrl",[
 
       addStandard = (s) ->
         standardsService.addStandard(s).success((data,success,headers,config) ->
-          $log.debug data
+          $scope.standards.push(data.standard);
+          toaster.pop('success', null, "Successfully added the new standard")
         ).error((data,status,headers,config) ->
           $log.error("Unable to add standard: " + data)
+          toaster.pop('error',null, "Failed to add the standard: " + data.message)
         )
 
       modalInstance.result.then((standard)->

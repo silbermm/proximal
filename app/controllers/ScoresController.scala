@@ -12,14 +12,12 @@ import play.api.Play.current
 import helpers.ImplicitJsonFormat._
 
 class ScoresController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
- 
 
-  def showScores(studentId: Long) = SecuredAction{ implicit request =>
-    DB.withSession{ implicit s =>
+  def showScores(studentId: Long) = SecuredAction { implicit request =>
+    DB.withSession { implicit s =>
       val scores = Scores.findByStudent(studentId)
       Ok(Json.toJson(scores))
     }
   }
-   
 
 }

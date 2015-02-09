@@ -9,9 +9,16 @@
 </div>
 
 <tabset>  
-  <tab heading="New Assessment" ui-sref="children.view.assesment" ui-active="active">
+  <tab heading="Assessments" ui-sref="children.view.assesment" ui-active="active">
     <tab-heading>
       Assesments
+    </tab-heading>
+    <ui-view></ui-view>
+  </tab>
+
+  <tab heading="Homework" ui-sref="children.view.homework" ui-active="active">
+    <tab-heading>
+      Homework
     </tab-heading>
     <ui-view></ui-view>
   </tab>
