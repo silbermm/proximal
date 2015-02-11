@@ -10,6 +10,10 @@ scalariformSettings
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
+(testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/report")
+
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;controllers.javascript;controllers.ref;securesocial.*;views.*"
+
 scalaVersion := "2.11.1"
 
 seq(bowerSettings : _*)
