@@ -36,7 +36,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {
       PersonService.childActionAsync(request.user.uid.get, childAndActivity.childId, c => {
-        val hwact = CreateHomeworkActivity(List(childAndActivity.statementId), childAndActivity.activity, childAndActivity.homework)
+        val hwact = CreateHomeworkActivity(List(childAndActivity.statementId), childAndActivity.activity, childAndActivity.homework, List.empty)
         ask(activityActor, hwact).mapTo[Option[CreateHomeworkActivity]] map { x =>
           x match {
             case Some(obj) => Ok(Json.toJson(obj))

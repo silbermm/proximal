@@ -28,6 +28,29 @@ case class ActivityWithStatements(id: Option[Long],
   category: Option[String],
   statements: List[Statement])
 
+case class ActivityWithActs(id: Option[Long],
+  creator: Option[String],
+  date: Long,
+  description: Option[String],
+  rights: Option[String],
+  source: Option[String],
+  subject: Option[String],
+  title: Option[String],
+  category: Option[String],
+  acts: List[Act])
+
+case class ActivityWithStatementsAndActs(id: Option[Long],
+  creator: Option[String],
+  date: Long,
+  description: Option[String],
+  rights: Option[String],
+  source: Option[String],
+  subject: Option[String],
+  title: Option[String],
+  category: Option[String],
+  statements: List[Statement],
+  acts: List[Act])
+
 class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def creator = column[Option[String]]("creator")
@@ -46,6 +69,7 @@ class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
 object Activities {
   lazy val activities = TableQuery[Activities]
   lazy val activityStatements = ActivityStatements.activityStatements
+  lazy val activityActs = ActivityActs.activityActs
 
   def create(a: Activity)(implicit s: Session): Activity =
     (activities returning activities.map(_.id) into ((activity, id) => activity.copy(Some(id)))) += a
@@ -67,6 +91,46 @@ object Activities {
 
     find(id) match {
       case Some(act) => Some(ActivityWithStatements(act.id, act.creator, act.date, act.description, act.rights, act.source, act.subject, act.title, act.category, query.list))
+      case _ => None
+    }
+  }
+
+  def findWithActs(id: Long)(implicit s: Session): Option[ActivityWithActs] = {
+    val query = for {
+      aa <- activityActs if aa.activityId === id
+      acts <- aa.act
+    } yield acts
+
+    find(id) match {
+      case Some(act) => Some(ActivityWithActs(act.id, act.creator, act.date, act.description, act.rights, act.source, act.subject, act.title, act.category, query.list))
+      case _ => None
+    }
+  }
+
+  def findWithStatementsAndActs(id: Long)(implicit s: Session): Option[ActivityWithStatementsAndActs] = {
+    val statements = for {
+      as <- activityStatements if as.activityId === id
+      a <- as.statement
+    } yield a
+
+    val acts = for {
+      aa <- activityActs if aa.activityId === id
+      acts <- aa.act
+    } yield acts
+
+    find(id) match {
+      case Some(act) => Some(ActivityWithStatementsAndActs(
+        act.id,
+        act.creator,
+        act.date,
+        act.description,
+        act.rights,
+        act.source,
+        act.subject,
+        act.title,
+        act.category,
+        statements.list,
+        acts.list))
       case _ => None
     }
   }

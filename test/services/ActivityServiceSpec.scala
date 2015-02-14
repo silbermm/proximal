@@ -11,6 +11,8 @@ import org.scalatestplus.play._
 import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.db.slick.DB
+import play.api.Play.current
 
 import scala.compat.Platform
 
@@ -37,7 +39,7 @@ class ActivityServiceSpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ActivityActor)
-        ask(actorRef, CreateHomeworkActivity(List.empty, ActivityHelpers.activityGen.sample.get, ActivityHelpers.homeworkGen.sample.get)).mapTo[Option[CreateHomeworkActivity]] map { x =>
+        ask(actorRef, CreateHomeworkActivity(List.empty, ActivityHelpers.activityGen.sample.get, ActivityHelpers.homeworkGen.sample.get, List.empty)).mapTo[Option[CreateHomeworkActivity]] map { x =>
           x match {
             case Some(cha) => {
               cha.homework.id must not be empty
@@ -49,5 +51,34 @@ class ActivityServiceSpec extends PlaySpec with Results {
       }
 
     }
+
+    "handle acts appropriatly" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val createdAct = DB.withSession { implicit s => Acts.create(ActHelpers.sampleAct) }
+        val actsList = List(ActHelpers.sampleAct, ActHelpers.sampleAct, createdAct)
+        val newlist = ActivityActor.handleActs(actsList)
+        newlist must not be empty
+        newlist must have length 3
+      }
+    }
+
+    "create activity acts" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+
+      }
+    }
+
+    "create activity statements" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+
+      }
+    }
+
+    "create Homework" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+
+      }
+    }
+
   }
 }

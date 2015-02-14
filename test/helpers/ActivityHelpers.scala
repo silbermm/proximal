@@ -23,5 +23,8 @@ object ActivityHelpers {
     status <- Arbitrary.arbitrary[String]
   } yield Homework(None, None, None, None, status, currentTime, None)
 
+  val sampleActivity = activityGen.sample.get
+  val sampleHomework = homeworkGen.sample.get
+
 }
 
