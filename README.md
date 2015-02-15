@@ -1,6 +1,9 @@
 Proximal Learning Suite
 =================================
 
+[![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=master)](https://travis-ci.org/silbermm/proximal)
+
+
 ##To get this up and running on your local machine:
 
 1. First make sure you have the JDK 1.7 or higer installed. 
