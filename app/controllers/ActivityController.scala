@@ -23,7 +23,7 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.concurrent.Future
 
-case class ChildAndActivity(childId: Long, statementId: Long, activity: Activity, homework: Homework)
+case class ChildAndActivity(childId: Long, statementId: Long, activity: Activity, homework: Homework, acts: List[Act])
 
 class ActivityController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
@@ -36,7 +36,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {
       PersonService.childActionAsync(request.user.uid.get, childAndActivity.childId, c => {
-        val hwact = CreateHomeworkActivity(List(childAndActivity.statementId), childAndActivity.activity, childAndActivity.homework, List.empty)
+        val hwact = CreateHomeworkActivity(List(childAndActivity.statementId), childAndActivity.activity, childAndActivity.homework, childAndActivity.acts)
         ask(activityActor, hwact).mapTo[Option[CreateHomeworkActivity]] map { x =>
           x match {
             case Some(obj) => Ok(Json.toJson(obj))
@@ -55,6 +55,13 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
       }
     )
 
+  }
+
+  def allHomework(childId: Long) = SecuredAction.async { implicit request =>
+    
+    PersonService.childActionAsync(request.user.uid.get, childId, c => {     
+      Future { Ok }
+    })
   }
 
 }

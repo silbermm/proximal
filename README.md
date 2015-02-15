@@ -2,6 +2,7 @@ Proximal Learning Suite
 =================================
 
 Master Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=master)](https://travis-ci.org/silbermm/proximal)
+
 Development Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=develop)](https://travis-ci.org/silbermm/proximal)
 
 
