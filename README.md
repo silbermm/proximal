@@ -5,6 +5,8 @@ Master Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branc
 
 Development Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=develop)](https://travis-ci.org/silbermm/proximal)
 
+[![Coverage Status](https://coveralls.io/builds/1934306/badge)](https://coveralls.io/builds/1934306)
+
 
 ##To get this up and running on your local machine:
 
