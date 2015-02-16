@@ -21,12 +21,21 @@ class ActivityActs(tag: Tag) extends Table[ActivityAct](tag, "activity_acts") {
 
 object ActivityActs {
   lazy val activityActs = TableQuery[ActivityActs]
+  lazy val acts = Acts.acts
 
   def create(a: ActivityAct)(implicit s: Session): ActivityAct =
     (activityActs returning activityActs.map(_.id) into ((act, id) => act.copy(Some(id)))) += a
 
   def find(id: Long)(implicit s: Session) =
     activityActs.filter(_.id === id).firstOption
+
+  def findByActivity(activityId: Long)(implicit s: Session): List[Act] = {
+    val query = for {
+      activityAct <- activityActs if activityAct.activityId === activityId
+      act <- activityAct.act
+    } yield act
+    query.list
+  }
 
   def all(implicit s: Session) =
     activityActs.list

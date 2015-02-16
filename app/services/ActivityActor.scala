@@ -11,6 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
 
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
+case class ListHomework(studentId: Long)
 
 class ActivityActor extends Actor {
 
@@ -19,12 +20,17 @@ class ActivityActor extends Actor {
       val newActivity = ActivityActor.createHomework(cha)
       sender ! newActivity
     }
+    case student: ListHomework => {
+      val allHomework = ActivityActor.listHomework(student.studentId)
+      sender ! allHomework
+    }
     case _ => sender ! None
   }
 
 }
 
 object ActivityActor {
+
   def createHomework(homeworkActivity: CreateHomeworkActivity): Option[CreateHomeworkActivity] = {
     DB.withSession { implicit s =>
       homeworkActivity.activity.id match {
@@ -41,7 +47,7 @@ object ActivityActor {
           //create a new activity as well as the homework
           val newActivity = Activities.create(homeworkActivity.activity)
           val acts = handleActs(homeworkActivity.acts)
-          createActivityActs(homeworkActivity.activity, homeworkActivity.acts)
+          createActivityActs(newActivity, acts)
           val activityStatements = homeworkActivity.statementIds map (ActivityStatement(None, newActivity.id.get, _))
           val createdActivityStatements: List[Long] = createActivityStatements(activityStatements) map (_.statementId)
           val homework = homeworkActivity.homework.copy(activityId = newActivity.id)
@@ -49,6 +55,12 @@ object ActivityActor {
           Some(CreateHomeworkActivity(createdActivityStatements, newActivity, newHomework, acts))
         }
       }
+    }
+  }
+
+  def listHomework(studentId: Long): List[HomeworkActivityActs] = {
+    DB.withSession { implicit s =>
+      Homeworks.findByStudentWithActivitiesAndActs(studentId)
     }
   }
 

@@ -58,9 +58,10 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
   }
 
   def allHomework(childId: Long) = SecuredAction.async { implicit request =>
-
     PersonService.childActionAsync(request.user.uid.get, childId, c => {
-      Future { Ok }
+      ask(activityActor, ListHomework(c)).mapTo[List[HomeworkActivityActs]] map { x =>
+        Ok(Json.toJson(x))
+      }
     })
   }
 

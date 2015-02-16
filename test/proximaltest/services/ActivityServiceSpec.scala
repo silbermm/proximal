@@ -1,4 +1,6 @@
-package services
+package proximaltest.services
+
+import services._
 
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -59,6 +61,17 @@ class ActivityServiceSpec extends PlaySpec with Results {
         val newlist = ActivityActor.handleActs(actsList)
         newlist must not be empty
         newlist must have length 3
+      }
+    }
+
+    "list homework" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val fakeStudent = DB.withSession { implicit s => People.insertPerson(PersonHelpers.person) }
+        val fakeActivity = DB.withSession { implicit s => Activities.create(ActivityHelpers.sampleActivity) }
+        val fakeHomework = DB.withSession { implicit s => Homeworks.create(ActivityHelpers.sampleHomework.copy(activityId = fakeActivity.id, studentId = fakeStudent.id)) }
+        val homeworkList = ActivityActor.listHomework(fakeStudent.id.get)
+        homeworkList must have length 1
+        homeworkList(0).acts must have length 0
       }
     }
 

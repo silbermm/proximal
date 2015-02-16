@@ -17,12 +17,16 @@
 			},
 			homework : {
 				studentId: Number($stateParams.id)
-			}
+			},
+      acts : [
+      
+      ]
 		};
 
 		_this.steps = [
 			{step: 1, title: "Choose Statement", completed: false, selected: true},
-			{step: 2, title: "Add Information", completed: false, selected: false}
+			{step: 2, title: "General Information", completed: false, selected: false},
+      {step: 3, title: "Actions", completed: false, selected: false}
 		];
 
 		_this.setForm = function(f){
@@ -65,6 +69,14 @@
 				}
 			});
 		};
+
+    _this.addAction = function(){
+      if(_this.actionToAdd !== undefined){
+        _this.entity.acts.push({"actType": "homework", "action": _this.actionToAdd}); 
+      }
+      _this.actionToAdd = null;
+      _this.showAdd = false;
+    };
 
 		_this.ok = function () {
 			_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();

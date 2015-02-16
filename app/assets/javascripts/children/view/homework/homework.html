@@ -30,9 +30,28 @@
         <div class="widget-header">
           <i class="fa fa-spinner"></i> Homework In-Progress
         </div>
-        <div class="widget-body">
-          
-         </div>
+        <div class="widget-body small no-padding">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Name </th>
+                  <th> Status </th>
+                  <th> Assigned on </th>
+                  <th> Actions </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ng-repeat="assignment in homework.allHomework">
+                  <td> {{assignment.activity.title}} </td>
+                  <td> {{assignment.homework.status}} </td>
+                  <td> {{assignment.homework.dateGiven | date }} </td>
+                  <td> <button class="btn btn-danger btn-sm" data-ng-click="deleteHomework(assignment.homework.id)"> Delete </button> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
     
