@@ -1,6 +1,6 @@
 (function(){
 
-	function HomeworkCtrl($log, $modal, toaster, standardsService, Homework) {
+	function HomeworkCtrl($log, $modal, toaster, $stateParams, standardsService, Homework) {
 		var _this = this;
 
 		standardsService.getAllStandards().success(function(data){
@@ -8,6 +8,8 @@
 		}).error(function(data){
 			$log.error(data);
 		});
+
+    _this.allHomework = Homework.query({'id': $stateParams.id});
 
 		_this.begin = function() {
 			var modalInstance = $modal.open({
@@ -37,5 +39,5 @@
 			});
 		};
 	}
-	angular.module('proximal').controller("HomeworkCtrl", ["$log", '$modal', 'toaster', 'standardsService', "Homework", HomeworkCtrl]);
+	angular.module('proximal').controller("HomeworkCtrl", ["$log", '$modal', 'toaster', '$stateParams', 'standardsService', "Homework", HomeworkCtrl]);
 })();

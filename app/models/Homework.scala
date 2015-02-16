@@ -15,6 +15,11 @@ case class Homework(id: Option[Long],
   dateGiven: Long,
   dateDue: Option[Long])
 
+case class HomeworkActivityActs(
+  homework: Homework,
+  activity: Activity,
+  acts: List[Act])
+
 class Homeworks(tag: Tag) extends Table[Homework](tag, "homework") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def activityId = column[Option[Long]]("activity_id")
@@ -34,6 +39,7 @@ class Homeworks(tag: Tag) extends Table[Homework](tag, "homework") {
 
 object Homeworks {
   lazy val homeworks = TableQuery[Homeworks]
+  lazy val activityActs = ActivityActs.activityActs
 
   def create(h: Homework)(implicit s: Session): Homework =
     (homeworks returning homeworks.map(_.id) into ((hw, id) => hw.copy(Some(id)))) += h
@@ -50,4 +56,16 @@ object Homeworks {
   def findByStudent(studentId: Long)(implicit s: Session) =
     homeworks.filter(_.studentId === studentId).list
 
+  def findByStudentWithActivitiesAndActs(studentId: Long)(implicit s: Session): List[HomeworkActivityActs] = {
+    val homeworkAndActivities = for {
+      homework <- homeworks if homework.studentId === studentId
+      activity <- homework.activity
+    } yield (homework, activity)
+
+    homeworkAndActivities.list.map(tup => {
+      val acts = ActivityActs.findByActivity(tup._2.id.get)
+      HomeworkActivityActs(tup._1, tup._2, acts)
+    })
+
+  }
 }

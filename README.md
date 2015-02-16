@@ -1,7 +1,9 @@
 Proximal Learning Suite
 =================================
 
-[![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=master)](https://travis-ci.org/silbermm/proximal)
+Master Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=master)](https://travis-ci.org/silbermm/proximal)
+
+Development Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?branch=develop)](https://travis-ci.org/silbermm/proximal)
 
 
 ##To get this up and running on your local machine:
