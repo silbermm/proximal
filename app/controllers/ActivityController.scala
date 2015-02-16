@@ -58,8 +58,8 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
   }
 
   def allHomework(childId: Long) = SecuredAction.async { implicit request =>
-    
-    PersonService.childActionAsync(request.user.uid.get, childId, c => {     
+
+    PersonService.childActionAsync(request.user.uid.get, childId, c => {
       Future { Ok }
     })
   }

@@ -33,13 +33,13 @@ import play.api.libs.json._
 class ActivityControllerSpec extends PlaySpec with Results {
   import models._
 
-  import helpers.ImplicitJsonFormat._ 
+  import helpers.ImplicitJsonFormat._
   implicit val childActivityFormat = Json.format[ChildAndActivity]
 
   "Activity Controller" should {
     "not allow a non-authenticated user access to GET all Homework" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        val Some(response) = route(FakeRequest(GET, "/api/v1/activities/homework"))
+        val Some(response) = route(FakeRequest(GET, "/api/v1/activities/homework/1230'"))
         status(response) must not be OK
       }
     }
