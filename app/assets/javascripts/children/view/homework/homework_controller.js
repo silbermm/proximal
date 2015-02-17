@@ -16,6 +16,7 @@
 				templateUrl: "../assets/javascripts/children/view/homework/add/add_homework.html", 
 				controller: 'AddHomeworkCtrl',
 				controllerAs: 'addHomework',
+        backdrop: false,
 				resolve: {
 					items: function () {
 						return _this.standardSelected;
