@@ -19,7 +19,7 @@ class QuestionScores(tag: Tag) extends Table[QuestionScore](tag, "question_score
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def studentId = column[Long]("studentId")
   def questionId = column[Long]("questionId")
-  def score = column[Option[Long]]("compentency")
+  def score = column[Option[Long]]("score")
   def timestamp = column[Long]("timestamp")
 
   def * = (id.?, studentId, questionId, score, timestamp) <> (QuestionScore.tupled, QuestionScore.unapply _)

@@ -35,7 +35,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui-router" % "0.2.11-1",
   "org.webjars" % "font-awesome" % "4.2.0", 
   "org.webjars" % "lodash" % "2.4.1-6",
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
+  "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
   "org.webjars" % "select2" % "3.5.1",
   "org.webjars" % "angular-ui-select" % "0.8.3",
   "org.webjars" % "ui-grid" % "3.0.0-rc.11",

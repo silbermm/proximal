@@ -10,12 +10,12 @@
             <div class="title"> Ready to start a new assesment? </div>
             <div class="comment"> 
               <div class="form-group" >
-                <select name="standard" ng-model="standardSelected" class="form-control" 
-                        ng-options="standard.title for standard in availableStandards" >
+                <select name="standard" ng-model="assessment.standardSelected" class="form-control" 
+                        ng-options="standard.title for standard in assessment.availableStandards" >
                   <option value=""> -- Choose a Standard -- </option>
                 </select>
               </div>
-              <button class="btn btn-primary" ng-click="begin()"> Start Here </button> 
+              <button class="btn btn-primary" ng-click="assessment.begin()"> Start Here </button> 
             </div>
           </div>
           <div class="clearfix"></div>
