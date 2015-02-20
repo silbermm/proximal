@@ -1,9 +1,9 @@
 (function(){
 
-  function AssesmentController($scope,$log,Child,Assesments, standardsService, $stateParams){
+  function AssesmentController($log, standardsService, Assesments, $stateParams, $modal){
     var _this = this;
-    _this.child = Child.get({"id": $stateParams.id});
-
+    
+    $log.debug("Getting available Standards!");
     standardsService.getAllStandards().success(function(data){
       _this.availableStandards = data;
     }).error(function(data){
@@ -11,14 +11,26 @@
     });
 
     _this.begin = function(){
-      var question = Assesments.save({"childId": Number($stateParams.id), "standardId": $scope.standardSelected.id});
+      var question = Assesments.save({"childId": Number($stateParams.id), "standardId": _this.standardSelected.id});
       var modalInstance = $modal.open({
-          templateUrl: "../assets/javascripts/children/view/assesment/new/new_assesment.html", 
+          templateUrl: "../assets/javascripts/children/view/assesments/new/new_assesment.html", 
           controller: 'NewAssessmentCtrl',
           controllerAs: 'newAssessment',
-          backdrop: false	
+          backdrop: false,
+          size: 'lg',
+          resolve: {
+            items: function () {
+              return question;
+            }
+          }
         });
+      modalInstance.result.then(function (selectedItem) {
+        $log.debug(selectedItem);
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+
     };
   } 
-  angular.module('proximal').controller("AssesmentCtrl",['$scope','$log','Child', 'Assesments', 'standardsService', '$stateParams', AssesmentController]);
+  angular.module('proximal').controller("AssesmentCtrl",['$log', 'standardsService', 'Assesments', '$stateParams', '$modal', AssesmentController]);
 })();

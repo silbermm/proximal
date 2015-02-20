@@ -1,8 +1,13 @@
-<section class="col-md-12">
-  
-  <span> Begin a new assesment </span>
-  <span> Continue a previous assesment </span>
-  <span> Redo a previous assesment </span>
-
-
-</section>
+<div class="modal-header">
+  <h3 class="modal-title">New Assessment</h3>
+</div>
+<div class="modal-body">
+  <div class="jumbotron"> 
+    <h1> {{newAssessment.items.question.text}} </h1> 
+  </div> 
+  <rating style="font-size:2em; color: gold;" ng-model="newAssessment.rateQuestion" max="newAssessment.max" readonly="newAssessment.isReadonly" on-hover="newAssessment.hoveringOver(value)" on-leave="newAssessment.overStar = null"></rating>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-disabled="!newAssessment.scored" ng-click="newAssessment.next()">Next</button>
+ <button class="btn btn-warning" ng-click="newAssessment.cancel()">Cancel</button>
+</div>

@@ -40,5 +40,6 @@
 			});
 		};
 	}
+
 	angular.module('proximal').controller("HomeworkCtrl", ["$log", '$modal', 'toaster', '$stateParams', 'standardsService', "Homework", HomeworkCtrl]);
 })();

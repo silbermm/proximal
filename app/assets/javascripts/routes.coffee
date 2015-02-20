@@ -41,7 +41,7 @@ angular.module("proximal").config ($stateProvider, $urlRouterProvider) ->
   $stateProvider.state 'children.view.assesment',{
     url: "/assesment",
     controller: 'AssesmentCtrl'
-    controllerAs: 'assesCtrl' 
+    controllerAs: 'assessment' 
     templateUrl: '../assets/javascripts/children/view/assesments/assesment.html'
     templateAs: 'assessment'
     data: {
