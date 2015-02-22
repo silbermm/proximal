@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/report")
 
-ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;controllers.javascript;controllers.ref;securesocial.*;views.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;controllers.javascript;controllers.ref;securesocial.*;views.*;controllers.*;"
 
 scalaVersion := "2.11.1"
 
@@ -27,6 +27,7 @@ libraryDependencies ++= Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.scalatestplus" %% "play" % "1.1.0" % "test",
   "ws.securesocial" %% "securesocial" % "master-SNAPSHOT",
+  "commons-io" % "commons-io" % "2.4",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
   "org.webjars" % "bootstrap" % "3.3.2",
   "org.webjars" % "jquery" % "2.1.3",
@@ -38,6 +39,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
   "org.webjars" % "select2" % "3.5.1",
   "org.webjars" % "angular-ui-select" % "0.8.3",
+  "org.webjars" % "angular-file-upload" % "3.0.3",
   "org.webjars" % "ui-grid" % "3.0.0-rc.11",
   "org.scalacheck" %% "scalacheck" % "1.11.1" % "test",
   "com.typesafe.akka" % "akka-testkit_2.11" % "2.3.9" % "test"

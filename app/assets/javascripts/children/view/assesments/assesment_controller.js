@@ -11,8 +11,8 @@
     });
 
     _this.begin = function(){
-      var question = Assesments.save({"childId": Number($stateParams.id), "standardId": _this.standardSelected.id});
-      var modalInstance = $modal.open({
+      Assesments.save({"childId": Number($stateParams.id), "standardId": _this.standardSelected.id}, function(d){
+        var modalInstance = $modal.open({
           templateUrl: "../assets/javascripts/children/view/assesments/new/new_assesment.html", 
           controller: 'NewAssessmentCtrl',
           controllerAs: 'newAssessment',
@@ -20,16 +20,21 @@
           size: 'lg',
           resolve: {
             items: function () {
-              return question;
+              return { childId: Number($stateParams.id), "question": d };
             }
           }
         });
-      modalInstance.result.then(function (selectedItem) {
-        $log.debug(selectedItem);
-      }, function () {
-        $log.info('Modal dismissed at: ' + new Date());
-      });
-
+        
+        modalInstance.result.then(function (selectedItem) {
+          $log.debug(selectedItem);
+        }, function () {
+          $log.info('Modal dismissed at: ' + new Date());
+        });
+        
+      }, function(err){
+        $log.error(err);  
+      }); 
+      
     };
   } 
   angular.module('proximal').controller("AssesmentCtrl",['$log', 'standardsService', 'Assesments', '$stateParams', '$modal', AssesmentController]);

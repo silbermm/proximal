@@ -2,18 +2,41 @@ angular.module("proximal").controller "AddQuestionCtrl",[
   "$log"
   "$scope"
   "prox.common"
+  "$upload"
   "standardsService"
   "$modalInstance"
-  ($log,$scope,common,standardsService,$modalInstance)->
+  ($log,$scope,common,$upload,standardsService,$modalInstance)->
     
     $scope.select2 = {}
-
+    $scope.uploaded = []
+    $scope.progressPercentage = 0
+    
     standardsService.getAllStandards().success((data)->
       $scope.availableStandards = data 
     ).error((data)->
       $log.error(data)
     )
-    
+
+    $scope.upload = (files) ->
+      $log.debug($upload)
+      if(angular.isDefined(files) and files.length > 0)
+        $log.debug("defined")
+        _.each(files, (file)->
+          $log.debug(file)
+          $upload.upload({
+            url: 'api/v1/upload'
+            file: file
+          }).progress((evt)->
+            $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total)
+            $log.debug($scope.progressPercentage)
+          ).success((data,status,headers,config)->
+            $scope.uploaded.push(data) 
+            $scope.progressPercentage = 0
+            $scope.picture = undefined
+          ).error((data,status,headers,config)->
+            $log.error(data)
+          )
+        )
     $scope.availableEducationLevels = common.educationLevels
 
     $scope.getStatements = ->
@@ -46,7 +69,7 @@ angular.module("proximal").controller "AddQuestionCtrl",[
       return !_.isUndefined($scope.availableStatements)
 
     $scope.ok = ->
-      $scope.question.picture = if angular.isDefined($scope.picture) then $scope.picture.base64 else null 
+      $scope.question.pictures = if angular.isDefined($scope.uploaded) then $scope.uploaded else null 
       $scope.question.statements = []
       $scope.question.statements = _.map($scope.select2.statements, (st)->
         st.statement
@@ -55,5 +78,4 @@ angular.module("proximal").controller "AddQuestionCtrl",[
 
     $scope.cancel = ->
       $modalInstance.dismiss("cancel")
-
 ]

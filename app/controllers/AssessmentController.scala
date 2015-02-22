@@ -46,9 +46,16 @@ class AssessmentController(override implicit val env: RuntimeEnvironment[SecureU
       Future { BadRequest(Json.obj("message" -> s"Something went wrong! $webReq.childId")) }
     } else {
       PersonService.childActionAsync(request.user.uid.get, webReq.childId, c => {
-        ask(newAssessmentActor, ChildAndStandard(c, webReq.standardId)).mapTo[Option[AssessmentQuestion]] map { x =>
+        val childAndS = ChildAndStandard(c, webReq.standardId)
+        Logger.error(s"sending a message to akka: $childAndS")
+        ask(newAssessmentActor, childAndS).mapTo[Option[AssessmentQuestion]] map { x =>
           x match {
-            case Some(obj) => Ok(Json.toJson(obj))
+            case Some(obj) => {
+              if (obj.question.id.get > 0)
+                Ok(Json.toJson(obj))
+              else
+                BadRequest(Json.obj("message" -> "Unable to create the assessment, something bad happened."))
+            }
             case None => BadRequest(Json.obj("message" -> "Sorry, unable to create the assessment."))
           }
         }

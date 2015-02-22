@@ -10,24 +10,24 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class Question(id: Option[Long], text: String, picture: Option[Array[Byte]], typeId: Option[Long], answer: Option[String])
+case class Question(id: Option[Long], text: String, typeId: Option[Long], answer: Option[String])
 
-case class JsonQuestion(id: Option[Long], text: String, picture: Option[String], typeId: Option[Long], answer: Option[String], statements: Option[List[Statement]])
+case class JsonQuestion(id: Option[Long], text: String, pictures: Option[List[Upload]], typeId: Option[Long], answer: Option[String], statements: Option[List[Statement]])
 
 class Questions(tag: Tag) extends Table[Question](tag, "questions") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def text = column[String]("text", O.DBType("Text"))
-  def picture = column[Option[Array[Byte]]]("picture")
   def typeId = column[Option[Long]]("type_id")
   def answer = column[Option[String]]("answer", O.DBType("Text"))
 
-  def * = (id.?, text, picture, typeId, answer) <> (Question.tupled, Question.unapply _)
+  def * = (id.?, text, typeId, answer) <> (Question.tupled, Question.unapply _)
 }
 
 object Questions {
 
   lazy val questions = TableQuery[Questions]
+  lazy val questionUploads = QuestionUploads.questionUploads
   lazy val questionsWithStatements = QuestionsWithStatements.qWithS
 
   def create(q: Question)(implicit s: Session): Question =
@@ -35,7 +35,7 @@ object Questions {
 
   def create(q: JsonQuestion)(implicit s: Session): JsonQuestion = {
     val question = create(convertToQuestion(q))
-    convertToJsonQuestion(question, None)
+    convertToJsonQuestion(question, q.pictures, q.statements)
   }
 
   def create(q: JsonQuestion, statements: List[Statement])(implicit s: Session): (Option[JsonQuestion], List[Statement]) = {
@@ -73,7 +73,7 @@ object Questions {
 
   def findJsonQuestion(id: Long)(implicit s: Session): Option[JsonQuestion] =
     questions.filter(_.id === id).firstOption match {
-      case Some(q) => Some(convertToJsonQuestion(q, None))
+      case Some(q) => Some(convertToJsonQuestion(q, None, None))
       case _ => None
     }
 
@@ -83,7 +83,7 @@ object Questions {
     } yield q
     val jquestions = for {
       question <- query.list
-    } yield convertToJsonQuestion(question, None)
+    } yield convertToJsonQuestion(question, None, None)
     jquestions
   }
 
@@ -98,7 +98,7 @@ object Questions {
       qws <- questionsWithStatements if qws.questionId === id
       s <- qws.statements
     } yield s
-    convertToJsonQuestion(find(id).get, Some(query.list))
+    convertToJsonQuestion(find(id).get, None, Some(query.list))
   }
 
   def findByStatement(statementId: Long)(implicit s: Session): (List[Question], Option[Statement]) = {
@@ -109,22 +109,17 @@ object Questions {
     (query.list, Statements.find(statementId))
   }
 
-  def convertToQuestion(q: JsonQuestion): Question = {
-    val p = q.picture.map(pic =>
-      Some(Base64.decodeBase64(pic))
-    ).getOrElse(
-      None
-    )
-    Question(q.id, q.text, p, q.typeId, q.answer)
+  def convertToQuestion(jsonQuestion: JsonQuestion): Question = {
+    Question(jsonQuestion.id, jsonQuestion.text, jsonQuestion.typeId, jsonQuestion.answer)
   }
 
-  def convertToJsonQuestion(q: Question, l: Option[List[Statement]]): JsonQuestion = {
-    val p = q.picture.map(pic =>
+  def convertToJsonQuestion(q: Question, uploads: Option[List[Upload]], l: Option[List[Statement]]): JsonQuestion = {
+    /*val p = q.picture.map(pic =>
       Some(Base64.encodeBase64String(pic))
     ).getOrElse(
       None
-    )
-    JsonQuestion(q.id, q.text, p, q.typeId, q.answer, l)
+    )*/
+    JsonQuestion(q.id, q.text, uploads, q.typeId, q.answer, l)
   }
 
 }

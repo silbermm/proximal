@@ -13,6 +13,8 @@ DELETE  /api/v1/children/:id        									@controllers.PersonController.remov
 
 GET     /api/v1/profile             									@controllers.PersonController.profile()
 
+POST    /api/v1/upload                                @controllers.ApplicationController.upload()
+
 #Standards
 GET     /api/v1/standards           									@controllers.StandardsController.list()
 GET     /api/v1/standards/:id       									@controllers.StandardsController.view(id: Long)

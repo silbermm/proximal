@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import services._
 import securesocial.core._
 import models._
 import helpers.RolesHelper
@@ -12,26 +13,26 @@ import play.api.db.slick.DB
 import play.api.Play.current
 import helpers.ImplicitJsonFormat._
 
+import play.api.libs.concurrent.Akka
+import akka.actor.Actor
+import akka.actor.ActorSystem
+import akka.actor.Props
+import akka.pattern.ask
+import akka.util.Timeout
+
+import scala.concurrent.duration._
+import scala.concurrent.Future
+
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
-  def create = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    DB.withSession { implicit s =>
-      RolesHelper.admin(request.user.uid.get, uid => {
-        request.body.validate[JsonQuestion].fold(
-          errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
-          question => {
-            if (question.statements.isEmpty) {
-              Ok(Json.toJson(Questions.create(question)))
-            } else {
-              Questions.create(question, question.statements.get) match {
-                case (Some(qs), ss) => Ok(Json.toJson(qs))
-                case _ => BadRequest(Json.obj("message" -> "Unable to create the question"))
-              }
-            }
-          }
-        )
-      })
-    }
+  val questionActor = Akka.system.actorOf(Props[QuestionActor])
+  implicit val timeout = Timeout(30 seconds)
+
+  def create = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    request.body.validate[JsonQuestion].fold(
+      errors => Future { BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))) },
+      question => createQuestion(question, request.user.uid.get)
+    )
   }
 
   def update = SecuredAction(BodyParsers.parse.json) { implicit request =>
@@ -75,4 +76,14 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
       })
     }
   }
+
+  def createQuestion(q: JsonQuestion, userId: Long): Future[Result] = {
+    ask(questionActor, CreateQuestion(q, userId)).mapTo[Option[JsonQuestion]] map { x =>
+      x match {
+        case Some(ques) => Ok(Json.toJson(ques))
+        case None => play.api.mvc.Results.Unauthorized
+      }
+    }
+  }
+
 }

@@ -59,7 +59,7 @@ object QuestionScores {
       q <- qs.question
     } yield (qs, q)
     val resp = query.first
-    QuestionScoreQuestion(id, resp._1.score, resp._1.timestamp, Questions.convertToJsonQuestion(resp._2, None))
+    QuestionScoreQuestion(id, resp._1.score, resp._1.timestamp, Questions.convertToJsonQuestion(resp._2, None, None))
   }
 
   def findByStudentWithQuestions(studentId: Long)(implicit s: Session): List[QuestionScoreQuestion] = {
@@ -69,7 +69,7 @@ object QuestionScores {
     } yield (qs, q)
     val resp = query.list
     resp.map { old =>
-      QuestionScoreQuestion(old._1.id.get, old._1.score, old._1.timestamp, Questions.convertToJsonQuestion(old._2, None))
+      QuestionScoreQuestion(old._1.id.get, old._1.score, old._1.timestamp, Questions.convertToJsonQuestion(old._2, None, None))
     }
   }
 

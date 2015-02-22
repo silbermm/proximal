@@ -25,12 +25,12 @@ class AssessmentActor extends Actor {
       val asses = DB.withSession { implicit s =>
         Assesments.create(Assesment(None, childAndStandard.childId, Platform.currentTime, None))
       }
-      sender ! Some(AssessmentQuestion(asses, nextQuestion(childAndStandard.childId, childAndStandard.standardId)))
+      sender ! Some(AssessmentQuestion(asses, nextQuestion(asses, childAndStandard.childId, childAndStandard.standardId)))
     }
     case _ => sender ! None
   }
 
-  def nextQuestion(studentId: Long, standardId: Long): JsonQuestion = {
+  def nextQuestion(assessment: Assesment, studentId: Long, standardId: Long): JsonQuestion = {
     DB.withSession { implicit s =>
       try {
         // Find the student and his/her grade level 
@@ -56,10 +56,14 @@ class AssessmentActor extends Actor {
         // now choose a random one to ask
         // in the future, this needs to be smarter but MVP is asking a random question
         val finalQuestion = filteredQuestions(random.nextInt(filteredQuestions.length))
-        Questions.convertToJsonQuestion(finalQuestion, None)
+        Questions.convertToJsonQuestion(finalQuestion, None, None)
       } catch {
         case e: java.util.NoSuchElementException => JsonQuestion(Some(-1), "No questions available!", None, None, None, None)
-        case e2: Throwable => JsonQuestion(Some(-1), e2.getMessage(), None, None, None, None)
+        case e2: Throwable => {
+          // Let's back out of our assessment since we can't ask any questions
+          Assesments.delete(assessment.id.get)
+          JsonQuestion(Some(-1), e2.getMessage(), None, None, None, None)
+        }
       }
     }
   }

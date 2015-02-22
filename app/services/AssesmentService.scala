@@ -70,7 +70,7 @@ object AssesmentService {
       // now choose a random one to ask
       // in the future, this needs to be smarter but MVP is asking a random question
       val finalQuestion = filteredQuestions(random.nextInt(filteredQuestions.length))
-      Questions.convertToJsonQuestion(finalQuestion, None)
+      Questions.convertToJsonQuestion(finalQuestion, None, None)
     }
   }
 }

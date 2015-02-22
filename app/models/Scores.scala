@@ -58,7 +58,7 @@ object Scores {
     } yield (sc, ques, stu)
     val ret = for {
       (s, q, st) <- q.list
-    } yield ScoreWithQuestionAndStudent(s, Questions.convertToJsonQuestion(q, None), st)
+    } yield ScoreWithQuestionAndStudent(s, Questions.convertToJsonQuestion(q, None, None), st)
     ret
   }
 }

@@ -10,10 +10,10 @@ object QuestionsHelpers {
   def questionGen = for {
     text <- Arbitrary.arbitrary[String]
     answer <- Arbitrary.arbitrary[String]
-  } yield Question(None, text, None, None, Some(answer))
+  } yield Question(None, text, None, Some(answer))
 
   def fakeQuestion: Question = {
-    new Question(None, "What is the first letter of the alphabet?", None, None, Some("A"))
+    new Question(None, "What is the first letter of the alphabet?", None, Some("A"))
   }
 
 }

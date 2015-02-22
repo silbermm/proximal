@@ -20,4 +20,14 @@ object RolesHelper {
     }
   }
 
+  def isAdmin[T](uid: Long, f: Long => Option[T]): Option[T] = {
+    DB.withSession { implicit s =>
+      if (People.isAdminByUid(uid)) {
+        f(uid)
+      } else {
+        None
+      }
+    }
+  }
+
 }
