@@ -8,6 +8,8 @@ versionWithGit
 
 scalariformSettings
 
+JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/report")
@@ -15,8 +17,6 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;controllers.javascript;controllers.ref;securesocial.*;views.*;controllers.*;"
 
 scalaVersion := "2.11.1"
-
-seq(bowerSettings : _*)
 
 libraryDependencies ++= Seq(
   cache,

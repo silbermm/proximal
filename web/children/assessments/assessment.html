@@ -1,0 +1,59 @@
+<section class="row"> 
+  <div class="col-lg-12">
+    <div class="col-lg-6 col-md-6 col-xs-12">
+      <div class="widget">
+        <div class="widget-body">
+          <div class="widget-content pull-left"> 
+            <div class="title"> Ready to start a new assesment? </div>
+            <div class="comment"> 
+              <div class="form-group" >
+                <select name="standard" ng-model="assessment.standardSelected" class="form-control" 
+                        ng-options="standard.title for standard in assessment.availableStandards" >
+                  <option value=""> -- Choose a Standard -- </option>
+                </select>
+              </div>
+              <button class="btn btn-primary" ng-click="assessment.begin()"> Start Here </button> 
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class='row'> 
+  <div class="col-md-12 col-lg-12">  
+    <div class=" col-lg-6">
+      <div class="widget">
+        <div class="widget-header">
+          <i class="fa fa-spinner"></i> Assesments Currently in Progress
+        </div>
+        <div class="widget-body">
+          <ul>
+            <li> this one </li>
+            <li> And this one </li> 
+          </ul>
+         </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6">
+      <div class="widget">
+        <div class="widget-header">
+          <i class="fa fa-check"></i> Assesments already completed
+        </div>
+        <div class="widget-body">
+          <ul>
+            <li> this one </li>
+            <li> And this one </li> 
+          </ul>
+         <div>
+      </div>
+    </div>
+  
+
+    
+  </div>
+
+</section>
