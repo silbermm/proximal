@@ -4,6 +4,7 @@ require('../home');
 require('../dashboard');
 require('../library');
 require("../children");
+require("../admin");
 
 module.exports = function($stateProvider, $urlRouterProvider) {
 
@@ -70,6 +71,38 @@ module.exports = function($stateProvider, $urlRouterProvider) {
       hideChildren: true,
       breadcrumbs: [
         {"path" : "children", "text" : "All Children" }
+      ]
+    }
+  })
+  .state('admin', {
+    url: '/admin',
+    controller: 'AdminCtrl as ctrl',
+    templateUrl: 'admin/admin.html',
+    data: { title: 'Administrative Tasks', hideAdmin: false },
+  })
+  .state('admin.questions',{
+    url: '/questions',
+    controller: 'QuestionsCtrl as ctrl',
+    templateUrl: 'questions/questions.html',
+    data: {
+      title: "Questions",
+      hideAdmin: true,
+      breadcrumbs: [
+        {"path": "admin", "text": "Admin"}
+      ]
+    }
+  })
+  .state('admin.questions.edit',{
+    url: '/{questionId}',
+    controller: 'EditQuestionsCtrl as question',
+    templateUrl: 'edit/edit_question.html',
+    data: {
+      title: "Edit",
+      hideAdmin: true,
+      hideQuestions: true,
+      breadcrumbs: [
+        {"path": "admin", "text": "Admin"},
+        {"path": "admin.questions", "text": "Questions"}
       ]
     }
   })
