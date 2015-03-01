@@ -15,16 +15,5 @@ app.controller("AddChildCtrl",[ "$scope","$log","$modalInstance","Child","prox.c
 require('./view/view_child.html');
 app.controller("ViewChildCtrl", [ "$log", "$window", "$stateParams", "personService", require('./view/view_child_controller')]); 
 
-
-//Assessment Service
-app.factory("Assesments",['$resource',require('./assessments/assessment_service')]);
-
-// View Assessments
-require('./assessments/assessment.html');
-app.controller("AssessmentCtrl",['$log', 'standardsService', 'Assesments', '$stateParams', '$modal', require('./assessments/assessment_controller')]);
-
-// New Assessment
-require('./assessments/new/new_assessment.html');
-app.controller("NewAssessmentCtrl", [ '$log', 'Assesments', '$modalInstance', 'items', require('./assessments/new/new_assessment_controller')]);
-
+require('./assessments');
 require('./homework');

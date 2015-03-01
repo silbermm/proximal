@@ -1,7 +1,7 @@
 "use strict()";
 (function(){
   
-  function NewAssessmentController($log, Assessments, $modalInstance, items) {
+  module.exports = function NewAssessmentController($log, Assessments, $modalInstance, items) {
     var _this = this;
     _this.items = items;
 
@@ -44,6 +44,5 @@
     _this.cancel = function(){
       $modalInstance.dismiss('cancel');
     };
-
-  }
+  };
 })();

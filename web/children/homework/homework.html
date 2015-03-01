@@ -1,4 +1,4 @@
-<section class="row"> 
+<section class="row" ng-if="!app.state.current.data.hideHomework"> 
   <div class="col-lg-12">
     <div class="col-lg-6 col-md-6 col-xs-12">
       <div class="widget">
@@ -45,7 +45,14 @@
                   <td> {{assignment.activity.title}} </td>
                   <td> {{assignment.homework.status}} </td>
                   <td> {{assignment.homework.dateGiven | date }} </td>
-                  <td> <button class="btn btn-danger btn-sm" data-ng-click="deleteHomework(assignment.homework.id)"> Delete </button> </td>
+                  <td>
+                    <button class="btn btn-success btn-sm" ng-click="childCtrl.showHomework(assignment)">
+                      <i class="fa fa-eye"></i> 
+                    </button>
+                    <button class="btn btn-danger btn-sm" 
+                      data-ng-click="homework.deleteHomework(assignment.homework.id)"> 
+                      <i class="fa fa-trash"></i> </button>  
+                  </td>
                 </tr>
               </tbody>
             </table>

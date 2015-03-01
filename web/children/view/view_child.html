@@ -9,18 +9,19 @@
 </div>
 
 <tabset>  
-  <tab heading="Assessments" ui-sref="children.view.assesment" ui-active="active">
+  <tab heading="Assessments">
     <tab-heading>
-      Assesments
+      Assessments
     </tab-heading>
-    <ui-view></ui-view>
+    <ui-view name="assessment"></ui-view> 
   </tab>
 
-  <tab heading="Homework" ui-sref="children.view.homework" ui-active="active">
+  <tab heading="Homework">
     <tab-heading>
       Homework
     </tab-heading>
-    <ui-view></ui-view>
+    <ui-view name="homework" ng-show="childCtrl.showHomeworkDetails == false"></ui-view>
+    <ui-view name="homeworkDetails" ng-show="childCtrl.showHomeworkDetails == true"></ui-view>
   </tab>
 
   <tab select="alertMe()">
@@ -30,3 +31,4 @@
     I've got an HTML heading, and a select callback. Pretty cool!
   </tab>
 </tabset>
+

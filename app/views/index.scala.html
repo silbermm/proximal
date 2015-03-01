@@ -6,16 +6,15 @@
 @import helper._
 @import play.api.Play
 
-
 @main(title = "Home"){
-<div data-ng-app="proximal" data-ng-controller="AppCtrl">
+<div data-ng-app="proximal2" data-ng-controller="AppController as app">
 
-  <div id="page-wrapper" ng-class="{'active': toggle}" ng-cloak>
+  <div id="page-wrapper" ng-class="{'active': app.toggle}" ng-cloak>
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
     <ul class="sidebar">
       <li class="sidebar-main">
-        <a href="" ng-click="toggleSidebar()"> 
+        <a href="" ng-click="app.toggleSidebar()"> 
           <span class="menu-icon"><i class="fa fa-bars"></i></span>
         </a>
       </li>
@@ -106,13 +105,13 @@
           </div>
           <div class="meta">
             <div class="page">
-              {{ state.current.data.title }} 
+              {{ app.state.current.data.title }} 
             </div>
-            <div class="breadcrumb-links" ng-if="state.current.data.breadcrumbs != null">
-              <a ui-sref={{breadcrumb.path}} ng-repeat="breadcrumb in state.current.data.breadcrumbs" >
+            <div class="breadcrumb-links" ng-if="app.state.current.data.breadcrumbs != null">
+              <a ui-sref={{breadcrumb.path}} ng-repeat="breadcrumb in app.state.current.data.breadcrumbs" >
                 {{breadcrumb.text}} /
               </a> 
-              {{state.current.data.title}}
+              {{app.state.current.data.title}}
             </div>
           </div>
         </div>

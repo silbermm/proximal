@@ -4,3 +4,4 @@ require("./admin.html");
 app.controller("AdminCtrl",[ "$log","$cookieStore", "standardsService", "$modal", require('./admin_controller')]); 
 
 require('../questions');
+require('../standards');

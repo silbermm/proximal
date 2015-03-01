@@ -17,7 +17,7 @@
     _this.begin = function(){
       Assesments.save({"childId": Number($stateParams.id), "standardId": _this.standardSelected.id}, function(d){
         var modalInstance = $modal.open({
-          templateUrl: "../assets/javascripts/children/view/assesments/new/new_assesment.html", 
+          templateUrl: "new/new_assessment.html", 
           controller: 'NewAssessmentCtrl',
           controllerAs: 'newAssessment',
           backdrop: false,

@@ -2,14 +2,17 @@
 var _ = require("lodash");
 module.exports = function($scope, $state, $log, $cookieStore) {
   var _this = this;
+
+  _this.state = $state;
+
   var mobileView = 992;
   _this.getWidth = function(){
     return window.innerWidth;
   };
 
-  /*$scope.$watch(_this.getWidth, function(newValue, oldValue){
+  $scope.$watch(_this.getWidth, function(newValue, oldValue){
     if(newValue >= mobileView){
-      if(_.isDefined($cookieStore.get("toggle"))){
+      if(angular.isDefined($cookieStore.get("toggle"))){
         if($cookieStore.get("toggle") === false){
           _this.toggle = false;
         }else {
@@ -22,8 +25,7 @@ module.exports = function($scope, $state, $log, $cookieStore) {
       _this.toggle = false;
     }
   });
-  */
-
+  
   _this.toggleSidebar = function(){
     _this.toggle = !_this.toggle;
     $cookieStore.put('toggle', _this.toggle);

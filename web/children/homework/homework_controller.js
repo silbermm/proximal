@@ -15,7 +15,7 @@
 
 		_this.begin = function() {
 			var modalInstance = $modal.open({
-				templateUrl: "../assets/javascripts/children/view/homework/add/add_homework.html", 
+				templateUrl: "add/add_homework.html", 
 				controller: 'AddHomeworkCtrl',
 				controllerAs: 'addHomework',
         backdrop: false,
@@ -27,13 +27,11 @@
 			});
 
 			modalInstance.result.then(function (result) {
-				$log.info(result);
 				var homework = new Homework(result);
 				homework.$save(function(saved){
-					$log.debug("YES, Saved homework!");
 					toaster.pop("success", null, "Successfully added your childs homework!");
+          _this.allHomework.push(saved);
 				}, function(error){
-					$log.error("BOO! Can't save homework :(");
 					toaster.pop("error", null, "There was an error when trying to add the homework. Please try again.");
 				});
 

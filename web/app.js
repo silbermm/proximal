@@ -2,9 +2,15 @@
 var _ = require('lodash');
 var angular = require('angular');
 
-//require("bootstrap-webpack");
-//require("font-awesome-webpack");
+// All Styles
 require('./styles/main.less');
+require('./styles/animate.css');
+require('./styles/toaster.css');
+
+// Bootstrap
+window.$ = window.jQuery = require('jquery');
+require('bootstrap');
+
 require("angular-resource");
 require("angular-animate");
 require("angular-sanitize");

@@ -5,74 +5,22 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
     <title>@title</title>
-    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/animate.css")">
+    <!-- <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/animate.css")"> 
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/main.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/select2/select2.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/select2/select2-bootstrap.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/toaster.css")">
     <link rel="stylesheet" type="text/css" href="@routes.Assets.at("lib/ui-grid/ui-grid.css")">
+    -->
   </head>
   <body>
     @content 
     <toaster-container></toaster-container>
-    <input type="hidden" name="rootUrl" value="@controllers.routes.ApplicationController.index()" id="rootUrl"/>
-    <script type="text/javascript" src="@routes.Assets.at("bundle.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("lib/jquery/jquery.min.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/angular-toaster.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("lib/lodash/lodash.min.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("lib/select2/select2.min.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("lib/angular-ui-select/select.min.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/angular-base64-upload.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("lib/angular-file-upload/angular-file-upload.min.js")"></script>
-
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/app.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/routes.js")"> </script>
-  
-    <!-- Shared directives -->
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/widget/loading_directive.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/widget/widget_directive.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/widget/widgetBody_directive.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/widget/widgetHeader_directive.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/icons/question_directive.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/listGroup/listgroup_directive.js")"> </script>
-
-
-    <!-- Factories -->
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/person_service.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/child_service.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/standards_service.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/common_service.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/questions_service.js")"> </script> 
-
-    <!-- Filters -->
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/shared/epoch_time_filter.js")"> </script> 
-
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/admin_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/standards/standards_controller.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/questions/questions_controller.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/questions/questions_directive.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/questions/add/add_question_controller.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/questions/edit/edit_questions_controller.js")"> </script> 
-    
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/children_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/add/add_child_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/view_child_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/child_picture_directive.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/assesments/new/new_assesment_directive.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/assesments/new/new_assesment_controller.js")"> </script> 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/assesments/assesment_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/assesments/assesment_service.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/homework/homework_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/homework/homework_service.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/children/view/homework/add/add_homework_controller.js")"> </script>
-    
-    
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/dashboard/dashboard_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/home/home_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/library/library_controller.js")"> </script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/settings/settings_controller.js")"> </script>
-    
+    <input type="hidden" name="rootUrl" value="@controllers.routes.ApplicationController.index()" id="rootUrl"/> 
+    <script type="text/javascript" src="@routes.Assets.at("bundle.js")"> </script>    
   </body>
 </html>
 

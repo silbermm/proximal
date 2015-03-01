@@ -27,8 +27,8 @@ module.exports = function ($scope, $log, $modalInstance,Child,common) {
   _this.format = 'mediumDate';
 
   _this.ok = function(){
-    var d = $scope.child.birthDate.getTime()/1000;
-    var child = new Child({'firstName': $scope.child.firstName,'lastName': $scope.child.lastName,'birthDate': d, "educationLevel": $scope.child.gradeLevel});
+    var d = _this.child.birthDate.getTime()/1000;
+    var child = new Child({'firstName': _this.child.firstName,'lastName': _this.child.lastName,'birthDate': d, "educationLevel": _this.child.gradeLevel});
     $modalInstance.close(child);
   };
 

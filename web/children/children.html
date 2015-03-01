@@ -1,4 +1,4 @@
-<section ng-if="!state.current.data.hideChildren"> 
+<section ng-if="!app.state.current.data.hideChildren"> 
 
   <div class="row" ng-controller="ChildrenCtrl as childCtrl">
     <div class="row">
@@ -12,13 +12,14 @@
         <div class="caption">
           <h3>{{::c.firstName}}</h3>
           <p> Some blurb, maybe birthdate? and grade? </p>
-          <p><a ui-sref="children.view.assesment({id:c.id})" class="btn btn-info btn-sm" role="button"> <i class="fa fa-eye"></i> View </a> 
-          <a href="#" class="btn btn-default btn-danger btn-sm" role="button"><i class="fa fa-trash"></i>Delete</a></p>
+          <p><a ui-sref="children.view({id:c.id})" class="btn btn-info btn-sm" role="button"> <i class="fa fa-eye"></i> View </a> 
+          <a class="btn btn-default btn-danger btn-sm" role="button" ng-click="childCtrl.removeChild(c.id)">
+            <i class="fa fa-trash"></i>Delete</a></p>
         </div>
       </div>
     </div>
   </div>
 
 </section>
-<div ui-view class="row col-md-12"></div>
+<ui-view class="row col-md-12"></ui-view>
 <toaster> </toaster>

@@ -36,42 +36,58 @@ module.exports = function($stateProvider, $urlRouterProvider) {
   })
   .state('children.view',{
     url: "/{id}",
-    controller: 'ViewChildCtrl',
-    controllerAs: 'childctrl',
-    templateUrl: 'view/view_child.html',
     data: {
       title: "Children",
       hideChildren: true,
       breadcrumbs: [
         {"path" : "children", "text" : "All Children" },
       ]
-    }
-  })
-  .state('children.view.assessment',{
-    url: "/assessment",
-    controller: 'AssessmentCtrl',
-    controllerAs: 'assessment', 
-    templateUrl: 'assessments/assessment.html',
-    templateAs: 'assessment',
-    data: {
-      title: "New Assessment",
-      hideChildren: true,
-      breadcrumbs: [
-        {"path" : "children", "text" : "All Children" }
-      ]
-    }
-  })
-  .state('children.view.homework', {
-    url: "/homework",
-    controller: "HomeworkCtrl",
-    controllerAs: 'homework',
-    templateUrl: 'homework/homework.html',
-    data: {
-      title: "Homework",
-      hideChildren: true,
-      breadcrumbs: [
-        {"path" : "children", "text" : "All Children" }
-      ]
+    },
+    views: {
+      "" : {
+        controller: 'ViewChildCtrl',
+        controllerAs: 'childctrl',
+        templateUrl: 'view/view_child.html' 
+      },
+      "assessment@children.view" : {
+        controller: 'AssessmentCtrl',
+        controllerAs: 'assessment', 
+        templateUrl: 'assessments/assessment.html',
+        data: {
+          title: "New Assessment",
+          hideChildren: true,
+          breadcrumbs: [
+            {"path" : "children", "text" : "All Children" }
+          ]
+        }
+      },
+      "homework@children.view" : {
+        controller: "HomeworkCtrl",
+        controllerAs: 'homework',
+        templateUrl: 'homework/homework.html',
+        data: {
+          title: "Homework",
+          hideChildren: true,
+          hideHomework: false,
+          breadcrumbs: [
+            {"path" : "children", "text" : "All Children" }
+          ]
+        }
+      },
+      "homeworkDetails@children.view" : {
+        controller: "HomeworkDetailsCtrl",
+        controllerAs: 'details', 
+        templateUrl: 'details/homework_details.html',
+        data: {
+          title: "Homework Details",
+          hideChildren: true,
+          hideHomework: true,
+          breadcrumbs: [
+            {"path" : "children", "text" : "All Children" },
+            {"path" : "children.view.homework", "text" : "All Homework" }
+          ]
+        } 
+      }
     }
   })
   .state('admin', {
@@ -79,6 +95,32 @@ module.exports = function($stateProvider, $urlRouterProvider) {
     controller: 'AdminCtrl as ctrl',
     templateUrl: 'admin/admin.html',
     data: { title: 'Administrative Tasks', hideAdmin: false },
+  })
+  .state('admin.standards', {
+    url: '/standards',
+    controller: 'StandardsCtrl as ctrl',
+    templateUrl: 'standards/standards.html',
+    data: { 
+      title: 'Standards',
+      hideStandards: false,
+      hideAdmin: true,
+      breadcrumbs: [
+        {"path" : "admin", "text" : "Admin" },
+      ]
+    }
+  }) 
+  .state('admin.standards.detail', {
+    url: '/{id}',
+    controller: 'StandardsCtrl as ctrl',
+    templateUrl: 'standards/view_standard.html',
+    data: { 
+      title: 'Standards',
+      hideStandards: false,
+      hideAdmin: true,
+      breadcrumbs: [
+        {"path" : "admin", "text" : "Admin" },
+      ]
+    }
   })
   .state('admin.questions',{
     url: '/questions',
@@ -109,5 +151,5 @@ module.exports = function($stateProvider, $urlRouterProvider) {
 
   ;
 
-  $urlRouterProvider.otherwise('/home');
+  $urlRouterProvider.otherwise('/dashboard');
 };
