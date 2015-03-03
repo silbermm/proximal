@@ -1,4 +1,4 @@
-<section class="row" ng-if="!app.state.current.data.hideHomework"> 
+<section class="row"> 
   <div class="col-lg-12">
     <div class="col-lg-6 col-md-6 col-xs-12">
       <div class="widget">
@@ -41,7 +41,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr data-ng-repeat="assignment in homework.allHomework">
+                <tr data-ng-repeat="assignment in homework.unfinished">
                   <td> {{assignment.activity.title}} </td>
                   <td> {{assignment.homework.status}} </td>
                   <td> {{assignment.homework.dateGiven | date }} </td>
@@ -66,8 +66,31 @@
         <div class="widget-header">
           <i class="fa fa-check"></i> Homework Finished
         </div>
-        <div class="widget-body">
-          
+        <div class="widget-body small no-padding">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Name </th>
+                  <th> Status </th>
+                  <th> Assigned on </th>
+                  <th> Actions </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ng-repeat="assignment in homework.finished">
+                  <td> {{assignment.activity.title}} </td>
+                  <td> {{assignment.homework.status}} </td>
+                  <td> {{assignment.homework.dateGiven | date }} </td>
+                  <td>
+                    <button class="btn btn-success btn-sm" ng-click="childCtrl.showHomework(assignment)">
+                      <i class="fa fa-eye"></i> 
+                    </button>
+                                      </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> 
          <div>
       </div>
     </div>

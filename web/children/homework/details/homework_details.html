@@ -1,3 +1,32 @@
-<button class="btn btn-success" data-ng-click="childCtrl.showHomeworkDetails = false"> Back </button>
-<h1> {{childCtrl.selectedAssignment.activity.title}}</h1>
-<p> this is the homework details page </p>
+<section class="row">
+  <div class="col-lg-12">
+
+    <button class="btn btn-primary btn-sm" data-ng-click="childCtrl.showHomeworkDetails = false"> Back to all </button>
+    <h1> {{::childCtrl.selectedAssignment.activity.title}}</h1>
+    <h4> {{childCtrl.selectedAssignment.homework.status}}</h4>
+    <ul> 
+      <li> Assigned On: {{::childCtrl.selectedAssignment.homework.dateGiven | date}} </li>
+      <li data-ng-if="childCtrl.selectedAssignment.homework.dueDate"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li>
+      
+    </ul>
+
+    <table class="table">
+      <thead> 
+        <tr> 
+          <th> Name </th>
+          <th> Status </th>
+          <th> Rating </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="act in childCtrl.selectedAssignment.acts"> 
+          <td> {{act.action}} </td>
+          <td> Done </td>
+          <td> 
+            <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

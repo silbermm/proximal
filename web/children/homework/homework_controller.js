@@ -11,7 +11,29 @@
 			$log.error(data);
 		});
 
-    _this.allHomework = Homework.query({'id': $stateParams.id});
+    Homework.query({'id': $stateParams.id}, function(activities){
+      _this.allHomework = activities;
+
+      _this.unfinished = _.filter(activities, function(h){
+        return h.homework.status !== 'Finished';
+      });
+
+      _this.finished = _.filter(activities, function(h){
+        return h.homework.status === 'Finished';
+      });
+    
+    });
+   
+    _this.deleteHomework = function(id){
+      Homework.delete({"id": id},function(d){
+        _this.unfinished = _.filter(_this.unfinished, function(h){
+          return h.homework.id !== id;
+        });
+        console.log("successfully deleted homework");   
+      }, function(e){
+        console.log("unable to delete Homework"); 
+      }); 
+    };
 
 		_this.begin = function() {
 			var modalInstance = $modal.open({

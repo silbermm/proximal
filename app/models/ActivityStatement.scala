@@ -29,6 +29,12 @@ object ActivityStatements {
   def delete(a: ActivityStatement)(implicit s: Session): Int =
     activityStatements.filter(_.id === a.id.get).delete
 
+  def deleteByActivity(activityId: Long)(implicit s: Session) = {
+    for {
+      activityStatement <- activityStatements if activityStatement.activityId === activityId
+    } delete(activityStatement)
+  }
+
   def all(implicit s: Session) =
     activityStatements.list
 

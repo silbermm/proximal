@@ -149,6 +149,20 @@ object PersonService {
     }
   }
 
+  def isChildOf(uid: Long, childId: Long, f: Long => Option[Int]): Option[Int] = {
+    // get the children for this person
+    personService.findChildren(uid) match {
+      case children: List[Person] => {
+        children.find(c => c.id.get == childId) match {
+          case Some(ch) => f(ch.id.get)
+          case None => None
+          case _ => None
+        }
+      }
+      case List() => None
+    }
+  }
+
   def childActionAsync(uid: Long, childId: Long, f: Long => Future[Result]): Future[Result] = {
     personService.findChildren(uid) match {
       case children: List[Person] => {

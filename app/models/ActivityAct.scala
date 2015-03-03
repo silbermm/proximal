@@ -42,4 +42,10 @@ object ActivityActs {
 
   def delete(a: ActivityAct)(implicit s: Session): Int =
     activityActs.filter(_.id === a.id.get).delete
+
+  def deleteByActivity(activityId: Long)(implicit s: Session) = {
+    for {
+      activityAct <- activityActs if activityAct.activityId === activityId
+    } delete(activityAct)
+  }
 }

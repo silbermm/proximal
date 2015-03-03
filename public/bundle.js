@@ -25206,7 +25206,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(27)();
-	exports.push([module.id, "#content-wrapper {\n  padding-left: 0;\n  margin-left: 0;\n  width: 100%;\n  height: auto;\n}\n@media only screen and (min-width: 561px) {\n  #page-wrapper.active {\n    padding-left: 250px;\n  }\n}\n@media only screen and (max-width: 560px) {\n  #page-wrapper.active {\n    padding-left: 70px;\n  }\n}\n#page-wrapper.active #sidebar-wrapper {\n  left: 150px;\n}\n.sub-container {\n  position: relative;\n  top: -12px;\n  width: 101%;\n  height: 100vh;\n  -webkit-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  -moz-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n}\n/* Hamburg Menu */\n@media only screen and (max-width: 560px) {\n  body.hamburg #page-wrapper {\n    padding-left: 0;\n  }\n  body.hamburg #page-wrapper:not(.active) #sidebar-wrapper {\n    position: absolute;\n    left: -100px;\n  }\n  body.hamburg #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n    display: none;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper {\n    position: fixed;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    margin-left: 0px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg .row.header .meta {\n    margin-left: 70px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    transition: margin-left 0.4s ease 0s;\n  }\n}\n/**\n* Header\n*/\n.row.header {\n  height: 60px;\n  background: #fff;\n  margin-bottom: 15px;\n  /*box-shadow: 0px -10px 17px 8px rgba(0, 0, 0, 0.5);*/\n}\n.row.header > div:last-child {\n  padding-right: 0;\n}\n.row.header .meta .page {\n  font-size: 17px;\n  padding-top: 11px;\n}\n.row.header .meta .breadcrumb-links {\n  font-size: 10px;\n}\n.row.header .meta div {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.row.header .login a {\n  padding: 18px;\n  display: block;\n}\n.row.header .user {\n  min-width: 130px;\n}\n.row.header .user > .item {\n  width: 65px;\n  height: 60px;\n  float: right;\n  display: inline-block;\n  text-align: center;\n  vertical-align: middle;\n}\n.row.header .user > .item a {\n  color: #919191;\n  display: block;\n}\n.row.header .user > .item i {\n  font-size: 20px;\n  line-height: 55px;\n}\n.row.header .user > .item img {\n  width: 40px;\n  height: 40px;\n  margin-top: 10px;\n  border-radius: 2px;\n}\n.row.header .user > .item ul.dropdown-menu {\n  border-radius: 2px;\n  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n}\n.row.header .user > .item ul.dropdown-menu .dropdown-header {\n  text-align: center;\n}\n.row.header .user > .item ul.dropdown-menu li.link {\n  text-align: left;\n}\n.row.header .user > .item ul.dropdown-menu li.link a {\n  padding-left: 7px;\n  padding-right: 7px;\n}\n.row.header .user > .item ul.dropdown-menu:before {\n  position: absolute;\n  top: -7px;\n  right: 23px;\n  display: inline-block;\n  border-right: 7px solid transparent;\n  border-bottom: 7px solid #ccc;\n  border-left: 7px solid transparent;\n  border-bottom-color: rgba(0, 0, 0, 0.2);\n  content: '';\n}\n.row.header .user > .item ul.dropdown-menu:after {\n  position: absolute;\n  top: -6px;\n  right: 24px;\n  display: inline-block;\n  border-right: 6px solid transparent;\n  border-bottom: 6px solid #ffffff;\n  border-left: 6px solid transparent;\n  content: '';\n}\n/* #592727 RED */\n/* #2f5927 GREEN */\n/* #30426a BLUE (default)*/\n/* Main background color */\n/* Sidebar background color */\n/* Sidebar header and footer color */\n/* Sidebar title text colour */\n/*#627cb7*/\n.loading {\n  width: 40px;\n  height: 40px;\n  position: relative;\n  margin: 100px auto;\n}\n.double-bounce1,\n.double-bounce2 {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -webkit-animation: bounce 2s infinite ease-in-out;\n  animation: bounce 2s infinite ease-in-out;\n}\n.double-bounce2 {\n  -webkit-animation-delay: -1s;\n  animation-delay: -1s;\n}\n@-webkit-keyframes bounce {\n  0%,\n  100% {\n    -webkit-transform: scale(0);\n  }\n  50% {\n    -webkit-transform: scale(1);\n  }\n}\n@keyframes bounce {\n  0%,\n  100% {\n    transform: scale(0);\n    -webkit-transform: scale(0);\n  }\n  50% {\n    transform: scale(1);\n    -webkit-transform: scale(1);\n  }\n}\n/**\n* Sidebar\n*/\n#sidebar-wrapper {\n  background: #30426a;\n}\nul.sidebar .sidebar-main a,\n.sidebar-footer,\nul.sidebar .sidebar-list a:hover,\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  /* Sidebar header and footer color */\n  background: #2d3e63;\n}\nul.sidebar {\n  position: absolute;\n  top: 0;\n  bottom: 45px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  text-indent: 20px;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\nul.sidebar li a {\n  color: #fff;\n  display: block;\n  float: left;\n  text-decoration: none;\n  width: 250px;\n}\nul.sidebar .sidebar-main {\n  height: 65px;\n}\nul.sidebar .sidebar-main a {\n  font-size: 18px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-main .menu-icon {\n  float: right;\n  font-size: 18px;\n  padding-right: 28px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-title {\n  color: #738bc0;\n  font-size: 12px;\n  height: 35px;\n  line-height: 40px;\n  text-transform: uppercase;\n}\nul.sidebar .sidebar-list {\n  height: 40px;\n}\nul.sidebar .sidebar-list a {\n  text-indent: 25px;\n  font-size: 15px;\n  color: #b2bfdc;\n  line-height: 40px;\n}\nul.sidebar .sidebar-list a:hover {\n  color: #fff;\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\nul.sidebar .sidebar-list a:hover .menu-icon {\n  text-indent: 25px;\n}\nul.sidebar .sidebar-list .menu-icon {\n  float: right;\n  padding-right: 29px;\n  line-height: 40px;\n  width: 70px;\n}\n#page-wrapper:not(.active) ul.sidebar {\n  bottom: 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title {\n  display: none;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  display: block;\n  height: 2px;\n  margin: 13px 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\n#page-wrapper:not(.active) .sidebar-footer {\n  display: none;\n}\n.sidebar-footer {\n  position: absolute;\n  height: 40px;\n  bottom: 0;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n  text-align: center;\n}\n.sidebar-footer div a {\n  color: #b2bfdc;\n  font-size: 12px;\n  line-height: 43px;\n}\n.sidebar-footer div a:hover {\n  color: #ffffff;\n  text-decoration: none;\n}\n.widget {\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  background: #ffffff;\n  border: 1px solid transparent;\n  border-radius: 2px;\n  border-color: #e9e9e9;\n}\n.widget .widget-header .pagination,\n.widget .widget-footer .pagination {\n  margin: 0;\n}\n.widget .widget-header {\n  color: #767676;\n  background-color: #f6f6f6;\n  padding: 10px 15px;\n  border-bottom: 1px solid #e9e9e9;\n  line-height: 30px;\n}\n.widget .widget-header i {\n  margin-right: 5px;\n}\n.widget .widget-header input {\n  width: 25%;\n}\n.widget .widget-body {\n  padding: 20px;\n}\n.widget .widget-body table thead {\n  background: #fafafa;\n}\n.widget .widget-body table thead * {\n  font-size: 14px !important;\n}\n.widget .widget-body table tbody * {\n  font-size: 13px !important;\n}\n.widget .widget-body .error {\n  color: #ff0000;\n}\n.widget .widget-body button {\n  margin-left: 5px;\n}\n.widget .widget-body div.alert {\n  margin-bottom: 10px;\n}\n.widget .widget-body.xlarge {\n  min-height: 600px;\n  overflow-y: none;\n}\n.widget .widget-body.large {\n  height: 450px;\n  overflow-y: auto;\n}\n.widget .widget-body.medium {\n  height: 250px;\n  overflow-y: auto;\n}\n.widget .widget-body.small {\n  height: 150px;\n  overflow-y: auto;\n}\n.widget .widget-body.no-padding {\n  padding: 0;\n}\n.widget .widget-body.no-padding .error,\n.widget .widget-body.no-padding .message {\n  padding: 20px;\n}\n.widget .widget-footer {\n  border-top: 1px solid #e9e9e9;\n  padding: 10px;\n}\n.widget .widget-icon {\n  background: #30426a;\n  width: 65px;\n  height: 65px;\n  border-radius: 50%;\n  text-align: center;\n  vertical-align: middle;\n  margin-right: 15px;\n}\n.widget .widget-icon i {\n  line-height: 66px;\n  color: #ffffff;\n  font-size: 30px;\n}\n.widget .widget-content .title {\n  font-size: 28px;\n  display: block;\n}\n.btn-circle {\n  width: 30px;\n  height: 30px;\n  text-align: center;\n  padding: 6px 0;\n  font-size: 12px;\n  line-height: 1.428571429;\n  border-radius: 15px;\n}\n.left-inner-page {\n  z-index: 1000;\n  position: fixed;\n  top: 61px;\n  right: 250px;\n  width: 0px;\n  height: 100%;\n  margin-right: -250px;\n  overflow-y: auto;\n  background: #F3F3F3;\n  -webkit-transition: all 0.5s ease;\n  -moz-transition: all 0.5s ease;\n  -o-transition: all 0.5s ease;\n  transition: all 0.5s ease;\n  -webkit-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  -moz-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n}\n.steps-indicator {\n  position: absolute;\n  right: 0;\n  left: 0;\n  height: 30px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n}\n.steps-indicator:before {\n  position: absolute;\n  height: 1px;\n  background-color: #e6e6e6;\n  content: '';\n}\n.steps-indicator.steps-2:before {\n  right: calc(25%);\n  left: calc(25%);\n}\n.steps-indicator.steps-3:before {\n  right: calc(16.66666667%);\n  left: calc(16.66666667%);\n}\n.steps-indicator.steps-4:before {\n  right: calc(12.5%);\n  left: calc(12.5%);\n}\n.steps-indicator.steps-5:before {\n  right: calc(10%);\n  left: calc(10%);\n}\n.steps-indicator.steps-6:before {\n  right: calc(8.33333333%);\n  left: calc(8.33333333%);\n}\n.steps-indicator.steps-7:before {\n  right: calc(7.14285714%);\n  left: calc(7.14285714%);\n}\n.steps-indicator.steps-8:before {\n  right: calc(6.25%);\n  left: calc(6.25%);\n}\n.steps-indicator.steps-9:before {\n  right: calc(5.55555556%);\n  left: calc(5.55555556%);\n}\n.steps-indicator.steps-10:before {\n  right: calc(5%);\n  left: calc(5%);\n}\n.steps-indicator * {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.steps-indicator li {\n  position: relative;\n  float: left;\n  padding: 0;\n  padding-top: 10px;\n  margin: 0;\n  line-height: 15px;\n  text-align: center;\n}\n.steps-indicator li a {\n  font-weight: bold;\n  color: #808080;\n  text-decoration: none;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: 0.25s;\n}\n.steps-indicator li a:before {\n  position: absolute;\n  top: -7px;\n  left: calc(43%);\n  width: 14px;\n  height: 14px;\n  background-color: #e6e6e6;\n  border-radius: 100%;\n  content: '';\n  transition: 0.25s;\n}\n.steps-indicator li a:hover {\n  color: #4d4d4d;\n}\n.steps-indicator.steps-2 li {\n  width: calc(50%);\n}\n.steps-indicator.steps-3 li {\n  width: calc(33.33333333%);\n}\n.steps-indicator.steps-4 li {\n  width: calc(25%);\n}\n.steps-indicator.steps-5 li {\n  width: calc(20%);\n}\n.steps-indicator.steps-6 li {\n  width: calc(16.66666667%);\n}\n.steps-indicator.steps-7 li {\n  width: calc(14.28571429%);\n}\n.steps-indicator.steps-8 li {\n  width: calc(12.5%);\n}\n.steps-indicator.steps-9 li {\n  width: calc(11.11111111%);\n}\n.steps-indicator.steps-10 li {\n  width: calc(10%);\n}\n.steps-indicator.steps-11 li {\n  width: calc(9.09090909%);\n}\n.steps-indicator li.default {\n  pointer-events: none;\n}\n.steps-indicator li.default a:hover {\n  color: #808080;\n}\n.steps-indicator li.current,\n.steps-indicator li.editing {\n  pointer-events: none;\n}\n.steps-indicator li.current a:before {\n  background-color: #808080;\n}\n.steps-indicator li.done a:before {\n  background-color: #339933;\n}\n.steps-indicator li.editing a:before {\n  background-color: #ff0000;\n}\n.rating {\n  unicode-bidi: bidi-override;\n  direction: rtl;\n  font-size: 18px;\n}\n.rating span.star {\n  font-family: FontAwesome;\n  font-weight: normal;\n  font-style: normal;\n  display: inline-block;\n}\n.rating span.star:hover {\n  cursor: pointer;\n}\n.rating span.star:before {\n  content: \"\\f006\";\n  padding-right: 5px;\n  color: #777777;\n}\n.rating span.star:hover:before,\n.rating span.star:hover ~ span.star:before {\n  content: \"\\f005\";\n  color: #e3cf7a;\n}\n[ng\\:cloak],\n[ng-cloak],\n[data-ng-cloak],\n[x-ng-cloak],\n.ng-cloak,\n.x-ng-cloak {\n  display: none !important;\n}\n/* Base */\nbody,\nhtml {\n  height: 100%;\n}\nhtml {\n  overflow-y: scroll;\n}\nbody {\n  background: #f3f3f3;\n  font-family: \"Montserrat\";\n  color: #333333 !important;\n}\n.row {\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n}\n.row > div {\n  margin-bottom: 15px;\n}\n.alerts-container .alert:last-child {\n  margin-bottom: 0;\n}\n#page-wrapper {\n  padding-left: 70px;\n  height: 100%;\n}\n#sidebar-wrapper {\n  margin-left: -150px;\n  left: -30px;\n  width: 250px;\n  position: fixed;\n  height: 100%;\n  z-index: 999;\n}\n#page-wrapper,\n#sidebar-wrapper {\n  transition: all .4s ease 0s;\n}\n.green {\n  background: #23ae89 !important;\n}\n.blue {\n  background: #2361ae !important;\n}\n.orange {\n  background: #d3a938 !important;\n}\n.red {\n  background: #ae2323 !important;\n}\n.form-group .help-block.form-group-inline-message {\n  padding-top: 5px;\n}\ndiv.input-mask {\n  padding-top: 7px;\n}\nfooter .navbar {\n  background: transparent;\n  color: white;\n}\n.login-page {\n  background: url("+__webpack_require__(83)+");\n}\n.login-wrapper {\n  border-radius: 15px;\n  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 36%;\n  left: 50%;\n  display: block;\n  margin-top: -185px;\n  margin-left: -235px;\n  padding: 25px;\n  width: 420px;\n  opacity: .97;\n  background: none repeat scroll 0% 0% #FFF;\n}\n.login-wrapper legend {\n  font-weight: 300;\n  color: #333;\n  margin-top: 5px;\n  margin-bottom: 30px;\n  padding-bottom: 25px;\n}\n.login-wrapper .body {\n  border-bottom: 1px solid #EEE;\n}\n.login-wrapper .footer {\n  margin-top: 20px;\n}\n.question-table {\n  width: 100%;\n  height: 85vh;\n}\n.content-page {\n  position: absolute;\n  height: 100%;\n}\n.content-page .top {\n  padding-top: 20px;\n}\n.content-page.level-1 {\n  top: 0;\n  background: #f3f3f3;\n  left: 16%;\n  -webkit-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  -moz-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  box-shadow: -3px 1px 6px -4px #3d3d3d;\n}\n.sidebar-open {\n  width: 77.944%;\n}\n.sidebar-closed {\n  width: 93.94434%;\n}\n.fade {\n  opacity: .2;\n}\n/** Tabs **/\n.tab-content {\n  background-color: #ffffff;\n  height: 80vh;\n  padding-top: 4em;\n  border-right: 1px solid #ddd;\n  border-left: 1px solid #ddd;\n  border-bottom: 1px solid #ddd;\n}\n", ""]);
+	exports.push([module.id, "#content-wrapper {\n  padding-left: 0;\n  margin-left: 0;\n  width: 100%;\n  height: auto;\n}\n@media only screen and (min-width: 561px) {\n  #page-wrapper.active {\n    padding-left: 250px;\n  }\n}\n@media only screen and (max-width: 560px) {\n  #page-wrapper.active {\n    padding-left: 70px;\n  }\n}\n#page-wrapper.active #sidebar-wrapper {\n  left: 150px;\n}\n.sub-container {\n  position: relative;\n  top: -12px;\n  width: 101%;\n  height: 100vh;\n  -webkit-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  -moz-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n}\n/* Hamburg Menu */\n@media only screen and (max-width: 560px) {\n  body.hamburg #page-wrapper {\n    padding-left: 0;\n  }\n  body.hamburg #page-wrapper:not(.active) #sidebar-wrapper {\n    position: absolute;\n    left: -100px;\n  }\n  body.hamburg #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n    display: none;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper {\n    position: fixed;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    margin-left: 0px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg .row.header .meta {\n    margin-left: 70px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    transition: margin-left 0.4s ease 0s;\n  }\n}\n/**\n* Header\n*/\n.row.header {\n  height: 60px;\n  background: #fff;\n  margin-bottom: 15px;\n  /*box-shadow: 0px -10px 17px 8px rgba(0, 0, 0, 0.5);*/\n}\n.row.header > div:last-child {\n  padding-right: 0;\n}\n.row.header .meta .page {\n  font-size: 17px;\n  padding-top: 11px;\n}\n.row.header .meta .breadcrumb-links {\n  font-size: 10px;\n}\n.row.header .meta div {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.row.header .login a {\n  padding: 18px;\n  display: block;\n}\n.row.header .user {\n  min-width: 130px;\n}\n.row.header .user > .item {\n  width: 65px;\n  height: 60px;\n  float: right;\n  display: inline-block;\n  text-align: center;\n  vertical-align: middle;\n}\n.row.header .user > .item a {\n  color: #919191;\n  display: block;\n}\n.row.header .user > .item i {\n  font-size: 20px;\n  line-height: 55px;\n}\n.row.header .user > .item img {\n  width: 40px;\n  height: 40px;\n  margin-top: 10px;\n  border-radius: 2px;\n}\n.row.header .user > .item ul.dropdown-menu {\n  border-radius: 2px;\n  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n}\n.row.header .user > .item ul.dropdown-menu .dropdown-header {\n  text-align: center;\n}\n.row.header .user > .item ul.dropdown-menu li.link {\n  text-align: left;\n}\n.row.header .user > .item ul.dropdown-menu li.link a {\n  padding-left: 7px;\n  padding-right: 7px;\n}\n.row.header .user > .item ul.dropdown-menu:before {\n  position: absolute;\n  top: -7px;\n  right: 23px;\n  display: inline-block;\n  border-right: 7px solid transparent;\n  border-bottom: 7px solid #ccc;\n  border-left: 7px solid transparent;\n  border-bottom-color: rgba(0, 0, 0, 0.2);\n  content: '';\n}\n.row.header .user > .item ul.dropdown-menu:after {\n  position: absolute;\n  top: -6px;\n  right: 24px;\n  display: inline-block;\n  border-right: 6px solid transparent;\n  border-bottom: 6px solid #ffffff;\n  border-left: 6px solid transparent;\n  content: '';\n}\n/* #592727 RED */\n/* #2f5927 GREEN */\n/* #30426a BLUE (default)*/\n/* Main background color */\n/* Sidebar background color */\n/* Sidebar header and footer color */\n/* Sidebar title text colour */\n/*#627cb7*/\n.loading {\n  width: 40px;\n  height: 40px;\n  position: relative;\n  margin: 100px auto;\n}\n.double-bounce1,\n.double-bounce2 {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -webkit-animation: bounce 2s infinite ease-in-out;\n  animation: bounce 2s infinite ease-in-out;\n}\n.double-bounce2 {\n  -webkit-animation-delay: -1s;\n  animation-delay: -1s;\n}\n@-webkit-keyframes bounce {\n  0%,\n  100% {\n    -webkit-transform: scale(0);\n  }\n  50% {\n    -webkit-transform: scale(1);\n  }\n}\n@keyframes bounce {\n  0%,\n  100% {\n    transform: scale(0);\n    -webkit-transform: scale(0);\n  }\n  50% {\n    transform: scale(1);\n    -webkit-transform: scale(1);\n  }\n}\n/**\n* Sidebar\n*/\n#sidebar-wrapper {\n  background: #30426a;\n}\nul.sidebar .sidebar-main a,\n.sidebar-footer,\nul.sidebar .sidebar-list a:hover,\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  /* Sidebar header and footer color */\n  background: #2d3e63;\n}\nul.sidebar {\n  position: absolute;\n  top: 0;\n  bottom: 45px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  text-indent: 20px;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\nul.sidebar li a {\n  color: #fff;\n  display: block;\n  float: left;\n  text-decoration: none;\n  width: 250px;\n}\nul.sidebar .sidebar-main {\n  height: 65px;\n}\nul.sidebar .sidebar-main a {\n  font-size: 18px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-main .menu-icon {\n  float: right;\n  font-size: 18px;\n  padding-right: 28px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-title {\n  color: #738bc0;\n  font-size: 12px;\n  height: 35px;\n  line-height: 40px;\n  text-transform: uppercase;\n}\nul.sidebar .sidebar-list {\n  height: 40px;\n}\nul.sidebar .sidebar-list a {\n  text-indent: 25px;\n  font-size: 15px;\n  color: #b2bfdc;\n  line-height: 40px;\n}\nul.sidebar .sidebar-list a:hover {\n  color: #fff;\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\nul.sidebar .sidebar-list a:hover .menu-icon {\n  text-indent: 25px;\n}\nul.sidebar .sidebar-list .menu-icon {\n  float: right;\n  padding-right: 29px;\n  line-height: 40px;\n  width: 70px;\n}\n#page-wrapper:not(.active) ul.sidebar {\n  bottom: 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title {\n  display: none;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  display: block;\n  height: 2px;\n  margin: 13px 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\n#page-wrapper:not(.active) .sidebar-footer {\n  display: none;\n}\n.sidebar-footer {\n  position: absolute;\n  height: 40px;\n  bottom: 0;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n  text-align: center;\n}\n.sidebar-footer div a {\n  color: #b2bfdc;\n  font-size: 12px;\n  line-height: 43px;\n}\n.sidebar-footer div a:hover {\n  color: #ffffff;\n  text-decoration: none;\n}\n.widget {\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  background: #ffffff;\n  border: 1px solid transparent;\n  border-radius: 2px;\n  border-color: #e9e9e9;\n}\n.widget .widget-header .pagination,\n.widget .widget-footer .pagination {\n  margin: 0;\n}\n.widget .widget-header {\n  color: #767676;\n  background-color: #f6f6f6;\n  padding: 10px 15px;\n  border-bottom: 1px solid #e9e9e9;\n  line-height: 30px;\n}\n.widget .widget-header i {\n  margin-right: 5px;\n}\n.widget .widget-header input {\n  width: 25%;\n}\n.widget .widget-body {\n  padding: 20px;\n}\n.widget .widget-body table thead {\n  background: #fafafa;\n}\n.widget .widget-body table thead * {\n  font-size: 14px !important;\n}\n.widget .widget-body table tbody * {\n  font-size: 13px !important;\n}\n.widget .widget-body .error {\n  color: #ff0000;\n}\n.widget .widget-body button {\n  margin-left: 5px;\n}\n.widget .widget-body div.alert {\n  margin-bottom: 10px;\n}\n.widget .widget-body.xlarge {\n  min-height: 600px;\n  overflow-y: none;\n}\n.widget .widget-body.large {\n  height: 450px;\n  overflow-y: auto;\n}\n.widget .widget-body.medium {\n  height: 250px;\n  overflow-y: auto;\n}\n.widget .widget-body.small {\n  height: 150px;\n  overflow-y: auto;\n}\n.widget .widget-body.no-padding {\n  padding: 0;\n}\n.widget .widget-body.no-padding .error,\n.widget .widget-body.no-padding .message {\n  padding: 20px;\n}\n.widget .widget-footer {\n  border-top: 1px solid #e9e9e9;\n  padding: 10px;\n}\n.widget .widget-icon {\n  background: #30426a;\n  width: 65px;\n  height: 65px;\n  border-radius: 50%;\n  text-align: center;\n  vertical-align: middle;\n  margin-right: 15px;\n}\n.widget .widget-icon i {\n  line-height: 66px;\n  color: #ffffff;\n  font-size: 30px;\n}\n.widget .widget-content .title {\n  font-size: 28px;\n  display: block;\n}\n.btn-circle {\n  width: 30px;\n  height: 30px;\n  text-align: center;\n  padding: 6px 0;\n  font-size: 12px;\n  line-height: 1.428571429;\n  border-radius: 15px;\n}\n.left-inner-page {\n  z-index: 1000;\n  position: fixed;\n  top: 61px;\n  right: 250px;\n  width: 0px;\n  height: 100%;\n  margin-right: -250px;\n  overflow-y: auto;\n  background: #F3F3F3;\n  -webkit-transition: all 0.5s ease;\n  -moz-transition: all 0.5s ease;\n  -o-transition: all 0.5s ease;\n  transition: all 0.5s ease;\n  -webkit-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  -moz-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n}\n.steps-indicator {\n  position: absolute;\n  right: 0;\n  left: 0;\n  height: 30px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n}\n.steps-indicator:before {\n  position: absolute;\n  height: 1px;\n  background-color: #e6e6e6;\n  content: '';\n}\n.steps-indicator.steps-2:before {\n  right: calc(25%);\n  left: calc(25%);\n}\n.steps-indicator.steps-3:before {\n  right: calc(16.66666667%);\n  left: calc(16.66666667%);\n}\n.steps-indicator.steps-4:before {\n  right: calc(12.5%);\n  left: calc(12.5%);\n}\n.steps-indicator.steps-5:before {\n  right: calc(10%);\n  left: calc(10%);\n}\n.steps-indicator.steps-6:before {\n  right: calc(8.33333333%);\n  left: calc(8.33333333%);\n}\n.steps-indicator.steps-7:before {\n  right: calc(7.14285714%);\n  left: calc(7.14285714%);\n}\n.steps-indicator.steps-8:before {\n  right: calc(6.25%);\n  left: calc(6.25%);\n}\n.steps-indicator.steps-9:before {\n  right: calc(5.55555556%);\n  left: calc(5.55555556%);\n}\n.steps-indicator.steps-10:before {\n  right: calc(5%);\n  left: calc(5%);\n}\n.steps-indicator * {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.steps-indicator li {\n  position: relative;\n  float: left;\n  padding: 0;\n  padding-top: 10px;\n  margin: 0;\n  line-height: 15px;\n  text-align: center;\n}\n.steps-indicator li a {\n  font-weight: bold;\n  color: #808080;\n  text-decoration: none;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: 0.25s;\n}\n.steps-indicator li a:before {\n  position: absolute;\n  top: -7px;\n  left: calc(43%);\n  width: 14px;\n  height: 14px;\n  background-color: #e6e6e6;\n  border-radius: 100%;\n  content: '';\n  transition: 0.25s;\n}\n.steps-indicator li a:hover {\n  color: #4d4d4d;\n}\n.steps-indicator.steps-2 li {\n  width: calc(50%);\n}\n.steps-indicator.steps-3 li {\n  width: calc(33.33333333%);\n}\n.steps-indicator.steps-4 li {\n  width: calc(25%);\n}\n.steps-indicator.steps-5 li {\n  width: calc(20%);\n}\n.steps-indicator.steps-6 li {\n  width: calc(16.66666667%);\n}\n.steps-indicator.steps-7 li {\n  width: calc(14.28571429%);\n}\n.steps-indicator.steps-8 li {\n  width: calc(12.5%);\n}\n.steps-indicator.steps-9 li {\n  width: calc(11.11111111%);\n}\n.steps-indicator.steps-10 li {\n  width: calc(10%);\n}\n.steps-indicator.steps-11 li {\n  width: calc(9.09090909%);\n}\n.steps-indicator li.default {\n  pointer-events: none;\n}\n.steps-indicator li.default a:hover {\n  color: #808080;\n}\n.steps-indicator li.current,\n.steps-indicator li.editing {\n  pointer-events: none;\n}\n.steps-indicator li.current a:before {\n  background-color: #808080;\n}\n.steps-indicator li.done a:before {\n  background-color: #339933;\n}\n.steps-indicator li.editing a:before {\n  background-color: #ff0000;\n}\n.rating {\n  unicode-bidi: bidi-override;\n  direction: rtl;\n  font-size: 18px;\n}\n.rating span.star {\n  font-family: FontAwesome;\n  font-weight: normal;\n  font-style: normal;\n  display: inline-block;\n}\n.rating span.star:hover {\n  cursor: pointer;\n}\n.rating span.star:before {\n  content: \"\\f006\";\n  padding-right: 5px;\n  color: #777777;\n}\n.rating span.star:hover:before,\n.rating span.star:hover ~ span.star:before {\n  content: \"\\f005\";\n  color: #e3cf7a;\n}\n[ng\\:cloak],\n[ng-cloak],\n[data-ng-cloak],\n[x-ng-cloak],\n.ng-cloak,\n.x-ng-cloak {\n  display: none !important;\n}\n/* Base */\nbody,\nhtml {\n  height: 100%;\n}\nhtml {\n  overflow-y: scroll;\n}\nbody {\n  background: #f3f3f3;\n  font-family: \"Montserrat\";\n  color: #333333 !important;\n}\n.row {\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n}\n.row > div {\n  margin-bottom: 15px;\n}\n.alerts-container .alert:last-child {\n  margin-bottom: 0;\n}\n#page-wrapper {\n  padding-left: 70px;\n  height: 100%;\n}\n#sidebar-wrapper {\n  margin-left: -150px;\n  left: -30px;\n  width: 250px;\n  position: fixed;\n  height: 100%;\n  z-index: 999;\n}\n#page-wrapper,\n#sidebar-wrapper {\n  transition: all .4s ease 0s;\n}\n.green {\n  background: #23ae89 !important;\n}\n.blue {\n  background: #2361ae !important;\n}\n.orange {\n  background: #d3a938 !important;\n}\n.red {\n  background: #ae2323 !important;\n}\n.form-group .help-block.form-group-inline-message {\n  padding-top: 5px;\n}\ndiv.input-mask {\n  padding-top: 7px;\n}\nfooter .navbar {\n  background: transparent;\n  color: white;\n}\n.login-page {\n  background: url("+__webpack_require__(79)+");\n}\n.login-wrapper {\n  border-radius: 15px;\n  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 36%;\n  left: 50%;\n  display: block;\n  margin-top: -185px;\n  margin-left: -235px;\n  padding: 25px;\n  width: 420px;\n  opacity: .97;\n  background: none repeat scroll 0% 0% #FFF;\n}\n.login-wrapper legend {\n  font-weight: 300;\n  color: #333;\n  margin-top: 5px;\n  margin-bottom: 30px;\n  padding-bottom: 25px;\n}\n.login-wrapper .body {\n  border-bottom: 1px solid #EEE;\n}\n.login-wrapper .footer {\n  margin-top: 20px;\n}\n.question-table {\n  width: 100%;\n  height: 85vh;\n}\n.content-page {\n  position: absolute;\n  height: 100%;\n}\n.content-page .top {\n  padding-top: 20px;\n}\n.content-page.level-1 {\n  top: 0;\n  background: #f3f3f3;\n  left: 16%;\n  -webkit-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  -moz-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  box-shadow: -3px 1px 6px -4px #3d3d3d;\n}\n.sidebar-open {\n  width: 77.944%;\n}\n.sidebar-closed {\n  width: 93.94434%;\n}\n.fade {\n  opacity: .2;\n}\n/** Tabs **/\n.tab-content {\n  background-color: #ffffff;\n  height: 80vh;\n  padding-top: 4em;\n  border-right: 1px solid #ddd;\n  border-left: 1px solid #ddd;\n  border-bottom: 1px solid #ddd;\n}\n", ""]);
 
 /***/ },
 /* 20 */
@@ -66897,9 +66897,9 @@
 
 	"use strict()";
 
-	__webpack_require__(74);
+	__webpack_require__(73);
 	var app = __webpack_require__(1).module("proximal2");
-	app.controller("HomeController", ["$log", __webpack_require__(59)]);
+	app.controller("HomeController", ["$log", __webpack_require__(60)]);
 
 /***/ },
 /* 54 */
@@ -66909,10 +66909,10 @@
 
 	"use strict()";
 
-	__webpack_require__(75);
+	__webpack_require__(72);
 
 	var app = __webpack_require__(1).module("proximal2");
-	app.controller("DashboardCtrl", [__webpack_require__(60)]);
+	app.controller("DashboardCtrl", [__webpack_require__(59)]);
 
 /***/ },
 /* 55 */
@@ -66922,7 +66922,7 @@
 
 	"use strict()";
 
-	__webpack_require__(76);
+	__webpack_require__(74);
 	var app = __webpack_require__(1).module("proximal2");
 	app.controller("LibraryCtrl", ["$log", "$cookieStore", "$scope", __webpack_require__(61)]);
 
@@ -66934,22 +66934,22 @@
 
 	"use strict()";
 
-	__webpack_require__(77);
+	__webpack_require__(76);
 	var app = __webpack_require__(1).module("proximal2");
 
-	app.controller("ChildrenCtrl", ["$log", "Child", "$modal", __webpack_require__(62)]);
-	app.factory("Child", ["$log", "$resource", __webpack_require__(63)]);
-	app.directive("childPicture", ["$log", __webpack_require__(64)]);
+	app.controller("ChildrenCtrl", ["$log", "Child", "$modal", __webpack_require__(63)]);
+	app.factory("Child", ["$log", "$resource", __webpack_require__(64)]);
+	app.directive("childPicture", ["$log", __webpack_require__(65)]);
 
 	// Add a child
-	__webpack_require__(78);
-	app.controller("AddChildCtrl", ["$scope", "$log", "$modalInstance", "Child", "prox.common", __webpack_require__(65)]);
+	__webpack_require__(77);
+	app.controller("AddChildCtrl", ["$scope", "$log", "$modalInstance", "Child", "prox.common", __webpack_require__(66)]);
 
 	// View a child
-	__webpack_require__(79);
-	app.controller("ViewChildCtrl", ["$log", "$window", "$stateParams", "personService", __webpack_require__(66)]);
+	__webpack_require__(78);
+	app.controller("ViewChildCtrl", ["$log", "$window", "$stateParams", "personService", __webpack_require__(67)]);
 
-	__webpack_require__(112);
+	__webpack_require__(70);
 	__webpack_require__(71);
 
 /***/ },
@@ -66960,11 +66960,11 @@
 
 	var app = __webpack_require__(1).module("proximal2");
 
-	__webpack_require__(82);
-	app.controller("AdminCtrl", ["$log", "$cookieStore", "standardsService", "$modal", __webpack_require__(70)]);
+	__webpack_require__(75);
+	app.controller("AdminCtrl", ["$log", "$cookieStore", "standardsService", "$modal", __webpack_require__(62)]);
 
-	__webpack_require__(72);
-	__webpack_require__(73);
+	__webpack_require__(68);
+	__webpack_require__(69);
 
 /***/ },
 /* 58 */,
@@ -66975,8 +66975,8 @@
 
 	"use strict()";
 
-	module.exports = function ($log) {
-	  this.home = "HOME";
+	module.exports = function () {
+	  this.page = "Dashboard Page";
 	};
 
 /***/ },
@@ -66987,8 +66987,8 @@
 
 	"use strict()";
 
-	module.exports = function () {
-	  this.page = "Dashboard Page";
+	module.exports = function ($log) {
+	  this.home = "HOME";
 	};
 
 /***/ },
@@ -67005,6 +67005,36 @@
 
 /***/ },
 /* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	module.exports = function ($log, $cookieStore, standardsService, $modal) {
+	  var vm = this;
+	  vm.page = "Admin Page";
+
+	  vm.createStandard = function () {
+	    modalInstance = $modal.open({
+	      templateUrl: "standards/add_standard.html",
+	      controller: "AddStandardCtrl"
+	    });
+
+	    var addStandard = function addStandard(s) {
+	      standardsService.addStandard(s).success(function (data, success, headers, config) {
+	        $log.debug(data);
+	      }).error(function (data, status, headers, config) {
+	        $log.error("Unable to add standard: " + data);
+	      });
+	    };
+
+	    modalInstance.result.then(function (standard) {
+	      addStandard(standard);
+	    });
+	  };
+	};
+
+/***/ },
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67057,7 +67087,7 @@
 	};
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67068,13 +67098,13 @@
 	};
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
-	var boyImg = __webpack_require__(84);
+	var boyImg = __webpack_require__(80);
 	module.exports = function ($log) {
 	  return {
 	    restrict: "A",
@@ -67105,14 +67135,14 @@
 	};
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 
-	__webpack_require__(85);
+	__webpack_require__(100);
 
 	module.exports = function ($scope, $log, $modalInstance, Child, common) {
 
@@ -67150,14 +67180,14 @@
 	};
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 
-	__webpack_require__(86);
+	__webpack_require__(101);
 
 	module.exports = function ($log, $window, $stateParams, personService) {
 	  var vm = this;
@@ -67169,171 +67199,7 @@
 	};
 
 /***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	"use strict()";
-	(function () {
-	  module.exports = function ($resource) {
-	    return $resource("api/v1/assessments/:assessmentId", null, { score: { method: "PUT" } });
-	  };
-	})();
-
-/***/ },
 /* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	"use strict()";
-
-	(function () {
-
-	  __webpack_require__(87);
-
-	  module.exports = function AssesmentController($log, standardsService, Assesments, $stateParams, $modal) {
-	    var _this = this;
-
-	    standardsService.getAllStandards().success(function (data) {
-	      _this.availableStandards = data;
-	    }).error(function (data) {
-	      $log.error(data);
-	    });
-
-	    _this.begin = function () {
-	      Assesments.save({ childId: Number($stateParams.id), standardId: _this.standardSelected.id }, function (d) {
-	        var modalInstance = $modal.open({
-	          templateUrl: "new/new_assessment.html",
-	          controller: "NewAssessmentCtrl",
-	          controllerAs: "newAssessment",
-	          backdrop: false,
-	          size: "lg",
-	          resolve: {
-	            items: function items() {
-	              return { childId: Number($stateParams.id), question: d };
-	            }
-	          }
-	        });
-	        modalInstance.result.then(function (selectedItem) {
-	          $log.debug(selectedItem);
-	        }, function () {
-	          $log.info("Modal dismissed at: " + new Date());
-	        });
-	      }, function (err) {
-	        $log.error(err);
-	      });
-	    };
-	  };
-	})();
-
-/***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	"use strict()";
-	(function () {
-
-	  module.exports = function NewAssessmentController($log, Assessments, $modalInstance, items) {
-	    var _this = this;
-	    _this.items = items;
-
-	    _this.done = false;
-
-	    _this.rateQuestion = 0;
-	    _this.max = 5;
-	    _this.isReadOnly = false;
-
-	    _this.hoveringOver = function (value) {
-	      _this.overStar = value;
-	      _this.percent = 100 * (value / _this.max);
-	    };
-
-	    _this.scored = function () {
-	      return _this.rateQuestion > 0;
-	    };
-
-	    _this.next = function () {
-	      if (_this.rateQuestion > 0) {
-	        _this.error = undefined;
-	        var questionScore = {
-	          studentId: _this.items.childId,
-	          questionId: _this.items.question.question.id,
-	          score: _this.rateQuestion,
-	          timestamp: new Date().getMilliseconds()
-	        };
-	        _this.items.question.question = Assessments.score({ assessmentId: _this.items.question.assessment.id }, questionScore);
-	      } else {
-	        _this.error = "Please rate the students answer first";
-	      }
-	    };
-
-	    _this.ok = function () {
-	      $modalInstance.close();
-	    };
-
-	    _this.cancel = function () {
-	      $modalInstance.dismiss("cancel");
-	    };
-	  };
-	})();
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	module.exports = function ($log, $cookieStore, standardsService, $modal) {
-	  var vm = this;
-	  vm.page = "Admin Page";
-
-	  vm.createStandard = function () {
-	    modalInstance = $modal.open({
-	      templateUrl: "standards/add_standard.html",
-	      controller: "AddStandardCtrl"
-	    });
-
-	    var addStandard = function addStandard(s) {
-	      standardsService.addStandard(s).success(function (data, success, headers, config) {
-	        $log.debug(data);
-	      }).error(function (data, status, headers, config) {
-	        $log.error("Unable to add standard: " + data);
-	      });
-	    };
-
-	    modalInstance.result.then(function (standard) {
-	      addStandard(standard);
-	    });
-	  };
-	};
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	"use strict()";
-
-	var app = __webpack_require__(1).module("proximal2");
-
-	__webpack_require__(88);
-	app.controller("HomeworkCtrl", ["$log", "$modal", "toaster", "$stateParams", "standardsService", "Homework", __webpack_require__(89)]);
-
-	app.factory("Homework", ["$resource", __webpack_require__(90)]);
-
-	__webpack_require__(91);
-	app.controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "prox.common", "$stateParams", "items", __webpack_require__(92)]);
-
-	__webpack_require__(113);
-	app.controller("HomeworkDetailsCtrl", ["$log", "standardsService", "Child", "prox.common", "$stateParams", __webpack_require__(114)]);
-
-/***/ },
-/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67343,29 +67209,29 @@
 	var app = __webpack_require__(1).module("proximal2");
 
 	// Question Service
-	app.factory("Question", ["$log", "$resource", "$http", __webpack_require__(100)]);
+	app.factory("Question", ["$log", "$resource", "$http", __webpack_require__(81)]);
 
 	// Question Controller
-	__webpack_require__(101);
-	app.controller("QuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "toaster", "prox.common", "Question", "standardsService", __webpack_require__(102)]);
+	__webpack_require__(82);
+	app.controller("QuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "toaster", "prox.common", "Question", "standardsService", __webpack_require__(83)]);
 
 	// Details
-	__webpack_require__(103);
-	app.directive("question", __webpack_require__(104));
-	app.directive("questionDetails", ["$log", "$state", "prox.common", __webpack_require__(105)]);
-	app.directive("questionPicture", ["$log", "$q", __webpack_require__(106)]);
-	app.directive("questionAdd", ["$log", "prox.common", __webpack_require__(107)]);
+	__webpack_require__(84);
+	app.directive("question", __webpack_require__(85));
+	app.directive("questionDetails", ["$log", "$state", "prox.common", __webpack_require__(86)]);
+	app.directive("questionPicture", ["$log", "$q", __webpack_require__(87)]);
+	app.directive("questionAdd", ["$log", "prox.common", __webpack_require__(88)]);
 
 	// Add
-	__webpack_require__(108);
-	app.controller("AddQuestionCtrl", ["$log", "$scope", "prox.common", "$upload", "standardsService", "$modalInstance", __webpack_require__(109)]);
+	__webpack_require__(89);
+	app.controller("AddQuestionCtrl", ["$log", "$scope", "prox.common", "$upload", "standardsService", "$modalInstance", __webpack_require__(90)]);
 
 	// Edit
-	__webpack_require__(110);
-	app.controller("EditQuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "prox.common", "standardsService", "Question", "toaster", __webpack_require__(111)]);
+	__webpack_require__(91);
+	app.controller("EditQuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "prox.common", "standardsService", "Question", "toaster", __webpack_require__(92)]);
 
 /***/ },
-/* 73 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67388,15 +67254,49 @@
 	app.controller("AddStatementCtrl", ["$log", "$scope", "$modalInstance", "prox.common", "standardsService", "standardId", __webpack_require__(99)]);
 
 /***/ },
-/* 74 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<h1> HOME BABY! </h1>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("home/home.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	var app = __webpack_require__(1).module("proximal2");
+
+	// Templates
+	__webpack_require__(102);
+	__webpack_require__(103);
+
+	//Assessment Service
+	app.factory("Assesments", ["$resource", __webpack_require__(104)]);
+
+	// View Assessments
+	app.controller("AssessmentCtrl", ["$log", "standardsService", "Assesments", "$stateParams", "$modal", __webpack_require__(105)]);
+
+	// New Assessment
+	app.controller("NewAssessmentCtrl", ["$log", "Assesments", "$modalInstance", "items", __webpack_require__(106)]);
 
 /***/ },
-/* 75 */
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+
+	var app = __webpack_require__(1).module("proximal2");
+
+	__webpack_require__(107);
+	app.controller("HomeworkCtrl", ["$log", "$modal", "toaster", "$stateParams", "standardsService", "Homework", __webpack_require__(108)]);
+
+	app.factory("Homework", ["$resource", __webpack_require__(109)]);
+
+	__webpack_require__(110);
+	app.controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "prox.common", "$stateParams", "items", __webpack_require__(111)]);
+
+	__webpack_require__(112);
+	app.controller("HomeworkDetailsCtrl", ["$log", "standardsService", "Child", "prox.common", "$stateParams", __webpack_require__(113)]);
+
+/***/ },
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<div class=\"row\"> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon green pull-left\"> <i class=\"fa fa-users\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">2</div> <div class=\"comment\">Children Registered</div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon orange pull-left\"> <i class=\"fa fa-sitemap\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">16</div> <div class=\"comment\">Assessments Taken </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> <div class=\"spacer visible-xs\"></div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-tasks\"></i> Table of Data\n<a href=\"#\" class=\"pull-right\">Clear</a> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <tbody> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-users\"></i> Collaborators\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"></div> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr><th class=\"text-center\">ID</th><th>Username</th><th>Relationship</th><th>Account</th></tr> </thead> <tbody> <tr><td class=\"text-center\">1</td><td>Joe Bloggs</td><td>Brother</td><td>AZ23045</td></tr> <tr><td class=\"text-center\">2</td><td>Timothy Hernandez</td><td>Father</td><td>AU24783</td></tr> <tr><td class=\"text-center\">3</td><td>Joe Bickham</td><td>User</td><td>Friend</td></tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-plus\"></i> Extras\n<button class=\"btn btn-sm btn-info pull-right\">Button</button> <div class=\"clearfix\"></div> </div> <div class=\"widget-body\"> <div class=\"message\"> This is a standard message which will also work the \".no-padding\" class, I can also <span class=\"error\">be an error message!</span> </div> <hr/> <div class=\"message\"> <a href=\"http://angular-ui.github.io/bootstrap/\" target=\"_blank\">UI Bootstrap</a> is included, so you can use <a href=\"#\" tooltip=\"I'm a tooltip!\">tooltips</a> and all of the other native Bootstrap JS components! </div> <hr/> <form class=\"form-horizontal\" role=\"form\"> <div class=\"form-group has-feedback has-success\"> <label for=\"label\" class=\"col-sm-2 control-label\">Inline Form</label> <div class=\"col-sm-5\"> <input type=\"text\" class=\"form-control\"/>\n<span class=\"fa fa-key form-control-feedback\"></span> </div> <div class=\"col-sm-5\"> <div class=\"input-mask\">I'm an input mask!</div> </div> </div> </form> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-cog fa-spin\"></i> Loading Directive\n<a href=\"http://tobiasahlin.com/spinkit/\" target=\"_blank\" class=\"pull-right\">SpinKit</a> </div> <div class=\"widget-body\"> </div> </div> </div> </div> ";
@@ -67404,7 +67304,15 @@
 	module.exports=v1;
 
 /***/ },
-/* 76 */
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<h1> HOME BABY! </h1>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("home/home.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<h1> test </h1>";
@@ -67412,47 +67320,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section ng-if=\"!app.state.current.data.hideChildren\"> <div class=\"row\" ng-controller=\"ChildrenCtrl as childCtrl\"> <div class=\"row\"> <button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"childCtrl.createChild()\"> <i class=\"fa fa-plus\"></i> Add Child </button> </div> <div class=\"col-sm-4 col-md-3\" ng-repeat=\"c in childCtrl.children\"> <div class=\"thumbnail\"> <img child-picture child=\"c\" style=\"width:100px;height:100px\"> <div class=\"caption\"> <h3>{{::c.firstName}}</h3> <p> Some blurb, maybe birthdate? and grade? </p> <p><a ui-sref=\"children.view({id:c.id})\" class=\"btn btn-info btn-sm\" role=\"button\"> <i class=\"fa fa-eye\"></i> View </a>\n<a class=\"btn btn-default btn-danger btn-sm\" role=\"button\" ng-click=\"childCtrl.removeChild(c.id)\"> <i class=\"fa fa-trash\"></i>Delete</a></p> </div> </div> </div> </div> </section> <ui-view class=\"row col-md-12\"></ui-view> <toaster> </toaster>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("children/children.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\"> Add a Child </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.firstName.$invalid, 'has-success': !form.firstName.$invalid}\"> <label for=\"firstName\" class=\"sr-only\"> Child's First Name </label> <input type=\"text\" name=\"firstName\" data-ng-model=\"addChild.child.firstName\" class=\"form-control\" id=\"firstName\" placeholder=\"Child's first name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.lastName.$invalid, 'has-success': !form.lastName.$invalid}\"> <label for=\"lastName\" class=\"sr-only\"> Child's Last Name </label> <input type=\"text\" data-ng-model=\"addChild.child.lastName\" name=\"lastName\" class=\"form-control\" id=\"lastName\" placeholder=\"Child's last name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.birthDate.$invalid, 'has-success': !form.birthDate.$invalid}\"> <label for=\"birthDate\" class=\"sr-only\">Child's Date of Birth </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"birthDate\" datepicker-popup=\"{{addChild.format}}\" ng-model=\"addChild.child.birthDate\" is-open=\"addChild.opened\" datepicker-options=\"addChild.dateOptions\" init-date=\"addChildinitDate\" ng-required=\"true\" close-text=\"Close\" placeholder=\"Child's date of birth\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"addChild.open($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}\"> <label for=\"educationLevel\" class=\"sr-only\"> Current Grade Level </label> <select name=\"educationLevel\" class=\"forn-control\" ng-model=\"addChild.child.gradeLevel\" ng-options=\"a.description for a in addChild.availableLevels\" required> <option value=\"\"> -- Current Grade Level -- </option> </select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"addChild.ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"addChild.cancel()\">Cancel</button> </div> </form>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_child.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<div class=\"row col-md-12 toolbar\"> <div class=\"col-md-1 thumbnail\"> <div child-picture child=\"childctrl.child\" style=\"min-height:5em\"> </div> </div> <div class=\"col-md-4\"> <h4> {{childctrl.child.firstName + ' ' + childctrl.child.lastName}} </h4> <span> {{childctrl.child.educationLevel.description}} </span> <a title=\"Move up a grade level\"><i class=\"fa fa-arrow-circle-up\"></i></a> </div> </div> <tabset> <tab heading=\"Assessments\"> <tab-heading> Assessments </tab-heading> <ui-view name=\"assessment\"></ui-view> </tab> <tab heading=\"Homework\"> <tab-heading> Homework </tab-heading> <ui-view name=\"homework\" ng-show=\"childCtrl.showHomeworkDetails == false\"></ui-view> <ui-view name=\"homeworkDetails\" ng-show=\"childCtrl.showHomeworkDetails == true\"></ui-view> </tab> <tab select=\"alertMe()\"> <tab-heading> <i class=\"glyphicon glyphicon-bell\"></i> Alert! </tab-heading> I've got an HTML heading, and a select callback. Pretty cool! </tab> </tabset>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("view/view_child.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Ready to start a new assesment? </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"assessment.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in assessment.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <button class=\"btn btn-primary\" ng-click=\"assessment.begin()\"> Start Here </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Assesments Currently in Progress </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Assesments already completed </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> <div> </div> </div> </div> </div></div></section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("assessments/assessment.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.question.text}} </h1> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("new/new_assessment.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 82 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<section class=\"row\" ng-if=\"!app.state.current.data.hideAdmin\"> <ul> <li> <a ui-sref=\"admin.standards\"> Manage Standards </a> </li> <li> <a ui-sref=\"admin.questions\"> Manage Questions </a> </li> </ul> </section> <div ui-view class=\"row col-md-12\"> </div> <toaster-container> </toaster-container>";
@@ -67460,16 +67328,100 @@
 	module.exports=v1;
 
 /***/ },
-/* 83 */
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<section ng-if=\"!app.state.current.data.hideChildren\"> <div class=\"row\" ng-controller=\"ChildrenCtrl as childCtrl\"> <div class=\"row\"> <button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"childCtrl.createChild()\"> <i class=\"fa fa-plus\"></i> Add Child </button> </div> <div class=\"col-sm-4 col-md-3\" ng-repeat=\"c in childCtrl.children\"> <div class=\"thumbnail\"> <img child-picture child=\"c\" style=\"width:100px;height:100px\"> <div class=\"caption\"> <h3>{{::c.firstName}}</h3> <p> Some blurb, maybe birthdate? and grade? </p> <p><a ui-sref=\"children.view({id:c.id})\" class=\"btn btn-info btn-sm\" role=\"button\"> <i class=\"fa fa-eye\"></i> View </a>\n<a class=\"btn btn-default btn-danger btn-sm\" role=\"button\" ng-click=\"childCtrl.removeChild(c.id)\"> <i class=\"fa fa-trash\"></i>Delete</a></p> </div> </div> </div> </div> </section> <ui-view class=\"row col-md-12\"></ui-view> <toaster> </toaster>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("children/children.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\"> Add a Child </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.firstName.$invalid, 'has-success': !form.firstName.$invalid}\"> <label for=\"firstName\" class=\"sr-only\"> Child's First Name </label> <input type=\"text\" name=\"firstName\" data-ng-model=\"addChild.child.firstName\" class=\"form-control\" id=\"firstName\" placeholder=\"Child's first name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.lastName.$invalid, 'has-success': !form.lastName.$invalid}\"> <label for=\"lastName\" class=\"sr-only\"> Child's Last Name </label> <input type=\"text\" data-ng-model=\"addChild.child.lastName\" name=\"lastName\" class=\"form-control\" id=\"lastName\" placeholder=\"Child's last name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.birthDate.$invalid, 'has-success': !form.birthDate.$invalid}\"> <label for=\"birthDate\" class=\"sr-only\">Child's Date of Birth </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"birthDate\" datepicker-popup=\"{{addChild.format}}\" ng-model=\"addChild.child.birthDate\" is-open=\"addChild.opened\" datepicker-options=\"addChild.dateOptions\" init-date=\"addChildinitDate\" ng-required=\"true\" close-text=\"Close\" placeholder=\"Child's date of birth\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"addChild.open($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}\"> <label for=\"educationLevel\" class=\"sr-only\"> Current Grade Level </label> <select name=\"educationLevel\" class=\"forn-control\" ng-model=\"addChild.child.gradeLevel\" ng-options=\"a.description for a in addChild.availableLevels\" required> <option value=\"\"> -- Current Grade Level -- </option> </select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"addChild.ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"addChild.cancel()\">Cancel</button> </div> </form>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_child.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"row col-md-12 toolbar\"> <div class=\"col-md-1 thumbnail\"> <div child-picture child=\"childctrl.child\" style=\"min-height:5em\"> </div> </div> <div class=\"col-md-4\"> <h4> {{childctrl.child.firstName + ' ' + childctrl.child.lastName}} </h4> <span> {{childctrl.child.educationLevel.description}} </span> <a title=\"Move up a grade level\"><i class=\"fa fa-arrow-circle-up\"></i></a> </div> </div> <tabset> <tab heading=\"Assessments\"> <tab-heading> Assessments </tab-heading> <ui-view name=\"assessment\"></ui-view> </tab> <tab heading=\"Homework\"> <tab-heading> Homework </tab-heading> <ui-view name=\"homework\" ng-show=\"childCtrl.showHomeworkDetails == false\"></ui-view> <ui-view name=\"homeworkDetails\" ng-show=\"childCtrl.showHomeworkDetails == true\"></ui-view> </tab> <tab select=\"alertMe()\"> <tab-heading> <i class=\"glyphicon glyphicon-bell\"></i> Alert! </tab-heading> I've got an HTML heading, and a select callback. Pretty cool! </tab> </tabset>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("view/view_child.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "3894ff7d10fddb7718ce3d9227e5c01d.jpg"
 
 /***/ },
-/* 84 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "0cefab62296d55823b0fb4f894a339be.png"
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+	(function () {
+	  module.exports = function ($log, $resource, $http) {
+	    return $resource("/api/v1/questions/:id", null, { update: { method: "PUT" } });
+	  };
+	})();
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1=" <section class=\"col-lg-12 col-sm-12 col-xs-12 col-md-12\" ng-if=\"!state.current.data.hideQuestions\" ng-init=\"init()\"> <div class=\"row top\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-question\"></i> Questions\n<button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"addQuestion()\"> Add a Question </button>\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\" data-ng-model=\"searchText\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body no-padding large\"> <question-details> </question-details> </div> <div class=\"widget-footer\"> <nav style=\"text-align:center\"> <ul class=\"pagination\"> <li><a href=\"#\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">Previous</span></a></li> <li><a href=\"#\">1</a></li> <li><a href=\"#\">2</a></li> <li><a href=\"#\">3</a></li> <li><a href=\"#\">4</a></li> <li><a href=\"#\">5</a></li> <li><a href=\"#\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">Next</span></a></li> </ul> </nav> <div> </div> </div> </div> </div></div></section> <div ui-view ng-if=\"state.current.data.hideQuestions\"> </div> <toaster> </toaster>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("questions/questions.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	module.exports = function ($log, $scope, $state, $stateParams, $modal, toaster, common, Question, standardsService) {
+
+	  $scope.init = function () {
+	    $scope.questions = Question.query();
+	  };
+
+	  $scope.availableEducationLevels = common.educationLevels;
+
+	  $scope.addQuestion = function () {
+	    var modalInstance = $modal.open({
+	      templateUrl: "add/add_question.html",
+	      controller: "AddQuestionCtrl"
+	    });
+	    modalInstance.result.then(function (question) {
+	      var q = new Question(question);
+	      q.$save(function (ques, headers) {
+	        $scope.questions.push(new Question(ques));
+	        toaster.pop("success", "Success", "Added the question with ID " + ques.id);
+	      }, function (err) {
+	        toaster.pop("error", "Failure", "Unable to add the question" + err);
+	      });
+	    });
+	  };
+	};
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"list-group\"> <a ui-sref=\"admin.questions.edit({questionId:question.id})\" class=\"list-group-item\" ng-repeat=\"question in questions\"> <h4 class=\"list-group-item-heading\">{{question.text}} </h4> <p class=\"list-group-item-text\"> <div class=\"col-md-12\"> <div class=\"col-md-2\"> <div question-picture style=\"width: 100px;height:100px\"> </div> </div> <div class=\"col-md-5\"> <h5> Standard </h5> <p> None yet </p> </div> <div class=\"col-md-5\"> <h5> Statements that Apply </h5> <ul> <li data-ng-repeat=\"statement in question.statements\"> {{statement.description}} </li> </ul> </div> </div> <span class=\"clearfix\"> </span> </p> </a> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/detail_question.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 85 */
@@ -67478,20 +67430,22 @@
 	"use strict";
 
 	"use strict()";
-
-	var app = __webpack_require__(1).module("proximal2");
-	app.factory("prox.common", ["$log", "$http", CommonService]);
-
-	function CommonService($log, $http) {
-	  this.educationLevels = [{ value: "k", description: "Kindergarden" }, { value: "1", description: "1st Grade" }, { value: "2", description: "2nd Grade" }, { value: "3", description: "3rd Grade" }, { value: "4", description: "4th Grade" }, { value: "5", description: "5th Grade" }, { value: "6", description: "6th Grade" }, { value: "7", description: "7th Grade" }, { value: "9", description: "9th Grade" }, { value: "10", description: "10th Grade" }, { value: "11", description: "11th Grade" }, { value: "12", description: "12th Grade" }];
-
-	  this.homeworkStatuses = [{ text: "Not Started" }, { text: "In-Progress" }, { text: "Finished" }];
-
-	  return {
-	    educationLevels: this.educationLevels,
-	    homeworkStatuses: this.homeworkStatuses
+	(function () {
+	  module.exports = function () {
+	    return {
+	      restrict: "EA",
+	      scope: true,
+	      template: "<div> </div>",
+	      controller: "QuestionsCtrl",
+	      link: function link(scope, elem, attr) {
+	        outerDiv = "<div class='row col-md-12'> </div>";
+	        innerDiv = "<div class=\"col-md-4\"> </div>";
+	        outerDiv.append(innerDiv);
+	        elem.append(outerDiv);
+	      }
+	    };
 	  };
-	}
+	})();
 
 /***/ },
 /* 86 */
@@ -67500,27 +67454,17 @@
 	"use strict";
 
 	"use strict()";
-
-	__webpack_require__(1);
-
-	angular.module("proximal2").factory("personService", ["$log", "$http", PersonService]);
-
-	function PersonService($log, $http) {
-	  return {
-	    addChild: function addChild(c) {
-	      return $http.post("/api/v1/children", c);
-	    },
-	    getChildren: function getChildren() {
-	      return $http.get("/api/v1/children");
-	    },
-	    removeChild: function removeChild(id) {
-	      return $http["delete"]("/api/v1/children/" + id);
-	    },
-	    getChild: function getChild(id) {
-	      return $http.get("/api/v1/children/" + id);
-	    }
+	(function () {
+	  module.exports = function ($log, $state, common) {
+	    return {
+	      restrict: "E",
+	      scope: true,
+	      replace: true,
+	      controller: "QuestionsCtrl as ctrl",
+	      templateUrl: "details/detail_question.html"
+	    };
 	  };
-	}
+	})();
 
 /***/ },
 /* 87 */
@@ -67528,99 +67472,63 @@
 
 	"use strict";
 
-	"use strict()";
-
 	(function () {
-	  __webpack_require__(1);
-	  angular.module("proximal2").factory("standardsService", ["$log", "$resource", "$http", StandardsService]);
 
-	  function StandardsService($log, $resource, $http) {
-	    var Standards = $resource("/api/v2/standards/:id");
+	  module.exports = function ($log, $q) {
 	    return {
-	      standards: function standards() {
-	        return Standards;
-	      },
-	      addStandard: function addStandard(c) {
-	        return $http.post("/api/v1/standards", c);
-	      },
-	      updateStandard: function updateStandard(id, c) {
-	        return $http.put("/api/v1/standards/" + id, c);
-	      },
-	      getAllStandards: function getAllStandards() {
-	        return $http.get("/api/v1/standards");
-	      },
-	      removeStandard: function removeStandard(id) {
-	        return $http["delete"]("/api/v1/standards/" + id);
-	      },
-	      getStandard: function getStandard(id) {
-	        return $http.get("/api/v1/standards/" + id);
-	      },
-	      addStatement: function addStatement(standardId, statement) {
-	        return $http.post("api/v1/standards/" + standardId + "/statements", statement);
-	      },
-	      getStatements: function getStatements(standardId) {
-	        return $http.get("api/v1/standards/" + standardId + "/statements");
+	      restrict: "A",
+	      scope: true,
+	      controller: "QuestionsCtrl",
+	      link: function link(scope, elem, attr) {
+
+	        scope.$watch("question", function (newVal) {
+	          if (newVal) {
+	            if (scope.question.picture) {
+	              elem.css({ "background-image": "url(data:image/png;base64," + scope.question.picture });
+	            } else {
+	              elem.css({ "background-image": "url(/assets/images/emptyImage.png)" });
+	            }
+	          }
+	        }, true);
+
+	        elem.css({ "background-size": "contain" });
+	        elem.css({ "background-repeat": "no-repeat" });
+
+	        if (!_.isUndefined(attr.picturePadding)) {
+	          elem.css({ "padding-bottom": attr.picturePadding });
+	        }
 	      }
 	    };
-	  }
+	  };
 	})();
 
 /***/ },
 /* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<section class=\"row\" ng-if=\"!app.state.current.data.hideHomework\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Add homework </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"homework.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in homework.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> <button class=\"btn btn-primary\" ng-click=\"homework.begin()\" ng-class=\"{'disabled': homework.standardSelected == null}\"> Continue </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Homework In-Progress </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.allHomework\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button>\n<button class=\"btn btn-danger btn-sm\" data-ng-click=\"homework.deleteHomework(assignment.homework.id)\"> <i class=\"fa fa-trash\"></i> </button> </td> </tr> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Homework Finished </div> <div class=\"widget-body\"> <div> </div> </div> </div> </div></div></section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("homework/homework.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	"use strict()";
+	(function () {
+
+	  module.exports = function ($log, common) {
+	    return {
+	      restrict: "E",
+	      scope: {},
+	      replace: true,
+	      templateUrl: "details/add_question.html",
+	      controller: "AddQuestionCtrl"
+	    };
+	  };
+	})();
 
 /***/ },
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	(function () {
-
-		__webpack_require__(87);
-
-		module.exports = function ($log, $modal, toaster, $stateParams, standardsService, Homework) {
-			var _this = this;
-
-			standardsService.getAllStandards().success(function (data) {
-				_this.availableStandards = data;
-			}).error(function (data) {
-				$log.error(data);
-			});
-
-			_this.allHomework = Homework.query({ id: $stateParams.id });
-
-			_this.begin = function () {
-				var modalInstance = $modal.open({
-					templateUrl: "add/add_homework.html",
-					controller: "AddHomeworkCtrl",
-					controllerAs: "addHomework",
-					backdrop: false,
-					resolve: {
-						items: function items() {
-							return _this.standardSelected;
-						}
-					}
-				});
-
-				modalInstance.result.then(function (result) {
-					var homework = new Homework(result);
-					homework.$save(function (saved) {
-						toaster.pop("success", null, "Successfully added your childs homework!");
-						_this.allHomework.push(saved);
-					}, function (error) {
-						toaster.pop("error", null, "There was an error when trying to add the homework. Please try again.");
-					});
-				}, function () {
-					$log.info("Modal dismissed at: " + new Date());
-				});
-			};
-		};
-	})();
+	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a Question </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}\"> <label for=\"text\" class=\"sr-only\"> Write your Question </label> <textarea name=\"text\" rows=\"5\" data-ng-model=\"question.text\" class=\"form-control\" id=\"questionText\" placeholder=\"Write Your Question\" required></textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.answer.$invalid, 'has-success': !form.answer.$invalid}\"> <label for=\"Answer\" class=\"sr-only\"> Give an answer (Optional) </label> <textarea name=\"answer\" rows=\"5\" data-ng-model=\"question.answer\" class=\"form-control\" id=\"questionAnswer\" placeholder=\"Give an Answer (Optional)\"> </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}\"> <label for=\"picture\"> Add a picture </label> <input type=\"file\" class=\"form-control\" name=\"file\" ng-file-select ng-model=\"picture\" ng-file-change=\"upload($files)\"> <progressbar ng-show=\"progressPercentage > 0\" class=\"progress-striped active\" max=\"100\" value=\"progressPercentage\" type=\"success\"><i>{{progressPercentage}}%</i></progressbar>  <ul class=\"list-unstyled list-inline\" ng-if=\"uploaded.length > 0\" style=\"padding-top:.5em\"> <li ng-repeat=\"uploadFile in uploaded\"> <img width=\"80px\" height=\"80px\" src=\"data:{{uploadFile.contentType}};base64,{{uploadFile.content}}\"/> <div> {{uploadFile.filename}} </div> </li> </ul> </div> <div class=\"form-group\" data-ng-class=\"\"> <label for=\"standard\"> Align with a Standard </label> <select name=\"standard\" ng-model=\"standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"getStatements()\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <div class=\"form-group\" data-ng-if=\"showEducationLevels()\"> <label for=\"educationlevels\"> Filter by Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.educationLevels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\" ng-change=\"educationLevelChange()\"> <ui-select-match placeholder=\"Education levels that this statement applys\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"\" data-ng-if=\"showStatements()\"> <label for=\"statements\"> Available Statements </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.statements\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Statements that this question covers\"> {{$item.statement.description}} </ui-select-match> <ui-select-choices repeat=\"statement in availableStatements| filter:$select.search\"> <div ng-bind-html=\"statement.statement.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Create</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_question.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 90 */
@@ -67630,8 +67538,84 @@
 
 	"use strict()";
 	(function () {
-	  module.exports = function ($resource) {
-	    return $resource("api/v1/activities/homework/:id");
+
+	  module.exports = function ($log, $scope, common, $upload, standardsService, $modalInstance) {
+
+	    $scope.select2 = {};
+	    $scope.uploaded = [];
+	    $scope.progressPercentage = 0;
+
+	    standardsService.getAllStandards().success(function (data) {
+	      $scope.availableStandards = data;
+	    }).error(function (data) {
+	      $log.error(data);
+	    });
+
+	    $scope.upload = function (files) {
+	      if (angular.isDefined(files) && files.length > 0) {
+	        _.each(files, function (file) {
+	          $upload.upload({
+	            url: "api/v1/upload",
+	            file: file
+	          }).progress(function (evt) {
+	            $scope.progressPercentage = parseInt(100 * evt.loaded / evt.total);
+	            $log.debug($scope.progressPercentage);
+	          }).success(function (data, status, headers, config) {
+	            $scope.uploaded.push(data);
+	            $scope.progressPercentage = 0;
+	            $scope.picture = undefined;
+	          }).error(function (data, status, headers, config) {
+	            $log.error(data);
+	          });
+	        });
+	      }
+	    };
+	    $scope.availableEducationLevels = common.educationLevels;
+
+	    $scope.getStatements = function () {
+	      $scope.select2.statements = [];
+	      standardsService.getStatements($scope.standardSelected.id).success(function (data) {
+	        $scope.availableStatements = data.statements;
+	      }).error(function (data) {
+	        $log.error("unable to get statements");
+	      });
+	    };
+
+	    $scope.educationLevelChange = function () {
+	      if (_.isUndefined($scope.select2.educationLevels) || _.isNull($scope.select2.educationLevels) || _.isEmpty($scope.select2.educationLevels)) {
+	        $scope.getStatements();
+	      }
+	      $scope.availableStatements = _.filter($scope.availableStatements, function (s) {
+	        var test = _.filter(s.levels, function (l) {
+	          found = _.find($scope.select2.educationLevels, function (e) {
+	            return l.value === e.value;
+	          });
+	          return !_.isUndefined(found);
+	        });
+	        return test.length > 0;
+	      });
+	    };
+
+	    $scope.showEducationLevels = function () {
+	      return !_.isUndefined($scope.standardSelected);
+	    };
+
+	    $scope.showStatements = function () {
+	      return !_.isUndefined($scope.availableStatements);
+	    };
+
+	    $scope.ok = function () {
+	      $scope.question.pictures = angular.isDefined($scope.uploaded) ? $scope.uploaded : null;
+	      $scope.question.statements = [];
+	      $scope.question.statements = _.map($scope.select2.statements, function (st) {
+	        return st.statement;
+	      });
+	      $modalInstance.close($scope.question);
+	    };
+
+	    $scope.cancel = function () {
+	      $modalInstance.dismiss("cancel");
+	    };
 	  };
 	})();
 
@@ -67639,8 +67623,8 @@
 /* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-3\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in addHomework.steps\"> <a data-ng-click=\"addHomework.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"addHomework.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"addHomework.statement = statement.statement;addHomework.entity.statementId = statement.statement.id\" data-ng-class=\"{'success': addHomework.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in addHomework.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[1].selected == true\"> <form name=\"homeworkForm\" class=\"form-horizontal\" data-ng-init=\"addHomework.setForm(this)\"> <input type=\"hidden\" ng-model=\"addHomework.entity.statementId\" value=\"{{addHomework.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Name</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"addHomework.entity.activity.title\" class=\"form-control\" id=\"title\" placeholder=\"e.g Lesson 5.2 or Math Worksheet 1\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"addHomework.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"addHomework.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"status\" class=\"col-sm-2 control-label\">Status</label> <div class=\"col-sm-10\"> <select class=\"form-control\" ng-model=\"addHomework.entity.homework.status\" ng-options=\"status.text as status.text for status in addHomework.status\"> <option value=\"\"> -- Select a Status -- </option> </select> </div> </div> <div class=\"form-group\"> <label for=\"date-given\" class=\"col-sm-2 control-label\">Date Given</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateGiven\" class=\"form-control\" id=\"date-given\" placeholder=\"Date Given\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"date-due\" class=\"col-sm-2 control-label\">Due Date</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateDue\" class=\"form-control\" id=\"date-due\" placeholder=\"Due Date\"> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[2].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\">Give some tips and instructions for using Actions</div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"addHomework.entity.acts.length > 0\"> <ul> <li data-ng-repeat=\"actions in addHomework.entity.acts\">{{actions.action}} </li> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div data-ng-if=\"addHomework.showAdd\"> <div class=\"input-group margin-bottom-sm\"> <input type=\"text\" class=\"form-control\" data-ng-model=\"addHomework.actionToAdd\" placeholder=\"\">\n<span class=\"input-group-addon\"> <span class=\"rating\"> <span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span> </span> </span> </div> <button type=\"submit\" class=\"btn btn-sm btn-success\" style=\"margin-top:.25em\" data-ng-click=\"addHomework.addAction()\"> Add </button> </div> <a data-ng-click=\"addHomework.showAdd = true\"> <span> <i class=\"fa fa-plus\"></i> Add an action </span> </a> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == true\" data-ng-click=\"addHomework.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == false\" data-ng-disabled=\"addHomework.isNextDisabled()\" data-ng-click=\"addHomework.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"addHomework.cancel()\">Cancel</button> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_homework.html", v1)}]);
+	var v1="<div class=\"row top col-md-12\" ng-init=\"init()\"> <div class=\"col-md-4\"> <div class=\"thumbnail\" question-picture picture-padding=\"75%\"> </div> <button class=\"btn btn-primary\"> Change Picture </button> </div> <div class=\"col-md-8\"> <div class=\"form-group\"> <label for=\"question-text\"> Question </label> <textarea id=\"question-text\" name=\"question-text\" class=\"form-control\" ng-model=\"question.text\" style=\"width: 100%\" rows=\"10\" required> </textarea> </div> <div class=\"form-group\"> <label for=\"answer-text\"> Answer </label> <textarea id=\"answer-text\" name=\"answer-text\" class=\"form-control\" ng-model=\"question.answer\" style=\"width: 100%\" rows=\"10\"> </textarea> </div> <div class=\"form-group\"> <label for=\"question-standard\"> Standard </label> <select name=\"standard\" ng-model=\"standard\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"changeStandard()\"> <option value=\"\"> -- None -- </option> </select> </div> <div class=\"row\">  </div> <div class=\"form-group\" ng-if=\"standard\"> <label for=\"available-statements\"> Available Statements </label>  <div ng-repeat=\"st in availableStatements\"> <div class=\"col-md-4\"> <div class=\"checkbox\"> <label> <input type=\"checkbox\"> {{st.statement.description}} </label> </div> </div> </div> </div>  </div> </div> <div class=\"row col-md-12\"> <div class=\"col-md-4\"> </div> <div class=\"col-md-8\"> <button class=\"btn btn-success\" ng-click=\"update()\"> Update </button>\n<button class=\"btn btn-danger\" ng-click=\"delete()\"> Delete Question </button> </div> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("edit/edit_question.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -67652,90 +67636,85 @@
 	"use strict()";
 	(function () {
 
-		module.exports = function ($log, $modalInstance, Standards, Child, Common, $stateParams, items) {
-			var _this = this;
+	  module.exports = function ($log, $scope, $state, $stateParams, common, standardsService, Question, toaster) {
 
-			_this.child = Child.get({ id: $stateParams.id });
-			_this.standard = items;
+	    var GetAvailableStatments = function GetAvailableStatments() {
+	      if (!_.isUndefined($scope.question.statements[0])) {
+	        if (!_.isUndefined($scope.standard)) {
+	          standardsService.getStatements($scope.standard.id).success(function (data) {
+	            $scope.availableStatements = data.statements;
+	          }).error(function (data) {
+	            $log.error("unable to retrieve statements");
+	          });
+	        } else {
+	          $scope.availableStatements = [];
+	        }
+	      }
+	    };
 
-			_this.status = Common.homeworkStatuses;
+	    Standards = standardsService.standards;
+	    $scope.select2 = { statements: [] };
 
-			_this.entity = {
-				childId: Number($stateParams.id),
-				statementId: null,
-				activity: {},
-				homework: {
-					studentId: Number($stateParams.id)
-				},
-				acts: []
-			};
+	    $scope.init = function () {
+	      $scope.question = Question.get({ id: $stateParams.questionId }, function (ques) {
+	        if (_.isUndefined($scope.question.statements)) {
+	          $scope.select2.statements = [];
+	        } else {
+	          $scope.select2.statements = $scope.question.statements;
+	        }
+	      });
 
-			_this.steps = [{ step: 1, title: "Choose Statement", completed: false, selected: true }, { step: 2, title: "General Information", completed: false, selected: false }, { step: 3, title: "Actions", completed: false, selected: false }];
+	      $scope.availableStandards = Standards().query();
 
-			_this.setForm = function (f) {
-				_this.forms = f;
-			};
+	      $scope.availableStandards.$promise.then(function (s) {
+	        $scope.question.$promise.then(function (q) {
+	          if (!_.isUndefined($scope.question.statements[0])) {
+	            $scope.standard = _.find(s, function (stan) {
+	              return stan.id === $scope.question.statements[0].standardId;
+	            });
+	            if (!_.isUndefined($scope.standard)) {
+	              standardsService.getStatements($scope.standard.id).success(function (data) {
+	                $scope.availableStatements = data.statements;
+	              }).error(function (data) {
+	                $log.error("unable to retrieve statements");
+	              });
+	            } else {
+	              $scope.availableStatements = [];
+	            }
+	          }
+	        });
+	      });
+	    };
 
-			//Get statements for this standard and grade level of the child
-			Standards.getStatements(_this.standard.id).success(function (d) {
-				_this.statements = d.statements;
-				//_this.statements = _.filter(d.statements, function(st){
-				//return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
-				//});
-			}).error(function (d) {
-				$log.error(d);
-			});
+	    $scope.changeStandard = function () {
+	      if (!_.isUndefined($scope.standard)) {
+	        standardsService.getStatements($scope.standard.id).success(function (data) {
+	          $scope.availableStatements = data.statements;
+	        }).error(function (data) {
+	          $log.error("unable to retrieve statements");
+	        });
+	      } else {
+	        $scope.availableStatements = [];
+	      }
+	    };
 
-			_this.nextStep = function () {
-				// which step are we on?
-				var currentStep = _.find(_this.steps, function (s) {
-					return s.selected === true;
-				});
-				_this.steps[currentStep.step - 1].completed = true;
-				_this.steps[currentStep.step - 1].selected = false;
-				_this.steps[currentStep.step].selected = true;
-				return true;
-			};
+	    $scope.update = function () {
+	      $scope.question.$update(function () {
+	        toaster.pop("success", "Updated", "Successfully updated question");
+	      }, function () {
+	        toaster.pop("error", "Failed", "Did not update the question, contact the administrator");
+	      });
+	    };
 
-			_this.isNextDisabled = function () {
-				return _this.steps[0].selected && _this.statement === undefined || _this.steps[1].selected && !_this.isEntityValid();
-			};
-
-			_this.goTo = function (step) {
-				_.each(_this.steps, function (s) {
-					if (s.step === step.step) {
-						s.selected = true;
-					} else {
-						s.selected = false;
-						s.completed = false;
-					}
-				});
-			};
-
-			_this.addAction = function () {
-				if (_this.actionToAdd !== undefined) {
-					_this.entity.acts.push({ actType: "homework", action: _this.actionToAdd });
-				}
-				_this.actionToAdd = null;
-				_this.showAdd = false;
-			};
-
-			_this.ok = function () {
-				_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();
-				if (_this.dateDue !== undefined) _this.entity.homework.dateDue = new Date(_this.dateDue).getTime();
-				_this.entity.activity.date = new Date().getTime();
-				$modalInstance.close(_this.entity);
-			};
-
-			_this.cancel = function () {
-				$modalInstance.dismiss("cancel");
-			};
-
-			_this.isEntityValid = function () {
-				//TODO: Validate all required fields
-				return _this.entity.activity.title !== undefined && _this.entity.activity.subject !== undefined;
-			};
-		};
+	    $scope["delete"] = function () {
+	      Question.remove({ id: $scope.question.id }, function (q) {
+	        toaster.pop("success", "Deleted", "Successfully removed question " + $scope.question.id);
+	        $state.go("admin.questions");
+	      }, function () {
+	        toaster.pop("error", "Failed", "Unable to delete this question");
+	      });
+	    };
+	  };
 	})();
 
 /***/ },
@@ -67982,57 +67961,64 @@
 	"use strict";
 
 	"use strict()";
-	(function () {
-	  module.exports = function ($log, $resource, $http) {
-	    return $resource("/api/v1/questions/:id", null, { update: { method: "PUT" } });
+
+	var app = __webpack_require__(1).module("proximal2");
+	app.factory("prox.common", ["$log", "$http", CommonService]);
+
+	function CommonService($log, $http) {
+	  this.educationLevels = [{ value: "k", description: "Kindergarden" }, { value: "1", description: "1st Grade" }, { value: "2", description: "2nd Grade" }, { value: "3", description: "3rd Grade" }, { value: "4", description: "4th Grade" }, { value: "5", description: "5th Grade" }, { value: "6", description: "6th Grade" }, { value: "7", description: "7th Grade" }, { value: "9", description: "9th Grade" }, { value: "10", description: "10th Grade" }, { value: "11", description: "11th Grade" }, { value: "12", description: "12th Grade" }];
+
+	  this.homeworkStatuses = [{ text: "Not Started" }, { text: "In-Progress" }, { text: "Finished" }];
+
+	  return {
+	    educationLevels: this.educationLevels,
+	    homeworkStatuses: this.homeworkStatuses
 	  };
-	})();
+	}
 
 /***/ },
 /* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1=" <section class=\"col-lg-12 col-sm-12 col-xs-12 col-md-12\" ng-if=\"!state.current.data.hideQuestions\" ng-init=\"init()\"> <div class=\"row top\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-question\"></i> Questions\n<button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"addQuestion()\"> Add a Question </button>\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\" data-ng-model=\"searchText\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body no-padding large\"> <question-details> </question-details> </div> <div class=\"widget-footer\"> <nav style=\"text-align:center\"> <ul class=\"pagination\"> <li><a href=\"#\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">Previous</span></a></li> <li><a href=\"#\">1</a></li> <li><a href=\"#\">2</a></li> <li><a href=\"#\">3</a></li> <li><a href=\"#\">4</a></li> <li><a href=\"#\">5</a></li> <li><a href=\"#\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">Next</span></a></li> </ul> </nav> <div> </div> </div> </div> </div></div></section> <div ui-view ng-if=\"state.current.data.hideQuestions\"> </div> <toaster> </toaster>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("questions/questions.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	"use strict()";
+
+	__webpack_require__(1);
+
+	angular.module("proximal2").factory("personService", ["$log", "$http", PersonService]);
+
+	function PersonService($log, $http) {
+	  return {
+	    addChild: function addChild(c) {
+	      return $http.post("/api/v1/children", c);
+	    },
+	    getChildren: function getChildren() {
+	      return $http.get("/api/v1/children");
+	    },
+	    removeChild: function removeChild(id) {
+	      return $http["delete"]("/api/v1/children/" + id);
+	    },
+	    getChild: function getChild(id) {
+	      return $http.get("/api/v1/children/" + id);
+	    }
+	  };
+	}
 
 /***/ },
 /* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	module.exports = function ($log, $scope, $state, $stateParams, $modal, toaster, common, Question, standardsService) {
-
-	  $scope.init = function () {
-	    $scope.questions = Question.query();
-	  };
-
-	  $scope.availableEducationLevels = common.educationLevels;
-
-	  $scope.addQuestion = function () {
-	    var modalInstance = $modal.open({
-	      templateUrl: "add/add_question.html",
-	      controller: "AddQuestionCtrl"
-	    });
-	    modalInstance.result.then(function (question) {
-	      var q = new Question(question);
-	      q.$save(function (ques, headers) {
-	        $scope.questions.push(new Question(ques));
-	        toaster.pop("success", "Success", "Added the question with ID " + ques.id);
-	      }, function (err) {
-	        toaster.pop("error", "Failure", "Unable to add the question" + err);
-	      });
-	    });
-	  };
-	};
+	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.question.text}} </h1> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("new/new_assessment.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"list-group\"> <a ui-sref=\"admin.questions.edit({questionId:question.id})\" class=\"list-group-item\" ng-repeat=\"question in questions\"> <h4 class=\"list-group-item-heading\">{{question.text}} </h4> <p class=\"list-group-item-text\"> <div class=\"col-md-12\"> <div class=\"col-md-2\"> <div question-picture style=\"width: 100px;height:100px\"> </div> </div> <div class=\"col-md-5\"> <h5> Standard </h5> <p> None yet </p> </div> <div class=\"col-md-5\"> <h5> Statements that Apply </h5> <ul> <li data-ng-repeat=\"statement in question.statements\"> {{statement.description}} </li> </ul> </div> </div> <span class=\"clearfix\"> </span> </p> </a> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/detail_question.html", v1)}]);
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Ready to start a new assesment? </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"assessment.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in assessment.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <button class=\"btn btn-primary\" ng-click=\"assessment.begin()\"> Start Here </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Assesments Currently in Progress </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Assesments already completed </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> <div> </div> </div> </div> </div></div></section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("assessments/assessment.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -68043,19 +68029,8 @@
 
 	"use strict()";
 	(function () {
-	  module.exports = function () {
-	    return {
-	      restrict: "EA",
-	      scope: true,
-	      template: "<div> </div>",
-	      controller: "QuestionsCtrl",
-	      link: function link(scope, elem, attr) {
-	        outerDiv = "<div class='row col-md-12'> </div>";
-	        innerDiv = "<div class=\"col-md-4\"> </div>";
-	        outerDiv.append(innerDiv);
-	        elem.append(outerDiv);
-	      }
-	    };
+	  module.exports = function ($resource) {
+	    return $resource("api/v1/assessments/:assessmentId", null, { score: { method: "PUT" } });
 	  };
 	})();
 
@@ -68066,14 +68041,42 @@
 	"use strict";
 
 	"use strict()";
+
 	(function () {
-	  module.exports = function ($log, $state, common) {
-	    return {
-	      restrict: "E",
-	      scope: true,
-	      replace: true,
-	      controller: "QuestionsCtrl as ctrl",
-	      templateUrl: "details/detail_question.html"
+
+	  __webpack_require__(114);
+
+	  module.exports = function AssesmentController($log, standardsService, Assesments, $stateParams, $modal) {
+	    var _this = this;
+
+	    standardsService.getAllStandards().success(function (data) {
+	      _this.availableStandards = data;
+	    }).error(function (data) {
+	      $log.error(data);
+	    });
+
+	    _this.begin = function () {
+	      Assesments.save({ childId: Number($stateParams.id), standardId: _this.standardSelected.id }, function (d) {
+	        var modalInstance = $modal.open({
+	          templateUrl: "new/new_assessment.html",
+	          controller: "NewAssessmentCtrl",
+	          controllerAs: "newAssessment",
+	          backdrop: false,
+	          size: "lg",
+	          resolve: {
+	            items: function items() {
+	              return { childId: Number($stateParams.id), question: d };
+	            }
+	          }
+	        });
+	        modalInstance.result.then(function (selectedItem) {
+	          $log.debug(selectedItem);
+	        }, function () {
+	          $log.info("Modal dismissed at: " + new Date());
+	        });
+	      }, function (err) {
+	        $log.error(err);
+	      });
 	    };
 	  };
 	})();
@@ -68084,32 +68087,49 @@
 
 	"use strict";
 
+	"use strict()";
 	(function () {
 
-	  module.exports = function ($log, $q) {
-	    return {
-	      restrict: "A",
-	      scope: true,
-	      controller: "QuestionsCtrl",
-	      link: function link(scope, elem, attr) {
+	  module.exports = function NewAssessmentController($log, Assessments, $modalInstance, items) {
+	    var _this = this;
+	    _this.items = items;
 
-	        scope.$watch("question", function (newVal) {
-	          if (newVal) {
-	            if (scope.question.picture) {
-	              elem.css({ "background-image": "url(data:image/png;base64," + scope.question.picture });
-	            } else {
-	              elem.css({ "background-image": "url(/assets/images/emptyImage.png)" });
-	            }
-	          }
-	        }, true);
+	    _this.done = false;
 
-	        elem.css({ "background-size": "contain" });
-	        elem.css({ "background-repeat": "no-repeat" });
+	    _this.rateQuestion = 0;
+	    _this.max = 5;
+	    _this.isReadOnly = false;
 
-	        if (!_.isUndefined(attr.picturePadding)) {
-	          elem.css({ "padding-bottom": attr.picturePadding });
-	        }
+	    _this.hoveringOver = function (value) {
+	      _this.overStar = value;
+	      _this.percent = 100 * (value / _this.max);
+	    };
+
+	    _this.scored = function () {
+	      return _this.rateQuestion > 0;
+	    };
+
+	    _this.next = function () {
+	      if (_this.rateQuestion > 0) {
+	        _this.error = undefined;
+	        var questionScore = {
+	          studentId: _this.items.childId,
+	          questionId: _this.items.question.question.id,
+	          score: _this.rateQuestion,
+	          timestamp: new Date().getMilliseconds()
+	        };
+	        _this.items.question.question = Assessments.score({ assessmentId: _this.items.question.assessment.id }, questionScore);
+	      } else {
+	        _this.error = "Please rate the students answer first";
 	      }
+	    };
+
+	    _this.ok = function () {
+	      $modalInstance.close();
+	    };
+
+	    _this.cancel = function () {
+	      $modalInstance.dismiss("cancel");
 	    };
 	  };
 	})();
@@ -68118,29 +68138,79 @@
 /* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	"use strict()";
-	(function () {
-
-	  module.exports = function ($log, common) {
-	    return {
-	      restrict: "E",
-	      scope: {},
-	      replace: true,
-	      templateUrl: "details/add_question.html",
-	      controller: "AddQuestionCtrl"
-	    };
-	  };
-	})();
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Add homework </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"homework.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in homework.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> <button class=\"btn btn-primary\" ng-click=\"homework.begin()\" ng-class=\"{'disabled': homework.standardSelected == null}\"> Continue </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Homework In-Progress </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.unfinished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button>\n<button class=\"btn btn-danger btn-sm\" data-ng-click=\"homework.deleteHomework(assignment.homework.id)\"> <i class=\"fa fa-trash\"></i> </button> </td> </tr> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Homework Finished </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.finished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button> </td> </tr> </tbody> </table> </div> <div> </div> </div> </div> </div></div></section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("homework/homework.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a Question </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}\"> <label for=\"text\" class=\"sr-only\"> Write your Question </label> <textarea name=\"text\" rows=\"5\" data-ng-model=\"question.text\" class=\"form-control\" id=\"questionText\" placeholder=\"Write Your Question\" required></textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.answer.$invalid, 'has-success': !form.answer.$invalid}\"> <label for=\"Answer\" class=\"sr-only\"> Give an answer (Optional) </label> <textarea name=\"answer\" rows=\"5\" data-ng-model=\"question.answer\" class=\"form-control\" id=\"questionAnswer\" placeholder=\"Give an Answer (Optional)\"> </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}\"> <label for=\"picture\"> Add a picture </label> <input type=\"file\" class=\"form-control\" name=\"file\" ng-file-select ng-model=\"picture\" ng-file-change=\"upload($files)\"> <progressbar ng-show=\"progressPercentage > 0\" class=\"progress-striped active\" max=\"100\" value=\"progressPercentage\" type=\"success\"><i>{{progressPercentage}}%</i></progressbar>  <ul class=\"list-unstyled list-inline\" ng-if=\"uploaded.length > 0\" style=\"padding-top:.5em\"> <li ng-repeat=\"uploadFile in uploaded\"> <img width=\"80px\" height=\"80px\" src=\"data:{{uploadFile.contentType}};base64,{{uploadFile.content}}\"/> <div> {{uploadFile.filename}} </div> </li> </ul> </div> <div class=\"form-group\" data-ng-class=\"\"> <label for=\"standard\"> Align with a Standard </label> <select name=\"standard\" ng-model=\"standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"getStatements()\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <div class=\"form-group\" data-ng-if=\"showEducationLevels()\"> <label for=\"educationlevels\"> Filter by Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.educationLevels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\" ng-change=\"educationLevelChange()\"> <ui-select-match placeholder=\"Education levels that this statement applys\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"\" data-ng-if=\"showStatements()\"> <label for=\"statements\"> Available Statements </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.statements\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Statements that this question covers\"> {{$item.statement.description}} </ui-select-match> <ui-select-choices repeat=\"statement in availableStatements| filter:$select.search\"> <div ng-bind-html=\"statement.statement.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Create</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_question.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	(function () {
+
+		__webpack_require__(114);
+
+		module.exports = function ($log, $modal, toaster, $stateParams, standardsService, Homework) {
+			var _this = this;
+
+			standardsService.getAllStandards().success(function (data) {
+				_this.availableStandards = data;
+			}).error(function (data) {
+				$log.error(data);
+			});
+
+			Homework.query({ id: $stateParams.id }, function (activities) {
+				_this.allHomework = activities;
+
+				_this.unfinished = _.filter(activities, function (h) {
+					return h.homework.status !== "Finished";
+				});
+
+				_this.finished = _.filter(activities, function (h) {
+					return h.homework.status === "Finished";
+				});
+			});
+
+			_this.deleteHomework = function (id) {
+				Homework["delete"]({ id: id }, function (d) {
+					_this.unfinished = _.filter(_this.unfinished, function (h) {
+						return h.homework.id !== id;
+					});
+					console.log("successfully deleted homework");
+				}, function (e) {
+					console.log("unable to delete Homework");
+				});
+			};
+
+			_this.begin = function () {
+				var modalInstance = $modal.open({
+					templateUrl: "add/add_homework.html",
+					controller: "AddHomeworkCtrl",
+					controllerAs: "addHomework",
+					backdrop: false,
+					resolve: {
+						items: function items() {
+							return _this.standardSelected;
+						}
+					}
+				});
+
+				modalInstance.result.then(function (result) {
+					var homework = new Homework(result);
+					homework.$save(function (saved) {
+						toaster.pop("success", null, "Successfully added your childs homework!");
+						_this.allHomework.push(saved);
+					}, function (error) {
+						toaster.pop("error", null, "There was an error when trying to add the homework. Please try again.");
+					});
+				}, function () {
+					$log.info("Modal dismissed at: " + new Date());
+				});
+			};
+		};
+	})();
 
 /***/ },
 /* 109 */
@@ -68150,84 +68220,8 @@
 
 	"use strict()";
 	(function () {
-
-	  module.exports = function ($log, $scope, common, $upload, standardsService, $modalInstance) {
-
-	    $scope.select2 = {};
-	    $scope.uploaded = [];
-	    $scope.progressPercentage = 0;
-
-	    standardsService.getAllStandards().success(function (data) {
-	      $scope.availableStandards = data;
-	    }).error(function (data) {
-	      $log.error(data);
-	    });
-
-	    $scope.upload = function (files) {
-	      if (angular.isDefined(files) && files.length > 0) {
-	        _.each(files, function (file) {
-	          $upload.upload({
-	            url: "api/v1/upload",
-	            file: file
-	          }).progress(function (evt) {
-	            $scope.progressPercentage = parseInt(100 * evt.loaded / evt.total);
-	            $log.debug($scope.progressPercentage);
-	          }).success(function (data, status, headers, config) {
-	            $scope.uploaded.push(data);
-	            $scope.progressPercentage = 0;
-	            $scope.picture = undefined;
-	          }).error(function (data, status, headers, config) {
-	            $log.error(data);
-	          });
-	        });
-	      }
-	    };
-	    $scope.availableEducationLevels = common.educationLevels;
-
-	    $scope.getStatements = function () {
-	      $scope.select2.statements = [];
-	      standardsService.getStatements($scope.standardSelected.id).success(function (data) {
-	        $scope.availableStatements = data.statements;
-	      }).error(function (data) {
-	        $log.error("unable to get statements");
-	      });
-	    };
-
-	    $scope.educationLevelChange = function () {
-	      if (_.isUndefined($scope.select2.educationLevels) || _.isNull($scope.select2.educationLevels) || _.isEmpty($scope.select2.educationLevels)) {
-	        $scope.getStatements();
-	      }
-	      $scope.availableStatements = _.filter($scope.availableStatements, function (s) {
-	        var test = _.filter(s.levels, function (l) {
-	          found = _.find($scope.select2.educationLevels, function (e) {
-	            return l.value === e.value;
-	          });
-	          return !_.isUndefined(found);
-	        });
-	        return test.length > 0;
-	      });
-	    };
-
-	    $scope.showEducationLevels = function () {
-	      return !_.isUndefined($scope.standardSelected);
-	    };
-
-	    $scope.showStatements = function () {
-	      return !_.isUndefined($scope.availableStatements);
-	    };
-
-	    $scope.ok = function () {
-	      $scope.question.pictures = angular.isDefined($scope.uploaded) ? $scope.uploaded : null;
-	      $scope.question.statements = [];
-	      $scope.question.statements = _.map($scope.select2.statements, function (st) {
-	        return st.statement;
-	      });
-	      $modalInstance.close($scope.question);
-	    };
-
-	    $scope.cancel = function () {
-	      $modalInstance.dismiss("cancel");
-	    };
+	  module.exports = function ($resource) {
+	    return $resource("api/v1/activities/homework/:id");
 	  };
 	})();
 
@@ -68235,8 +68229,8 @@
 /* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"row top col-md-12\" ng-init=\"init()\"> <div class=\"col-md-4\"> <div class=\"thumbnail\" question-picture picture-padding=\"75%\"> </div> <button class=\"btn btn-primary\"> Change Picture </button> </div> <div class=\"col-md-8\"> <div class=\"form-group\"> <label for=\"question-text\"> Question </label> <textarea id=\"question-text\" name=\"question-text\" class=\"form-control\" ng-model=\"question.text\" style=\"width: 100%\" rows=\"10\" required> </textarea> </div> <div class=\"form-group\"> <label for=\"answer-text\"> Answer </label> <textarea id=\"answer-text\" name=\"answer-text\" class=\"form-control\" ng-model=\"question.answer\" style=\"width: 100%\" rows=\"10\"> </textarea> </div> <div class=\"form-group\"> <label for=\"question-standard\"> Standard </label> <select name=\"standard\" ng-model=\"standard\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"changeStandard()\"> <option value=\"\"> -- None -- </option> </select> </div> <div class=\"row\">  </div> <div class=\"form-group\" ng-if=\"standard\"> <label for=\"available-statements\"> Available Statements </label>  <div ng-repeat=\"st in availableStatements\"> <div class=\"col-md-4\"> <div class=\"checkbox\"> <label> <input type=\"checkbox\"> {{st.statement.description}} </label> </div> </div> </div> </div>  </div> </div> <div class=\"row col-md-12\"> <div class=\"col-md-4\"> </div> <div class=\"col-md-8\"> <button class=\"btn btn-success\" ng-click=\"update()\"> Update </button>\n<button class=\"btn btn-danger\" ng-click=\"delete()\"> Delete Question </button> </div> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("edit/edit_question.html", v1)}]);
+	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-3\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in addHomework.steps\"> <a data-ng-click=\"addHomework.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"addHomework.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"addHomework.statement = statement.statement;addHomework.entity.statementId = statement.statement.id\" data-ng-class=\"{'success': addHomework.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in addHomework.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[1].selected == true\"> <form name=\"homeworkForm\" class=\"form-horizontal\" data-ng-init=\"addHomework.setForm(this)\"> <input type=\"hidden\" ng-model=\"addHomework.entity.statementId\" value=\"{{addHomework.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Name</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"addHomework.entity.activity.title\" class=\"form-control\" id=\"title\" placeholder=\"e.g Lesson 5.2 or Math Worksheet 1\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"addHomework.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"addHomework.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"status\" class=\"col-sm-2 control-label\">Status</label> <div class=\"col-sm-10\"> <select class=\"form-control\" ng-model=\"addHomework.entity.homework.status\" ng-options=\"status.text as status.text for status in addHomework.status\"> <option value=\"\"> -- Select a Status -- </option> </select> </div> </div> <div class=\"form-group\"> <label for=\"date-given\" class=\"col-sm-2 control-label\">Date Given</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateGiven\" class=\"form-control\" id=\"date-given\" placeholder=\"Date Given\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"date-due\" class=\"col-sm-2 control-label\">Due Date</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateDue\" class=\"form-control\" id=\"date-due\" placeholder=\"Due Date\"> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[2].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\">Give some tips and instructions for using Actions</div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"addHomework.entity.acts.length > 0\"> <ul> <li data-ng-repeat=\"actions in addHomework.entity.acts\">{{actions.action}} </li> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div data-ng-if=\"addHomework.showAdd\"> <div class=\"input-group margin-bottom-sm\"> <input type=\"text\" class=\"form-control\" data-ng-model=\"addHomework.actionToAdd\" placeholder=\"\">\n<span class=\"input-group-addon\"> <span class=\"rating\"> <span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span> </span> </span> </div> <button type=\"submit\" class=\"btn btn-sm btn-success\" style=\"margin-top:.25em\" data-ng-click=\"addHomework.addAction()\"> Add </button> </div> <a data-ng-click=\"addHomework.showAdd = true\"> <span> <i class=\"fa fa-plus\"></i> Add an action </span> </a> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == true\" data-ng-click=\"addHomework.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == false\" data-ng-disabled=\"addHomework.isNextDisabled()\" data-ng-click=\"addHomework.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"addHomework.cancel()\">Cancel</button> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_homework.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -68248,118 +68242,102 @@
 	"use strict()";
 	(function () {
 
-	  module.exports = function ($log, $scope, $state, $stateParams, common, standardsService, Question, toaster) {
+		module.exports = function ($log, $modalInstance, Standards, Child, Common, $stateParams, items) {
+			var _this = this;
 
-	    var GetAvailableStatments = function GetAvailableStatments() {
-	      if (!_.isUndefined($scope.question.statements[0])) {
-	        if (!_.isUndefined($scope.standard)) {
-	          standardsService.getStatements($scope.standard.id).success(function (data) {
-	            $scope.availableStatements = data.statements;
-	          }).error(function (data) {
-	            $log.error("unable to retrieve statements");
-	          });
-	        } else {
-	          $scope.availableStatements = [];
-	        }
-	      }
-	    };
+			_this.child = Child.get({ id: $stateParams.id });
+			_this.standard = items;
 
-	    Standards = standardsService.standards;
-	    $scope.select2 = { statements: [] };
+			_this.status = Common.homeworkStatuses;
 
-	    $scope.init = function () {
-	      $scope.question = Question.get({ id: $stateParams.questionId }, function (ques) {
-	        if (_.isUndefined($scope.question.statements)) {
-	          $scope.select2.statements = [];
-	        } else {
-	          $scope.select2.statements = $scope.question.statements;
-	        }
-	      });
+			_this.entity = {
+				childId: Number($stateParams.id),
+				statementId: null,
+				activity: {},
+				homework: {
+					studentId: Number($stateParams.id)
+				},
+				acts: []
+			};
 
-	      $scope.availableStandards = Standards().query();
+			_this.steps = [{ step: 1, title: "Choose Statement", completed: false, selected: true }, { step: 2, title: "General Information", completed: false, selected: false }, { step: 3, title: "Actions", completed: false, selected: false }];
 
-	      $scope.availableStandards.$promise.then(function (s) {
-	        $scope.question.$promise.then(function (q) {
-	          if (!_.isUndefined($scope.question.statements[0])) {
-	            $scope.standard = _.find(s, function (stan) {
-	              return stan.id === $scope.question.statements[0].standardId;
-	            });
-	            if (!_.isUndefined($scope.standard)) {
-	              standardsService.getStatements($scope.standard.id).success(function (data) {
-	                $scope.availableStatements = data.statements;
-	              }).error(function (data) {
-	                $log.error("unable to retrieve statements");
-	              });
-	            } else {
-	              $scope.availableStatements = [];
-	            }
-	          }
-	        });
-	      });
-	    };
+			_this.setForm = function (f) {
+				_this.forms = f;
+			};
 
-	    $scope.changeStandard = function () {
-	      if (!_.isUndefined($scope.standard)) {
-	        standardsService.getStatements($scope.standard.id).success(function (data) {
-	          $scope.availableStatements = data.statements;
-	        }).error(function (data) {
-	          $log.error("unable to retrieve statements");
-	        });
-	      } else {
-	        $scope.availableStatements = [];
-	      }
-	    };
+			//Get statements for this standard and grade level of the child
+			Standards.getStatements(_this.standard.id).success(function (d) {
+				_this.statements = d.statements;
+				//_this.statements = _.filter(d.statements, function(st){
+				//return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
+				//});
+			}).error(function (d) {
+				$log.error(d);
+			});
 
-	    $scope.update = function () {
-	      $scope.question.$update(function () {
-	        toaster.pop("success", "Updated", "Successfully updated question");
-	      }, function () {
-	        toaster.pop("error", "Failed", "Did not update the question, contact the administrator");
-	      });
-	    };
+			_this.nextStep = function () {
+				// which step are we on?
+				var currentStep = _.find(_this.steps, function (s) {
+					return s.selected === true;
+				});
+				_this.steps[currentStep.step - 1].completed = true;
+				_this.steps[currentStep.step - 1].selected = false;
+				_this.steps[currentStep.step].selected = true;
+				return true;
+			};
 
-	    $scope["delete"] = function () {
-	      Question.remove({ id: $scope.question.id }, function (q) {
-	        toaster.pop("success", "Deleted", "Successfully removed question " + $scope.question.id);
-	        $state.go("admin.questions");
-	      }, function () {
-	        toaster.pop("error", "Failed", "Unable to delete this question");
-	      });
-	    };
-	  };
+			_this.isNextDisabled = function () {
+				return _this.steps[0].selected && _this.statement === undefined || _this.steps[1].selected && !_this.isEntityValid();
+			};
+
+			_this.goTo = function (step) {
+				_.each(_this.steps, function (s) {
+					if (s.step === step.step) {
+						s.selected = true;
+					} else {
+						s.selected = false;
+						s.completed = false;
+					}
+				});
+			};
+
+			_this.addAction = function () {
+				if (_this.actionToAdd !== undefined) {
+					_this.entity.acts.push({ actType: "homework", action: _this.actionToAdd });
+				}
+				_this.actionToAdd = null;
+				_this.showAdd = false;
+			};
+
+			_this.ok = function () {
+				_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();
+				if (_this.dateDue !== undefined) _this.entity.homework.dateDue = new Date(_this.dateDue).getTime();
+				_this.entity.activity.date = new Date().getTime();
+				$modalInstance.close(_this.entity);
+			};
+
+			_this.cancel = function () {
+				$modalInstance.dismiss("cancel");
+			};
+
+			_this.isEntityValid = function () {
+				//TODO: Validate all required fields
+				return _this.entity.activity.title !== undefined && _this.entity.activity.subject !== undefined;
+			};
+		};
 	})();
 
 /***/ },
 /* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	var app = __webpack_require__(1).module("proximal2");
-
-	// Templates
-	__webpack_require__(81);
-	__webpack_require__(80);
-
-	//Assessment Service
-	app.factory("Assesments", ["$resource", __webpack_require__(67)]);
-
-	// View Assessments
-	app.controller("AssessmentCtrl", ["$log", "standardsService", "Assesments", "$stateParams", "$modal", __webpack_require__(68)]);
-
-	// New Assessment
-	app.controller("NewAssessmentCtrl", ["$log", "Assesments", "$modalInstance", "items", __webpack_require__(69)]);
-
-/***/ },
-/* 113 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<button class=\"btn btn-success\" data-ng-click=\"childCtrl.showHomeworkDetails = false\"> Back </button> <h1> {{childCtrl.selectedAssignment.activity.title}}</h1> <p> this is the homework details page </p>";
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <button class=\"btn btn-primary btn-sm\" data-ng-click=\"childCtrl.showHomeworkDetails = false\"> Back to all </button> <h1> {{::childCtrl.selectedAssignment.activity.title}}</h1> <h4> {{childCtrl.selectedAssignment.homework.status}}</h4> <ul> <li> Assigned On: {{::childCtrl.selectedAssignment.homework.dateGiven | date}} </li> <li data-ng-if=\"childCtrl.selectedAssignment.homework.dueDate\"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li> </ul> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Rating </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"act in childCtrl.selectedAssignment.acts\"> <td> {{act.action}} </td> <td> Done </td> <td> <rating ng-model=\"rate\" max=\"max\" readonly=\"isReadonly\" on-hover=\"hoveringOver(value)\" on-leave=\"overStar = null\"></rating> </td> </tr> </tbody> </table> </div> </section>";
 	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/homework_details.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 114 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68369,6 +68347,49 @@
 	  module.exports = function ($log, Standards, Child, Common, $stateParams) {
 	    var vm = this;
 	  };
+	})();
+
+/***/ },
+/* 114 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+
+	(function () {
+	  __webpack_require__(1);
+	  angular.module("proximal2").factory("standardsService", ["$log", "$resource", "$http", StandardsService]);
+
+	  function StandardsService($log, $resource, $http) {
+	    var Standards = $resource("/api/v2/standards/:id");
+	    return {
+	      standards: function standards() {
+	        return Standards;
+	      },
+	      addStandard: function addStandard(c) {
+	        return $http.post("/api/v1/standards", c);
+	      },
+	      updateStandard: function updateStandard(id, c) {
+	        return $http.put("/api/v1/standards/" + id, c);
+	      },
+	      getAllStandards: function getAllStandards() {
+	        return $http.get("/api/v1/standards");
+	      },
+	      removeStandard: function removeStandard(id) {
+	        return $http["delete"]("/api/v1/standards/" + id);
+	      },
+	      getStandard: function getStandard(id) {
+	        return $http.get("/api/v1/standards/" + id);
+	      },
+	      addStatement: function addStatement(standardId, statement) {
+	        return $http.post("api/v1/standards/" + standardId + "/statements", statement);
+	      },
+	      getStatements: function getStatements(standardId) {
+	        return $http.get("api/v1/standards/" + standardId + "/statements");
+	      }
+	    };
+	  }
 	})();
 
 /***/ }

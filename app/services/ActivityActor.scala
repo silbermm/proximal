@@ -12,6 +12,7 @@ import models._
 
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
 case class ListHomework(studentId: Long)
+case class DeleteHomework(uid: Long, homeworkId: Long)
 
 class ActivityActor extends Actor {
 
@@ -24,12 +25,38 @@ class ActivityActor extends Actor {
       val allHomework = ActivityActor.listHomework(student.studentId)
       sender ! allHomework
     }
+    case activity: DeleteHomework => {
+      val deleted = ActivityActor.deleteHomework(activity.uid, activity.homeworkId)
+      sender ! deleted
+    }
     case _ => sender ! None
   }
 
 }
 
 object ActivityActor {
+
+  def deleteHomework(uid: Long, homeworkId: Long) = {
+    DB.withSession { implicit s =>
+      Homeworks.find(homeworkId) match {
+        case Some(h) => {
+          PersonService.isChildOf(uid, h.studentId.get, c => {
+            Activities.find(h.activityId.get) match {
+              case Some(a) => {
+                ActivityActs.deleteByActivity(a.id.get)
+                ActivityStatements.deleteByActivity(a.id.get)
+                Homeworks.delete(h)
+                var deleted = Activities.delete(a)
+                Some(deleted)
+              }
+              case _ => None
+            }
+          })
+        }
+        case _ => 0
+      }
+    }
+  }
 
   def createHomework(homeworkActivity: CreateHomeworkActivity): Option[CreateHomeworkActivity] = {
     DB.withSession { implicit s =>
