@@ -48,7 +48,7 @@ class AssessmentActor extends Actor {
 
         // fiter out the questions already asked and answered
         val filteredQuestions = flatQuestions.filter(q => {
-          QuestionScores.findByQuestionAndStudent(q.id.get, studentId) match {
+          Scores.findByQuestionAndStudent(q.id.get, studentId) match {
             case Some(questionScore) => false
             case None => true
           }

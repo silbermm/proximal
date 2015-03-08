@@ -61,7 +61,7 @@ class AssesmentServiceSpec extends PlaySpec with Results {
 
           val nxtQ = AssesmentService.nextQuestion(child.id.get)
           nxtQ.id must not be empty
-          val qscor = QuestionScores.create(QuestionScore(None, child.id.get, nxtQ.id.get, Some(5), Platform.currentTime))
+          val qscor = Scores.create(Score(None, child.id.get, Some(nxtQ.id.get), None, Some(5), Platform.currentTime))
           qscor.id must not be empty
           val nxtQ2 = AssesmentService.nextQuestion(child.id.get)
           nxtQ.id.get must not be nxtQ2.id.get

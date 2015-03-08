@@ -20,9 +20,9 @@ object AssesmentService {
     (asses, nextQuestion(studentId))
   }
 
-  def createQuestionScore(assesmentId: Long, questionScore: QuestionScore, studentId: Long): (Assesment, JsonQuestion) = {
+  def createQuestionScore(assesmentId: Long, questionScore: Score, studentId: Long): (Assesment, JsonQuestion) = {
     DB.withSession { implicit s =>
-      val qscore = QuestionScores.create(questionScore);
+      val qscore = Scores.create(questionScore);
       AssesmentQuestionScores.create(AssesmentQuestionScore(None, assesmentId, qscore.id.get))
       (Assesments.find(assesmentId).get, nextQuestion(studentId));
     }
@@ -62,7 +62,7 @@ object AssesmentService {
 
       // fiter out the questions already asked and answered
       val filteredQuestions = flatQuestions.filter(q => {
-        QuestionScores.findByQuestionAndStudent(q.id.get, studentId) match {
+        Scores.findByQuestionAndStudent(q.id.get, studentId) match {
           case Some(questionScore) => false
           case None => true
         }

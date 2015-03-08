@@ -76,4 +76,8 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     }
   }
 
+  def updateAct = SecuredAction.async(BodyParsers.parse.json) { implicit request => 
+    Future.successful { Ok("done") }
+  }
+
 }
