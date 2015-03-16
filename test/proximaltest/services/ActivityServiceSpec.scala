@@ -51,7 +51,28 @@ class ActivityServiceSpec extends PlaySpec with Results {
           }
         }
       }
+    }
 
+    "respond to creating a new activity" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
+        val actorRef = TestActorRef(new ActivityActor)
+        ask(actorRef, CreateActivity(ActivityHelpers.activityGen.sample.get, List.empty)).mapTo[Option[Activity]] map { x =>
+          x must not be empty
+        }
+      }
+    }
+
+    "respond with exception when creating a new activity and bad list" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
+        val actorRef = TestActorRef(new ActivityActor)
+        try {
+          ask(actorRef, CreateActivity(ActivityHelpers.activityGen.sample.get, List(4L, 5L)))
+        } catch {
+          case e: Throwable => e mustBe a[java.sql.SQLException]
+        }
+      }
     }
 
     "handle acts appropriatly" in {
@@ -75,9 +96,18 @@ class ActivityServiceSpec extends PlaySpec with Results {
       }
     }
 
-    "create activity acts" in {
+    "create activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity, List.empty)
+        val created = ActivityActor.createActivity(fakeActivity)
+        created must not be empty
+      }
+    }
 
+    "throw an exception when attempting to create activity" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity, List(4L, 5L, 6L))
+        an[org.h2.jdbc.JdbcSQLException] must be thrownBy ActivityActor.createActivity(fakeActivity)
       }
     }
 

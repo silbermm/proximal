@@ -93,6 +93,18 @@ object Activities {
   def all(implicit s: Session) =
     activities.list
 
+  /*def allWithStatements(implicit s: Session): List[ActivityWithStatements] = {
+    val query = for {
+      act <- activities
+      as <- activityStatements if as.activityId === act.id
+      a <- as.statement
+    } yield (act, a)
+    query.list map { tup =>
+      ActivityWithStatements(tup._1.id, tup._1.creator, tup._1.date, tup._1.description, tup._1.rights, tup._1.source, tup._1.subject, tup._1.title, tup._1.category, tup._2.list)
+    }
+  }
+  */
+
   def find(id: Long)(implicit s: Session) =
     activities.filter(_.id === id).firstOption
 

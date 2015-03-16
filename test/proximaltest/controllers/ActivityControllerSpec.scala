@@ -6,7 +6,7 @@ import play.api.GlobalSettings
 import play.api.test.{ FakeRequest, WithApplication, FakeApplication, PlaySpecification }
 import securesocial.core.RuntimeEnvironment
 import controllers.ChildAndActivity
-import services.ActivityActor._
+import services._
 
 import securesocial.core._
 import securesocial.core.services._
@@ -37,6 +37,21 @@ class ActivityControllerSpec extends PlaySpec with Results {
   implicit val childActivityFormat = Json.format[ChildAndActivity]
 
   "Activity Controller" should {
+
+    "allow an authenticated user to create an activity" in {
+      running(SecureSocialHelper.app) {
+        val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
+        val Some(user) = route(FakeRequest(GET, "/api/v1/profile").withCookies(creds1.get("id").get))
+        val json: JsValue = Json.parse(contentAsString(user))
+        contentType(user) mustEqual Some("application/json")
+
+        val createActivity = CreateActivity(ActivityHelpers.sampleActivity, List.empty)
+        val Some(create) = route(FakeRequest(POST, "/api/v1/activities").withJsonBody(Json.toJson(createActivity)).withCookies(creds1.get("id").get))
+        status(create) mustBe OK
+      }
+
+    }
+
     "not allow a non-authenticated user access to GET all Homework" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         val Some(response) = route(FakeRequest(GET, "/api/v1/activities/homework/1230'"))

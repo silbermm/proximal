@@ -32,6 +32,24 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
   implicit val childAndActivityFormat = Json.format[ChildAndActivity]
 
+  def createActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    //Todo: Make sure this person has the correct permissions to do this! 
+    request.body.validate[CreateActivity].fold(
+      errors => { Future { BadRequest(Json.obj("message" -> s"$errors")) } },
+      obj => {
+        try {
+          ask(activityActor, obj).mapTo[Option[Activity]] map { x =>
+            x match {
+              case Some(a) => Ok(Json.toJson(a))
+              case None => BadRequest(Json.obj("message" -> "Sorry, unable to create the activity"))
+            }
+          }
+        } catch {
+          case e: Throwable => { Future { BadRequest(Json.obj("message" -> e.getMessage)) } }
+        }
+      })
+  }
+
   def newHomeworkActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {

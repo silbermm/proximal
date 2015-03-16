@@ -34,6 +34,7 @@ object ImplicitJsonFormat {
   implicit val actFormat = Json.format[Act]
   implicit val actWithScoreFormat = Json.format[ActWithScore]
   implicit val activityFormat = Json.format[Activity]
+  implicit val createActivityFormat = Json.format[CreateActivity]
   implicit val homeworkFormat = Json.format[Homework]
   implicit val studyFormat = Json.format[Study]
 

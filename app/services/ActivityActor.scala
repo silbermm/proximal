@@ -14,9 +14,24 @@ case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, 
 case class ListHomework(studentId: Long)
 case class DeleteHomework(uid: Long, homeworkId: Long)
 
+case class CreateActivity(activity: Activity, statementIds: List[Long])
+case class ListActivities()
+
 class ActivityActor extends Actor {
 
   def receive = {
+    case ca: CreateActivity => {
+      try {
+        val newActivity = ActivityActor.createActivity(ca)
+        sender ! newActivity
+      } catch {
+        case e: Throwable => {
+          sender ! akka.actor.Status.Failure(e)
+          throw e
+        }
+      }
+    }
+    case la: ListActivities => sender ! ActivityActor.listActivities
     case cha: CreateHomeworkActivity => {
       val newActivity = ActivityActor.createHomework(cha)
       sender ! newActivity
@@ -55,6 +70,22 @@ object ActivityActor {
         }
         case _ => 0
       }
+    }
+  }
+
+  def createActivity(ca: CreateActivity): Option[Activity] = {
+    DB.withSession { implicit s =>
+      val newActivity = Activities.create(ca.activity)
+      val activityStatements = ca.statementIds map (sid =>
+        ActivityStatements.create(ActivityStatement(None, newActivity.id.get, sid))
+      )
+      Some(newActivity)
+    }
+  }
+
+  def listActivities: List[Activity] = {
+    DB.withSession { implicit s =>
+      Activities.all
     }
   }
 
