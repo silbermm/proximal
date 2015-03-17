@@ -49,6 +49,7 @@ PUT	   /api/v1/assessments/:assessmentId							@controllers.AssessmentController
 
 #Activities
 POST  /api/v1/activities                              @controllers.ActivityController.createActivity
+GET   /api/v1/activities                              @controllers.ActivityController.listActivities
 POST 	/api/v1/activities/homework											@controllers.ActivityController.newHomeworkActivity
 GET   /api/v1/activities/homework/:childId            @controllers.ActivityController.allHomework(childId: Long)
 DELETE /api/v1/activities/homework/:homeworkId  @controllers.ActivityController.deleteHomework(homeworkId: Long)

@@ -1,11 +1,12 @@
 <section class="row" ng-if="!app.state.current.data.hideAdmin">
   <ul>
-    <li> <a ui-sref="admin.standards" > Manage Standards </a> </li>
-    <li> <a ui-sref="admin.questions" > Manage Questions </a> </li>
+    <li> <a data-ui-sref="admin.standards" > Manage Standards </a> </li>
+    <li> <a data-ui-sref="admin.questions" > Manage Questions </a> </li>
+    <li> <a data-ui-sref="admin.activities"> Manage Activities </a> </li>
   </ul>
 </section>
 
 
-<div ui-view class="row col-md-12"> </div>
+<div data-ui-view class="row col-md-12"> </div>
  
-<toaster-container> </toaster-container>
+<data-toaster-container></data-toaster-container>

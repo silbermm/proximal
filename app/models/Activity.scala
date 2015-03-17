@@ -8,7 +8,7 @@ import play.api.Play.current
 import play.api.Logger
 
 case class Activity(id: Option[Long],
-  creator: Option[String],
+  creator: Long,
   date: Long,
   description: Option[String],
   rights: Option[String],
@@ -18,7 +18,7 @@ case class Activity(id: Option[Long],
   category: Option[String])
 
 case class ActivityWithStatements(id: Option[Long],
-  creator: Option[String],
+  creator: Long,
   date: Long,
   description: Option[String],
   rights: Option[String],
@@ -29,7 +29,7 @@ case class ActivityWithStatements(id: Option[Long],
   statements: List[Statement])
 
 case class ActivityWithActs(id: Option[Long],
-  creator: Option[String],
+  creator: Long,
   date: Long,
   description: Option[String],
   rights: Option[String],
@@ -40,7 +40,7 @@ case class ActivityWithActs(id: Option[Long],
   acts: List[Act])
 
 case class ActivityWithStatementsAndActs(id: Option[Long],
-  creator: Option[String],
+  creator: Long,
   date: Long,
   description: Option[String],
   rights: Option[String],
@@ -52,7 +52,7 @@ case class ActivityWithStatementsAndActs(id: Option[Long],
   acts: List[Act])
 
 case class ActivityWithHomeworkAndActs(id: Option[Long],
-  creator: Option[String],
+  creator: Long,
   date: Long,
   description: Option[String],
   rights: Option[String],
@@ -65,7 +65,7 @@ case class ActivityWithHomeworkAndActs(id: Option[Long],
 
 class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def creator = column[Option[String]]("creator")
+  def creator = column[Long]("creator")
   def date = column[Long]("date")
   def description = column[Option[String]]("description")
   def rights = column[Option[String]]("rights")
@@ -76,6 +76,7 @@ class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
 
   def * = (id.?, creator, date, description, rights, source, subject, title, category) <> (Activity.tupled, Activity.unapply _)
 
+  def person = foreignKey("activities_person_fk", creator, People.people)(_.id)
 }
 
 object Activities {
@@ -92,6 +93,9 @@ object Activities {
 
   def all(implicit s: Session) =
     activities.list
+
+  def allByPerson(personId: Long)(implicit s: Session) =
+    activities.filter(_.creator === personId).list
 
   /*def allWithStatements(implicit s: Session): List[ActivityWithStatements] = {
     val query = for {

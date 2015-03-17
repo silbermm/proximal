@@ -5,6 +5,7 @@ require('../dashboard');
 require('../library');
 require("../children");
 require("../admin");
+require("../activities");
 
 module.exports = function($stateProvider, $urlRouterProvider) {
 
@@ -148,7 +149,19 @@ module.exports = function($stateProvider, $urlRouterProvider) {
       ]
     }
   })
-
+  .state('admin.activities', {
+    url: '/activities',
+    controller: 'ActivitiesController as activities',
+    templateUrl: 'activities/activities.html',
+    data: { 
+      title: 'Activities',
+      hideActivities: false,
+      hideAdmin: true,
+      breadcrumbs: [
+        {"path" : "admin", "text" : "Admin" },
+      ]
+    }
+  }) 
   ;
 
   $urlRouterProvider.otherwise('/dashboard');
