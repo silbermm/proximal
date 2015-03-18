@@ -85,7 +85,8 @@ object ActivityActor {
 
   def createActivity(ca: CreateActivity): Option[Activity] = {
     DB.withSession { implicit s =>
-      val newActivity = Activities.create(ca.activity)
+      val realCreator = People.findPersonByUid(ca.activity.creator).get
+      val newActivity = Activities.create(ca.activity.copy(creator = realCreator.id.get))
       val activityStatements = ca.statementIds map (sid =>
         ActivityStatements.create(ActivityStatement(None, newActivity.id.get, sid))
       )

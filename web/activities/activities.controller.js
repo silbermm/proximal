@@ -35,7 +35,7 @@
 
 			modalInstance.result.then(function (result) {
 				var activity = new Activities.data(result);
-				activitiy.$save(function(saved){
+				activity.$save(function(saved){
 					toaster.pop("success", null, "Successfully added a new activitiy!");
 				}, function(error){
 					toaster.pop("error", null, "There was an error when trying to add the activity. Please try again.");

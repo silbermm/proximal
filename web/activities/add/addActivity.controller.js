@@ -8,55 +8,63 @@
     "$modalInstance",
     "standardsService",
     "Child",
+    "personService",
     "prox.common",
     "$stateParams",
     "items"
   ];
     
-  function AddActivity($log, $modalInstance, Standards, Child, Common, $stateParams, items){
+  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams, items){
 		var vm = this;
-
-		vm.child = Child.get({"id": $stateParams.id});
+    vm.addStatement = addStatement; 
+    vm.cancel = cancel;
+    vm.entity = { statementIds: [] };
+    vm.forms = null;
+    vm.goTo = goTo;
+    vm.isNextDisabled = isNextDisabled;
+    vm.nextStep = nextStep;
+    vm.ok = ok;
+    vm.setForm = setForm;
 		vm.standard = items;
-
-		vm.status = Common.homeworkStatuses;
-
-		vm.entity = {
-			childId : Number($stateParams.id),
-			statementId : null,
-			activity : {
-
-			},
-			homework : {
-				studentId: Number($stateParams.id)
-			},
-      acts : [
-      
-      ]
-		};
-
+    vm.statements = [];
 		vm.steps = [
 			{step: 1, title: "Choose Statement", completed: false, selected: true},
 			{step: 2, title: "General Information", completed: false, selected: false},
-      {step: 3, title: "Actions", completed: false, selected: false}
+      {step: 3, title: "Resources", completed: false, selected: false}
 		];
 
-		vm.setForm = function(f){
+    function activate(){
+      getStatements();
+      getProfile();
+    }
+
+    activate();
+
+    ///////////////////////////////////
+
+		function setForm(f){
 			vm.forms = f;
-		};
+		}
 
-		//Get statements for this standard and grade level of the child
-		Standards.getStatements(vm.standard.id).success(function(d){
-			vm.statements = d.statements;
-			//vm.statements = _.filter(d.statements, function(st){
-			//return (_.contains(st.levels, vm.child.educationLevel.id) ) || (st.levels.length === 0);
-			//});
-		}).error(function(d){
-			$log.error(d);
-		});
+    function getProfile(){
+      vm.profile = Person.profile.get();
+    }
 
-		vm.nextStep = function(){
+    function getStatements(){
+      //Get statements for this standard and grade level of the child
+      Standards.getStatements(vm.standard.id).success(function(d){
+        vm.statements = d.statements;
+        //vm.statements = _.filter(d.statements, function(st){
+        //return (_.contains(st.levels, vm.child.educationLevel.id) ) || (st.levels.length === 0);
+        //});
+      }).error(function(d){
+        $log.error(d);
+      });
+    }
+		
+		function nextStep(){
 			// which step are we on?
+      console.log(vm.entity);
 			var currentStep = _.find(vm.steps, function(s){
 				return s.selected === true;
 			});
@@ -64,14 +72,14 @@
 			vm.steps[currentStep.step -1].selected = false;
 			vm.steps[currentStep.step].selected = true;
 			return true;
+		}
 
-		};
+	  function isNextDisabled(){
+			return (vm.steps[0].selected && vm.statement === undefined) || 
+        (vm.steps[1].selected && !isEntityValid());
+		}
 
-		vm.isNextDisabled = function(){
-			return (vm.steps[0].selected && vm.statement === undefined) || (vm.steps[1].selected && !vm.isEntityValid());
-		};
-
-		vm.goTo = function(step){
+		function goTo(step){
 			_.each(vm.steps, function(s){
 				if(s.step === step.step){
 					s.selected = true;
@@ -80,32 +88,26 @@
 					s.completed = false;
 				}
 			});
-		};
+		}
+  
+    function isEntityValid(){
+      return true;
+    }
+    
+    function addStatement(statement){
+      vm.statement = statement;
+      vm.entity.statementIds = [ statement.id ];
+    }
 
-    vm.addAction = function(){
-      if(vm.actionToAdd !== undefined){
-        vm.entity.acts.push({"actType": "homework", "action": vm.actionToAdd}); 
-      }
-      vm.actionToAdd = null;
-      vm.showAdd = false;
-    };
+    function ok() {
+			vm.entity.activity.date = new Date().getTime();      
+		  vm.entity.activity.creator = vm.profile.user.uid;
+      $modalInstance.close(vm.entity);
+		}
 
-		vm.ok = function () {
-			vm.entity.homework.dateGiven = new Date(vm.dateGiven).getTime();
-			if(vm.dateDue !== undefined) 
-				vm.entity.homework.dateDue = new Date(vm.dateDue).getTime();
-			vm.entity.activity.date = new Date().getTime();
-			$modalInstance.close(vm.entity);
-		};
-
-		vm.cancel = function () {
+		function cancel() {
 			$modalInstance.dismiss('cancel');
-		};
-
-		vm.isEntityValid = function(){
-			//TODO: Validate all required fields
-			return (vm.entity.activity.title !== undefined && vm.entity.activity.subject !== undefined);
-		};
+		}
 	}
 
 })();
