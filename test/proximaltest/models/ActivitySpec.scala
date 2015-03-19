@@ -1,4 +1,4 @@
-package models
+package proximaltest.models
 
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -24,7 +24,9 @@ class ActivitySpec extends PlaySpec with Results {
     "create an activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val sampleActivity = ActivityHelpers.sampleActivity
+          val person = People.insertPerson(PersonHelpers.person)
+
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
         }
@@ -34,7 +36,10 @@ class ActivitySpec extends PlaySpec with Results {
     "find an activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val sampleActivity = ActivityHelpers.sampleActivity
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
           Activities.find(activity.id.get) match {
@@ -48,8 +53,13 @@ class ActivitySpec extends PlaySpec with Results {
     "list all activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          Activities.create(ActivityHelpers.sampleActivity)
-          Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+          val sampleActivity2 = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
+          Activities.create(sampleActivity)
+          Activities.create(sampleActivity2)
           Activities.all must not be empty
           Activities.all must have length 2
         }
@@ -59,7 +69,10 @@ class ActivitySpec extends PlaySpec with Results {
     "delete an activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val sampleActivity = ActivityHelpers.sampleActivity
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
           val deleted = Activities.delete(activity)
@@ -81,7 +94,10 @@ class ActivitySpec extends PlaySpec with Results {
           Statements.list must have length 2
 
           // Now create an activity and associate the above statements
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+          val activity = Activities.create(sampleActivity)
           val activityStatement1 = ActivityStatements.create(ActivityStatement(None, activity.id.get, statement1.id.get))
           val activityStatement2 = ActivityStatements.create(ActivityStatement(None, activity.id.get, statement2.id.get))
           ActivityStatements.all must have length 2
@@ -96,7 +112,11 @@ class ActivitySpec extends PlaySpec with Results {
     "find and activity with Acts" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
+          val activity = Activities.create(sampleActivity)
           val act = Acts.create(ActHelpers.sampleAct)
           val activityActs = ActivityActs.create(ActivityAct(None, activity.id.get, act.id.get))
           activityActs.id must not be empty
@@ -120,8 +140,12 @@ class ActivitySpec extends PlaySpec with Results {
           val statement2 = Statements.insert(statement2Rec)
           Statements.list must have length 2
 
-          // Now create an activity and associate the above statements
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+          // Now create an activity and assosciate the above statements
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
+          val activity = Activities.create(sampleActivity)
           val activityStatement1 = ActivityStatements.create(ActivityStatement(None, activity.id.get, statement1.id.get))
           val activityStatement2 = ActivityStatements.create(ActivityStatement(None, activity.id.get, statement2.id.get))
           ActivityStatements.all must have length 2

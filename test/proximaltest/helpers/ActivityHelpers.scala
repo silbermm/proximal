@@ -10,14 +10,14 @@ object ActivityHelpers {
 
   def activityGen = for {
     id <- Arbitrary.arbitrary[Long]
-    creator <- Arbitrary.arbitrary[String]
+    creator <- Arbitrary.arbitrary[Long]
     description <- Arbitrary.arbitrary[String]
     rights <- Arbitrary.arbitrary[String]
     source <- Arbitrary.arbitrary[String]
     subject <- Arbitrary.arbitrary[String]
     title <- Arbitrary.arbitrary[String]
     category <- Arbitrary.arbitrary[String]
-  } yield Activity(None, Some(creator), currentTime, Some(description), Some(rights), Some(source), Some(subject), Some(title), Some(category))
+  } yield Activity(None, creator, currentTime, Some(description), Some(rights), Some(source), Some(subject), Some(title), Some(category))
 
   def homeworkGen = for {
     status <- Arbitrary.arbitrary[String]
