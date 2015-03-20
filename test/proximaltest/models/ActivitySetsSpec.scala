@@ -26,7 +26,8 @@ class ActivitySetsSpec extends PlaySpec with Results {
           val aset = Sets.create(SetHelpers.sampleSet)
           aset.id must not be empty
 
-          val sampleActivity = ActivityHelpers.sampleActivity
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 
@@ -43,7 +44,8 @@ class ActivitySetsSpec extends PlaySpec with Results {
           val aset = Sets.create(SetHelpers.sampleSet)
           aset.id must not be empty
 
-          val sampleActivity = ActivityHelpers.sampleActivity
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 

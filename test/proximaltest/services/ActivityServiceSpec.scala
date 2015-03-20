@@ -18,6 +18,8 @@ import play.api.Play.current
 
 import scala.compat.Platform
 
+import play.api.libs.json._
+
 import play.api.Logger
 import proximaltest.helpers._
 
@@ -35,13 +37,22 @@ class ActivityServiceSpec extends PlaySpec with Results {
 
   import models._
 
-  "ActivityService" should {
+  def setupUser: Long = {
+    val creds1 = cookies(route(FakeRequest(POST, "/authenticate/naive").withTextBody("user")).get)
+    val Some(user) = route(FakeRequest(GET, "/api/v1/profile").withCookies(creds1.get("id").get))
+    val json: JsValue = Json.parse(contentAsString(user))
+    contentType(user) mustEqual Some("application/json")
+    val uid = (json \ "user" \ "uid").as[Long]
+    DB.withSession { implicit s => People.insertPerson(PersonHelpers.person.copy(uid = Some(uid))) }
+    uid
+  }
 
+  "ActivityService" should {
     "respond to creating a new homework activity" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(SecureSocialHelper.app) {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ActivityActor)
-        ask(actorRef, CreateHomeworkActivity(List.empty, ActivityHelpers.activityGen.sample.get, ActivityHelpers.homeworkGen.sample.get, List.empty)).mapTo[Option[CreateHomeworkActivity]] map { x =>
+        ask(actorRef, CreateHomeworkActivity(List.empty, ActivityHelpers.sampleActivity.copy(creator = setupUser), ActivityHelpers.homeworkGen.sample.get, List.empty)).mapTo[Option[CreateHomeworkActivity]] map { x =>
           x match {
             case Some(cha) => {
               cha.homework.id must not be empty
@@ -54,21 +65,21 @@ class ActivityServiceSpec extends PlaySpec with Results {
     }
 
     "respond to creating a new activity" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(SecureSocialHelper.app) {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ActivityActor)
-        ask(actorRef, CreateActivity(ActivityHelpers.activityGen.sample.get, List.empty)).mapTo[Option[Activity]] map { x =>
+        ask(actorRef, CreateActivity(ActivityHelpers.sampleActivity.copy(creator = setupUser), List.empty)).mapTo[Option[Activity]] map { x =>
           x must not be empty
         }
       }
     }
 
     "respond with exception when creating a new activity and bad list" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(SecureSocialHelper.app) {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ActivityActor)
         try {
-          ask(actorRef, CreateActivity(ActivityHelpers.activityGen.sample.get, List(4L, 5L)))
+          ask(actorRef, CreateActivity(ActivityHelpers.sampleActivity.copy(creator = setupUser), List(4L, 5L)))
         } catch {
           case e: Throwable => e mustBe a[java.sql.SQLException]
         }
@@ -76,7 +87,7 @@ class ActivityServiceSpec extends PlaySpec with Results {
     }
 
     "handle acts appropriatly" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(SecureSocialHelper.app) {
         val createdAct = DB.withSession { implicit s => Acts.create(ActHelpers.sampleAct) }
         val actsList = List(ActHelpers.sampleAct, ActHelpers.sampleAct, createdAct)
         val newlist = ActivityActor.handleActs(actsList)
@@ -86,9 +97,9 @@ class ActivityServiceSpec extends PlaySpec with Results {
     }
 
     "list homework" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(SecureSocialHelper.app) {
         val fakeStudent = DB.withSession { implicit s => People.insertPerson(PersonHelpers.person) }
-        val fakeActivity = DB.withSession { implicit s => Activities.create(ActivityHelpers.sampleActivity) }
+        val fakeActivity = DB.withSession { implicit s => Activities.create(ActivityHelpers.sampleActivity.copy(creator = setupUser)) }
         val fakeHomework = DB.withSession { implicit s => Homeworks.create(ActivityHelpers.sampleHomework.copy(activityId = fakeActivity.id, studentId = fakeStudent.id)) }
         val homeworkList = ActivityActor.listHomework(fakeStudent.id.get)
         homeworkList must have length 1
@@ -97,16 +108,16 @@ class ActivityServiceSpec extends PlaySpec with Results {
     }
 
     "create activity" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity, List.empty)
+      running(SecureSocialHelper.app) {
+        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity.copy(creator = setupUser), List.empty)
         val created = ActivityActor.createActivity(fakeActivity)
         created must not be empty
       }
     }
 
     "throw an exception when attempting to create activity" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity, List(4L, 5L, 6L))
+      running(SecureSocialHelper.app) {
+        val fakeActivity = CreateActivity(ActivityHelpers.sampleActivity.copy(creator = setupUser), List(4L, 5L, 6L))
         an[org.h2.jdbc.JdbcSQLException] must be thrownBy ActivityActor.createActivity(fakeActivity)
       }
     }
