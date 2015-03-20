@@ -32,6 +32,7 @@ class ActivityActor extends Actor {
       }
     }
     case la: ListActivities => {
+      Logger.debug("Listing Activities");
       try {
         val activities = ActivityActor.listActivities(la.uid)
         sender ! activities
@@ -96,9 +97,13 @@ object ActivityActor {
 
   def listActivities(uid: Long): List[Activity] = {
     DB.withSession { implicit s =>
-      People.findPersonByUid(uid) match {
-        case Some(person) => Activities.allByPerson(person.id.get)
-        case _ => List.empty
+      if (uid == 0) {
+        Activities.all
+      } else {
+        People.findPersonByUid(uid) match {
+          case Some(person) => Activities.allByPerson(person.id.get)
+          case _ => List.empty
+        }
       }
     }
   }

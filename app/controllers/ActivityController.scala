@@ -38,7 +38,17 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
         Ok(Json.toJson(x))
       }
     } catch {
-      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e")) }
+      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
+    }
+  }
+
+  def listAllActivities = SecuredAction.async { implicit request =>
+    try {
+      ask(activityActor, ListActivities(0)).mapTo[List[Activity]] map { x =>
+        Ok(Json.toJson(x))
+      }
+    } catch {
+      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
     }
   }
 

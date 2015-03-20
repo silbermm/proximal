@@ -1,11 +1,8 @@
 language:
   - scala
-  - node_js
 scala:
-- 2.11.1
+  - 2.11.1
 script:
-  - npm install
-  - npm run build
   - sbt clean coverage test
 after_success: sbt coveralls
 deploy:
