@@ -1,69 +1,33 @@
-<section class="row"> 
-  <div class="col-lg-12">
-    <div class="col-lg-6 col-md-6 col-xs-12">
-      <div class="widget">
-        <div class="widget-body">
-          <div class="widget-content pull-left"> 
-            <div class="title"> Add a new Activity </div>
-            <div class="comment"> 
-              <div class="form-group" >
-                <select name="standard" ng-model="activities.standardSelected" class="form-control" ng-options="standard.title for standard in activities.availableStandards" >
-                  <option value=""> -- Choose a Standard -- </option>
-                </select>
-                <span id="helpBlock" class="help-block small"><i class="fa fa-question-circle"></i><a href="#"> Help! I don't see my standard! </a> </span>
+<tabset>
+  <data-tab heading="My Activities" select="activities.setCurrentActivities('my')">
+    <section class="row"> 
+      <div class="col-lg-12">
+        <div class="col-lg-6 col-md-6 col-xs-12">
+          <div class="widget">
+            <div class="widget-body">
+              <div class="widget-content pull-left"> 
+                <div class="title"> Add a new Activity </div>
+                <div class="comment"> 
+                  <div class="form-group" >
+                    <select name="standard" ng-model="activities.standardSelected" class="form-control" ng-options="standard.title for standard in activities.availableStandards" >
+                      <option value=""> -- Choose a Standard -- </option>
+                    </select>
+                    <span id="helpBlock" class="help-block small"><i class="fa fa-question-circle"></i><a href="#"> Help! I don't see my standard! </a> </span>
+                  </div>
+                  <button class="btn btn-primary" ng-click="activities.begin()" ng-class="{'disabled': activities.standardSelected == null}"> Continue </button> 
+                </div>
               </div>
-              <button class="btn btn-primary" ng-click="activities.begin()" ng-class="{'disabled': activities.standardSelected == null}"> Continue </button> 
+              <div class="clearfix"></div>
             </div>
           </div>
-          <div class="clearfix"></div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section> 
+    <activity-widget></activity-widget> 
+  </data-tab>
 
-<section class="row">
-  <div class="col-lg-12">
-    <div class="widget"> 
-      <div class="widget-header"> 
-        <i class="fa fa-tasks"></i> Available Activities  
-        <span class="widget-buttons" style="margin: 0px 2em 0px 25%">
-          <button class="btn btn-xs btn-danger" ng-click="activities.deleteSelectedActivities()" ng-disabled="activities.selectedActivities.length ==0"> 
-            <i class="fa fa-trash"></i> Delete
-          </button>
-        </span>
-        <input type="text" placeholder="Search" data-ng-model="searchText" class="form-control input-sm pull-right" /> 
-      </div> 
-      <div class="widget-body large no-padding"> 
-        <div class="table-responsive"> 
-          <table class="table"> 
-            <thead> 
-              <tr> 
-                <th> <input type="checkbox" /> </th>
-                <th> Title </th> 
-                <th> Description </th> 
-                <th> Subject </th> 
-                <th> Creator </th>
-                <th> Rights </th> 
-                <th> Source </th>
-                <th> Type </th>
-              </tr> 
-            </thead> 
-            <tbody> 
-              <tr data-ng-repeat="act in activities.activities"> 
-                <td> <input type="checkbox" ng-model="selection" ng-change="activities.updateSelection(act, selection)" /> </td>
-                <td> {{::act.title}} </td>
-                <td> {{::act.description}} </td>
-                <td> {{::act.subject}} </td>
-                <td> {{::act.creator}} </td>
-                <td> {{::act.rights}} </td>
-                <td> {{::act.source}} </td>
-                <td> {{::act.catagory}} </td>
-              </tr>
-            </tbody> 
-          </table> 
-        </div> 
-      </div> 
-    </div>
-  </div>
-</section>
+  <data-tab heading="All Activities" select="activities.setCurrentActivities('all')">
+    <activity-widget></activity-widget> 
+  </data-tab>
+
+</tabset>

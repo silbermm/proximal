@@ -8,27 +8,37 @@
   function ActivitiesController($log, toaster, $modal, Activities, Standards) {
     var vm = this;
 
-    vm.activities = [];
+    vm.activities = []; // holds the current activities we are looking at
     vm.availableStandards = [];
     vm.begin = begin;
     vm.deleteSelectedActivities = deleteSelectedActivities;
+    vm.isMyTab = isMyTab;
     vm.selectedActivities = [];
+    vm.setCurrentActivities = setCurrentActivities; 
     vm.standardSelected = null;
+    vm.tab = "my";
     vm.updateSelection = updateSelection;
-
-    function activate(){
-      getActivities();
-      getAvailableStandards();
-    }
    
     activate();
 
     ////////////////////////////
     // Implementation Details //
     ////////////////////////////
-  
+ 
+    function activate(){
+      getActivities();
+      getAll();
+      getAvailableStandards();
+      setCurrentActivities("my");
+    }
+ 
     function addActivitySelection(activity){
       vm.selectedActivities.push(activity);
+    }
+
+    function isMyTab(){
+      console.log(vm.tab === "my");
+      return vm.tab === "my";
     }
 
     function removeActivitySelection(activity){
@@ -72,7 +82,11 @@
     }
 
     function getActivities(){
-      vm.activities = Activities.data.query();
+      vm.myActivities = Activities.data.query();
+    }
+
+    function getAll(){
+      vm.allActivities = Activities.all.query();
     }
 
     function getAvailableStandards(){
@@ -82,7 +96,18 @@
 			  $log.error(data);
 		  });
     }
-  }
 
+    function setCurrentActivities(currentTab){
+      if(currentTab == "my"){
+        vm.activities = vm.myActivities;
+      }
+      if(currentTab == "all"){
+        vm.activities = vm.allActivities;
+      }
+      vm.tab = currentTab;
+    }
+
+  }
+  
 
 })();

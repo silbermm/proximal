@@ -8,5 +8,8 @@
   app.factory("Activities", require('./activities.service'));
 
   app.controller("AddActivityController", require('./add/addActivity.controller'));
-  
+
+  require('./activityWidget.html');
+  app.directive("activityWidget", require('./activityWidget.directive'));
+
 })();

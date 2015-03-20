@@ -4,7 +4,8 @@
   activities.$inject = ['$resource'];
   function activities($resource){
     return {
-      'data': $resource("api/v1/activities/:activityId")
+      'data': $resource("api/v1/activities/:activityId"),
+      'all' : $resource("api/v1/activities/all")
     };
   }
 })();
