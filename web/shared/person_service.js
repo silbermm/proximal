@@ -2,10 +2,11 @@
 
 require('angular');
 
-angular.module("proximal2").factory("personService", [ "$log", "$http", PersonService]);
+angular.module("proximal2").factory("personService", [ "$log", "$http", "$resource", PersonService]);
 
-function PersonService($log, $http){
-  return {
+function PersonService($log, $http, $resource){
+  return { 
+    profile: $resource("/api/v1/profile"),
     addChild: function(c) {
       return $http.post("/api/v1/children", c);
     },   

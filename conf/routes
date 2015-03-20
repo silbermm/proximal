@@ -12,7 +12,6 @@ POST    /api/v1/children            									@controllers.PersonController.addCh
 DELETE  /api/v1/children/:id        									@controllers.PersonController.removeChild(id: Long)
 
 GET     /api/v1/profile             									@controllers.PersonController.profile()
-
 POST    /api/v1/upload                                @controllers.ApplicationController.upload()
 
 #Standards
@@ -49,10 +48,16 @@ PUT	   /api/v1/assessments/:assessmentId							@controllers.AssessmentController
 
 
 #Activities
+POST  /api/v1/activities                              @controllers.ActivityController.createActivity
+GET   /api/v1/activities                              @controllers.ActivityController.listActivities
 POST 	/api/v1/activities/homework											@controllers.ActivityController.newHomeworkActivity
 GET   /api/v1/activities/homework/:childId            @controllers.ActivityController.allHomework(childId: Long)
 DELETE /api/v1/activities/homework/:homeworkId  @controllers.ActivityController.deleteHomework(homeworkId: Long)
 
+#Scores
+POST /api/v1/scores                                   @controllers.ScoresController.createScore
+GET /api/v1/scores/:studentId                         @controllers.ScoresController.showScores(studentId: Long)
+PUT /api/v1/scores                                    @controllers.ScoresController.updateScore
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

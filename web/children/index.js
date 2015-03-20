@@ -5,6 +5,7 @@ var app = require("angular").module("proximal2");
 
 app.controller("ChildrenCtrl", ['$log', 'Child', '$modal', require("./children_controller")]);
 app.factory("Child", [ "$log","$resource", require('./child_service')]);
+app.factory("Score", ["$log", "$resource", require('./score_service')]);
 app.directive("childPicture", ["$log", require('./child_picture_directive')]);
 
 // Add a child

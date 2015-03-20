@@ -71,7 +71,7 @@ class AssessmentController(override implicit val env: RuntimeEnvironment[SecureU
       BadRequest(Json.obj("message" -> s"assessment not found"))
     } else {
       PersonService.childAction(request.user.uid.get, childId, c => {
-        request.body.validate[QuestionScore].fold(
+        request.body.validate[Score].fold(
           errors => BadRequest(Json.obj("message" -> JsError.toFlatJson(errors))),
           qscore => {
             val q = AssesmentService.createQuestionScore(assesmentId, qscore, childId)

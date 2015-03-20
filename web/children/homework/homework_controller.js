@@ -13,7 +13,7 @@
 
     Homework.query({'id': $stateParams.id}, function(activities){
       _this.allHomework = activities;
-
+     
       _this.unfinished = _.filter(activities, function(h){
         return h.homework.status !== 'Finished';
       });

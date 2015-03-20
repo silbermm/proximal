@@ -34,8 +34,8 @@ class ScoreSpec extends PlaySpec with Results {
 
           person.id must not be empty
           question.id must not be empty
-          val score = Score(None, person.id.get, question.id.get, 5, t)
-          val createdScore = Scores.insert(score);
+          val score = Score(None, person.id.get, Some(question.id.get), None, Some(5), t)
+          val createdScore = Scores.create(score);
           createdScore.id must not be empty
           createdScore.timestamp mustBe t
         }

@@ -1,13 +1,12 @@
-<section class="row">
+<section class="row" data-ng-controller="HomeworkDetailsCtrl as details">
   <div class="col-lg-12">
 
     <button class="btn btn-primary btn-sm" data-ng-click="childCtrl.showHomeworkDetails = false"> Back to all </button>
-    <h1> {{::childCtrl.selectedAssignment.activity.title}}</h1>
-    <h4> {{childCtrl.selectedAssignment.homework.status}}</h4>
+    <h1> {{::childCtrl.selectedAssignment.activity.title}} <small> <span class="label label-danger"> {{childCtrl.selectedAssignment.homework.status}} </small> </span>
+    </h1>
     <ul> 
       <li> Assigned On: {{::childCtrl.selectedAssignment.homework.dateGiven | date}} </li>
-      <li data-ng-if="childCtrl.selectedAssignment.homework.dueDate"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li>
-      
+      <li data-ng-if="childCtrl.selectedAssignment.homework.dueDate"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li> 
     </ul>
 
     <table class="table">
@@ -21,12 +20,17 @@
       <tbody>
         <tr data-ng-repeat="act in childCtrl.selectedAssignment.acts"> 
           <td> {{act.action}} </td>
-          <td> Done </td>
           <td> 
-            <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+            <select data-ng-options='p.text for p in details.progress' data-ng-model="act.progress">
+            </select>
+          </td>
+          <td> 
+            <data-rating ng-model="act.score.score" max="details.max" readonly="false" on-hover="details.hoveringOver(value)" on-leave="overStar=null" data-ng-click="details.updateScore(act)">
+            </data-rating>
           </td>
         </tr>
       </tbody>
     </table>
+    <button class="btn btn-primary btn-sm"> Add another </button>
   </div>
 </section>

@@ -14,9 +14,34 @@ case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, 
 case class ListHomework(studentId: Long)
 case class DeleteHomework(uid: Long, homeworkId: Long)
 
+case class CreateActivity(activity: Activity, statementIds: List[Long])
+case class ListActivities(uid: Long)
+
 class ActivityActor extends Actor {
 
   def receive = {
+    case ca: CreateActivity => {
+      try {
+        val newActivity = ActivityActor.createActivity(ca)
+        sender ! newActivity
+      } catch {
+        case e: Throwable => {
+          sender ! akka.actor.Status.Failure(e)
+          throw e
+        }
+      }
+    }
+    case la: ListActivities => {
+      try {
+        val activities = ActivityActor.listActivities(la.uid)
+        sender ! activities
+      } catch {
+        case e: Throwable => {
+          sender ! akka.actor.Status.Failure(e)
+          throw e
+        }
+      }
+    }
     case cha: CreateHomeworkActivity => {
       val newActivity = ActivityActor.createHomework(cha)
       sender ! newActivity
@@ -54,6 +79,26 @@ object ActivityActor {
           })
         }
         case _ => 0
+      }
+    }
+  }
+
+  def createActivity(ca: CreateActivity): Option[Activity] = {
+    DB.withSession { implicit s =>
+      val realCreator = People.findPersonByUid(ca.activity.creator).get
+      val newActivity = Activities.create(ca.activity.copy(creator = realCreator.id.get))
+      val activityStatements = ca.statementIds map (sid =>
+        ActivityStatements.create(ActivityStatement(None, newActivity.id.get, sid))
+      )
+      Some(newActivity)
+    }
+  }
+
+  def listActivities(uid: Long): List[Activity] = {
+    DB.withSession { implicit s =>
+      People.findPersonByUid(uid) match {
+        case Some(person) => Activities.allByPerson(person.id.get)
+        case _ => List.empty
       }
     }
   }

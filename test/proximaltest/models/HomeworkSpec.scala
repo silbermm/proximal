@@ -20,11 +20,13 @@ class HomeworkSpec extends PlaySpec with Results {
 
   "Homework model" should {
 
-    "create a homework" in {
+    "create homework" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
           //we first need an activity
-          val sampleActivity = ActivityHelpers.sampleActivity
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 
@@ -73,9 +75,6 @@ class HomeworkSpec extends PlaySpec with Results {
 
     "find a homework by studentId" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        DB.withSession { implicit s =>
-          //TODO 
-        }
       }
     }
 
@@ -84,7 +83,9 @@ class HomeworkSpec extends PlaySpec with Results {
         // this is way too much for one test, but here it is anyways 
         DB.withSession { implicit s =>
           // we first need an activity
-          val sampleActivity = ActivityHelpers.sampleActivity
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 

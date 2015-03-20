@@ -32,6 +32,34 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
   implicit val childAndActivityFormat = Json.format[ChildAndActivity]
 
+  def listActivities = SecuredAction.async { implicit request =>
+    try {
+      ask(activityActor, ListActivities(request.user.uid.get)).mapTo[List[Activity]] map { x =>
+        Ok(Json.toJson(x))
+      }
+    } catch {
+      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e")) }
+    }
+  }
+
+  def createActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    //Todo: Make sure this person has the correct permissions to do this! 
+    request.body.validate[CreateActivity].fold(
+      errors => { Future { BadRequest(Json.obj("message" -> s"$errors")) } },
+      obj => {
+        try {
+          ask(activityActor, obj).mapTo[Option[Activity]] map { x =>
+            x match {
+              case Some(a) => Ok(Json.toJson(a))
+              case None => BadRequest(Json.obj("message" -> "Sorry, unable to create the activity"))
+            }
+          }
+        } catch {
+          case e: Throwable => { Future { BadRequest(Json.obj("message" -> e.getMessage)) } }
+        }
+      })
+  }
+
   def newHomeworkActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {
@@ -49,12 +77,11 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     request.body.validate[ChildAndActivity].fold(
       errors => { Future { BadRequest(Json.obj("message" -> s"Something went wrong! $errors")) } },
       obj => {
-        val activity = obj.activity.copy(creator = Some(request.user.userId))
+        val activity = obj.activity.copy(creator = request.user.uid.get)
         val childAndActivity = obj.copy(activity = activity)
         createHomework(childAndActivity)
       }
     )
-
   }
 
   def allHomework(childId: Long) = SecuredAction.async { implicit request =>
@@ -74,6 +101,10 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
         BadRequest(Json.obj("message" -> "something went wrong"));
       }
     }
+  }
+
+  def updateAct = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    Future.successful { Ok("done") }
   }
 
 }

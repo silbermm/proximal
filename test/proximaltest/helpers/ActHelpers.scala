@@ -10,7 +10,8 @@ object ActHelpers {
   def actGen = for {
     actType <- Arbitrary.arbitrary[String]
     action <- Arbitrary.arbitrary[String]
-  } yield Act(None, actType, Some(action), None)
+    progress <- Arbitrary.arbitrary[String]
+  } yield Act(None, actType, Some(action), Some(progress), None)
 
   val sampleAct = actGen.sample.get
 }

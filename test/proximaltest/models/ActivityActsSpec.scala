@@ -1,4 +1,4 @@
-package models
+package proximaltest.models
 
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -15,6 +15,9 @@ import play.api.test.Helpers._
 import play.api.Logger
 import proximaltest.helpers._
 
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
+
 class ActivityActsSpec extends PlaySpec with Results {
   import models._
 
@@ -23,7 +26,10 @@ class ActivityActsSpec extends PlaySpec with Results {
     "create an activityact" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+
+          val activity = Activities.create(ActivityHelpers.sampleActivity.copy(creator = person.id.get))
           val act = Acts.create(ActHelpers.sampleAct)
           val activityAct = ActivityActs.create(ActivityAct(None, activity.id.get, act.id.get))
           activityAct.activityId mustEqual activity.id.get
@@ -35,7 +41,10 @@ class ActivityActsSpec extends PlaySpec with Results {
     "find an activityAct" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+
+          val activity = Activities.create(ActivityHelpers.sampleActivity.copy(creator = person.id.get))
           val act = Acts.create(ActHelpers.sampleAct)
           val activityAct = ActivityActs.create(ActivityAct(None, activity.id.get, act.id.get))
           ActivityActs.find(activityAct.id.get) match {
@@ -50,7 +59,10 @@ class ActivityActsSpec extends PlaySpec with Results {
     "list all activityActs" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+
+          val activity = Activities.create(ActivityHelpers.sampleActivity.copy(creator = person.id.get))
           val act = Acts.create(ActHelpers.sampleAct)
           val activityAct = ActivityActs.create(ActivityAct(None, activity.id.get, act.id.get))
           ActivityActs.all must have length 1
@@ -62,7 +74,10 @@ class ActivityActsSpec extends PlaySpec with Results {
     "delete an activityAct" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+
+          val person = People.insertPerson(PersonHelpers.person)
+
+          val activity = Activities.create(ActivityHelpers.sampleActivity.copy(creator = person.id.get))
           val act = Acts.create(ActHelpers.sampleAct)
           val activityAct = ActivityActs.create(ActivityAct(None, activity.id.get, act.id.get))
           val deleted = ActivityActs.delete(activityAct)

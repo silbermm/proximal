@@ -18,7 +18,7 @@ case class Homework(id: Option[Long],
 case class HomeworkActivityActs(
   homework: Homework,
   activity: Activity,
-  acts: List[Act])
+  acts: List[Option[ActWithScore]])
 
 class Homeworks(tag: Tag) extends Table[Homework](tag, "homework") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -64,7 +64,10 @@ object Homeworks {
 
     homeworkAndActivities.list.map(tup => {
       val acts = ActivityActs.findByActivity(tup._2.id.get)
-      HomeworkActivityActs(tup._1, tup._2, acts)
+      val listOfActs = for {
+        act <- acts
+      } yield Acts.findWithScore(act.id.get)
+      HomeworkActivityActs(tup._1, tup._2, listOfActs)
     })
 
   }
