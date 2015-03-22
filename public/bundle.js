@@ -47,33 +47,34 @@
 	"use strict";
 
 	"use strict()";
-	var _ = __webpack_require__(4);
+	var _ = __webpack_require__(5);
 	var angular = __webpack_require__(1);
 
 	// All Styles
-	__webpack_require__(18);
+	__webpack_require__(20);
 	__webpack_require__(14);
 	__webpack_require__(16);
+	__webpack_require__(18);
 
 	// Bootstrap
-	window.$ = window.jQuery = __webpack_require__(20);
-	__webpack_require__(21);
+	window.$ = window.jQuery = __webpack_require__(22);
+	__webpack_require__(23);
 
-	__webpack_require__(5);
 	__webpack_require__(6);
 	__webpack_require__(7);
 	__webpack_require__(8);
+	__webpack_require__(9);
 	__webpack_require__(12);
 	__webpack_require__(13);
 	__webpack_require__(2);
 
-	__webpack_require__(9);
-	__webpack_require__(11);
 	__webpack_require__(10);
-
-	angular.module("proximal2", ["ngResource", "ngSanitize", "ngAnimate", "ngCookies", "ui.router", "ui.bootstrap", "ui.select2", "ngFileUpload", "toaster"]);
-
 	__webpack_require__(3);
+	__webpack_require__(11);
+
+	angular.module("proximal2", ["ngResource", "ngSanitize", "ngAnimate", "ngCookies", "ui.router", "ui.bootstrap", "ui.select", "ngFileUpload", "toaster"]);
+
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -81,7 +82,7 @@
 
 	"use strict";
 
-	__webpack_require__(22);
+	__webpack_require__(24);
 	module.exports = angular;
 
 /***/ },
@@ -259,14 +260,1753 @@
 
 	"use strict";
 
-	"use strict()";
+	/*!
+	 * ui-select
+	 * http://github.com/angular-ui/ui-select
+	 * Version: 0.11.2 - 2015-03-17T04:08:46.474Z
+	 * License: MIT
+	 */
 
-	var app = __webpack_require__(1).module("proximal2");
-	app.config(["$stateProvider", "$urlRouterProvider", __webpack_require__(24)]);
-	app.controller("AppController", ["$scope", "$state", "$log", "$cookieStore", __webpack_require__(25)]);
+	(function () {
+	  "use strict";
+
+	  var KEY = {
+	    TAB: 9,
+	    ENTER: 13,
+	    ESC: 27,
+	    SPACE: 32,
+	    LEFT: 37,
+	    UP: 38,
+	    RIGHT: 39,
+	    DOWN: 40,
+	    SHIFT: 16,
+	    CTRL: 17,
+	    ALT: 18,
+	    PAGE_UP: 33,
+	    PAGE_DOWN: 34,
+	    HOME: 36,
+	    END: 35,
+	    BACKSPACE: 8,
+	    DELETE: 46,
+	    COMMAND: 91,
+
+	    MAP: { 91: "COMMAND", 8: "BACKSPACE", 9: "TAB", 13: "ENTER", 16: "SHIFT", 17: "CTRL", 18: "ALT", 19: "PAUSEBREAK", 20: "CAPSLOCK", 27: "ESC", 32: "SPACE", 33: "PAGE_UP", 34: "PAGE_DOWN", 35: "END", 36: "HOME", 37: "LEFT", 38: "UP", 39: "RIGHT", 40: "DOWN", 43: "+", 44: "PRINTSCREEN", 45: "INSERT", 46: "DELETE", 48: "0", 49: "1", 50: "2", 51: "3", 52: "4", 53: "5", 54: "6", 55: "7", 56: "8", 57: "9", 59: ";", 61: "=", 65: "A", 66: "B", 67: "C", 68: "D", 69: "E", 70: "F", 71: "G", 72: "H", 73: "I", 74: "J", 75: "K", 76: "L", 77: "M", 78: "N", 79: "O", 80: "P", 81: "Q", 82: "R", 83: "S", 84: "T", 85: "U", 86: "V", 87: "W", 88: "X", 89: "Y", 90: "Z", 96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7", 104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111: "/", 112: "F1", 113: "F2", 114: "F3", 115: "F4", 116: "F5", 117: "F6", 118: "F7", 119: "F8", 120: "F9", 121: "F10", 122: "F11", 123: "F12", 144: "NUMLOCK", 145: "SCROLLLOCK", 186: ";", 187: "=", 188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\", 221: "]", 222: "'"
+	    },
+
+	    isControl: function isControl(e) {
+	      var k = e.which;
+	      switch (k) {
+	        case KEY.COMMAND:
+	        case KEY.SHIFT:
+	        case KEY.CTRL:
+	        case KEY.ALT:
+	          return true;
+	      }
+
+	      if (e.metaKey) {
+	        return true;
+	      }return false;
+	    },
+	    isFunctionKey: function isFunctionKey(k) {
+	      k = k.which ? k.which : k;
+	      return k >= 112 && k <= 123;
+	    },
+	    isVerticalMovement: function isVerticalMovement(k) {
+	      return ~[KEY.UP, KEY.DOWN].indexOf(k);
+	    },
+	    isHorizontalMovement: function isHorizontalMovement(k) {
+	      return ~[KEY.LEFT, KEY.RIGHT, KEY.BACKSPACE, KEY.DELETE].indexOf(k);
+	    }
+	  };
+
+	  /**
+	   * Add querySelectorAll() to jqLite.
+	   *
+	   * jqLite find() is limited to lookups by tag name.
+	   * TODO This will change with future versions of AngularJS, to be removed when this happens
+	   *
+	   * See jqLite.find - why not use querySelectorAll? https://github.com/angular/angular.js/issues/3586
+	   * See feat(jqLite): use querySelectorAll instead of getElementsByTagName in jqLite.find https://github.com/angular/angular.js/pull/3598
+	   */
+	  if (angular.element.prototype.querySelectorAll === undefined) {
+	    angular.element.prototype.querySelectorAll = function (selector) {
+	      return angular.element(this[0].querySelectorAll(selector));
+	    };
+	  }
+
+	  /**
+	   * Add closest() to jqLite.
+	   */
+	  if (angular.element.prototype.closest === undefined) {
+	    angular.element.prototype.closest = function (selector) {
+	      var elem = this[0];
+	      var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
+
+	      while (elem) {
+	        if (matchesSelector.bind(elem)(selector)) {
+	          return elem;
+	        } else {
+	          elem = elem.parentElement;
+	        }
+	      }
+	      return false;
+	    };
+	  }
+
+	  var latestId = 0;
+
+	  var uis = angular.module("ui.select", []).constant("uiSelectConfig", {
+	    theme: "bootstrap",
+	    searchEnabled: true,
+	    sortable: false,
+	    placeholder: "", // Empty by default, like HTML tag <select>
+	    refreshDelay: 1000, // In milliseconds
+	    closeOnSelect: true,
+	    generateId: function generateId() {
+	      return latestId++;
+	    },
+	    appendToBody: false
+	  })
+
+	  // See Rename minErr and make it accessible from outside https://github.com/angular/angular.js/issues/6913
+	  .service("uiSelectMinErr", function () {
+	    var minErr = angular.$$minErr("ui.select");
+	    return function () {
+	      var error = minErr.apply(this, arguments);
+	      var message = error.message.replace(new RegExp("\nhttp://errors.angularjs.org/.*"), "");
+	      return new Error(message);
+	    };
+	  })
+
+	  // Recreates old behavior of ng-transclude. Used internally.
+	  .directive("uisTranscludeAppend", function () {
+	    return {
+	      link: function link(scope, element, attrs, ctrl, transclude) {
+	        transclude(scope, function (clone) {
+	          element.append(clone);
+	        });
+	      }
+	    };
+	  })
+
+	  /**
+	   * Highlights text that matches $select.search.
+	   *
+	   * Taken from AngularUI Bootstrap Typeahead
+	   * See https://github.com/angular-ui/bootstrap/blob/0.10.0/src/typeahead/typeahead.js#L340
+	   */
+	  .filter("highlight", function () {
+	    function escapeRegexp(queryToEscape) {
+	      return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+	    }
+
+	    return function (matchItem, query) {
+	      return query && matchItem ? matchItem.replace(new RegExp(escapeRegexp(query), "gi"), "<span class=\"ui-select-highlight\">$&</span>") : matchItem;
+	    };
+	  })
+
+	  /**
+	   * A read-only equivalent of jQuery's offset function: http://api.jquery.com/offset/
+	   *
+	   * Taken from AngularUI Bootstrap Position:
+	   * See https://github.com/angular-ui/bootstrap/blob/master/src/position/position.js#L70
+	   */
+	  .factory("uisOffset", ["$document", "$window", function ($document, $window) {
+
+	    return function (element) {
+	      var boundingClientRect = element[0].getBoundingClientRect();
+	      return {
+	        width: boundingClientRect.width || element.prop("offsetWidth"),
+	        height: boundingClientRect.height || element.prop("offsetHeight"),
+	        top: boundingClientRect.top + ($window.pageYOffset || $document[0].documentElement.scrollTop),
+	        left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
+	      };
+	    };
+	  }]);
+
+	  uis.directive("uiSelectChoices", ["uiSelectConfig", "uisRepeatParser", "uiSelectMinErr", "$compile", function (uiSelectConfig, RepeatParser, uiSelectMinErr, $compile) {
+
+	    return {
+	      restrict: "EA",
+	      require: "^uiSelect",
+	      replace: true,
+	      transclude: true,
+	      templateUrl: function templateUrl(tElement) {
+	        // Gets theme attribute from parent (ui-select)
+	        var theme = tElement.parent().attr("theme") || uiSelectConfig.theme;
+	        return theme + "/choices.tpl.html";
+	      },
+
+	      compile: function compile(tElement, tAttrs) {
+
+	        if (!tAttrs.repeat) throw uiSelectMinErr("repeat", "Expected 'repeat' expression.");
+
+	        return function link(scope, element, attrs, $select, transcludeFn) {
+
+	          // var repeat = RepeatParser.parse(attrs.repeat);
+	          var groupByExp = attrs.groupBy;
+
+	          $select.parseRepeatAttr(attrs.repeat, groupByExp); //Result ready at $select.parserResult
+
+	          $select.disableChoiceExpression = attrs.uiDisableChoice;
+	          $select.onHighlightCallback = attrs.onHighlight;
+
+	          if (groupByExp) {
+	            var groups = element.querySelectorAll(".ui-select-choices-group");
+	            if (groups.length !== 1) throw uiSelectMinErr("rows", "Expected 1 .ui-select-choices-group but got '{0}'.", groups.length);
+	            groups.attr("ng-repeat", RepeatParser.getGroupNgRepeatExpression());
+	          }
+
+	          var choices = element.querySelectorAll(".ui-select-choices-row");
+	          if (choices.length !== 1) {
+	            throw uiSelectMinErr("rows", "Expected 1 .ui-select-choices-row but got '{0}'.", choices.length);
+	          }
+
+	          choices.attr("ng-repeat", RepeatParser.getNgRepeatExpression($select.parserResult.itemName, "$select.items", $select.parserResult.trackByExp, groupByExp)).attr("ng-if", "$select.open") //Prevent unnecessary watches when dropdown is closed
+	          .attr("ng-mouseenter", "$select.setActiveItem(" + $select.parserResult.itemName + ")").attr("ng-click", "$select.select(" + $select.parserResult.itemName + ",false,$event)");
+
+	          var rowsInner = element.querySelectorAll(".ui-select-choices-row-inner");
+	          if (rowsInner.length !== 1) throw uiSelectMinErr("rows", "Expected 1 .ui-select-choices-row-inner but got '{0}'.", rowsInner.length);
+	          rowsInner.attr("uis-transclude-append", ""); //Adding uisTranscludeAppend directive to row element after choices element has ngRepeat
+
+	          $compile(element, transcludeFn)(scope); //Passing current transcludeFn to be able to append elements correctly from uisTranscludeAppend
+
+	          scope.$watch("$select.search", function (newValue) {
+	            if (newValue && !$select.open && $select.multiple) $select.activate(false, true);
+	            $select.activeIndex = $select.tagging.isActivated ? -1 : 0;
+	            $select.refresh(attrs.refresh);
+	          });
+
+	          attrs.$observe("refreshDelay", function () {
+	            // $eval() is needed otherwise we get a string instead of a number
+	            var refreshDelay = scope.$eval(attrs.refreshDelay);
+	            $select.refreshDelay = refreshDelay !== undefined ? refreshDelay : uiSelectConfig.refreshDelay;
+	          });
+	        };
+	      }
+	    };
+	  }]);
+
+	  /**
+	   * Contains ui-select "intelligence".
+	   *
+	   * The goal is to limit dependency on the DOM whenever possible and
+	   * put as much logic in the controller (instead of the link functions) as possible so it can be easily tested.
+	   */
+	  uis.controller("uiSelectCtrl", ["$scope", "$element", "$timeout", "$filter", "uisRepeatParser", "uiSelectMinErr", "uiSelectConfig", function ($scope, $element, $timeout, $filter, RepeatParser, uiSelectMinErr, uiSelectConfig) {
+
+	    var ctrl = this;
+
+	    var EMPTY_SEARCH = "";
+
+	    ctrl.placeholder = uiSelectConfig.placeholder;
+	    ctrl.searchEnabled = uiSelectConfig.searchEnabled;
+	    ctrl.sortable = uiSelectConfig.sortable;
+	    ctrl.refreshDelay = uiSelectConfig.refreshDelay;
+
+	    ctrl.removeSelected = false; //If selected item(s) should be removed from dropdown list
+	    ctrl.closeOnSelect = true; //Initialized inside uiSelect directive link function
+	    ctrl.search = EMPTY_SEARCH;
+
+	    ctrl.activeIndex = 0; //Dropdown of choices
+	    ctrl.items = []; //All available choices
+
+	    ctrl.open = false;
+	    ctrl.focus = false;
+	    ctrl.disabled = false;
+	    ctrl.selected = undefined;
+
+	    ctrl.focusser = undefined; //Reference to input element used to handle focus events
+	    ctrl.resetSearchInput = true;
+	    ctrl.multiple = undefined; // Initialized inside uiSelect directive link function
+	    ctrl.disableChoiceExpression = undefined; // Initialized inside uiSelectChoices directive link function
+	    ctrl.tagging = { isActivated: false, fct: undefined };
+	    ctrl.taggingTokens = { isActivated: false, tokens: undefined };
+	    ctrl.lockChoiceExpression = undefined; // Initialized inside uiSelectMatch directive link function
+	    ctrl.clickTriggeredSelect = false;
+	    ctrl.$filter = $filter;
+
+	    ctrl.searchInput = $element.querySelectorAll("input.ui-select-search");
+	    if (ctrl.searchInput.length !== 1) {
+	      throw uiSelectMinErr("searchInput", "Expected 1 input.ui-select-search but got '{0}'.", ctrl.searchInput.length);
+	    }
+
+	    ctrl.isEmpty = function () {
+	      return angular.isUndefined(ctrl.selected) || ctrl.selected === null || ctrl.selected === "";
+	    };
+
+	    // Most of the time the user does not want to empty the search input when in typeahead mode
+	    function _resetSearchInput() {
+	      if (ctrl.resetSearchInput || ctrl.resetSearchInput === undefined && uiSelectConfig.resetSearchInput) {
+	        ctrl.search = EMPTY_SEARCH;
+	        //reset activeIndex
+	        if (ctrl.selected && ctrl.items.length && !ctrl.multiple) {
+	          ctrl.activeIndex = ctrl.items.indexOf(ctrl.selected);
+	        }
+	      }
+	    }
+
+	    // When the user clicks on ui-select, displays the dropdown list
+	    ctrl.activate = function (initSearchValue, avoidReset) {
+	      if (!ctrl.disabled && !ctrl.open) {
+	        if (!avoidReset) _resetSearchInput();
+
+	        $scope.$broadcast("uis:activate");
+
+	        ctrl.open = true;
+
+	        ctrl.activeIndex = ctrl.activeIndex >= ctrl.items.length ? 0 : ctrl.activeIndex;
+
+	        // ensure that the index is set to zero for tagging variants
+	        // that where first option is auto-selected
+	        if (ctrl.activeIndex === -1 && ctrl.taggingLabel !== false) {
+	          ctrl.activeIndex = 0;
+	        }
+
+	        // Give it time to appear before focus
+	        $timeout(function () {
+	          ctrl.search = initSearchValue || ctrl.search;
+	          ctrl.searchInput[0].focus();
+	        });
+	      }
+	    };
+
+	    ctrl.findGroupByName = function (name) {
+	      return ctrl.groups && ctrl.groups.filter(function (group) {
+	        return group.name === name;
+	      })[0];
+	    };
+
+	    ctrl.parseRepeatAttr = function (repeatAttr, groupByExp) {
+	      function updateGroups(items) {
+	        ctrl.groups = [];
+	        angular.forEach(items, function (item) {
+	          var groupFn = $scope.$eval(groupByExp);
+	          var groupName = angular.isFunction(groupFn) ? groupFn(item) : item[groupFn];
+	          var group = ctrl.findGroupByName(groupName);
+	          if (group) {
+	            group.items.push(item);
+	          } else {
+	            ctrl.groups.push({ name: groupName, items: [item] });
+	          }
+	        });
+	        ctrl.items = [];
+	        ctrl.groups.forEach(function (group) {
+	          ctrl.items = ctrl.items.concat(group.items);
+	        });
+	      }
+
+	      function setPlainItems(items) {
+	        ctrl.items = items;
+	      }
+
+	      ctrl.setItemsFn = groupByExp ? updateGroups : setPlainItems;
+
+	      ctrl.parserResult = RepeatParser.parse(repeatAttr);
+
+	      ctrl.isGrouped = !!groupByExp;
+	      ctrl.itemProperty = ctrl.parserResult.itemName;
+
+	      ctrl.refreshItems = function (data) {
+	        data = data || ctrl.parserResult.source($scope);
+	        var selectedItems = ctrl.selected;
+	        //TODO should implement for single mode removeSelected
+	        if (angular.isArray(selectedItems) && !selectedItems.length || !ctrl.removeSelected) {
+	          ctrl.setItemsFn(data);
+	        } else {
+	          if (data !== undefined) {
+	            var filteredItems = data.filter(function (i) {
+	              return selectedItems.indexOf(i) < 0;
+	            });
+	            ctrl.setItemsFn(filteredItems);
+	          }
+	        }
+	      };
+
+	      // See https://github.com/angular/angular.js/blob/v1.2.15/src/ng/directive/ngRepeat.js#L259
+	      $scope.$watchCollection(ctrl.parserResult.source, function (items) {
+	        if (items === undefined || items === null) {
+	          // If the user specifies undefined or null => reset the collection
+	          // Special case: items can be undefined if the user did not initialized the collection on the scope
+	          // i.e $scope.addresses = [] is missing
+	          ctrl.items = [];
+	        } else {
+	          if (!angular.isArray(items)) {
+	            throw uiSelectMinErr("items", "Expected an array but got '{0}'.", items);
+	          } else {
+	            //Remove already selected items (ex: while searching)
+	            //TODO Should add a test
+	            ctrl.refreshItems(items);
+	            ctrl.ngModel.$modelValue = null; //Force scope model value and ngModel value to be out of sync to re-run formatters
+	          }
+	        }
+	      });
+	    };
+
+	    var _refreshDelayPromise;
+
+	    /**
+	     * Typeahead mode: lets the user refresh the collection using his own function.
+	     *
+	     * See Expose $select.search for external / remote filtering https://github.com/angular-ui/ui-select/pull/31
+	     */
+	    ctrl.refresh = function (refreshAttr) {
+	      if (refreshAttr !== undefined) {
+
+	        // Debounce
+	        // See https://github.com/angular-ui/bootstrap/blob/0.10.0/src/typeahead/typeahead.js#L155
+	        // FYI AngularStrap typeahead does not have debouncing: https://github.com/mgcrea/angular-strap/blob/v2.0.0-rc.4/src/typeahead/typeahead.js#L177
+	        if (_refreshDelayPromise) {
+	          $timeout.cancel(_refreshDelayPromise);
+	        }
+	        _refreshDelayPromise = $timeout(function () {
+	          $scope.$eval(refreshAttr);
+	        }, ctrl.refreshDelay);
+	      }
+	    };
+
+	    ctrl.setActiveItem = function (item) {
+	      ctrl.activeIndex = ctrl.items.indexOf(item);
+	    };
+
+	    ctrl.isActive = function (itemScope) {
+	      if (!ctrl.open) {
+	        return false;
+	      }
+	      var itemIndex = ctrl.items.indexOf(itemScope[ctrl.itemProperty]);
+	      var isActive = itemIndex === ctrl.activeIndex;
+
+	      if (!isActive || itemIndex < 0 && ctrl.taggingLabel !== false || itemIndex < 0 && ctrl.taggingLabel === false) {
+	        return false;
+	      }
+
+	      if (isActive && !angular.isUndefined(ctrl.onHighlightCallback)) {
+	        itemScope.$eval(ctrl.onHighlightCallback);
+	      }
+
+	      return isActive;
+	    };
+
+	    ctrl.isDisabled = function (itemScope) {
+
+	      if (!ctrl.open) return;
+
+	      var itemIndex = ctrl.items.indexOf(itemScope[ctrl.itemProperty]);
+	      var isDisabled = false;
+	      var item;
+
+	      if (itemIndex >= 0 && !angular.isUndefined(ctrl.disableChoiceExpression)) {
+	        item = ctrl.items[itemIndex];
+	        isDisabled = !!itemScope.$eval(ctrl.disableChoiceExpression); // force the boolean value
+	        item._uiSelectChoiceDisabled = isDisabled; // store this for later reference
+	      }
+
+	      return isDisabled;
+	    };
+
+	    // When the user selects an item with ENTER or clicks the dropdown
+	    ctrl.select = function (item, skipFocusser, $event) {
+	      if (item === undefined || !item._uiSelectChoiceDisabled) {
+
+	        if (!ctrl.items && !ctrl.search) return;
+
+	        if (!item || !item._uiSelectChoiceDisabled) {
+	          if (ctrl.tagging.isActivated) {
+	            // if taggingLabel is disabled, we pull from ctrl.search val
+	            if (ctrl.taggingLabel === false) {
+	              if (ctrl.activeIndex < 0) {
+	                item = ctrl.tagging.fct !== undefined ? ctrl.tagging.fct(ctrl.search) : ctrl.search;
+	                if (!item || angular.equals(ctrl.items[0], item)) {
+	                  return;
+	                }
+	              } else {
+	                // keyboard nav happened first, user selected from dropdown
+	                item = ctrl.items[ctrl.activeIndex];
+	              }
+	            } else {
+	              // tagging always operates at index zero, taggingLabel === false pushes
+	              // the ctrl.search value without having it injected
+	              if (ctrl.activeIndex === 0) {
+	                // ctrl.tagging pushes items to ctrl.items, so we only have empty val
+	                // for `item` if it is a detected duplicate
+	                if (item === undefined) return;
+
+	                // create new item on the fly if we don't already have one;
+	                // use tagging function if we have one
+	                if (ctrl.tagging.fct !== undefined && typeof item === "string") {
+	                  item = ctrl.tagging.fct(ctrl.search);
+	                  if (!item) return;
+	                  // if item type is 'string', apply the tagging label
+	                } else if (typeof item === "string") {
+	                  // trim the trailing space
+	                  item = item.replace(ctrl.taggingLabel, "").trim();
+	                }
+	              }
+	            }
+	            // search ctrl.selected for dupes potentially caused by tagging and return early if found
+	            if (ctrl.selected && angular.isArray(ctrl.selected) && ctrl.selected.filter(function (selection) {
+	              return angular.equals(selection, item);
+	            }).length > 0) {
+	              ctrl.close(skipFocusser);
+	              return;
+	            }
+	          }
+
+	          $scope.$broadcast("uis:select", item);
+
+	          var locals = {};
+	          locals[ctrl.parserResult.itemName] = item;
+
+	          $timeout(function () {
+	            ctrl.onSelectCallback($scope, {
+	              $item: item,
+	              $model: ctrl.parserResult.modelMapper($scope, locals)
+	            });
+	          });
+
+	          if (ctrl.closeOnSelect) {
+	            ctrl.close(skipFocusser);
+	          }
+	          if ($event && $event.type === "click") {
+	            ctrl.clickTriggeredSelect = true;
+	          }
+	        }
+	      }
+	    };
+
+	    // Closes the dropdown
+	    ctrl.close = function (skipFocusser) {
+	      if (!ctrl.open) return;
+	      if (ctrl.ngModel && ctrl.ngModel.$setTouched) ctrl.ngModel.$setTouched();
+	      _resetSearchInput();
+	      ctrl.open = false;
+
+	      $scope.$broadcast("uis:close", skipFocusser);
+	    };
+
+	    ctrl.setFocus = function () {
+	      if (!ctrl.focus) ctrl.focusInput[0].focus();
+	    };
+
+	    ctrl.clear = function ($event) {
+	      ctrl.select(undefined);
+	      $event.stopPropagation();
+	      ctrl.focusser[0].focus();
+	    };
+
+	    // Toggle dropdown
+	    ctrl.toggle = function (e) {
+	      if (ctrl.open) {
+	        ctrl.close();
+	        e.preventDefault();
+	        e.stopPropagation();
+	      } else {
+	        ctrl.activate();
+	      }
+	    };
+
+	    ctrl.isLocked = function (itemScope, itemIndex) {
+	      var isLocked,
+	          item = ctrl.selected[itemIndex];
+
+	      if (item && !angular.isUndefined(ctrl.lockChoiceExpression)) {
+	        isLocked = !!itemScope.$eval(ctrl.lockChoiceExpression); // force the boolean value
+	        item._uiSelectChoiceLocked = isLocked; // store this for later reference
+	      }
+
+	      return isLocked;
+	    };
+
+	    var sizeWatch = null;
+	    ctrl.sizeSearchInput = function () {
+
+	      var input = ctrl.searchInput[0],
+	          container = ctrl.searchInput.parent().parent()[0],
+	          calculateContainerWidth = function calculateContainerWidth() {
+	        // Return the container width only if the search input is visible
+	        return container.clientWidth * !!input.offsetParent;
+	      },
+	          updateIfVisible = function updateIfVisible(containerWidth) {
+	        if (containerWidth === 0) {
+	          return false;
+	        }
+	        var inputWidth = containerWidth - input.offsetLeft - 10;
+	        if (inputWidth < 50) inputWidth = containerWidth;
+	        ctrl.searchInput.css("width", inputWidth + "px");
+	        return true;
+	      };
+
+	      ctrl.searchInput.css("width", "10px");
+	      $timeout(function () {
+	        //Give tags time to render correctly
+	        if (sizeWatch === null && !updateIfVisible(calculateContainerWidth())) {
+	          sizeWatch = $scope.$watch(calculateContainerWidth, function (containerWidth) {
+	            if (updateIfVisible(containerWidth)) {
+	              sizeWatch();
+	              sizeWatch = null;
+	            }
+	          });
+	        }
+	      });
+	    };
+
+	    function _handleDropDownSelection(key) {
+	      var processed = true;
+	      switch (key) {
+	        case KEY.DOWN:
+	          if (!ctrl.open && ctrl.multiple) ctrl.activate(false, true); //In case its the search input in 'multiple' mode
+	          else if (ctrl.activeIndex < ctrl.items.length - 1) {
+	            ctrl.activeIndex++;
+	          }
+	          break;
+	        case KEY.UP:
+	          if (!ctrl.open && ctrl.multiple) ctrl.activate(false, true); //In case its the search input in 'multiple' mode
+	          else if (ctrl.activeIndex > 0 || ctrl.search.length === 0 && ctrl.tagging.isActivated && ctrl.activeIndex > -1) {
+	            ctrl.activeIndex--;
+	          }
+	          break;
+	        case KEY.TAB:
+	          if (!ctrl.multiple || ctrl.open) ctrl.select(ctrl.items[ctrl.activeIndex], true);
+	          break;
+	        case KEY.ENTER:
+	          if (ctrl.open && ctrl.activeIndex >= 0) {
+	            ctrl.select(ctrl.items[ctrl.activeIndex]); // Make sure at least one dropdown item is highlighted before adding.
+	          } else {
+	            ctrl.activate(false, true); //In case its the search input in 'multiple' mode
+	          }
+	          break;
+	        case KEY.ESC:
+	          ctrl.close();
+	          break;
+	        default:
+	          processed = false;
+	      }
+	      return processed;
+	    }
+
+	    // Bind to keyboard shortcuts
+	    ctrl.searchInput.on("keydown", function (e) {
+
+	      var key = e.which;
+
+	      // if(~[KEY.ESC,KEY.TAB].indexOf(key)){
+	      //   //TODO: SEGURO?
+	      //   ctrl.close();
+	      // }
+
+	      $scope.$apply(function () {
+
+	        var tagged = false;
+
+	        if (ctrl.items.length > 0 || ctrl.tagging.isActivated) {
+	          _handleDropDownSelection(key);
+	          if (ctrl.taggingTokens.isActivated) {
+	            for (var i = 0; i < ctrl.taggingTokens.tokens.length; i++) {
+	              if (ctrl.taggingTokens.tokens[i] === KEY.MAP[e.keyCode]) {
+	                // make sure there is a new value to push via tagging
+	                if (ctrl.search.length > 0) {
+	                  tagged = true;
+	                }
+	              }
+	            }
+	            if (tagged) {
+	              $timeout(function () {
+	                ctrl.searchInput.triggerHandler("tagged");
+	                var newItem = ctrl.search.replace(KEY.MAP[e.keyCode], "").trim();
+	                if (ctrl.tagging.fct) {
+	                  newItem = ctrl.tagging.fct(newItem);
+	                }
+	                if (newItem) ctrl.select(newItem, true);
+	              });
+	            }
+	          }
+	        }
+	      });
+
+	      if (KEY.isVerticalMovement(key) && ctrl.items.length > 0) {
+	        _ensureHighlightVisible();
+	      }
+	    });
+
+	    // If tagging try to split by tokens and add items
+	    ctrl.searchInput.on("paste", function (e) {
+	      var data = e.originalEvent.clipboardData.getData("text/plain");
+	      if (data && data.length > 0 && ctrl.taggingTokens.isActivated && ctrl.tagging.fct) {
+	        var items = data.split(ctrl.taggingTokens.tokens[0]); // split by first token only
+	        if (items && items.length > 0) {
+	          angular.forEach(items, function (item) {
+	            var newItem = ctrl.tagging.fct(item);
+	            if (newItem) {
+	              ctrl.select(newItem, true);
+	            }
+	          });
+	          e.preventDefault();
+	          e.stopPropagation();
+	        }
+	      }
+	    });
+
+	    ctrl.searchInput.on("tagged", function () {
+	      $timeout(function () {
+	        _resetSearchInput();
+	      });
+	    });
+
+	    // See https://github.com/ivaynberg/select2/blob/3.4.6/select2.js#L1431
+	    function _ensureHighlightVisible() {
+	      var container = $element.querySelectorAll(".ui-select-choices-content");
+	      var choices = container.querySelectorAll(".ui-select-choices-row");
+	      if (choices.length < 1) {
+	        throw uiSelectMinErr("choices", "Expected multiple .ui-select-choices-row but got '{0}'.", choices.length);
+	      }
+
+	      if (ctrl.activeIndex < 0) {
+	        return;
+	      }
+
+	      var highlighted = choices[ctrl.activeIndex];
+	      var posY = highlighted.offsetTop + highlighted.clientHeight - container[0].scrollTop;
+	      var height = container[0].offsetHeight;
+
+	      if (posY > height) {
+	        container[0].scrollTop += posY - height;
+	      } else if (posY < highlighted.clientHeight) {
+	        if (ctrl.isGrouped && ctrl.activeIndex === 0) container[0].scrollTop = 0; //To make group header visible when going all the way up
+	        else container[0].scrollTop -= highlighted.clientHeight - posY;
+	      }
+	    }
+
+	    $scope.$on("$destroy", function () {
+	      ctrl.searchInput.off("keyup keydown tagged blur paste");
+	    });
+	  }]);
+
+	  uis.directive("uiSelect", ["$document", "uiSelectConfig", "uiSelectMinErr", "uisOffset", "$compile", "$parse", "$timeout", function ($document, uiSelectConfig, uiSelectMinErr, uisOffset, $compile, $parse, $timeout) {
+
+	    return {
+	      restrict: "EA",
+	      templateUrl: function templateUrl(tElement, tAttrs) {
+	        var theme = tAttrs.theme || uiSelectConfig.theme;
+	        return theme + (angular.isDefined(tAttrs.multiple) ? "/select-multiple.tpl.html" : "/select.tpl.html");
+	      },
+	      replace: true,
+	      transclude: true,
+	      require: ["uiSelect", "^ngModel"],
+	      scope: true,
+
+	      controller: "uiSelectCtrl",
+	      controllerAs: "$select",
+	      compile: function compile(tElement, tAttrs) {
+
+	        //Multiple or Single depending if multiple attribute presence
+	        if (angular.isDefined(tAttrs.multiple)) tElement.append("<ui-select-multiple/>").removeAttr("multiple");else tElement.append("<ui-select-single/>");
+
+	        return function (scope, element, attrs, ctrls, transcludeFn) {
+
+	          var $select = ctrls[0];
+	          var ngModel = ctrls[1];
+
+	          $select.generatedId = uiSelectConfig.generateId();
+	          $select.baseTitle = attrs.title || "Select box";
+	          $select.focusserTitle = $select.baseTitle + " focus";
+	          $select.focusserId = "focusser-" + $select.generatedId;
+
+	          $select.closeOnSelect = (function () {
+	            if (angular.isDefined(attrs.closeOnSelect)) {
+	              return $parse(attrs.closeOnSelect)();
+	            } else {
+	              return uiSelectConfig.closeOnSelect;
+	            }
+	          })();
+
+	          $select.onSelectCallback = $parse(attrs.onSelect);
+	          $select.onRemoveCallback = $parse(attrs.onRemove);
+
+	          //Set reference to ngModel from uiSelectCtrl
+	          $select.ngModel = ngModel;
+
+	          $select.choiceGrouped = function (group) {
+	            return $select.isGrouped && group && group.name;
+	          };
+
+	          if (attrs.tabindex) {
+	            attrs.$observe("tabindex", function (value) {
+	              $select.focusInput.attr("tabindex", value);
+	              element.removeAttr("tabindex");
+	            });
+	          }
+
+	          scope.$watch("searchEnabled", function () {
+	            var searchEnabled = scope.$eval(attrs.searchEnabled);
+	            $select.searchEnabled = searchEnabled !== undefined ? searchEnabled : uiSelectConfig.searchEnabled;
+	          });
+
+	          scope.$watch("sortable", function () {
+	            var sortable = scope.$eval(attrs.sortable);
+	            $select.sortable = sortable !== undefined ? sortable : uiSelectConfig.sortable;
+	          });
+
+	          attrs.$observe("disabled", function () {
+	            // No need to use $eval() (thanks to ng-disabled) since we already get a boolean instead of a string
+	            $select.disabled = attrs.disabled !== undefined ? attrs.disabled : false;
+	          });
+
+	          attrs.$observe("resetSearchInput", function () {
+	            // $eval() is needed otherwise we get a string instead of a boolean
+	            var resetSearchInput = scope.$eval(attrs.resetSearchInput);
+	            $select.resetSearchInput = resetSearchInput !== undefined ? resetSearchInput : true;
+	          });
+
+	          attrs.$observe("tagging", function () {
+	            if (attrs.tagging !== undefined) {
+	              // $eval() is needed otherwise we get a string instead of a boolean
+	              var taggingEval = scope.$eval(attrs.tagging);
+	              $select.tagging = { isActivated: true, fct: taggingEval !== true ? taggingEval : undefined };
+	            } else {
+	              $select.tagging = { isActivated: false, fct: undefined };
+	            }
+	          });
+
+	          attrs.$observe("taggingLabel", function () {
+	            if (attrs.tagging !== undefined) {
+	              // check eval for FALSE, in this case, we disable the labels
+	              // associated with tagging
+	              if (attrs.taggingLabel === "false") {
+	                $select.taggingLabel = false;
+	              } else {
+	                $select.taggingLabel = attrs.taggingLabel !== undefined ? attrs.taggingLabel : "(new)";
+	              }
+	            }
+	          });
+
+	          attrs.$observe("taggingTokens", function () {
+	            if (attrs.tagging !== undefined) {
+	              var tokens = attrs.taggingTokens !== undefined ? attrs.taggingTokens.split("|") : [",", "ENTER"];
+	              $select.taggingTokens = { isActivated: true, tokens: tokens };
+	            }
+	          });
+
+	          //Automatically gets focus when loaded
+	          if (angular.isDefined(attrs.autofocus)) {
+	            $timeout(function () {
+	              $select.setFocus();
+	            });
+	          }
+
+	          //Gets focus based on scope event name (e.g. focus-on='SomeEventName')
+	          if (angular.isDefined(attrs.focusOn)) {
+	            scope.$on(attrs.focusOn, function () {
+	              $timeout(function () {
+	                $select.setFocus();
+	              });
+	            });
+	          }
+
+	          function onDocumentClick(e) {
+	            if (!$select.open) {
+	              return;
+	            } //Skip it if dropdown is close
+
+	            var contains = false;
+
+	            if (window.jQuery) {
+	              // Firefox 3.6 does not support element.contains()
+	              // See Node.contains https://developer.mozilla.org/en-US/docs/Web/API/Node.contains
+	              contains = window.jQuery.contains(element[0], e.target);
+	            } else {
+	              contains = element[0].contains(e.target);
+	            }
+
+	            if (!contains && !$select.clickTriggeredSelect) {
+	              //Will lose focus only with certain targets
+	              var focusableControls = ["input", "button", "textarea"];
+	              var targetScope = angular.element(e.target).scope(); //To check if target is other ui-select
+	              var skipFocusser = targetScope && targetScope.$select && targetScope.$select !== $select; //To check if target is other ui-select
+	              if (!skipFocusser) skipFocusser = ~focusableControls.indexOf(e.target.tagName.toLowerCase()); //Check if target is input, button or textarea
+	              $select.close(skipFocusser);
+	              scope.$digest();
+	            }
+	            $select.clickTriggeredSelect = false;
+	          }
+
+	          // See Click everywhere but here event http://stackoverflow.com/questions/12931369
+	          $document.on("click", onDocumentClick);
+
+	          scope.$on("$destroy", function () {
+	            $document.off("click", onDocumentClick);
+	          });
+
+	          // Move transcluded elements to their correct position in main template
+	          transcludeFn(scope, function (clone) {
+	            // See Transclude in AngularJS http://blog.omkarpatil.com/2012/11/transclude-in-angularjs.html
+
+	            // One day jqLite will be replaced by jQuery and we will be able to write:
+	            // var transcludedElement = clone.filter('.my-class')
+	            // instead of creating a hackish DOM element:
+	            var transcluded = angular.element("<div>").append(clone);
+
+	            var transcludedMatch = transcluded.querySelectorAll(".ui-select-match");
+	            transcludedMatch.removeAttr("ui-select-match"); //To avoid loop in case directive as attr
+	            transcludedMatch.removeAttr("data-ui-select-match"); // Properly handle HTML5 data-attributes
+	            if (transcludedMatch.length !== 1) {
+	              throw uiSelectMinErr("transcluded", "Expected 1 .ui-select-match but got '{0}'.", transcludedMatch.length);
+	            }
+	            element.querySelectorAll(".ui-select-match").replaceWith(transcludedMatch);
+
+	            var transcludedChoices = transcluded.querySelectorAll(".ui-select-choices");
+	            transcludedChoices.removeAttr("ui-select-choices"); //To avoid loop in case directive as attr
+	            transcludedChoices.removeAttr("data-ui-select-choices"); // Properly handle HTML5 data-attributes
+	            if (transcludedChoices.length !== 1) {
+	              throw uiSelectMinErr("transcluded", "Expected 1 .ui-select-choices but got '{0}'.", transcludedChoices.length);
+	            }
+	            element.querySelectorAll(".ui-select-choices").replaceWith(transcludedChoices);
+	          });
+
+	          // Support for appending the select field to the body when its open
+	          var appendToBody = scope.$eval(attrs.appendToBody);
+	          if (appendToBody !== undefined ? appendToBody : uiSelectConfig.appendToBody) {
+	            scope.$watch("$select.open", function (isOpen) {
+	              if (isOpen) {
+	                positionDropdown();
+	              } else {
+	                resetDropdown();
+	              }
+	            });
+
+	            // Move the dropdown back to its original location when the scope is destroyed. Otherwise
+	            // it might stick around when the user routes away or the select field is otherwise removed
+	            scope.$on("$destroy", function () {
+	              resetDropdown();
+	            });
+	          }
+
+	          // Hold on to a reference to the .ui-select-container element for appendToBody support
+	          var placeholder = null,
+	              originalWidth = "";
+
+	          function positionDropdown() {
+	            // Remember the absolute position of the element
+	            var offset = uisOffset(element);
+
+	            // Clone the element into a placeholder element to take its original place in the DOM
+	            placeholder = angular.element("<div class=\"ui-select-placeholder\"></div>");
+	            placeholder[0].style.width = offset.width + "px";
+	            placeholder[0].style.height = offset.height + "px";
+	            element.after(placeholder);
+
+	            // Remember the original value of the element width inline style, so it can be restored
+	            // when the dropdown is closed
+	            originalWidth = element[0].style.width;
+
+	            // Now move the actual dropdown element to the end of the body
+	            $document.find("body").append(element);
+
+	            element[0].style.position = "absolute";
+	            element[0].style.left = offset.left + "px";
+	            element[0].style.top = offset.top + "px";
+	            element[0].style.width = offset.width + "px";
+	          }
+
+	          function resetDropdown() {
+	            if (placeholder === null) {
+	              // The dropdown has not actually been display yet, so there's nothing to reset
+	              return;
+	            }
+
+	            // Move the dropdown element back to its original location in the DOM
+	            placeholder.replaceWith(element);
+	            placeholder = null;
+
+	            element[0].style.position = "";
+	            element[0].style.left = "";
+	            element[0].style.top = "";
+	            element[0].style.width = originalWidth;
+	          }
+	        };
+	      }
+	    };
+	  }]);
+
+	  uis.directive("uiSelectMatch", ["uiSelectConfig", function (uiSelectConfig) {
+	    return {
+	      restrict: "EA",
+	      require: "^uiSelect",
+	      replace: true,
+	      transclude: true,
+	      templateUrl: function templateUrl(tElement) {
+	        // Gets theme attribute from parent (ui-select)
+	        var theme = tElement.parent().attr("theme") || uiSelectConfig.theme;
+	        var multi = tElement.parent().attr("multiple");
+	        return theme + (multi ? "/match-multiple.tpl.html" : "/match.tpl.html");
+	      },
+	      link: function link(scope, element, attrs, $select) {
+	        $select.lockChoiceExpression = attrs.uiLockChoice;
+	        attrs.$observe("placeholder", function (placeholder) {
+	          $select.placeholder = placeholder !== undefined ? placeholder : uiSelectConfig.placeholder;
+	        });
+
+	        function setAllowClear(allow) {
+	          $select.allowClear = angular.isDefined(allow) ? allow === "" ? true : allow.toLowerCase() === "true" : false;
+	        }
+
+	        attrs.$observe("allowClear", setAllowClear);
+	        setAllowClear(attrs.allowClear);
+
+	        if ($select.multiple) {
+	          $select.sizeSearchInput();
+	        }
+	      }
+	    };
+	  }]);
+
+	  uis.directive("uiSelectMultiple", ["uiSelectMinErr", "$timeout", function (uiSelectMinErr, $timeout) {
+	    return {
+	      restrict: "EA",
+	      require: ["^uiSelect", "^ngModel"],
+
+	      controller: ["$scope", "$timeout", function ($scope, $timeout) {
+
+	        var ctrl = this,
+	            $select = $scope.$select,
+	            ngModel;
+
+	        //Wait for link fn to inject it
+	        $scope.$evalAsync(function () {
+	          ngModel = $scope.ngModel;
+	        });
+
+	        ctrl.activeMatchIndex = -1;
+
+	        ctrl.updateModel = function () {
+	          ngModel.$setViewValue(Date.now()); //Set timestamp as a unique string to force changes
+	          ctrl.refreshComponent();
+	        };
+
+	        ctrl.refreshComponent = function () {
+	          //Remove already selected items
+	          //e.g. When user clicks on a selection, the selected array changes and
+	          //the dropdown should remove that item
+	          $select.refreshItems();
+	          $select.sizeSearchInput();
+	        };
+
+	        // Remove item from multiple select
+	        ctrl.removeChoice = function (index) {
+
+	          var removedChoice = $select.selected[index];
+
+	          // if the choice is locked, can't remove it
+	          if (removedChoice._uiSelectChoiceLocked) return;
+
+	          var locals = {};
+	          locals[$select.parserResult.itemName] = removedChoice;
+
+	          $select.selected.splice(index, 1);
+	          ctrl.activeMatchIndex = -1;
+	          $select.sizeSearchInput();
+
+	          // Give some time for scope propagation.
+	          $timeout(function () {
+	            $select.onRemoveCallback($scope, {
+	              $item: removedChoice,
+	              $model: $select.parserResult.modelMapper($scope, locals)
+	            });
+	          });
+
+	          ctrl.updateModel();
+	        };
+
+	        ctrl.getPlaceholder = function () {
+	          //Refactor single?
+	          if ($select.selected.length) return;
+	          return $select.placeholder;
+	        };
+	      }],
+	      controllerAs: "$selectMultiple",
+
+	      link: function link(scope, element, attrs, ctrls) {
+
+	        var $select = ctrls[0];
+	        var ngModel = scope.ngModel = ctrls[1];
+	        var $selectMultiple = scope.$selectMultiple;
+
+	        //$select.selected = raw selected objects (ignoring any property binding)
+
+	        $select.multiple = true;
+	        $select.removeSelected = true;
+
+	        //Input that will handle focus
+	        $select.focusInput = $select.searchInput;
+
+	        //From view --> model
+	        ngModel.$parsers.unshift(function () {
+	          var locals = {},
+	              result,
+	              resultMultiple = [];
+	          for (var j = $select.selected.length - 1; j >= 0; j--) {
+	            locals = {};
+	            locals[$select.parserResult.itemName] = $select.selected[j];
+	            result = $select.parserResult.modelMapper(scope, locals);
+	            resultMultiple.unshift(result);
+	          }
+	          return resultMultiple;
+	        });
+
+	        // From model --> view
+	        ngModel.$formatters.unshift(function (inputValue) {
+	          var data = $select.parserResult.source(scope, { $select: { search: "" } }),
+	              //Overwrite $search
+	          locals = {},
+	              result;
+	          if (!data) return inputValue;
+	          var resultMultiple = [];
+	          var checkFnMultiple = function checkFnMultiple(list, value) {
+	            if (!list || !list.length) {
+	              return;
+	            }for (var p = list.length - 1; p >= 0; p--) {
+	              locals[$select.parserResult.itemName] = list[p];
+	              result = $select.parserResult.modelMapper(scope, locals);
+	              if ($select.parserResult.trackByExp) {
+	                var matches = /\.(.+)/.exec($select.parserResult.trackByExp);
+	                if (matches.length > 0 && result[matches[1]] == value[matches[1]]) {
+	                  resultMultiple.unshift(list[p]);
+	                  return true;
+	                }
+	              }
+	              if (angular.equals(result, value)) {
+	                resultMultiple.unshift(list[p]);
+	                return true;
+	              }
+	            }
+	            return false;
+	          };
+	          if (!inputValue) return resultMultiple; //If ngModel was undefined
+	          for (var k = inputValue.length - 1; k >= 0; k--) {
+	            //Check model array of currently selected items
+	            if (!checkFnMultiple($select.selected, inputValue[k])) {
+	              //Check model array of all items available
+	              if (!checkFnMultiple(data, inputValue[k])) {
+	                //If not found on previous lists, just add it directly to resultMultiple
+	                resultMultiple.unshift(inputValue[k]);
+	              }
+	            }
+	          }
+	          return resultMultiple;
+	        });
+
+	        //Watch for external model changes
+	        scope.$watchCollection(function () {
+	          return ngModel.$modelValue;
+	        }, function (newValue, oldValue) {
+	          if (oldValue != newValue) {
+	            ngModel.$modelValue = null; //Force scope model value and ngModel value to be out of sync to re-run formatters
+	            $selectMultiple.refreshComponent();
+	          }
+	        });
+
+	        ngModel.$render = function () {
+	          // Make sure that model value is array
+	          if (!angular.isArray(ngModel.$viewValue)) {
+	            // Have tolerance for null or undefined values
+	            if (angular.isUndefined(ngModel.$viewValue) || ngModel.$viewValue === null) {
+	              $select.selected = [];
+	            } else {
+	              throw uiSelectMinErr("multiarr", "Expected model value to be array but got '{0}'", ngModel.$viewValue);
+	            }
+	          }
+	          $select.selected = ngModel.$viewValue;
+	          scope.$evalAsync(); //To force $digest
+	        };
+
+	        scope.$on("uis:select", function (event, item) {
+	          $select.selected.push(item);
+	          $selectMultiple.updateModel();
+	        });
+
+	        scope.$on("uis:activate", function () {
+	          $selectMultiple.activeMatchIndex = -1;
+	        });
+
+	        scope.$watch("$select.disabled", function (newValue, oldValue) {
+	          // As the search input field may now become visible, it may be necessary to recompute its size
+	          if (oldValue && !newValue) $select.sizeSearchInput();
+	        });
+
+	        $select.searchInput.on("keydown", function (e) {
+	          var key = e.which;
+	          scope.$apply(function () {
+	            var processed = false;
+	            // var tagged = false; //Checkme
+	            if (KEY.isHorizontalMovement(key)) {
+	              processed = _handleMatchSelection(key);
+	            }
+	            if (processed && key != KEY.TAB) {
+	              //TODO Check si el tab selecciona aun correctamente
+	              //Crear test
+	              e.preventDefault();
+	              e.stopPropagation();
+	            }
+	          });
+	        });
+	        function _getCaretPosition(el) {
+	          if (angular.isNumber(el.selectionStart)) {
+	            return el.selectionStart;
+	            // selectionStart is not supported in IE8 and we don't want hacky workarounds so we compromise
+	          } else {
+	            return el.value.length;
+	          }
+	        }
+	        // Handles selected options in "multiple" mode
+	        function _handleMatchSelection(key) {
+	          var caretPosition = _getCaretPosition($select.searchInput[0]),
+	              length = $select.selected.length,
+
+	          // none  = -1,
+	          first = 0,
+	              last = length - 1,
+	              curr = $selectMultiple.activeMatchIndex,
+	              next = $selectMultiple.activeMatchIndex + 1,
+	              prev = $selectMultiple.activeMatchIndex - 1,
+	              newIndex = curr;
+
+	          if (caretPosition > 0 || $select.search.length && key == KEY.RIGHT) {
+	            return false;
+	          }$select.close();
+
+	          function getNewActiveMatchIndex() {
+	            switch (key) {
+	              case KEY.LEFT:
+	                // Select previous/first item
+	                if (~$selectMultiple.activeMatchIndex) {
+	                  return prev;
+	                  // Select last item
+	                } else {
+	                  return last;
+	                }break;
+	              case KEY.RIGHT:
+	                // Open drop-down
+	                if (! ~$selectMultiple.activeMatchIndex || curr === last) {
+	                  $select.activate();
+	                  return false;
+	                }
+	                // Select next/last item
+	                else {
+	                  return next;
+	                }break;
+	              case KEY.BACKSPACE:
+	                // Remove selected item and select previous/first
+	                if (~$selectMultiple.activeMatchIndex) {
+	                  $selectMultiple.removeChoice(curr);
+	                  return prev;
+	                }
+	                // Select last item
+	                else {
+	                  return last;
+	                }break;
+	              case KEY.DELETE:
+	                // Remove selected item and select next item
+	                if (~$selectMultiple.activeMatchIndex) {
+	                  $selectMultiple.removeChoice($selectMultiple.activeMatchIndex);
+	                  return curr;
+	                } else {
+	                  return false;
+	                }}
+	          }
+
+	          newIndex = getNewActiveMatchIndex();
+
+	          if (!$select.selected.length || newIndex === false) $selectMultiple.activeMatchIndex = -1;else $selectMultiple.activeMatchIndex = Math.min(last, Math.max(first, newIndex));
+
+	          return true;
+	        }
+
+	        $select.searchInput.on("keyup", function (e) {
+
+	          if (!KEY.isVerticalMovement(e.which)) {
+	            scope.$evalAsync(function () {
+	              $select.activeIndex = $select.taggingLabel === false ? -1 : 0;
+	            });
+	          }
+	          // Push a "create new" item into array if there is a search string
+	          if ($select.tagging.isActivated && $select.search.length > 0) {
+
+	            // return early with these keys
+	            if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e) || e.which === KEY.ESC || KEY.isVerticalMovement(e.which)) {
+	              return;
+	            }
+	            // always reset the activeIndex to the first item when tagging
+	            $select.activeIndex = $select.taggingLabel === false ? -1 : 0;
+	            // taggingLabel === false bypasses all of this
+	            if ($select.taggingLabel === false) return;
+
+	            var items = angular.copy($select.items);
+	            var stashArr = angular.copy($select.items);
+	            var newItem;
+	            var item;
+	            var hasTag = false;
+	            var dupeIndex = -1;
+	            var tagItems;
+	            var tagItem;
+
+	            // case for object tagging via transform `$select.tagging.fct` function
+	            if ($select.tagging.fct !== undefined) {
+	              tagItems = $select.$filter("filter")(items, { isTag: true });
+	              if (tagItems.length > 0) {
+	                tagItem = tagItems[0];
+	              }
+	              // remove the first element, if it has the `isTag` prop we generate a new one with each keyup, shaving the previous
+	              if (items.length > 0 && tagItem) {
+	                hasTag = true;
+	                items = items.slice(1, items.length);
+	                stashArr = stashArr.slice(1, stashArr.length);
+	              }
+	              newItem = $select.tagging.fct($select.search);
+	              newItem.isTag = true;
+	              // verify the the tag doesn't match the value of an existing item
+	              if (stashArr.filter(function (origItem) {
+	                return angular.equals(origItem, $select.tagging.fct($select.search));
+	              }).length > 0) {
+	                return;
+	              }
+	              newItem.isTag = true;
+	              // handle newItem string and stripping dupes in tagging string context
+	            } else {
+	              // find any tagging items already in the $select.items array and store them
+	              tagItems = $select.$filter("filter")(items, function (item) {
+	                return item.match($select.taggingLabel);
+	              });
+	              if (tagItems.length > 0) {
+	                tagItem = tagItems[0];
+	              }
+	              item = items[0];
+	              // remove existing tag item if found (should only ever be one tag item)
+	              if (item !== undefined && items.length > 0 && tagItem) {
+	                hasTag = true;
+	                items = items.slice(1, items.length);
+	                stashArr = stashArr.slice(1, stashArr.length);
+	              }
+	              newItem = $select.search + " " + $select.taggingLabel;
+	              if (_findApproxDupe($select.selected, $select.search) > -1) {
+	                return;
+	              }
+	              // verify the the tag doesn't match the value of an existing item from
+	              // the searched data set or the items already selected
+	              if (_findCaseInsensitiveDupe(stashArr.concat($select.selected))) {
+	                // if there is a tag from prev iteration, strip it / queue the change
+	                // and return early
+	                if (hasTag) {
+	                  items = stashArr;
+	                  scope.$evalAsync(function () {
+	                    $select.activeIndex = 0;
+	                    $select.items = items;
+	                  });
+	                }
+	                return;
+	              }
+	              if (_findCaseInsensitiveDupe(stashArr)) {
+	                // if there is a tag from prev iteration, strip it
+	                if (hasTag) {
+	                  $select.items = stashArr.slice(1, stashArr.length);
+	                }
+	                return;
+	              }
+	            }
+	            if (hasTag) dupeIndex = _findApproxDupe($select.selected, newItem);
+	            // dupe found, shave the first item
+	            if (dupeIndex > -1) {
+	              items = items.slice(dupeIndex + 1, items.length - 1);
+	            } else {
+	              items = [];
+	              items.push(newItem);
+	              items = items.concat(stashArr);
+	            }
+	            scope.$evalAsync(function () {
+	              $select.activeIndex = 0;
+	              $select.items = items;
+	            });
+	          }
+	        });
+	        function _findCaseInsensitiveDupe(arr) {
+	          if (arr === undefined || $select.search === undefined) {
+	            return false;
+	          }
+	          var hasDupe = arr.filter(function (origItem) {
+	            if ($select.search.toUpperCase() === undefined || origItem === undefined) {
+	              return false;
+	            }
+	            return origItem.toUpperCase() === $select.search.toUpperCase();
+	          }).length > 0;
+
+	          return hasDupe;
+	        }
+	        function _findApproxDupe(haystack, needle) {
+	          var dupeIndex = -1;
+	          if (angular.isArray(haystack)) {
+	            var tempArr = angular.copy(haystack);
+	            for (var i = 0; i < tempArr.length; i++) {
+	              // handle the simple string version of tagging
+	              if ($select.tagging.fct === undefined) {
+	                // search the array for the match
+	                if (tempArr[i] + " " + $select.taggingLabel === needle) {
+	                  dupeIndex = i;
+	                }
+	                // handle the object tagging implementation
+	              } else {
+	                var mockObj = tempArr[i];
+	                mockObj.isTag = true;
+	                if (angular.equals(mockObj, needle)) {
+	                  dupeIndex = i;
+	                }
+	              }
+	            }
+	          }
+	          return dupeIndex;
+	        }
+
+	        $select.searchInput.on("blur", function () {
+	          $timeout(function () {
+	            $selectMultiple.activeMatchIndex = -1;
+	          });
+	        });
+	      }
+	    };
+	  }]);
+	  uis.directive("uiSelectSingle", ["$timeout", "$compile", function ($timeout, $compile) {
+	    return {
+	      restrict: "EA",
+	      require: ["^uiSelect", "^ngModel"],
+	      link: function link(scope, element, attrs, ctrls) {
+
+	        var $select = ctrls[0];
+	        var ngModel = ctrls[1];
+
+	        //From view --> model
+	        ngModel.$parsers.unshift(function (inputValue) {
+	          var locals = {},
+	              result;
+	          locals[$select.parserResult.itemName] = inputValue;
+	          result = $select.parserResult.modelMapper(scope, locals);
+	          return result;
+	        });
+
+	        //From model --> view
+	        ngModel.$formatters.unshift(function (inputValue) {
+	          var data = $select.parserResult.source(scope, { $select: { search: "" } }),
+	              //Overwrite $search
+	          locals = {},
+	              result;
+	          if (data) {
+	            var checkFnSingle = function checkFnSingle(d) {
+	              locals[$select.parserResult.itemName] = d;
+	              result = $select.parserResult.modelMapper(scope, locals);
+	              return result == inputValue;
+	            };
+	            //If possible pass same object stored in $select.selected
+	            if ($select.selected && checkFnSingle($select.selected)) {
+	              return $select.selected;
+	            }
+	            for (var i = data.length - 1; i >= 0; i--) {
+	              if (checkFnSingle(data[i])) return data[i];
+	            }
+	          }
+	          return inputValue;
+	        });
+
+	        //Update viewValue if model change
+	        scope.$watch("$select.selected", function (newValue) {
+	          if (ngModel.$viewValue !== newValue) {
+	            ngModel.$setViewValue(newValue);
+	          }
+	        });
+
+	        ngModel.$render = function () {
+	          $select.selected = ngModel.$viewValue;
+	        };
+
+	        scope.$on("uis:select", function (event, item) {
+	          $select.selected = item;
+	        });
+
+	        scope.$on("uis:close", function (event, skipFocusser) {
+	          $timeout(function () {
+	            $select.focusser.prop("disabled", false);
+	            if (!skipFocusser) $select.focusser[0].focus();
+	          }, 0, false);
+	        });
+
+	        scope.$on("uis:activate", function () {
+	          focusser.prop("disabled", true); //Will reactivate it on .close()
+	        });
+
+	        //Idea from: https://github.com/ivaynberg/select2/blob/79b5bf6db918d7560bdd959109b7bcfb47edaf43/select2.js#L1954
+	        var focusser = angular.element("<input ng-disabled='$select.disabled' class='ui-select-focusser ui-select-offscreen' type='text' id='{{ $select.focusserId }}' aria-label='{{ $select.focusserTitle }}' aria-haspopup='true' role='button' />");
+	        $compile(focusser)(scope);
+	        $select.focusser = focusser;
+
+	        //Input that will handle focus
+	        $select.focusInput = focusser;
+
+	        element.parent().append(focusser);
+	        focusser.bind("focus", function () {
+	          scope.$evalAsync(function () {
+	            $select.focus = true;
+	          });
+	        });
+	        focusser.bind("blur", function () {
+	          scope.$evalAsync(function () {
+	            $select.focus = false;
+	          });
+	        });
+	        focusser.bind("keydown", function (e) {
+
+	          if (e.which === KEY.BACKSPACE) {
+	            e.preventDefault();
+	            e.stopPropagation();
+	            $select.select(undefined);
+	            scope.$apply();
+	            return;
+	          }
+
+	          if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e) || e.which === KEY.ESC) {
+	            return;
+	          }
+
+	          if (e.which == KEY.DOWN || e.which == KEY.UP || e.which == KEY.ENTER || e.which == KEY.SPACE) {
+	            e.preventDefault();
+	            e.stopPropagation();
+	            $select.activate();
+	          }
+
+	          scope.$digest();
+	        });
+
+	        focusser.bind("keyup input", function (e) {
+
+	          if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e) || e.which === KEY.ESC || e.which == KEY.ENTER || e.which === KEY.BACKSPACE) {
+	            return;
+	          }
+
+	          $select.activate(focusser.val()); //User pressed some regular key, so we pass it to the search input
+	          focusser.val("");
+	          scope.$digest();
+	        });
+	      }
+	    };
+	  }]);
+	  // Make multiple matches sortable
+	  uis.directive("uiSelectSort", ["$timeout", "uiSelectConfig", "uiSelectMinErr", function ($timeout, uiSelectConfig, uiSelectMinErr) {
+	    return {
+	      require: "^uiSelect",
+	      link: function link(scope, element, attrs, $select) {
+	        if (scope[attrs.uiSelectSort] === null) {
+	          throw uiSelectMinErr("sort", "Expected a list to sort");
+	        }
+
+	        var options = angular.extend({
+	          axis: "horizontal"
+	        }, scope.$eval(attrs.uiSelectSortOptions));
+
+	        var axis = options.axis,
+	            draggingClassName = "dragging",
+	            droppingClassName = "dropping",
+	            droppingBeforeClassName = "dropping-before",
+	            droppingAfterClassName = "dropping-after";
+
+	        scope.$watch(function () {
+	          return $select.sortable;
+	        }, function (n) {
+	          if (n) {
+	            element.attr("draggable", true);
+	          } else {
+	            element.removeAttr("draggable");
+	          }
+	        });
+
+	        element.on("dragstart", function (e) {
+	          element.addClass(draggingClassName);
+
+	          (e.dataTransfer || e.originalEvent.dataTransfer).setData("text/plain", scope.$index);
+	        });
+
+	        element.on("dragend", function () {
+	          element.removeClass(draggingClassName);
+	        });
+
+	        var move = function move(from, to) {
+	          /*jshint validthis: true */
+	          this.splice(to, 0, this.splice(from, 1)[0]);
+	        };
+
+	        var dragOverHandler = function dragOverHandler(e) {
+	          e.preventDefault();
+
+	          var offset = axis === "vertical" ? e.offsetY || e.layerY || (e.originalEvent ? e.originalEvent.offsetY : 0) : e.offsetX || e.layerX || (e.originalEvent ? e.originalEvent.offsetX : 0);
+
+	          if (offset < this[axis === "vertical" ? "offsetHeight" : "offsetWidth"] / 2) {
+	            element.removeClass(droppingAfterClassName);
+	            element.addClass(droppingBeforeClassName);
+	          } else {
+	            element.removeClass(droppingBeforeClassName);
+	            element.addClass(droppingAfterClassName);
+	          }
+	        };
+
+	        var dropTimeout;
+
+	        var dropHandler = function dropHandler(e) {
+	          e.preventDefault();
+
+	          var droppedItemIndex = parseInt((e.dataTransfer || e.originalEvent.dataTransfer).getData("text/plain"), 10);
+
+	          // prevent event firing multiple times in firefox
+	          $timeout.cancel(dropTimeout);
+	          dropTimeout = $timeout(function () {
+	            _dropHandler(droppedItemIndex);
+	          }, 20);
+	        };
+
+	        var _dropHandler = function _dropHandler(droppedItemIndex) {
+	          var theList = scope.$eval(attrs.uiSelectSort),
+	              itemToMove = theList[droppedItemIndex],
+	              newIndex = null;
+
+	          if (element.hasClass(droppingBeforeClassName)) {
+	            if (droppedItemIndex < scope.$index) {
+	              newIndex = scope.$index - 1;
+	            } else {
+	              newIndex = scope.$index;
+	            }
+	          } else {
+	            if (droppedItemIndex < scope.$index) {
+	              newIndex = scope.$index;
+	            } else {
+	              newIndex = scope.$index + 1;
+	            }
+	          }
+
+	          move.apply(theList, [droppedItemIndex, newIndex]);
+
+	          scope.$apply(function () {
+	            scope.$emit("uiSelectSort:change", {
+	              array: theList,
+	              item: itemToMove,
+	              from: droppedItemIndex,
+	              to: newIndex
+	            });
+	          });
+
+	          element.removeClass(droppingClassName);
+	          element.removeClass(droppingBeforeClassName);
+	          element.removeClass(droppingAfterClassName);
+
+	          element.off("drop", dropHandler);
+	        };
+
+	        element.on("dragenter", function () {
+	          if (element.hasClass(draggingClassName)) {
+	            return;
+	          }
+
+	          element.addClass(droppingClassName);
+
+	          element.on("dragover", dragOverHandler);
+	          element.on("drop", dropHandler);
+	        });
+
+	        element.on("dragleave", function (e) {
+	          if (e.target != element) {
+	            return;
+	          }
+	          element.removeClass(droppingClassName);
+	          element.removeClass(droppingBeforeClassName);
+	          element.removeClass(droppingAfterClassName);
+
+	          element.off("dragover", dragOverHandler);
+	          element.off("drop", dropHandler);
+	        });
+	      }
+	    };
+	  }]);
+
+	  /**
+	   * Parses "repeat" attribute.
+	   *
+	   * Taken from AngularJS ngRepeat source code
+	   * See https://github.com/angular/angular.js/blob/v1.2.15/src/ng/directive/ngRepeat.js#L211
+	   *
+	   * Original discussion about parsing "repeat" attribute instead of fully relying on ng-repeat:
+	   * https://github.com/angular-ui/ui-select/commit/5dd63ad#commitcomment-5504697
+	   */
+
+	  uis.service("uisRepeatParser", ["uiSelectMinErr", "$parse", function (uiSelectMinErr, $parse) {
+	    var self = this;
+
+	    /**
+	     * Example:
+	     * expression = "address in addresses | filter: {street: $select.search} track by $index"
+	     * itemName = "address",
+	     * source = "addresses | filter: {street: $select.search}",
+	     * trackByExp = "$index",
+	     */
+	    self.parse = function (expression) {
+
+	      var match = expression.match(/^\s*(?:([\s\S]+?)\s+as\s+)?([\S]+?)\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?\s*$/);
+
+	      if (!match) {
+	        throw uiSelectMinErr("iexp", "Expected expression in form of '_item_ in _collection_[ track by _id_]' but got '{0}'.", expression);
+	      }
+
+	      return {
+	        itemName: match[2], // (lhs) Left-hand side,
+	        source: $parse(match[3]),
+	        trackByExp: match[4],
+	        modelMapper: $parse(match[1] || match[2])
+	      };
+	    };
+
+	    self.getGroupNgRepeatExpression = function () {
+	      return "$group in $select.groups";
+	    };
+
+	    self.getNgRepeatExpression = function (itemName, source, trackByExp, grouped) {
+	      var expression = itemName + " in " + (grouped ? "$group.items" : source);
+	      if (trackByExp) {
+	        expression += " track by " + trackByExp;
+	      }
+	      return expression;
+	    };
+	  }]);
+	})();
+	angular.module("ui.select").run(["$templateCache", function ($templateCache) {
+	  $templateCache.put("bootstrap/choices.tpl.html", "<ul class=\"ui-select-choices ui-select-choices-content dropdown-menu\" role=\"listbox\" ng-show=\"$select.items.length > 0\"><li class=\"ui-select-choices-group\" id=\"ui-select-choices-{{ $select.generatedId }}\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind=\"$group.name\"></div><div id=\"ui-select-choices-row-{{ $select.generatedId }}-{{$index}}\" class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\" role=\"option\"><a href=\"javascript:void(0)\" class=\"ui-select-choices-row-inner\"></a></div></li></ul>");
+	  $templateCache.put("bootstrap/match-multiple.tpl.html", "<span class=\"ui-select-match\"><span ng-repeat=\"$item in $select.selected\"><span class=\"ui-select-match-item btn btn-default btn-xs\" tabindex=\"-1\" type=\"button\" ng-disabled=\"$select.disabled\" ng-click=\"$selectMultiple.activeMatchIndex = $index;\" ng-class=\"{'btn-primary':$selectMultiple.activeMatchIndex === $index, 'select-locked':$select.isLocked(this, $index)}\" ui-select-sort=\"$select.selected\"><span class=\"close ui-select-match-close\" ng-hide=\"$select.disabled\" ng-click=\"$selectMultiple.removeChoice($index)\">&nbsp;&times;</span> <span uis-transclude-append=\"\"></span></span></span></span>");
+	  $templateCache.put("bootstrap/match.tpl.html", "<div class=\"ui-select-match\" ng-hide=\"$select.open\" ng-disabled=\"$select.disabled\" ng-class=\"{'btn-default-focus':$select.focus}\"><span tabindex=\"-1\" class=\"btn btn-default form-control ui-select-toggle\" aria-label=\"{{ $select.baseTitle }} activate\" ng-disabled=\"$select.disabled\" ng-click=\"$select.activate()\" style=\"outline: 0;\"><span ng-show=\"$select.isEmpty()\" class=\"ui-select-placeholder text-muted\">{{$select.placeholder}}</span> <span ng-hide=\"$select.isEmpty()\" class=\"ui-select-match-text pull-left\" ng-class=\"{'ui-select-allow-clear': $select.allowClear && !$select.isEmpty()}\" ng-transclude=\"\"></span> <i class=\"caret pull-right\" ng-click=\"$select.toggle($event)\"></i> <a ng-show=\"$select.allowClear && !$select.isEmpty()\" aria-label=\"{{ $select.baseTitle }} clear\" style=\"margin-right: 10px\" ng-click=\"$select.clear($event)\" class=\"btn btn-xs btn-link pull-right\"><i class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></i></a></span></div>");
+	  $templateCache.put("bootstrap/select-multiple.tpl.html", "<div class=\"ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control\" ng-class=\"{open: $select.open}\"><div><div class=\"ui-select-match\"></div><input type=\"text\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" class=\"ui-select-search input-xs\" placeholder=\"{{$selectMultiple.getPlaceholder()}}\" ng-disabled=\"$select.disabled\" ng-hide=\"$select.disabled\" ng-click=\"$select.activate()\" ng-model=\"$select.search\" role=\"combobox\" aria-label=\"{{ $select.baseTitle }}\" ondrop=\"return false;\"></div><div class=\"ui-select-choices\"></div></div>");
+	  $templateCache.put("bootstrap/select.tpl.html", "<div class=\"ui-select-container ui-select-bootstrap dropdown\" ng-class=\"{open: $select.open}\"><div class=\"ui-select-match\"></div><input type=\"text\" autocomplete=\"off\" tabindex=\"-1\" aria-expanded=\"true\" aria-label=\"{{ $select.baseTitle }}\" aria-owns=\"ui-select-choices-{{ $select.generatedId }}\" aria-activedescendant=\"ui-select-choices-row-{{ $select.generatedId }}-{{ $select.activeIndex }}\" class=\"form-control ui-select-search\" placeholder=\"{{$select.placeholder}}\" ng-model=\"$select.search\" ng-show=\"$select.searchEnabled && $select.open\"><div class=\"ui-select-choices\"></div></div>");
+	  $templateCache.put("select2/choices.tpl.html", "<ul class=\"ui-select-choices ui-select-choices-content select2-results\"><li class=\"ui-select-choices-group\" ng-class=\"{'select2-result-with-children': $select.choiceGrouped($group) }\"><div ng-show=\"$select.choiceGrouped($group)\" class=\"ui-select-choices-group-label select2-result-label\" ng-bind=\"$group.name\"></div><ul role=\"listbox\" id=\"ui-select-choices-{{ $select.generatedId }}\" ng-class=\"{'select2-result-sub': $select.choiceGrouped($group), 'select2-result-single': !$select.choiceGrouped($group) }\"><li role=\"option\" id=\"ui-select-choices-row-{{ $select.generatedId }}-{{$index}}\" class=\"ui-select-choices-row\" ng-class=\"{'select2-highlighted': $select.isActive(this), 'select2-disabled': $select.isDisabled(this)}\"><div class=\"select2-result-label ui-select-choices-row-inner\"></div></li></ul></li></ul>");
+	  $templateCache.put("select2/match-multiple.tpl.html", "<span class=\"ui-select-match\"><li class=\"ui-select-match-item select2-search-choice\" ng-repeat=\"$item in $select.selected\" ng-class=\"{'select2-search-choice-focus':$selectMultiple.activeMatchIndex === $index, 'select2-locked':$select.isLocked(this, $index)}\" ui-select-sort=\"$select.selected\"><span uis-transclude-append=\"\"></span> <a href=\"javascript:;\" class=\"ui-select-match-close select2-search-choice-close\" ng-click=\"$selectMultiple.removeChoice($index)\" tabindex=\"-1\"></a></li></span>");
+	  $templateCache.put("select2/match.tpl.html", "<a class=\"select2-choice ui-select-match\" ng-class=\"{'select2-default': $select.isEmpty()}\" ng-click=\"$select.toggle($event)\" aria-label=\"{{ $select.baseTitle }} select\"><span ng-show=\"$select.isEmpty()\" class=\"select2-chosen\">{{$select.placeholder}}</span> <span ng-hide=\"$select.isEmpty()\" class=\"select2-chosen\" ng-transclude=\"\"></span> <abbr ng-if=\"$select.allowClear && !$select.isEmpty()\" class=\"select2-search-choice-close\" ng-click=\"$select.clear($event)\"></abbr> <span class=\"select2-arrow ui-select-toggle\"><b></b></span></a>");
+	  $templateCache.put("select2/select-multiple.tpl.html", "<div class=\"ui-select-container ui-select-multiple select2 select2-container select2-container-multi\" ng-class=\"{'select2-container-active select2-dropdown-open open': $select.open, 'select2-container-disabled': $select.disabled}\"><ul class=\"select2-choices\"><span class=\"ui-select-match\"></span><li class=\"select2-search-field\"><input type=\"text\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" role=\"combobox\" aria-expanded=\"true\" aria-owns=\"ui-select-choices-{{ $select.generatedId }}\" aria-label=\"{{ $select.baseTitle }}\" aria-activedescendant=\"ui-select-choices-row-{{ $select.generatedId }}-{{ $select.activeIndex }}\" class=\"select2-input ui-select-search\" placeholder=\"{{$selectMultiple.getPlaceholder()}}\" ng-disabled=\"$select.disabled\" ng-hide=\"$select.disabled\" ng-model=\"$select.search\" ng-click=\"$select.activate()\" style=\"width: 34px;\" ondrop=\"return false;\"></li></ul><div class=\"select2-drop select2-with-searchbox select2-drop-active\" ng-class=\"{'select2-display-none': !$select.open}\"><div class=\"ui-select-choices\"></div></div></div>");
+	  $templateCache.put("select2/select.tpl.html", "<div class=\"ui-select-container select2 select2-container\" ng-class=\"{'select2-container-active select2-dropdown-open open': $select.open, 'select2-container-disabled': $select.disabled, 'select2-container-active': $select.focus, 'select2-allowclear': $select.allowClear && !$select.isEmpty()}\"><div class=\"ui-select-match\"></div><div class=\"select2-drop select2-with-searchbox select2-drop-active\" ng-class=\"{'select2-display-none': !$select.open}\"><div class=\"select2-search\" ng-show=\"$select.searchEnabled\"><input type=\"text\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" role=\"combobox\" aria-expanded=\"true\" aria-owns=\"ui-select-choices-{{ $select.generatedId }}\" aria-label=\"{{ $select.baseTitle }}\" aria-activedescendant=\"ui-select-choices-row-{{ $select.generatedId }}-{{ $select.activeIndex }}\" class=\"ui-select-search select2-input\" ng-model=\"$select.search\"></div><div class=\"ui-select-choices\"></div></div></div>");
+	  $templateCache.put("selectize/choices.tpl.html", "<div ng-show=\"$select.open\" class=\"ui-select-choices selectize-dropdown single\"><div class=\"ui-select-choices-content selectize-dropdown-content\"><div class=\"ui-select-choices-group optgroup\" role=\"listbox\"><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label optgroup-header\" ng-bind=\"$group.name\"></div><div role=\"option\" class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\"><div class=\"option ui-select-choices-row-inner\" data-selectable=\"\"></div></div></div></div></div>");
+	  $templateCache.put("selectize/match.tpl.html", "<div ng-hide=\"($select.open || $select.isEmpty())\" class=\"ui-select-match\" ng-transclude=\"\"></div>");
+	  $templateCache.put("selectize/select.tpl.html", "<div class=\"ui-select-container selectize-control single\" ng-class=\"{'open': $select.open}\"><div class=\"selectize-input\" ng-class=\"{'focus': $select.open, 'disabled': $select.disabled, 'selectize-focus' : $select.focus}\" ng-click=\"$select.activate()\"><div class=\"ui-select-match\"></div><input type=\"text\" autocomplete=\"off\" tabindex=\"-1\" class=\"ui-select-search ui-select-toggle\" ng-click=\"$select.toggle($event)\" placeholder=\"{{$select.placeholder}}\" ng-model=\"$select.search\" ng-hide=\"!$select.searchEnabled || ($select.selected && !$select.open)\" ng-disabled=\"$select.disabled\" aria-label=\"{{ $select.baseTitle }}\"></div><div class=\"ui-select-choices\"></div></div>");
+	}]);
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+
+	var app = __webpack_require__(1).module("proximal2");
+	app.config(["$stateProvider", "$urlRouterProvider", __webpack_require__(26)]);
+	app.controller("AppController", ["$scope", "$state", "$log", "$cookieStore", __webpack_require__(27)]);
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -11697,10 +13437,10 @@
 	  }
 	}.call(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(40)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)(module), (function() { return this; }())))
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12373,7 +14113,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -14516,7 +16256,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -15203,7 +16943,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -15415,14 +17155,14 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	$ = jQuery = __webpack_require__(20);
-	module.exports = __webpack_require__(26);
+	$ = jQuery = __webpack_require__(22);
+	module.exports = __webpack_require__(28);
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**!
@@ -16406,250 +18146,6 @@
 		}
 	}
 	})();
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Enhanced Select2 Dropmenus
-	 *
-	 * @AJAX Mode - When in this mode, your value will be an object (or array of objects) of the data used by Select2
-	 *     This change is so that you do not have to do an additional query yourself on top of Select2's own query
-	 * @params [options] {object} The configuration options passed to $.fn.select2(). Refer to the documentation
-	 */
-	angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelect2', ['uiSelect2Config', '$timeout', function (uiSelect2Config, $timeout) {
-	  var options = {};
-	  if (uiSelect2Config) {
-	    angular.extend(options, uiSelect2Config);
-	  }
-	  return {
-	    require: 'ngModel',
-	    priority: 1,
-	    compile: function (tElm, tAttrs) {
-	      var watch,
-	        repeatOption,
-	        repeatAttr,
-	        isSelect = tElm.is('select'),
-	        isMultiple = angular.isDefined(tAttrs.multiple);
-
-	      // Enable watching of the options dataset if in use
-	      if (tElm.is('select')) {
-	        repeatOption = tElm.find( 'optgroup[ng-repeat], optgroup[data-ng-repeat], option[ng-repeat], option[data-ng-repeat]');
-
-	        if (repeatOption.length) {
-	          repeatAttr = repeatOption.attr('ng-repeat') || repeatOption.attr('data-ng-repeat');
-	          watch = jQuery.trim(repeatAttr.split('|')[0]).split(' ').pop();
-	        }
-	      }
-
-	      return function (scope, elm, attrs, controller) {
-	        // instance-specific options
-	        var opts = angular.extend({}, options, scope.$eval(attrs.uiSelect2));
-
-	        /*
-	        Convert from Select2 view-model to Angular view-model.
-	        */
-	        var convertToAngularModel = function(select2_data) {
-	          var model;
-	          if (opts.simple_tags) {
-	            model = [];
-	            angular.forEach(select2_data, function(value, index) {
-	              model.push(value.id);
-	            });
-	          } else {
-	            model = select2_data;
-	          }
-	          return model;
-	        };
-
-	        /*
-	        Convert from Angular view-model to Select2 view-model.
-	        */
-	        var convertToSelect2Model = function(angular_data) {
-	          var model = [];
-	          if (!angular_data) {
-	            return model;
-	          }
-
-	          if (opts.simple_tags) {
-	            model = [];
-	            angular.forEach(
-	              angular_data,
-	              function(value, index) {
-	                model.push({'id': value, 'text': value});
-	              });
-	          } else {
-	            model = angular_data;
-	          }
-	          return model;
-	        };
-
-	        if (isSelect) {
-	          // Use <select multiple> instead
-	          delete opts.multiple;
-	          delete opts.initSelection;
-	        } else if (isMultiple) {
-	          opts.multiple = true;
-	        }
-
-	        if (controller) {
-	          // Watch the model for programmatic changes
-	           scope.$watch(tAttrs.ngModel, function(current, old) {
-	            if (!current) {
-	              return;
-	            }
-	            if (current === old) {
-	              return;
-	            }
-	            controller.$render();
-	          }, true);
-	          controller.$render = function () {
-	            if (isSelect) {
-	              elm.select2('val', controller.$viewValue);
-	            } else {
-	              if (opts.multiple) {
-	                controller.$isEmpty = function (value) {
-	                  return !value || value.length === 0;
-	                };
-	                var viewValue = controller.$viewValue;
-	                if (angular.isString(viewValue)) {
-	                  viewValue = viewValue.split(',');
-	                }
-	                elm.select2(
-	                  'data', convertToSelect2Model(viewValue));
-	                if (opts.sortable) {
-	                  elm.select2("container").find("ul.select2-choices").sortable({
-	                    containment: 'parent',
-	                    start: function () {
-	                      elm.select2("onSortStart");
-	                    },
-	                    update: function () {
-	                      elm.select2("onSortEnd");
-	                      elm.trigger('change');
-	                    }
-	                  });
-	                }                  
-	              } else {
-	                if (angular.isObject(controller.$viewValue)) {
-	                  elm.select2('data', controller.$viewValue);
-	                } else if (!controller.$viewValue) {
-	                  elm.select2('data', null);
-	                } else {
-	                  elm.select2('val', controller.$viewValue);
-	                }
-	              }
-	            }
-	          };
-
-	          // Watch the options dataset for changes
-	          if (watch) {
-	            scope.$watch(watch, function (newVal, oldVal, scope) {
-	              if (angular.equals(newVal, oldVal)) {
-	                return;
-	              }
-	              // Delayed so that the options have time to be rendered
-	              $timeout(function () {
-	                elm.select2('val', controller.$viewValue);
-	                // Refresh angular to remove the superfluous option
-	                controller.$render();
-	                if(newVal && !oldVal && controller.$setPristine) {
-	                  controller.$setPristine(true);
-	                }
-	              });
-	            });
-	          }
-
-	          // Update valid and dirty statuses
-	          controller.$parsers.push(function (value) {
-	            var div = elm.prev();
-	            div
-	              .toggleClass('ng-invalid', !controller.$valid)
-	              .toggleClass('ng-valid', controller.$valid)
-	              .toggleClass('ng-invalid-required', !controller.$valid)
-	              .toggleClass('ng-valid-required', controller.$valid)
-	              .toggleClass('ng-dirty', controller.$dirty)
-	              .toggleClass('ng-pristine', controller.$pristine);
-	            return value;
-	          });
-
-	          if (!isSelect) {
-	            // Set the view and model value and update the angular template manually for the ajax/multiple select2.
-	            elm.bind("change", function (e) {
-	              e.stopImmediatePropagation();
-	              
-	              if (scope.$$phase || scope.$root.$$phase) {
-	                return;
-	              }
-	              scope.$apply(function () {
-	                controller.$setViewValue(
-	                  convertToAngularModel(elm.select2('data')));
-	              });
-	            });
-
-	            if (opts.initSelection) {
-	              var initSelection = opts.initSelection;
-	              opts.initSelection = function (element, callback) {
-	                initSelection(element, function (value) {
-	                  var isPristine = controller.$pristine;
-	                  controller.$setViewValue(convertToAngularModel(value));
-	                  callback(value);
-	                  if (isPristine) {
-	                    controller.$setPristine();
-	                  }
-	                  elm.prev().toggleClass('ng-pristine', controller.$pristine);
-	                });
-	              };
-	            }
-	          }
-	        }
-
-	        elm.bind("$destroy", function() {
-	          elm.select2("destroy");
-	        });
-
-	        attrs.$observe('disabled', function (value) {
-	          elm.select2('enable', !value);
-	        });
-
-	        attrs.$observe('readonly', function (value) {
-	          elm.select2('readonly', !!value);
-	        });
-
-	        if (attrs.ngMultiple) {
-	          scope.$watch(attrs.ngMultiple, function(newVal) {
-	            attrs.$set('multiple', !!newVal);
-	            elm.select2(opts);
-	          });
-	        }
-
-	        // Initialize the plugin late so that the injected DOM does not disrupt the template compiler
-	        $timeout(function () {
-	          elm.select2(opts);
-
-	          // Set initial value - I'm not sure about this but it seems to need to be there
-	          elm.select2('data', controller.$modelValue);
-	          // important!
-	          controller.$render();
-
-	          // Not sure if I should just check for !isSelect OR if I should check for 'tags' key
-	          if (!opts.initSelection && !isSelect) {
-	              var isPristine = controller.$pristine;
-	              controller.$pristine = false;
-	              controller.$setViewValue(
-	                  convertToAngularModel(elm.select2('data'))
-	              );
-	              if (isPristine) {
-	                  controller.$setPristine();
-	              }
-	            elm.prev().toggleClass('ng-pristine', controller.$pristine);
-	          }
-	        });
-	      };
-	    }
-	  };
-	}]);
 
 
 /***/ },
@@ -25128,7 +26624,7 @@
 	var content = __webpack_require__(15);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(23)(content, {});
+	var update = __webpack_require__(25)(content, {});
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -25145,7 +26641,7 @@
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(27)();
+	exports = module.exports = __webpack_require__(29)();
 	exports.push([module.id, "@charset \"UTF-8\";\n/*!\nAnimate.css - http://daneden.me/animate\nLicensed under the MIT license - http://opensource.org/licenses/MIT\n\nCopyright (c) 2014 Daniel Eden\n*/\n\n.animated {\n  -webkit-animation-duration: 1s;\n          animation-duration: 1s;\n  -webkit-animation-fill-mode: both;\n          animation-fill-mode: both;\n}\n\n.animated.infinite {\n  -webkit-animation-iteration-count: infinite;\n          animation-iteration-count: infinite;\n}\n\n.animated.hinge {\n  -webkit-animation-duration: 2s;\n          animation-duration: 2s;\n}\n\n@-webkit-keyframes bounce {\n  0%, 20%, 53%, 80%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n    -webkit-transform: translate3d(0,0,0);\n            transform: translate3d(0,0,0);\n  }\n\n  40%, 43% {\n    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n    -webkit-transform: translate3d(0, -30px, 0);\n            transform: translate3d(0, -30px, 0);\n  }\n\n  70% {\n    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n    -webkit-transform: translate3d(0, -15px, 0);\n            transform: translate3d(0, -15px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0,-4px,0);\n            transform: translate3d(0,-4px,0);\n  }\n}\n\n@keyframes bounce {\n  0%, 20%, 53%, 80%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n    -webkit-transform: translate3d(0,0,0);\n            transform: translate3d(0,0,0);\n  }\n\n  40%, 43% {\n    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n    -webkit-transform: translate3d(0, -30px, 0);\n            transform: translate3d(0, -30px, 0);\n  }\n\n  70% {\n    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n            transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);\n    -webkit-transform: translate3d(0, -15px, 0);\n            transform: translate3d(0, -15px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0,-4px,0);\n            transform: translate3d(0,-4px,0);\n  }\n}\n\n.bounce {\n  -webkit-animation-name: bounce;\n          animation-name: bounce;\n  -webkit-transform-origin: center bottom;\n      -ms-transform-origin: center bottom;\n          transform-origin: center bottom;\n}\n\n@-webkit-keyframes flash {\n  0%, 50%, 100% {\n    opacity: 1;\n  }\n\n  25%, 75% {\n    opacity: 0;\n  }\n}\n\n@keyframes flash {\n  0%, 50%, 100% {\n    opacity: 1;\n  }\n\n  25%, 75% {\n    opacity: 0;\n  }\n}\n\n.flash {\n  -webkit-animation-name: flash;\n          animation-name: flash;\n}\n\n/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */\n\n@-webkit-keyframes pulse {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  50% {\n    -webkit-transform: scale3d(1.05, 1.05, 1.05);\n            transform: scale3d(1.05, 1.05, 1.05);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n@keyframes pulse {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  50% {\n    -webkit-transform: scale3d(1.05, 1.05, 1.05);\n            transform: scale3d(1.05, 1.05, 1.05);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n.pulse {\n  -webkit-animation-name: pulse;\n          animation-name: pulse;\n}\n\n@-webkit-keyframes rubberBand {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  30% {\n    -webkit-transform: scale3d(1.25, 0.75, 1);\n            transform: scale3d(1.25, 0.75, 1);\n  }\n\n  40% {\n    -webkit-transform: scale3d(0.75, 1.25, 1);\n            transform: scale3d(0.75, 1.25, 1);\n  }\n\n  50% {\n    -webkit-transform: scale3d(1.15, 0.85, 1);\n            transform: scale3d(1.15, 0.85, 1);\n  }\n\n  65% {\n    -webkit-transform: scale3d(.95, 1.05, 1);\n            transform: scale3d(.95, 1.05, 1);\n  }\n\n  75% {\n    -webkit-transform: scale3d(1.05, .95, 1);\n            transform: scale3d(1.05, .95, 1);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n@keyframes rubberBand {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  30% {\n    -webkit-transform: scale3d(1.25, 0.75, 1);\n            transform: scale3d(1.25, 0.75, 1);\n  }\n\n  40% {\n    -webkit-transform: scale3d(0.75, 1.25, 1);\n            transform: scale3d(0.75, 1.25, 1);\n  }\n\n  50% {\n    -webkit-transform: scale3d(1.15, 0.85, 1);\n            transform: scale3d(1.15, 0.85, 1);\n  }\n\n  65% {\n    -webkit-transform: scale3d(.95, 1.05, 1);\n            transform: scale3d(.95, 1.05, 1);\n  }\n\n  75% {\n    -webkit-transform: scale3d(1.05, .95, 1);\n            transform: scale3d(1.05, .95, 1);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n.rubberBand {\n  -webkit-animation-name: rubberBand;\n          animation-name: rubberBand;\n}\n\n@-webkit-keyframes shake {\n  0%, 100% {\n    -webkit-transform: translate3d(0, 0, 0);\n            transform: translate3d(0, 0, 0);\n  }\n\n  10%, 30%, 50%, 70%, 90% {\n    -webkit-transform: translate3d(-10px, 0, 0);\n            transform: translate3d(-10px, 0, 0);\n  }\n\n  20%, 40%, 60%, 80% {\n    -webkit-transform: translate3d(10px, 0, 0);\n            transform: translate3d(10px, 0, 0);\n  }\n}\n\n@keyframes shake {\n  0%, 100% {\n    -webkit-transform: translate3d(0, 0, 0);\n            transform: translate3d(0, 0, 0);\n  }\n\n  10%, 30%, 50%, 70%, 90% {\n    -webkit-transform: translate3d(-10px, 0, 0);\n            transform: translate3d(-10px, 0, 0);\n  }\n\n  20%, 40%, 60%, 80% {\n    -webkit-transform: translate3d(10px, 0, 0);\n            transform: translate3d(10px, 0, 0);\n  }\n}\n\n.shake {\n  -webkit-animation-name: shake;\n          animation-name: shake;\n}\n\n@-webkit-keyframes swing {\n  20% {\n    -webkit-transform: rotate3d(0, 0, 1, 15deg);\n            transform: rotate3d(0, 0, 1, 15deg);\n  }\n\n  40% {\n    -webkit-transform: rotate3d(0, 0, 1, -10deg);\n            transform: rotate3d(0, 0, 1, -10deg);\n  }\n\n  60% {\n    -webkit-transform: rotate3d(0, 0, 1, 5deg);\n            transform: rotate3d(0, 0, 1, 5deg);\n  }\n\n  80% {\n    -webkit-transform: rotate3d(0, 0, 1, -5deg);\n            transform: rotate3d(0, 0, 1, -5deg);\n  }\n\n  100% {\n    -webkit-transform: rotate3d(0, 0, 1, 0deg);\n            transform: rotate3d(0, 0, 1, 0deg);\n  }\n}\n\n@keyframes swing {\n  20% {\n    -webkit-transform: rotate3d(0, 0, 1, 15deg);\n            transform: rotate3d(0, 0, 1, 15deg);\n  }\n\n  40% {\n    -webkit-transform: rotate3d(0, 0, 1, -10deg);\n            transform: rotate3d(0, 0, 1, -10deg);\n  }\n\n  60% {\n    -webkit-transform: rotate3d(0, 0, 1, 5deg);\n            transform: rotate3d(0, 0, 1, 5deg);\n  }\n\n  80% {\n    -webkit-transform: rotate3d(0, 0, 1, -5deg);\n            transform: rotate3d(0, 0, 1, -5deg);\n  }\n\n  100% {\n    -webkit-transform: rotate3d(0, 0, 1, 0deg);\n            transform: rotate3d(0, 0, 1, 0deg);\n  }\n}\n\n.swing {\n  -webkit-transform-origin: top center;\n      -ms-transform-origin: top center;\n          transform-origin: top center;\n  -webkit-animation-name: swing;\n          animation-name: swing;\n}\n\n@-webkit-keyframes tada {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  10%, 20% {\n    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);\n            transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);\n  }\n\n  30%, 50%, 70%, 90% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);\n            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);\n  }\n\n  40%, 60%, 80% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);\n            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n@keyframes tada {\n  0% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n\n  10%, 20% {\n    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);\n            transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);\n  }\n\n  30%, 50%, 70%, 90% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);\n            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);\n  }\n\n  40%, 60%, 80% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);\n            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);\n  }\n\n  100% {\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n.tada {\n  -webkit-animation-name: tada;\n          animation-name: tada;\n}\n\n/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */\n\n@-webkit-keyframes wobble {\n  0% {\n    -webkit-transform: none;\n            transform: none;\n  }\n\n  15% {\n    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);\n            transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);\n  }\n\n  30% {\n    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);\n            transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);\n  }\n\n  45% {\n    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);\n            transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);\n  }\n\n  60% {\n    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);\n            transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);\n  }\n\n  75% {\n    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);\n            transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes wobble {\n  0% {\n    -webkit-transform: none;\n            transform: none;\n  }\n\n  15% {\n    -webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);\n            transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);\n  }\n\n  30% {\n    -webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);\n            transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);\n  }\n\n  45% {\n    -webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);\n            transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);\n  }\n\n  60% {\n    -webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);\n            transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);\n  }\n\n  75% {\n    -webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);\n            transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.wobble {\n  -webkit-animation-name: wobble;\n          animation-name: wobble;\n}\n\n@-webkit-keyframes bounceIn {\n  0%, 20%, 40%, 60%, 80%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  20% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1);\n            transform: scale3d(1.1, 1.1, 1.1);\n  }\n\n  40% {\n    -webkit-transform: scale3d(.9, .9, .9);\n            transform: scale3d(.9, .9, .9);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(1.03, 1.03, 1.03);\n            transform: scale3d(1.03, 1.03, 1.03);\n  }\n\n  80% {\n    -webkit-transform: scale3d(.97, .97, .97);\n            transform: scale3d(.97, .97, .97);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n@keyframes bounceIn {\n  0%, 20%, 40%, 60%, 80%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  20% {\n    -webkit-transform: scale3d(1.1, 1.1, 1.1);\n            transform: scale3d(1.1, 1.1, 1.1);\n  }\n\n  40% {\n    -webkit-transform: scale3d(.9, .9, .9);\n            transform: scale3d(.9, .9, .9);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(1.03, 1.03, 1.03);\n            transform: scale3d(1.03, 1.03, 1.03);\n  }\n\n  80% {\n    -webkit-transform: scale3d(.97, .97, .97);\n            transform: scale3d(.97, .97, .97);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: scale3d(1, 1, 1);\n            transform: scale3d(1, 1, 1);\n  }\n}\n\n.bounceIn {\n  -webkit-animation-name: bounceIn;\n          animation-name: bounceIn;\n  -webkit-animation-duration: .75s;\n          animation-duration: .75s;\n}\n\n@-webkit-keyframes bounceInDown {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -3000px, 0);\n            transform: translate3d(0, -3000px, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, 25px, 0);\n            transform: translate3d(0, 25px, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(0, -10px, 0);\n            transform: translate3d(0, -10px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0, 5px, 0);\n            transform: translate3d(0, 5px, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes bounceInDown {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -3000px, 0);\n            transform: translate3d(0, -3000px, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, 25px, 0);\n            transform: translate3d(0, 25px, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(0, -10px, 0);\n            transform: translate3d(0, -10px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0, 5px, 0);\n            transform: translate3d(0, 5px, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.bounceInDown {\n  -webkit-animation-name: bounceInDown;\n          animation-name: bounceInDown;\n}\n\n@-webkit-keyframes bounceInLeft {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-3000px, 0, 0);\n            transform: translate3d(-3000px, 0, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(25px, 0, 0);\n            transform: translate3d(25px, 0, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(-10px, 0, 0);\n            transform: translate3d(-10px, 0, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(5px, 0, 0);\n            transform: translate3d(5px, 0, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes bounceInLeft {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-3000px, 0, 0);\n            transform: translate3d(-3000px, 0, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(25px, 0, 0);\n            transform: translate3d(25px, 0, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(-10px, 0, 0);\n            transform: translate3d(-10px, 0, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(5px, 0, 0);\n            transform: translate3d(5px, 0, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.bounceInLeft {\n  -webkit-animation-name: bounceInLeft;\n          animation-name: bounceInLeft;\n}\n\n@-webkit-keyframes bounceInRight {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(3000px, 0, 0);\n            transform: translate3d(3000px, 0, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(-25px, 0, 0);\n            transform: translate3d(-25px, 0, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(10px, 0, 0);\n            transform: translate3d(10px, 0, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(-5px, 0, 0);\n            transform: translate3d(-5px, 0, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes bounceInRight {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(3000px, 0, 0);\n            transform: translate3d(3000px, 0, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(-25px, 0, 0);\n            transform: translate3d(-25px, 0, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(10px, 0, 0);\n            transform: translate3d(10px, 0, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(-5px, 0, 0);\n            transform: translate3d(-5px, 0, 0);\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.bounceInRight {\n  -webkit-animation-name: bounceInRight;\n          animation-name: bounceInRight;\n}\n\n@-webkit-keyframes bounceInUp {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 3000px, 0);\n            transform: translate3d(0, 3000px, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, -20px, 0);\n            transform: translate3d(0, -20px, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(0, 10px, 0);\n            transform: translate3d(0, 10px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0, -5px, 0);\n            transform: translate3d(0, -5px, 0);\n  }\n\n  100% {\n    -webkit-transform: translate3d(0, 0, 0);\n            transform: translate3d(0, 0, 0);\n  }\n}\n\n@keyframes bounceInUp {\n  0%, 60%, 75%, 90%, 100% {\n    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);\n  }\n\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 3000px, 0);\n            transform: translate3d(0, 3000px, 0);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, -20px, 0);\n            transform: translate3d(0, -20px, 0);\n  }\n\n  75% {\n    -webkit-transform: translate3d(0, 10px, 0);\n            transform: translate3d(0, 10px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0, -5px, 0);\n            transform: translate3d(0, -5px, 0);\n  }\n\n  100% {\n    -webkit-transform: translate3d(0, 0, 0);\n            transform: translate3d(0, 0, 0);\n  }\n}\n\n.bounceInUp {\n  -webkit-animation-name: bounceInUp;\n          animation-name: bounceInUp;\n}\n\n@-webkit-keyframes bounceOut {\n  20% {\n    -webkit-transform: scale3d(.9, .9, .9);\n            transform: scale3d(.9, .9, .9);\n  }\n\n  50%, 55% {\n    opacity: 1;\n    -webkit-transform: scale3d(1.1, 1.1, 1.1);\n            transform: scale3d(1.1, 1.1, 1.1);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n}\n\n@keyframes bounceOut {\n  20% {\n    -webkit-transform: scale3d(.9, .9, .9);\n            transform: scale3d(.9, .9, .9);\n  }\n\n  50%, 55% {\n    opacity: 1;\n    -webkit-transform: scale3d(1.1, 1.1, 1.1);\n            transform: scale3d(1.1, 1.1, 1.1);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n}\n\n.bounceOut {\n  -webkit-animation-name: bounceOut;\n          animation-name: bounceOut;\n  -webkit-animation-duration: .75s;\n          animation-duration: .75s;\n}\n\n@-webkit-keyframes bounceOutDown {\n  20% {\n    -webkit-transform: translate3d(0, 10px, 0);\n            transform: translate3d(0, 10px, 0);\n  }\n\n  40%, 45% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, -20px, 0);\n            transform: translate3d(0, -20px, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n}\n\n@keyframes bounceOutDown {\n  20% {\n    -webkit-transform: translate3d(0, 10px, 0);\n            transform: translate3d(0, 10px, 0);\n  }\n\n  40%, 45% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, -20px, 0);\n            transform: translate3d(0, -20px, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n}\n\n.bounceOutDown {\n  -webkit-animation-name: bounceOutDown;\n          animation-name: bounceOutDown;\n}\n\n@-webkit-keyframes bounceOutLeft {\n  20% {\n    opacity: 1;\n    -webkit-transform: translate3d(20px, 0, 0);\n            transform: translate3d(20px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n}\n\n@keyframes bounceOutLeft {\n  20% {\n    opacity: 1;\n    -webkit-transform: translate3d(20px, 0, 0);\n            transform: translate3d(20px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n}\n\n.bounceOutLeft {\n  -webkit-animation-name: bounceOutLeft;\n          animation-name: bounceOutLeft;\n}\n\n@-webkit-keyframes bounceOutRight {\n  20% {\n    opacity: 1;\n    -webkit-transform: translate3d(-20px, 0, 0);\n            transform: translate3d(-20px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n}\n\n@keyframes bounceOutRight {\n  20% {\n    opacity: 1;\n    -webkit-transform: translate3d(-20px, 0, 0);\n            transform: translate3d(-20px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n}\n\n.bounceOutRight {\n  -webkit-animation-name: bounceOutRight;\n          animation-name: bounceOutRight;\n}\n\n@-webkit-keyframes bounceOutUp {\n  20% {\n    -webkit-transform: translate3d(0, -10px, 0);\n            transform: translate3d(0, -10px, 0);\n  }\n\n  40%, 45% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, 20px, 0);\n            transform: translate3d(0, 20px, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n}\n\n@keyframes bounceOutUp {\n  20% {\n    -webkit-transform: translate3d(0, -10px, 0);\n            transform: translate3d(0, -10px, 0);\n  }\n\n  40%, 45% {\n    opacity: 1;\n    -webkit-transform: translate3d(0, 20px, 0);\n            transform: translate3d(0, 20px, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n}\n\n.bounceOutUp {\n  -webkit-animation-name: bounceOutUp;\n          animation-name: bounceOutUp;\n}\n\n@-webkit-keyframes fadeIn {\n  0% {opacity: 0;}\n  100% {opacity: 1;}\n}\n\n@keyframes fadeIn {\n  0% {opacity: 0;}\n  100% {opacity: 1;}\n}\n\n.fadeIn {\n  -webkit-animation-name: fadeIn;\n          animation-name: fadeIn;\n}\n\n@-webkit-keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -100%, 0);\n            transform: translate3d(0, -100%, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -100%, 0);\n            transform: translate3d(0, -100%, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInDown {\n  -webkit-animation-name: fadeInDown;\n          animation-name: fadeInDown;\n}\n\n@-webkit-keyframes fadeInDownBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInDownBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInDownBig {\n  -webkit-animation-name: fadeInDownBig;\n          animation-name: fadeInDownBig;\n}\n\n@-webkit-keyframes fadeInLeft {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0);\n            transform: translate3d(-100%, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInLeft {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0);\n            transform: translate3d(-100%, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInLeft {\n  -webkit-animation-name: fadeInLeft;\n          animation-name: fadeInLeft;\n}\n\n@-webkit-keyframes fadeInLeftBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInLeftBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInLeftBig {\n  -webkit-animation-name: fadeInLeftBig;\n          animation-name: fadeInLeftBig;\n}\n\n@-webkit-keyframes fadeInRight {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInRight {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInRight {\n  -webkit-animation-name: fadeInRight;\n          animation-name: fadeInRight;\n}\n\n@-webkit-keyframes fadeInRightBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInRightBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInRightBig {\n  -webkit-animation-name: fadeInRightBig;\n          animation-name: fadeInRightBig;\n}\n\n@-webkit-keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 100%, 0);\n            transform: translate3d(0, 100%, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 100%, 0);\n            transform: translate3d(0, 100%, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInUp {\n  -webkit-animation-name: fadeInUp;\n          animation-name: fadeInUp;\n}\n\n@-webkit-keyframes fadeInUpBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes fadeInUpBig {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.fadeInUpBig {\n  -webkit-animation-name: fadeInUpBig;\n          animation-name: fadeInUpBig;\n}\n\n@-webkit-keyframes fadeOut {\n  0% {opacity: 1;}\n  100% {opacity: 0;}\n}\n\n@keyframes fadeOut {\n  0% {opacity: 1;}\n  100% {opacity: 0;}\n}\n\n.fadeOut {\n  -webkit-animation-name: fadeOut;\n          animation-name: fadeOut;\n}\n\n@-webkit-keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 100%, 0);\n            transform: translate3d(0, 100%, 0);\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 100%, 0);\n            transform: translate3d(0, 100%, 0);\n  }\n}\n\n.fadeOutDown {\n  -webkit-animation-name: fadeOutDown;\n          animation-name: fadeOutDown;\n}\n\n@-webkit-keyframes fadeOutDownBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n}\n\n@keyframes fadeOutDownBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, 2000px, 0);\n            transform: translate3d(0, 2000px, 0);\n  }\n}\n\n.fadeOutDownBig {\n  -webkit-animation-name: fadeOutDownBig;\n          animation-name: fadeOutDownBig;\n}\n\n@-webkit-keyframes fadeOutLeft {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0);\n            transform: translate3d(-100%, 0, 0);\n  }\n}\n\n@keyframes fadeOutLeft {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0);\n            transform: translate3d(-100%, 0, 0);\n  }\n}\n\n.fadeOutLeft {\n  -webkit-animation-name: fadeOutLeft;\n          animation-name: fadeOutLeft;\n}\n\n@-webkit-keyframes fadeOutLeftBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n}\n\n@keyframes fadeOutLeftBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(-2000px, 0, 0);\n            transform: translate3d(-2000px, 0, 0);\n  }\n}\n\n.fadeOutLeftBig {\n  -webkit-animation-name: fadeOutLeftBig;\n          animation-name: fadeOutLeftBig;\n}\n\n@-webkit-keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n  }\n}\n\n.fadeOutRight {\n  -webkit-animation-name: fadeOutRight;\n          animation-name: fadeOutRight;\n}\n\n@-webkit-keyframes fadeOutRightBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n}\n\n@keyframes fadeOutRightBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(2000px, 0, 0);\n            transform: translate3d(2000px, 0, 0);\n  }\n}\n\n.fadeOutRightBig {\n  -webkit-animation-name: fadeOutRightBig;\n          animation-name: fadeOutRightBig;\n}\n\n@-webkit-keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -100%, 0);\n            transform: translate3d(0, -100%, 0);\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -100%, 0);\n            transform: translate3d(0, -100%, 0);\n  }\n}\n\n.fadeOutUp {\n  -webkit-animation-name: fadeOutUp;\n          animation-name: fadeOutUp;\n}\n\n@-webkit-keyframes fadeOutUpBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n}\n\n@keyframes fadeOutUpBig {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(0, -2000px, 0);\n            transform: translate3d(0, -2000px, 0);\n  }\n}\n\n.fadeOutUpBig {\n  -webkit-animation-name: fadeOutUpBig;\n          animation-name: fadeOutUpBig;\n}\n\n@-webkit-keyframes flip {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -360deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -360deg);\n    -webkit-animation-timing-function: ease-out;\n            animation-timing-function: ease-out;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -190deg);\n            transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -190deg);\n    -webkit-animation-timing-function: ease-out;\n            animation-timing-function: ease-out;\n  }\n\n  50% {\n    -webkit-transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -170deg);\n            transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -170deg);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) scale3d(.95, .95, .95);\n            transform: perspective(400px) scale3d(.95, .95, .95);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n}\n\n@keyframes flip {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -360deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -360deg);\n    -webkit-animation-timing-function: ease-out;\n            animation-timing-function: ease-out;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -190deg);\n            transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -190deg);\n    -webkit-animation-timing-function: ease-out;\n            animation-timing-function: ease-out;\n  }\n\n  50% {\n    -webkit-transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -170deg);\n            transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -170deg);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) scale3d(.95, .95, .95);\n            transform: perspective(400px) scale3d(.95, .95, .95);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n    -webkit-animation-timing-function: ease-in;\n            animation-timing-function: ease-in;\n  }\n}\n\n.animated.flip {\n  -webkit-backface-visibility: visible;\n          backface-visibility: visible;\n  -webkit-animation-name: flip;\n          animation-name: flip;\n}\n\n@-webkit-keyframes flipInX {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n    opacity: 0;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n  }\n\n  60% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 10deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -5deg);\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n}\n\n@keyframes flipInX {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n    opacity: 0;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n  }\n\n  60% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 10deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -5deg);\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n}\n\n.flipInX {\n  -webkit-backface-visibility: visible !important;\n          backface-visibility: visible !important;\n  -webkit-animation-name: flipInX;\n          animation-name: flipInX;\n}\n\n@-webkit-keyframes flipInY {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n    opacity: 0;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -20deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -20deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n  }\n\n  60% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 10deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 10deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -5deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -5deg);\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n}\n\n@keyframes flipInY {\n  0% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n    opacity: 0;\n  }\n\n  40% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -20deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -20deg);\n    -webkit-transition-timing-function: ease-in;\n            transition-timing-function: ease-in;\n  }\n\n  60% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 10deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 10deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -5deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -5deg);\n  }\n\n  100% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n}\n\n.flipInY {\n  -webkit-backface-visibility: visible !important;\n          backface-visibility: visible !important;\n  -webkit-animation-name: flipInY;\n          animation-name: flipInY;\n}\n\n@-webkit-keyframes flipOutX {\n  0% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n\n  30% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n    opacity: 0;\n  }\n}\n\n@keyframes flipOutX {\n  0% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n\n  30% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, -20deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n            transform: perspective(400px) rotate3d(1, 0, 0, 90deg);\n    opacity: 0;\n  }\n}\n\n.flipOutX {\n  -webkit-animation-name: flipOutX;\n          animation-name: flipOutX;\n  -webkit-animation-duration: .75s;\n          animation-duration: .75s;\n  -webkit-backface-visibility: visible !important;\n          backface-visibility: visible !important;\n}\n\n@-webkit-keyframes flipOutY {\n  0% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n\n  30% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -15deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -15deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n    opacity: 0;\n  }\n}\n\n@keyframes flipOutY {\n  0% {\n    -webkit-transform: perspective(400px);\n            transform: perspective(400px);\n  }\n\n  30% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, -15deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, -15deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);\n    opacity: 0;\n  }\n}\n\n.flipOutY {\n  -webkit-backface-visibility: visible !important;\n          backface-visibility: visible !important;\n  -webkit-animation-name: flipOutY;\n          animation-name: flipOutY;\n  -webkit-animation-duration: .75s;\n          animation-duration: .75s;\n}\n\n@-webkit-keyframes lightSpeedIn {\n  0% {\n    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);\n            transform: translate3d(100%, 0, 0) skewX(-30deg);\n    opacity: 0;\n  }\n\n  60% {\n    -webkit-transform: skewX(20deg);\n            transform: skewX(20deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: skewX(-5deg);\n            transform: skewX(-5deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes lightSpeedIn {\n  0% {\n    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);\n            transform: translate3d(100%, 0, 0) skewX(-30deg);\n    opacity: 0;\n  }\n\n  60% {\n    -webkit-transform: skewX(20deg);\n            transform: skewX(20deg);\n    opacity: 1;\n  }\n\n  80% {\n    -webkit-transform: skewX(-5deg);\n            transform: skewX(-5deg);\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.lightSpeedIn {\n  -webkit-animation-name: lightSpeedIn;\n          animation-name: lightSpeedIn;\n  -webkit-animation-timing-function: ease-out;\n          animation-timing-function: ease-out;\n}\n\n@-webkit-keyframes lightSpeedOut {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: translate3d(100%, 0, 0) skewX(30deg);\n            transform: translate3d(100%, 0, 0) skewX(30deg);\n    opacity: 0;\n  }\n}\n\n@keyframes lightSpeedOut {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: translate3d(100%, 0, 0) skewX(30deg);\n            transform: translate3d(100%, 0, 0) skewX(30deg);\n    opacity: 0;\n  }\n}\n\n.lightSpeedOut {\n  -webkit-animation-name: lightSpeedOut;\n          animation-name: lightSpeedOut;\n  -webkit-animation-timing-function: ease-in;\n          animation-timing-function: ease-in;\n}\n\n@-webkit-keyframes rotateIn {\n  0% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: rotate3d(0, 0, 1, -200deg);\n            transform: rotate3d(0, 0, 1, -200deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes rotateIn {\n  0% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: rotate3d(0, 0, 1, -200deg);\n            transform: rotate3d(0, 0, 1, -200deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.rotateIn {\n  -webkit-animation-name: rotateIn;\n          animation-name: rotateIn;\n}\n\n@-webkit-keyframes rotateInDownLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes rotateInDownLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.rotateInDownLeft {\n  -webkit-animation-name: rotateInDownLeft;\n          animation-name: rotateInDownLeft;\n}\n\n@-webkit-keyframes rotateInDownRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes rotateInDownRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.rotateInDownRight {\n  -webkit-animation-name: rotateInDownRight;\n          animation-name: rotateInDownRight;\n}\n\n@-webkit-keyframes rotateInUpLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes rotateInUpLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.rotateInUpLeft {\n  -webkit-animation-name: rotateInUpLeft;\n          animation-name: rotateInUpLeft;\n}\n\n@-webkit-keyframes rotateInUpRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -90deg);\n            transform: rotate3d(0, 0, 1, -90deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n@keyframes rotateInUpRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -90deg);\n            transform: rotate3d(0, 0, 1, -90deg);\n    opacity: 0;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: none;\n            transform: none;\n    opacity: 1;\n  }\n}\n\n.rotateInUpRight {\n  -webkit-animation-name: rotateInUpRight;\n          animation-name: rotateInUpRight;\n}\n\n@-webkit-keyframes rotateOut {\n  0% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: rotate3d(0, 0, 1, 200deg);\n            transform: rotate3d(0, 0, 1, 200deg);\n    opacity: 0;\n  }\n}\n\n@keyframes rotateOut {\n  0% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: center;\n            transform-origin: center;\n    -webkit-transform: rotate3d(0, 0, 1, 200deg);\n            transform: rotate3d(0, 0, 1, 200deg);\n    opacity: 0;\n  }\n}\n\n.rotateOut {\n  -webkit-animation-name: rotateOut;\n          animation-name: rotateOut;\n}\n\n@-webkit-keyframes rotateOutDownLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n}\n\n@keyframes rotateOutDownLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 45deg);\n            transform: rotate3d(0, 0, 1, 45deg);\n    opacity: 0;\n  }\n}\n\n.rotateOutDownLeft {\n  -webkit-animation-name: rotateOutDownLeft;\n          animation-name: rotateOutDownLeft;\n}\n\n@-webkit-keyframes rotateOutDownRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n}\n\n@keyframes rotateOutDownRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n}\n\n.rotateOutDownRight {\n  -webkit-animation-name: rotateOutDownRight;\n          animation-name: rotateOutDownRight;\n}\n\n@-webkit-keyframes rotateOutUpLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n}\n\n@keyframes rotateOutUpLeft {\n  0% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: left bottom;\n            transform-origin: left bottom;\n    -webkit-transform: rotate3d(0, 0, 1, -45deg);\n            transform: rotate3d(0, 0, 1, -45deg);\n    opacity: 0;\n  }\n}\n\n.rotateOutUpLeft {\n  -webkit-animation-name: rotateOutUpLeft;\n          animation-name: rotateOutUpLeft;\n}\n\n@-webkit-keyframes rotateOutUpRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 90deg);\n            transform: rotate3d(0, 0, 1, 90deg);\n    opacity: 0;\n  }\n}\n\n@keyframes rotateOutUpRight {\n  0% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform-origin: right bottom;\n            transform-origin: right bottom;\n    -webkit-transform: rotate3d(0, 0, 1, 90deg);\n            transform: rotate3d(0, 0, 1, 90deg);\n    opacity: 0;\n  }\n}\n\n.rotateOutUpRight {\n  -webkit-animation-name: rotateOutUpRight;\n          animation-name: rotateOutUpRight;\n}\n\n@-webkit-keyframes hinge {\n  0% {\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n  }\n\n  20%, 60% {\n    -webkit-transform: rotate3d(0, 0, 1, 80deg);\n            transform: rotate3d(0, 0, 1, 80deg);\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n  }\n\n  40%, 80% {\n    -webkit-transform: rotate3d(0, 0, 1, 60deg);\n            transform: rotate3d(0, 0, 1, 60deg);\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: translate3d(0, 700px, 0);\n            transform: translate3d(0, 700px, 0);\n    opacity: 0;\n  }\n}\n\n@keyframes hinge {\n  0% {\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n  }\n\n  20%, 60% {\n    -webkit-transform: rotate3d(0, 0, 1, 80deg);\n            transform: rotate3d(0, 0, 1, 80deg);\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n  }\n\n  40%, 80% {\n    -webkit-transform: rotate3d(0, 0, 1, 60deg);\n            transform: rotate3d(0, 0, 1, 60deg);\n    -webkit-transform-origin: top left;\n            transform-origin: top left;\n    -webkit-animation-timing-function: ease-in-out;\n            animation-timing-function: ease-in-out;\n    opacity: 1;\n  }\n\n  100% {\n    -webkit-transform: translate3d(0, 700px, 0);\n            transform: translate3d(0, 700px, 0);\n    opacity: 0;\n  }\n}\n\n.hinge {\n  -webkit-animation-name: hinge;\n          animation-name: hinge;\n}\n\n/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */\n\n@-webkit-keyframes rollIn {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);\n            transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n@keyframes rollIn {\n  0% {\n    opacity: 0;\n    -webkit-transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);\n            transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);\n  }\n\n  100% {\n    opacity: 1;\n    -webkit-transform: none;\n            transform: none;\n  }\n}\n\n.rollIn {\n  -webkit-animation-name: rollIn;\n          animation-name: rollIn;\n}\n\n/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */\n\n@-webkit-keyframes rollOut {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0) rotate3d(0, 0, 1, 120deg);\n            transform: translate3d(100%, 0, 0) rotate3d(0, 0, 1, 120deg);\n  }\n}\n\n@keyframes rollOut {\n  0% {\n    opacity: 1;\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: translate3d(100%, 0, 0) rotate3d(0, 0, 1, 120deg);\n            transform: translate3d(100%, 0, 0) rotate3d(0, 0, 1, 120deg);\n  }\n}\n\n.rollOut {\n  -webkit-animation-name: rollOut;\n          animation-name: rollOut;\n}\n\n@-webkit-keyframes zoomIn {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  50% {\n    opacity: 1;\n  }\n}\n\n@keyframes zoomIn {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  50% {\n    opacity: 1;\n  }\n}\n\n.zoomIn {\n  -webkit-animation-name: zoomIn;\n          animation-name: zoomIn;\n}\n\n@-webkit-keyframes zoomInDown {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomInDown {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomInDown {\n  -webkit-animation-name: zoomInDown;\n          animation-name: zoomInDown;\n}\n\n@-webkit-keyframes zoomInLeft {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);\n            transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomInLeft {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);\n            transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomInLeft {\n  -webkit-animation-name: zoomInLeft;\n          animation-name: zoomInLeft;\n}\n\n@-webkit-keyframes zoomInRight {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(1000px, 0, 0);\n            transform: scale3d(.1, .1, .1) translate3d(1000px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(-10px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(-10px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomInRight {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(1000px, 0, 0);\n            transform: scale3d(.1, .1, .1) translate3d(1000px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(-10px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(-10px, 0, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomInRight {\n  -webkit-animation-name: zoomInRight;\n          animation-name: zoomInRight;\n}\n\n@-webkit-keyframes zoomInUp {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, 1000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, 1000px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomInUp {\n  0% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, 1000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, 1000px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  60% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomInUp {\n  -webkit-animation-name: zoomInUp;\n          animation-name: zoomInUp;\n}\n\n@-webkit-keyframes zoomOut {\n  0% {\n    opacity: 1;\n  }\n\n  50% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes zoomOut {\n  0% {\n    opacity: 1;\n  }\n\n  50% {\n    opacity: 0;\n    -webkit-transform: scale3d(.3, .3, .3);\n            transform: scale3d(.3, .3, .3);\n  }\n\n  100% {\n    opacity: 0;\n  }\n}\n\n.zoomOut {\n  -webkit-animation-name: zoomOut;\n          animation-name: zoomOut;\n}\n\n@-webkit-keyframes zoomOutDown {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, 2000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, 2000px, 0);\n    -webkit-transform-origin: center bottom;\n            transform-origin: center bottom;\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomOutDown {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, -60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, 2000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, 2000px, 0);\n    -webkit-transform-origin: center bottom;\n            transform-origin: center bottom;\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomOutDown {\n  -webkit-animation-name: zoomOutDown;\n          animation-name: zoomOutDown;\n}\n\n@-webkit-keyframes zoomOutLeft {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(42px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(42px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale(.1) translate3d(-2000px, 0, 0);\n            transform: scale(.1) translate3d(-2000px, 0, 0);\n    -webkit-transform-origin: left center;\n            transform-origin: left center;\n  }\n}\n\n@keyframes zoomOutLeft {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(42px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(42px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale(.1) translate3d(-2000px, 0, 0);\n            transform: scale(.1) translate3d(-2000px, 0, 0);\n    -webkit-transform-origin: left center;\n            transform-origin: left center;\n  }\n}\n\n.zoomOutLeft {\n  -webkit-animation-name: zoomOutLeft;\n          animation-name: zoomOutLeft;\n}\n\n@-webkit-keyframes zoomOutRight {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(-42px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(-42px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale(.1) translate3d(2000px, 0, 0);\n            transform: scale(.1) translate3d(2000px, 0, 0);\n    -webkit-transform-origin: right center;\n            transform-origin: right center;\n  }\n}\n\n@keyframes zoomOutRight {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(-42px, 0, 0);\n            transform: scale3d(.475, .475, .475) translate3d(-42px, 0, 0);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale(.1) translate3d(2000px, 0, 0);\n            transform: scale(.1) translate3d(2000px, 0, 0);\n    -webkit-transform-origin: right center;\n            transform-origin: right center;\n  }\n}\n\n.zoomOutRight {\n  -webkit-animation-name: zoomOutRight;\n          animation-name: zoomOutRight;\n}\n\n@-webkit-keyframes zoomOutUp {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -2000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, -2000px, 0);\n    -webkit-transform-origin: center bottom;\n            transform-origin: center bottom;\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n@keyframes zoomOutUp {\n  40% {\n    opacity: 1;\n    -webkit-transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n            transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);\n    -webkit-animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);\n  }\n\n  100% {\n    opacity: 0;\n    -webkit-transform: scale3d(.1, .1, .1) translate3d(0, -2000px, 0);\n            transform: scale3d(.1, .1, .1) translate3d(0, -2000px, 0);\n    -webkit-transform-origin: center bottom;\n            transform-origin: center bottom;\n    -webkit-animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);\n  }\n}\n\n.zoomOutUp {\n  -webkit-animation-name: zoomOutUp;\n          animation-name: zoomOutUp;\n}\n\n@-webkit-keyframes slideInDown {\n  0% {\n    -webkit-transform: translateY(-100%);\n            transform: translateY(-100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n}\n\n@keyframes slideInDown {\n  0% {\n    -webkit-transform: translateY(-100%);\n            transform: translateY(-100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n}\n\n.slideInDown {\n  -webkit-animation-name: slideInDown;\n          animation-name: slideInDown;\n}\n\n@-webkit-keyframes slideInLeft {\n  0% {\n    -webkit-transform: translateX(-100%);\n            transform: translateX(-100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n}\n\n@keyframes slideInLeft {\n  0% {\n    -webkit-transform: translateX(-100%);\n            transform: translateX(-100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n}\n\n.slideInLeft {\n  -webkit-animation-name: slideInLeft;\n          animation-name: slideInLeft;\n}\n\n@-webkit-keyframes slideInRight {\n  0% {\n    -webkit-transform: translateX(100%);\n            transform: translateX(100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n}\n\n@keyframes slideInRight {\n  0% {\n    -webkit-transform: translateX(100%);\n            transform: translateX(100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n}\n\n.slideInRight {\n  -webkit-animation-name: slideInRight;\n          animation-name: slideInRight;\n}\n\n@-webkit-keyframes slideInUp {\n  0% {\n    -webkit-transform: translateY(100%);\n            transform: translateY(100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n}\n\n@keyframes slideInUp {\n  0% {\n    -webkit-transform: translateY(100%);\n            transform: translateY(100%);\n    visibility: visible;\n  }\n\n  100% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n}\n\n.slideInUp {\n  -webkit-animation-name: slideInUp;\n          animation-name: slideInUp;\n}\n\n@-webkit-keyframes slideOutDown {\n  0% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateY(100%);\n            transform: translateY(100%);\n  }\n}\n\n@keyframes slideOutDown {\n  0% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateY(100%);\n            transform: translateY(100%);\n  }\n}\n\n.slideOutDown {\n  -webkit-animation-name: slideOutDown;\n          animation-name: slideOutDown;\n}\n\n@-webkit-keyframes slideOutLeft {\n  0% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateX(-100%);\n            transform: translateX(-100%);\n  }\n}\n\n@keyframes slideOutLeft {\n  0% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateX(-100%);\n            transform: translateX(-100%);\n  }\n}\n\n.slideOutLeft {\n  -webkit-animation-name: slideOutLeft;\n          animation-name: slideOutLeft;\n}\n\n@-webkit-keyframes slideOutRight {\n  0% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateX(100%);\n            transform: translateX(100%);\n  }\n}\n\n@keyframes slideOutRight {\n  0% {\n    -webkit-transform: translateX(0);\n            transform: translateX(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateX(100%);\n            transform: translateX(100%);\n  }\n}\n\n.slideOutRight {\n  -webkit-animation-name: slideOutRight;\n          animation-name: slideOutRight;\n}\n\n@-webkit-keyframes slideOutUp {\n  0% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateY(-100%);\n            transform: translateY(-100%);\n  }\n}\n\n@keyframes slideOutUp {\n  0% {\n    -webkit-transform: translateY(0);\n            transform: translateY(0);\n  }\n\n  100% {\n    visibility: hidden;\n    -webkit-transform: translateY(-100%);\n            transform: translateY(-100%);\n  }\n}\n\n.slideOutUp {\n  -webkit-animation-name: slideOutUp;\n          animation-name: slideOutUp;\n}\n", ""]);
 
 /***/ },
@@ -25158,7 +26654,7 @@
 	var content = __webpack_require__(17);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(23)(content, {});
+	var update = __webpack_require__(25)(content, {});
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -25175,7 +26671,7 @@
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(27)();
+	exports = module.exports = __webpack_require__(29)();
 	exports.push([module.id, "/*\n * Toastr\n * Version 2.0.1\n * Copyright 2012 John Papa and Hans Fjällemark.  \n * All Rights Reserved.  \n * Use, reproduction, distribution, and modification of this code is subject to the terms and \n * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php\n *\n * Author: John Papa and Hans Fjällemark\n * Project: https://github.com/CodeSeven/toastr\n */\n.toast-title {\n  font-weight: bold;\n}\n.toast-message {\n  -ms-word-wrap: break-word;\n  word-wrap: break-word;\n}\n.toast-message a,\n.toast-message label {\n  color: #ffffff;\n}\n.toast-message a:hover {\n  color: #cccccc;\n  text-decoration: none;\n}\n\n.toast-close-button {\n  position: relative;\n  right: -0.3em;\n  top: -0.3em;\n  float: right;\n  font-size: 20px;\n  font-weight: bold;\n  color: #ffffff;\n  -webkit-text-shadow: 0 1px 0 #ffffff;\n  text-shadow: 0 1px 0 #ffffff;\n  opacity: 0.8;\n  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);\n  filter: alpha(opacity=80);\n}\n.toast-close-button:hover,\n.toast-close-button:focus {\n  color: #000000;\n  text-decoration: none;\n  cursor: pointer;\n  opacity: 0.4;\n  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);\n  filter: alpha(opacity=40);\n}\n\n/*Additional properties for button version\n iOS requires the button element instead of an anchor tag.\n If you want the anchor version, it requires `href=\"#\"`.*/\nbutton.toast-close-button {\n  padding: 0;\n  cursor: pointer;\n  background: transparent;\n  border: 0;\n  -webkit-appearance: none;\n}\n.toast-top-full-width {\n  top: 0;\n  right: 0;\n  width: 100%;\n}\n.toast-bottom-full-width {\n  bottom: 0;\n  right: 0;\n  width: 100%;\n}\n.toast-top-left {\n  top: 12px;\n  left: 12px;\n}\n.toast-top-right {\n  top: 12px;\n  right: 12px;\n}\n.toast-bottom-right {\n  right: 12px;\n  bottom: 12px;\n}\n.toast-bottom-left {\n  bottom: 12px;\n  left: 12px;\n}\n#toast-container {\n  position: fixed;\n  z-index: 999999;\n  /*overrides*/\n\n}\n#toast-container * {\n  -moz-box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n#toast-container > div {\n  margin: 0 0 6px;\n  padding: 15px 15px 15px 50px;\n  width: 300px;\n  -moz-border-radius: 3px 3px 3px 3px;\n  -webkit-border-radius: 3px 3px 3px 3px;\n  border-radius: 3px 3px 3px 3px;\n  background-position: 15px center;\n  background-repeat: no-repeat;\n  -moz-box-shadow: 0 0 12px #999999;\n  -webkit-box-shadow: 0 0 12px #999999;\n  box-shadow: 0 0 12px #999999;\n  color: #ffffff;\n  opacity: 0.8;\n  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);\n  filter: alpha(opacity=80);\n}\n#toast-container > :hover {\n  -moz-box-shadow: 0 0 12px #000000;\n  -webkit-box-shadow: 0 0 12px #000000;\n  box-shadow: 0 0 12px #000000;\n  opacity: 1;\n  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);\n  filter: alpha(opacity=100);\n  cursor: pointer;\n}\n#toast-container > .toast-info {\n  background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII=\") !important;\n}\n#toast-container > .toast-wait {\n  background-image: url(\"data:image/gif;base64,R0lGODlhIAAgAIQAAAQCBISGhMzKzERCROTm5CQiJKyurHx+fPz+/ExOTOzu7Dw+PIyOjCwqLFRWVAwKDIyKjMzOzOzq7CQmJLy6vFRSVPTy9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQAXACwAAAAAIAAgAAAF3eAljmRpnmh6VRSVqLDpIDTixOdUlFSNUDhSQUAT7ES9GnD0SFQAKWItMqr4bqKHVPDI+WiTkaOFFVlrFe83rDrT0qeIjwrT0iLdU0GOiBxhAA4VeSk6QYeIOAsQEAuJKgw+EI8nA18IA48JBAQvFxCXDI8SNAQikV+iiaQIpheWX5mJmxKeF6g0qpQmA4yOu8C7EwYWCgZswRcTFj4KyMAGlwYxDwcHhCXMXxYxBzQHKNo+3DDeCOAn0V/TddbYJA0K48gAEAFQicMWFsfwNA3JSgAIAAFfwIMIL4QAACH5BAkJABoALAAAAAAgACAAhAQCBIyKjERCRMzOzCQiJPTy9DQyNGRmZMTCxOTm5CwqLHx+fBQWFJyenNTW1Pz6/Dw6PGxubAwKDIyOjNTS1CQmJCwuLPz+/Dw+PHRydAAAAAAAAAAAAAAAAAAAAAAAAAXboCaOZGmeaKoxWcSosMkk15W8cZ7VdZaXkcEgQtrxfD9RhHchima1GwlCGUBSFCaFxMrgRtnLFhWujWHhs2nJc8KoVlWGQnEn7/i8XgOwWAB7JwoONQ4KgSQAZRcOgHgSCwsSIhZMNRZ5CzULIgaWF5h4mhecfIQ8jXmQkiODhYeIiRYGjrG2PxgBARi3IhNMAbcCnwI5BAQpAZ8TIwK6vCQVDwUVKL+WzAANTA210g/VJ8OWxQefByQE4dZMzBoInwh4zrtgn2p725YNthUFTNRuGYB3AYGBHCEAACH5BAkJAB0ALAAAAAAgACAAhAQCBISChFRWVMzKzCQiJOTm5GxqbCwuLJSWlPz6/NTW1AwODJSSlGRmZCwqLOzu7HR2dDQ2NAQGBISGhFxaXNTS1CQmJOzq7GxubDQyNKSmpPz+/Nza3AAAAAAAAAAAAAXfYCeOZGmeaKqurHBdAiuP17Zdc0lMAVHWt9yI8LA9fCPB4xEjARoNSWpis01kBpshFahurqzsZosiGpErScMAUO0maKF8Tq/bTQCIQgFp30cQXhB1BHEcXhx0FgkJFiOHVYlzi42AgoRxeRx8fn+en3UABwedKgsBAwMBCygOCjYKDisLFV4VrCUAtVUKpSZdXl8mB8EbByQWcQPFAyYZxccdB7sV0cvBzbmvvG0LBV4FrFTBYCWuNhyyHRTFFB20trh4BxmdYl4YIqepq0IRxRE+IfDCAFQHARo0NGERAgAh+QQJCQAgACwAAAAAIAAgAIUEAgSEgoRMTkzMyswcHhzk5uR0cnQUFhRcXlwsKiz09vQMCgyMiozU1tQkJiR8fnxkZmT8/vwEBgSEhoRcWlzU0tQkIiT08vR0dnQcGhxkYmQ0MjT8+vwMDgyMjozc2twAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG+UCQcEgsGo/IpHLJXDweC6Z0+IhEHlOjRGIMWLHZoUZx0RQlAajxkFFKFFYFl5m5KNpIySU+X2bIBEoQZBBZGQdMElFhjI2Oj5AgHQEDAw8dQxYeDBaNHRVWVhWYCXsRFwmMXqFWEyAerB6MA6xWA6+xs7URt6VWqIwTu64gDh4eDp6goaORQ5OVAZjO1EgEGhB4RwAYDQ0YAEwIcBEKFEgYrBhLBORxgUYfrB9LELuF8fNDAAaVBuEg7NXCVyRdqHVCGLBiIIQAB1Yc4BXh9uEbwAXuyi2iQI7DuSwHdiFqCEGDtizLRFUDsaGAlQIbVoJYIEDAIiZBAAAh+QQJCQAbACwAAAAAIAAgAIQEAgSMioxcWlz08vQcHhysqqwMDgx8enwsKiykoqRkZmT8+vzEwsQMCgyUlpQkJiS0srQEBgSMjoxcXlz09vQkIiSsrqwUEhQ0MjRsamz8/vwAAAAAAAAAAAAAAAAAAAAF7+AmjmRpnmiqruz2PG0sIssCj4CQJAIgj4/abRNJaI6agu9kCAQaphdJgEQKUIFjgGWsahJYLdf7RTWfLKr3+jsBClVlG5Xb9eb4fImgUBBKDVB4ExRHFGwbGRQLGXMEhUgUfw2QC4IyCmSNDQtHlm2ZXgoiGQsUjW0EnUgLfyKBeYSeiHojfH61uS0GBisVEgEVLRcWRxAXKAgDRwMILMVIECgSVRIrBmS9JtRI1iMVBweuGxerSNolyszOIhjLGs0jEFXSKA8SEkMbcEgWIxfzNBxrw6AKgxIGkM05UOWALhERHJhysOThBgAVWYQAACH5BAkJABkALAAAAAAgACAAhAQGBIyKjERCRMzOzCwuLGRiZPz6/OTm5AwODLSytFRSVNTW1Dw6PHx6fAwKDJSSlERGRNTS1DQyNGxqbPz+/BQSFLy6vFRWVNza3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAXqYCaO5FgFwxBUZeu61ULNFMa+eBvQdJD/owFvFhkBBAwHsBQZUooZyWF2YOQkBNJu6ANMaQeli0AxSEwymi0DcUJeEgPlbEJFAghRe/h+Eeg/Dl9UYks5DF9VhksOAgKFi5GSSwh5kzgVCXIJNxknD5aSCTwJIw8zD5MITpanFKmSCHI8NxUPoJejNKWXLZkznL0vCJ3CxsckDpA/ChYJFzkTBgYTSxc80C4OswbLLhY8Fi/bMwYAJVgl4DTiL9LUJADrFuci1zTZLwD1IwU8BSQuWLCQb1EDHg2QiSDALYvCDAISJLDy8FIIACH5BAkJAB4ALAAAAAAgACAAhAQGBISGhFRSVNTW1CQiJKyqrGRmZOzu7CwuLIyOjGxubPz6/BQSFGRiZOTi5CwqLLy6vDQ2NIyKjFRWVCQmJKyurGxqbPT29DQyNJSSlHRydPz+/BQWFOzq7AAAAAAAAAXhoCeOJElYClGubOs117YtjWuvxCLLi3qbhc6h4FPsdorfiNI5dige43GT9AAkHUcCwCpMNxVP7tgTJY4J1uF7EBl0M8Ooueuo2SOCIkVa11kVX2E2EmgsFH4yBz4uAAkdHVstBAUHQ4xKmZqbnJ2bAhAQAiURGJ4eE0cTIxgzpp0QRxCsrp6xO7MjpaepO6unKxOhv8DFxsfIJBwaChw2DAkZDEocDjIOzi0ZMhlKUjIaLtsb3T8aR+EtDBkJ0yQUBQVQI9XX2ZsDMgMlyxr3mzE2XEgmotCGAARFIHiQ0FMIACH5BAkJABgALAAAAAAgACAAhAQCBISGhDw+POTi5CwuLLS2tPTy9BQSFJyenGRiZDQ2NIyOjLy+vPz6/BweHIyKjFRSVOzq7DQyNLy6vBQWFHRydDw6PPz+/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXXICaOZHkcZaquIjVd10SxtFrAcFGrVhBYIwoON9uNAsOA6DCEFTEKBEKxEjQvAtELNxkpGrAGNfW4Plpb2QgxRKjKzfPoVGLj3CnLNUv7hscpSDhKOxJSgDwPP0ZGAACMjAQFDQYFBJA0BAZDBpeYGBQVFUU3TV2YFAMwAzNgTQ2PkBVDFRiuQ7CYszi1pUOnkKmrM5qcnqiiTwQTDQ2Wn9DR0tPUfRKQEBEREDQSFw3XRhEwEd3f4TvjF+XWKgJ8JNnb0QkwCdUlCzAL+CQODAwc9BtIMAQAOw==\") !important;\n}\n#toast-container > .toast-error {\n  background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=\") !important;\n}\n#toast-container > .toast-success {\n  background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg==\") !important;\n}\n#toast-container > .toast-warning {\n  background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII=\") !important;\n}\n#toast-container.toast-top-full-width > div,\n#toast-container.toast-bottom-full-width > div {\n  width: 96%;\n  margin: auto;\n}\n.toast {\n  background-color: #030303;\n}\n.toast-success {\n  background-color: #51a351;\n}\n.toast-error {\n  background-color: #bd362f;\n}\n.toast-info {\n  background-color: #2f96b4;\n}\n.toast-wait {\n  background-color: #2f96b4;\n}\n.toast-warning {\n  background-color: #f89406;\n}\n/*Responsive Design*/\n@media all and (max-width: 240px) {\n  #toast-container > div {\n    padding: 8px 8px 8px 50px;\n    width: 11em;\n  }\n  #toast-container .toast-close-button {\n    right: -0.2em;\n    top: -0.2em;\n}\n  }\n@media all and (min-width: 241px) and (max-width: 480px) {\n  #toast-container  > div {\n    padding: 8px 8px 8px 50px;\n    width: 18em;\n  }\n  #toast-container .toast-close-button {\n    right: -0.2em;\n    top: -0.2em;\n}\n}\n@media all and (min-width: 481px) and (max-width: 768px) {\n  #toast-container > div {\n    padding: 15px 15px 15px 50px;\n    width: 25em;\n  }\n}\n\n /*\n  * AngularJS-Toaster\n  * Version 0.3\n */\n#toast-container > div.ng-enter,\n#toast-container > div.ng-leave\n{ \n    -webkit-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;\n    -moz-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;\n    -ms-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;\n    -o-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;\n    transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;\n} \n\n#toast-container > div.ng-enter.ng-enter-active, \n#toast-container > div.ng-leave {\n    opacity: 0.8;\n}\n\n#toast-container > div.ng-leave.ng-leave-active,\n#toast-container > div.ng-enter {\n    opacity: 0;\n}", ""]);
 
 /***/ },
@@ -25188,7 +26684,37 @@
 	var content = __webpack_require__(19);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(23)(content, {});
+	var update = __webpack_require__(25)(content, {});
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/silbermm/Projects/proximal/node_modules/css-loader/index.js!/Users/silbermm/Projects/proximal/web/styles/select.css", function() {
+			var newContent = require("!!/Users/silbermm/Projects/proximal/node_modules/css-loader/index.js!/Users/silbermm/Projects/proximal/web/styles/select.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(29)();
+	exports.push([module.id, "/*!\n * ui-select\n * http://github.com/angular-ui/ui-select\n * Version: 0.11.2 - 2015-03-17T04:08:46.478Z\n * License: MIT\n */\n\n\n/* Style when highlighting a search. */\n.ui-select-highlight {\n  font-weight: bold;\n}\n\n.ui-select-offscreen {\n  clip: rect(0 0 0 0) !important;\n  width: 1px !important;\n  height: 1px !important;\n  border: 0 !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow: hidden !important;\n  position: absolute !important;\n  outline: 0 !important;\n  left: 0px !important;\n  top: 0px !important;\n}\n\n/* Select2 theme */\n\n/* Mark invalid Select2 */\n.ng-dirty.ng-invalid > a.select2-choice {\n    border-color: #D44950;\n}\n\n.select2-result-single {\n  padding-left: 0;\n}\n\n.select2-locked > .select2-search-choice-close{\n  display:none;\n}\n\n.select-locked > .ui-select-match-close{\n    display:none;\n}\n\nbody > .select2-container.open {\n  z-index: 9999; /* The z-index Select2 applies to the select2-drop */\n}\n\n/* Selectize theme */\n\n/* Helper class to show styles when focus */\n.selectize-input.selectize-focus{\n  border-color: #007FBB !important;\n}\n\n/* Fix input width for Selectize theme */\n.selectize-control > .selectize-input > input {\n  width: 100%;\n}\n\n/* Fix dropdown width for Selectize theme */\n.selectize-control > .selectize-dropdown {\n  width: 100%;\n}\n\n/* Mark invalid Selectize */\n.ng-dirty.ng-invalid > div.selectize-input {\n    border-color: #D44950;\n}\n\n\n/* Bootstrap theme */\n\n/* Helper class to show styles when focus */\n.btn-default-focus {\n  color: #333;\n  background-color: #EBEBEB;\n  border-color: #ADADAD;\n  text-decoration: none;\n  outline: 5px auto -webkit-focus-ring-color;\n  outline-offset: -2px;\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\n\n.ui-select-bootstrap .ui-select-toggle {\n  position: relative;\n}\n\n.ui-select-bootstrap .ui-select-toggle > .caret {\n  position: absolute;\n  height: 10px;\n  top: 50%;\n  right: 10px;\n  margin-top: -2px;\n}\n\n/* Fix Bootstrap dropdown position when inside a input-group */\n.input-group > .ui-select-bootstrap.dropdown {\n  /* Instead of relative */\n  position: static;\n}\n\n.input-group > .ui-select-bootstrap > input.ui-select-search.form-control {\n  border-radius: 4px; /* FIXME hardcoded value :-/ */\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.ui-select-bootstrap > .ui-select-match > .btn{\n  /* Instead of center because of .btn */\n  text-align: left !important;\n}\n\n.ui-select-bootstrap > .ui-select-match > .caret {\n  position: absolute;\n  top: 45%;\n  right: 15px;\n}\n\n/* See Scrollable Menu with Bootstrap 3 http://stackoverflow.com/questions/19227496 */\n.ui-select-bootstrap > .ui-select-choices {\n  width: 100%;\n  height: auto;\n  max-height: 200px;\n  overflow-x: hidden;\n  margin-top: -1px;\n}\n\nbody > .ui-select-bootstrap.open {\n  z-index: 1000; /* Standard Bootstrap dropdown z-index */\n}\n\n.ui-select-multiple.ui-select-bootstrap {\n  height: auto;\n  padding: 3px 3px 0 3px;\n}\n\n.ui-select-multiple.ui-select-bootstrap input.ui-select-search {\n  background-color: transparent !important; /* To prevent double background when disabled */\n  border: none;\n  outline: none;\n  height: 1.666666em;\n  margin-bottom: 3px;\n}\n\n.ui-select-multiple.ui-select-bootstrap .ui-select-match .close {\n  font-size: 1.6em;\n  line-height: 0.75;\n}\n\n.ui-select-multiple.ui-select-bootstrap .ui-select-match-item {\n  outline: 0;\n  margin: 0 3px 3px 0;\n}\n\n.ui-select-multiple .ui-select-match-item {\n  position: relative;\n}\n\n.ui-select-multiple .ui-select-match-item.dropping-before:before {\n  content: \"\";\n  position: absolute;\n  top: 0;\n  right: 100%;\n  height: 100%;\n  margin-right: 2px;\n  border-left: 1px solid #428bca;\n}\n\n.ui-select-multiple .ui-select-match-item.dropping-after:after {\n  content: \"\";\n  position: absolute;\n  top: 0;\n  left: 100%;\n  height: 100%;\n  margin-left: 2px;\n  border-right: 1px solid #428bca;\n}\n\n.ui-select-bootstrap .ui-select-choices-row>a {\n    display: block;\n    padding: 3px 20px;\n    clear: both;\n    font-weight: 400;\n    line-height: 1.42857143;\n    color: #333;\n    white-space: nowrap;\n}\n\n.ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {\n    text-decoration: none;\n    color: #262626;\n    background-color: #f5f5f5;\n}\n\n.ui-select-bootstrap .ui-select-choices-row.active>a {\n    color: #fff;\n    text-decoration: none;\n    outline: 0;\n    background-color: #428bca;\n}\n\n.ui-select-bootstrap .ui-select-choices-row.disabled>a,\n.ui-select-bootstrap .ui-select-choices-row.active.disabled>a {\n    color: #777;\n    cursor: not-allowed;\n    background-color: #fff;\n}\n\n/* fix hide/show angular animation */\n.ui-select-match.ng-hide-add,\n.ui-select-search.ng-hide-add {\n    display: none !important;\n}\n\n/* Mark invalid Bootstrap */\n.ui-select-bootstrap.ng-dirty.ng-invalid > button.btn.ui-select-match {\n    border-color: #D44950;\n}", ""]);
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(21);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(25)(content, {});
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -25202,14 +26728,14 @@
 	}
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(27)();
-	exports.push([module.id, "#content-wrapper {\n  padding-left: 0;\n  margin-left: 0;\n  width: 100%;\n  height: auto;\n}\n@media only screen and (min-width: 561px) {\n  #page-wrapper.active {\n    padding-left: 250px;\n  }\n}\n@media only screen and (max-width: 560px) {\n  #page-wrapper.active {\n    padding-left: 70px;\n  }\n}\n#page-wrapper.active #sidebar-wrapper {\n  left: 150px;\n}\n.sub-container {\n  position: relative;\n  top: -12px;\n  width: 101%;\n  height: 100vh;\n  -webkit-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  -moz-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n}\n/* Hamburg Menu */\n@media only screen and (max-width: 560px) {\n  body.hamburg #page-wrapper {\n    padding-left: 0;\n  }\n  body.hamburg #page-wrapper:not(.active) #sidebar-wrapper {\n    position: absolute;\n    left: -100px;\n  }\n  body.hamburg #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n    display: none;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper {\n    position: fixed;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    margin-left: 0px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg .row.header .meta {\n    margin-left: 70px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    transition: margin-left 0.4s ease 0s;\n  }\n}\n/**\n* Header\n*/\n.row.header {\n  height: 60px;\n  background: #fff;\n  margin-bottom: 15px;\n  /*box-shadow: 0px -10px 17px 8px rgba(0, 0, 0, 0.5);*/\n}\n.row.header > div:last-child {\n  padding-right: 0;\n}\n.row.header .meta .page {\n  font-size: 17px;\n  padding-top: 11px;\n}\n.row.header .meta .breadcrumb-links {\n  font-size: 10px;\n}\n.row.header .meta div {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.row.header .login a {\n  padding: 18px;\n  display: block;\n}\n.row.header .user {\n  min-width: 130px;\n}\n.row.header .user > .item {\n  width: 65px;\n  height: 60px;\n  float: right;\n  display: inline-block;\n  text-align: center;\n  vertical-align: middle;\n}\n.row.header .user > .item a {\n  color: #919191;\n  display: block;\n}\n.row.header .user > .item i {\n  font-size: 20px;\n  line-height: 55px;\n}\n.row.header .user > .item img {\n  width: 40px;\n  height: 40px;\n  margin-top: 10px;\n  border-radius: 2px;\n}\n.row.header .user > .item ul.dropdown-menu {\n  border-radius: 2px;\n  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n}\n.row.header .user > .item ul.dropdown-menu .dropdown-header {\n  text-align: center;\n}\n.row.header .user > .item ul.dropdown-menu li.link {\n  text-align: left;\n}\n.row.header .user > .item ul.dropdown-menu li.link a {\n  padding-left: 7px;\n  padding-right: 7px;\n}\n.row.header .user > .item ul.dropdown-menu:before {\n  position: absolute;\n  top: -7px;\n  right: 23px;\n  display: inline-block;\n  border-right: 7px solid transparent;\n  border-bottom: 7px solid #ccc;\n  border-left: 7px solid transparent;\n  border-bottom-color: rgba(0, 0, 0, 0.2);\n  content: '';\n}\n.row.header .user > .item ul.dropdown-menu:after {\n  position: absolute;\n  top: -6px;\n  right: 24px;\n  display: inline-block;\n  border-right: 6px solid transparent;\n  border-bottom: 6px solid #ffffff;\n  border-left: 6px solid transparent;\n  content: '';\n}\n/* #592727 RED */\n/* #2f5927 GREEN */\n/* #30426a BLUE (default)*/\n/* Main background color */\n/* Sidebar background color */\n/* Sidebar header and footer color */\n/* Sidebar title text colour */\n/*#627cb7*/\n.loading {\n  width: 40px;\n  height: 40px;\n  position: relative;\n  margin: 100px auto;\n}\n.double-bounce1,\n.double-bounce2 {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -webkit-animation: bounce 2s infinite ease-in-out;\n  animation: bounce 2s infinite ease-in-out;\n}\n.double-bounce2 {\n  -webkit-animation-delay: -1s;\n  animation-delay: -1s;\n}\n@-webkit-keyframes bounce {\n  0%,\n  100% {\n    -webkit-transform: scale(0);\n  }\n  50% {\n    -webkit-transform: scale(1);\n  }\n}\n@keyframes bounce {\n  0%,\n  100% {\n    transform: scale(0);\n    -webkit-transform: scale(0);\n  }\n  50% {\n    transform: scale(1);\n    -webkit-transform: scale(1);\n  }\n}\n/**\n* Sidebar\n*/\n#sidebar-wrapper {\n  background: #30426a;\n}\nul.sidebar .sidebar-main a,\n.sidebar-footer,\nul.sidebar .sidebar-list a:hover,\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  /* Sidebar header and footer color */\n  background: #2d3e63;\n}\nul.sidebar {\n  position: absolute;\n  top: 0;\n  bottom: 45px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  text-indent: 20px;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\nul.sidebar li a {\n  color: #fff;\n  display: block;\n  float: left;\n  text-decoration: none;\n  width: 250px;\n}\nul.sidebar .sidebar-main {\n  height: 65px;\n}\nul.sidebar .sidebar-main a {\n  font-size: 18px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-main .menu-icon {\n  float: right;\n  font-size: 18px;\n  padding-right: 28px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-title {\n  color: #738bc0;\n  font-size: 12px;\n  height: 35px;\n  line-height: 40px;\n  text-transform: uppercase;\n}\nul.sidebar .sidebar-list {\n  height: 40px;\n}\nul.sidebar .sidebar-list a {\n  text-indent: 25px;\n  font-size: 15px;\n  color: #b2bfdc;\n  line-height: 40px;\n}\nul.sidebar .sidebar-list a:hover {\n  color: #fff;\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\nul.sidebar .sidebar-list a:hover .menu-icon {\n  text-indent: 25px;\n}\nul.sidebar .sidebar-list .menu-icon {\n  float: right;\n  padding-right: 29px;\n  line-height: 40px;\n  width: 70px;\n}\n#page-wrapper:not(.active) ul.sidebar {\n  bottom: 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title {\n  display: none;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  display: block;\n  height: 2px;\n  margin: 13px 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\n#page-wrapper:not(.active) .sidebar-footer {\n  display: none;\n}\n.sidebar-footer {\n  position: absolute;\n  height: 40px;\n  bottom: 0;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n  text-align: center;\n}\n.sidebar-footer div a {\n  color: #b2bfdc;\n  font-size: 12px;\n  line-height: 43px;\n}\n.sidebar-footer div a:hover {\n  color: #ffffff;\n  text-decoration: none;\n}\n.widget {\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  background: #ffffff;\n  border: 1px solid transparent;\n  border-radius: 2px;\n  border-color: #e9e9e9;\n}\n.widget .widget-header .pagination,\n.widget .widget-footer .pagination {\n  margin: 0;\n}\n.widget .widget-header {\n  color: #767676;\n  background-color: #f6f6f6;\n  padding: 10px 15px;\n  border-bottom: 1px solid #e9e9e9;\n  line-height: 30px;\n}\n.widget .widget-header i {\n  margin-right: 5px;\n}\n.widget .widget-header input {\n  width: 25%;\n}\n.widget .widget-body {\n  padding: 20px;\n}\n.widget .widget-body table thead {\n  background: #fafafa;\n}\n.widget .widget-body table thead * {\n  font-size: 14px !important;\n}\n.widget .widget-body table tbody * {\n  font-size: 13px !important;\n}\n.widget .widget-body .error {\n  color: #ff0000;\n}\n.widget .widget-body button {\n  margin-left: 5px;\n}\n.widget .widget-body div.alert {\n  margin-bottom: 10px;\n}\n.widget .widget-body.xlarge {\n  min-height: 600px;\n  overflow-y: none;\n}\n.widget .widget-body.large {\n  height: 450px;\n  overflow-y: auto;\n}\n.widget .widget-body.medium {\n  height: 250px;\n  overflow-y: auto;\n}\n.widget .widget-body.small {\n  height: 150px;\n  overflow-y: auto;\n}\n.widget .widget-body.no-padding {\n  padding: 0;\n}\n.widget .widget-body.no-padding .error,\n.widget .widget-body.no-padding .message {\n  padding: 20px;\n}\n.widget .widget-footer {\n  border-top: 1px solid #e9e9e9;\n  padding: 10px;\n}\n.widget .widget-icon {\n  background: #30426a;\n  width: 65px;\n  height: 65px;\n  border-radius: 50%;\n  text-align: center;\n  vertical-align: middle;\n  margin-right: 15px;\n}\n.widget .widget-icon i {\n  line-height: 66px;\n  color: #ffffff;\n  font-size: 30px;\n}\n.widget .widget-content .title {\n  font-size: 28px;\n  display: block;\n}\n.btn-circle {\n  width: 30px;\n  height: 30px;\n  text-align: center;\n  padding: 6px 0;\n  font-size: 12px;\n  line-height: 1.428571429;\n  border-radius: 15px;\n}\n.left-inner-page {\n  z-index: 1000;\n  position: fixed;\n  top: 61px;\n  right: 250px;\n  width: 0px;\n  height: 100%;\n  margin-right: -250px;\n  overflow-y: auto;\n  background: #F3F3F3;\n  -webkit-transition: all 0.5s ease;\n  -moz-transition: all 0.5s ease;\n  -o-transition: all 0.5s ease;\n  transition: all 0.5s ease;\n  -webkit-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  -moz-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n}\n.steps-indicator {\n  position: absolute;\n  right: 0;\n  left: 0;\n  height: 30px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n}\n.steps-indicator:before {\n  position: absolute;\n  height: 1px;\n  background-color: #e6e6e6;\n  content: '';\n}\n.steps-indicator.steps-2:before {\n  right: calc(25%);\n  left: calc(25%);\n}\n.steps-indicator.steps-3:before {\n  right: calc(16.66666667%);\n  left: calc(16.66666667%);\n}\n.steps-indicator.steps-4:before {\n  right: calc(12.5%);\n  left: calc(12.5%);\n}\n.steps-indicator.steps-5:before {\n  right: calc(10%);\n  left: calc(10%);\n}\n.steps-indicator.steps-6:before {\n  right: calc(8.33333333%);\n  left: calc(8.33333333%);\n}\n.steps-indicator.steps-7:before {\n  right: calc(7.14285714%);\n  left: calc(7.14285714%);\n}\n.steps-indicator.steps-8:before {\n  right: calc(6.25%);\n  left: calc(6.25%);\n}\n.steps-indicator.steps-9:before {\n  right: calc(5.55555556%);\n  left: calc(5.55555556%);\n}\n.steps-indicator.steps-10:before {\n  right: calc(5%);\n  left: calc(5%);\n}\n.steps-indicator * {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.steps-indicator li {\n  position: relative;\n  float: left;\n  padding: 0;\n  padding-top: 10px;\n  margin: 0;\n  line-height: 15px;\n  text-align: center;\n}\n.steps-indicator li a {\n  font-weight: bold;\n  color: #808080;\n  text-decoration: none;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: 0.25s;\n}\n.steps-indicator li a:before {\n  position: absolute;\n  top: -7px;\n  left: calc(43%);\n  width: 14px;\n  height: 14px;\n  background-color: #e6e6e6;\n  border-radius: 100%;\n  content: '';\n  transition: 0.25s;\n}\n.steps-indicator li a:hover {\n  color: #4d4d4d;\n}\n.steps-indicator.steps-2 li {\n  width: calc(50%);\n}\n.steps-indicator.steps-3 li {\n  width: calc(33.33333333%);\n}\n.steps-indicator.steps-4 li {\n  width: calc(25%);\n}\n.steps-indicator.steps-5 li {\n  width: calc(20%);\n}\n.steps-indicator.steps-6 li {\n  width: calc(16.66666667%);\n}\n.steps-indicator.steps-7 li {\n  width: calc(14.28571429%);\n}\n.steps-indicator.steps-8 li {\n  width: calc(12.5%);\n}\n.steps-indicator.steps-9 li {\n  width: calc(11.11111111%);\n}\n.steps-indicator.steps-10 li {\n  width: calc(10%);\n}\n.steps-indicator.steps-11 li {\n  width: calc(9.09090909%);\n}\n.steps-indicator li.default {\n  pointer-events: none;\n}\n.steps-indicator li.default a:hover {\n  color: #808080;\n}\n.steps-indicator li.current,\n.steps-indicator li.editing {\n  pointer-events: none;\n}\n.steps-indicator li.current a:before {\n  background-color: #808080;\n}\n.steps-indicator li.done a:before {\n  background-color: #339933;\n}\n.steps-indicator li.editing a:before {\n  background-color: #ff0000;\n}\n.rating {\n  unicode-bidi: bidi-override;\n  direction: rtl;\n  font-size: 18px;\n}\n.rating span.star {\n  font-family: FontAwesome;\n  font-weight: normal;\n  font-style: normal;\n  display: inline-block;\n}\n.rating span.star:hover {\n  cursor: pointer;\n}\n.rating span.star:before {\n  content: \"\\f006\";\n  padding-right: 5px;\n  color: #777777;\n}\n.rating span.star:hover:before,\n.rating span.star:hover ~ span.star:before {\n  content: \"\\f005\";\n  color: #e3cf7a;\n}\n[ng\\:cloak],\n[ng-cloak],\n[data-ng-cloak],\n[x-ng-cloak],\n.ng-cloak,\n.x-ng-cloak {\n  display: none !important;\n}\n/* Base */\nbody,\nhtml {\n  height: 100%;\n}\nhtml {\n  overflow-y: scroll;\n}\nbody {\n  background: #f3f3f3;\n  font-family: \"Montserrat\";\n  color: #333333 !important;\n}\n.row {\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n}\n.row > div {\n  margin-bottom: 15px;\n}\n.alerts-container .alert:last-child {\n  margin-bottom: 0;\n}\n#page-wrapper {\n  padding-left: 70px;\n  height: 100%;\n}\n#sidebar-wrapper {\n  margin-left: -150px;\n  left: -30px;\n  width: 250px;\n  position: fixed;\n  height: 100%;\n  z-index: 999;\n}\n#page-wrapper,\n#sidebar-wrapper {\n  transition: all .4s ease 0s;\n}\n.green {\n  background: #23ae89 !important;\n}\n.blue {\n  background: #2361ae !important;\n}\n.orange {\n  background: #d3a938 !important;\n}\n.red {\n  background: #ae2323 !important;\n}\n.form-group .help-block.form-group-inline-message {\n  padding-top: 5px;\n}\ndiv.input-mask {\n  padding-top: 7px;\n}\nfooter .navbar {\n  background: transparent;\n  color: white;\n}\n.login-page {\n  background: url("+__webpack_require__(86)+");\n}\n.login-wrapper {\n  border-radius: 15px;\n  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 36%;\n  left: 50%;\n  display: block;\n  margin-top: -185px;\n  margin-left: -235px;\n  padding: 25px;\n  width: 420px;\n  opacity: .97;\n  background: none repeat scroll 0% 0% #FFF;\n}\n.login-wrapper legend {\n  font-weight: 300;\n  color: #333;\n  margin-top: 5px;\n  margin-bottom: 30px;\n  padding-bottom: 25px;\n}\n.login-wrapper .body {\n  border-bottom: 1px solid #EEE;\n}\n.login-wrapper .footer {\n  margin-top: 20px;\n}\n.question-table {\n  width: 100%;\n  height: 85vh;\n}\n.content-page {\n  position: absolute;\n  height: 100%;\n}\n.content-page .top {\n  padding-top: 20px;\n}\n.content-page.level-1 {\n  top: 0;\n  background: #f3f3f3;\n  left: 16%;\n  -webkit-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  -moz-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  box-shadow: -3px 1px 6px -4px #3d3d3d;\n}\n.sidebar-open {\n  width: 77.944%;\n}\n.sidebar-closed {\n  width: 93.94434%;\n}\n.fade {\n  opacity: .2;\n}\n/** Tabs \n.tab-content {\n  background-color: rgb(255, 255, 255);\n  height: 80vh;\n  padding-top: 4em;\n  border-right: 1px solid #ddd;\n  border-left: 1px solid #ddd;\n  border-bottom: 1px solid #ddd;\n}\n**/\n", ""]);
+	exports = module.exports = __webpack_require__(29)();
+	exports.push([module.id, "#content-wrapper {\n  padding-left: 0;\n  margin-left: 0;\n  width: 100%;\n  height: auto;\n}\n@media only screen and (min-width: 561px) {\n  #page-wrapper.active {\n    padding-left: 250px;\n  }\n}\n@media only screen and (max-width: 560px) {\n  #page-wrapper.active {\n    padding-left: 70px;\n  }\n}\n#page-wrapper.active #sidebar-wrapper {\n  left: 150px;\n}\n.sub-container {\n  position: relative;\n  top: -12px;\n  width: 101%;\n  height: 100vh;\n  -webkit-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  -moz-box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n  box-shadow: -3px 1px 6px 0px rgba(137, 137, 137, 0.6);\n}\n/* Hamburg Menu */\n@media only screen and (max-width: 560px) {\n  body.hamburg #page-wrapper {\n    padding-left: 0;\n  }\n  body.hamburg #page-wrapper:not(.active) #sidebar-wrapper {\n    position: absolute;\n    left: -100px;\n  }\n  body.hamburg #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n    display: none;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper {\n    position: fixed;\n  }\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    margin-left: 0px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg .row.header .meta {\n    margin-left: 70px;\n  }\n  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,\n  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {\n    transition: margin-left 0.4s ease 0s;\n  }\n}\n/**\n* Header\n*/\n.row.header {\n  height: 60px;\n  background: #fff;\n  margin-bottom: 15px;\n  /*box-shadow: 0px -10px 17px 8px rgba(0, 0, 0, 0.5);*/\n}\n.row.header > div:last-child {\n  padding-right: 0;\n}\n.row.header .meta .page {\n  font-size: 17px;\n  padding-top: 11px;\n}\n.row.header .meta .breadcrumb-links {\n  font-size: 10px;\n}\n.row.header .meta div {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.row.header .login a {\n  padding: 18px;\n  display: block;\n}\n.row.header .user {\n  min-width: 130px;\n}\n.row.header .user > .item {\n  width: 65px;\n  height: 60px;\n  float: right;\n  display: inline-block;\n  text-align: center;\n  vertical-align: middle;\n}\n.row.header .user > .item a {\n  color: #919191;\n  display: block;\n}\n.row.header .user > .item i {\n  font-size: 20px;\n  line-height: 55px;\n}\n.row.header .user > .item img {\n  width: 40px;\n  height: 40px;\n  margin-top: 10px;\n  border-radius: 2px;\n}\n.row.header .user > .item ul.dropdown-menu {\n  border-radius: 2px;\n  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);\n}\n.row.header .user > .item ul.dropdown-menu .dropdown-header {\n  text-align: center;\n}\n.row.header .user > .item ul.dropdown-menu li.link {\n  text-align: left;\n}\n.row.header .user > .item ul.dropdown-menu li.link a {\n  padding-left: 7px;\n  padding-right: 7px;\n}\n.row.header .user > .item ul.dropdown-menu:before {\n  position: absolute;\n  top: -7px;\n  right: 23px;\n  display: inline-block;\n  border-right: 7px solid transparent;\n  border-bottom: 7px solid #ccc;\n  border-left: 7px solid transparent;\n  border-bottom-color: rgba(0, 0, 0, 0.2);\n  content: '';\n}\n.row.header .user > .item ul.dropdown-menu:after {\n  position: absolute;\n  top: -6px;\n  right: 24px;\n  display: inline-block;\n  border-right: 6px solid transparent;\n  border-bottom: 6px solid #ffffff;\n  border-left: 6px solid transparent;\n  content: '';\n}\n/* #592727 RED */\n/* #2f5927 GREEN */\n/* #30426a BLUE (default)*/\n/* Main background color */\n/* Sidebar background color */\n/* Sidebar header and footer color */\n/* Sidebar title text colour */\n/*#627cb7*/\n.loading {\n  width: 40px;\n  height: 40px;\n  position: relative;\n  margin: 100px auto;\n}\n.double-bounce1,\n.double-bounce2 {\n  width: 100%;\n  height: 100%;\n  border-radius: 50%;\n  background-color: #333;\n  opacity: 0.6;\n  position: absolute;\n  top: 0;\n  left: 0;\n  -webkit-animation: bounce 2s infinite ease-in-out;\n  animation: bounce 2s infinite ease-in-out;\n}\n.double-bounce2 {\n  -webkit-animation-delay: -1s;\n  animation-delay: -1s;\n}\n@-webkit-keyframes bounce {\n  0%,\n  100% {\n    -webkit-transform: scale(0);\n  }\n  50% {\n    -webkit-transform: scale(1);\n  }\n}\n@keyframes bounce {\n  0%,\n  100% {\n    transform: scale(0);\n    -webkit-transform: scale(0);\n  }\n  50% {\n    transform: scale(1);\n    -webkit-transform: scale(1);\n  }\n}\n/**\n* Sidebar\n*/\n#sidebar-wrapper {\n  background: #30426a;\n}\nul.sidebar .sidebar-main a,\n.sidebar-footer,\nul.sidebar .sidebar-list a:hover,\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  /* Sidebar header and footer color */\n  background: #2d3e63;\n}\nul.sidebar {\n  position: absolute;\n  top: 0;\n  bottom: 45px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  text-indent: 20px;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\nul.sidebar li a {\n  color: #fff;\n  display: block;\n  float: left;\n  text-decoration: none;\n  width: 250px;\n}\nul.sidebar .sidebar-main {\n  height: 65px;\n}\nul.sidebar .sidebar-main a {\n  font-size: 18px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-main .menu-icon {\n  float: right;\n  font-size: 18px;\n  padding-right: 28px;\n  line-height: 60px;\n}\nul.sidebar .sidebar-title {\n  color: #738bc0;\n  font-size: 12px;\n  height: 35px;\n  line-height: 40px;\n  text-transform: uppercase;\n}\nul.sidebar .sidebar-list {\n  height: 40px;\n}\nul.sidebar .sidebar-list a {\n  text-indent: 25px;\n  font-size: 15px;\n  color: #b2bfdc;\n  line-height: 40px;\n}\nul.sidebar .sidebar-list a:hover {\n  color: #fff;\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\nul.sidebar .sidebar-list a:hover .menu-icon {\n  text-indent: 25px;\n}\nul.sidebar .sidebar-list .menu-icon {\n  float: right;\n  padding-right: 29px;\n  line-height: 40px;\n  width: 70px;\n}\n#page-wrapper:not(.active) ul.sidebar {\n  bottom: 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title {\n  display: none;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {\n  display: block;\n  height: 2px;\n  margin: 13px 0;\n}\n#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {\n  border-left: 3px solid #e99d1a;\n  text-indent: 22px;\n}\n#page-wrapper:not(.active) .sidebar-footer {\n  display: none;\n}\n.sidebar-footer {\n  position: absolute;\n  height: 40px;\n  bottom: 0;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n  text-align: center;\n}\n.sidebar-footer div a {\n  color: #b2bfdc;\n  font-size: 12px;\n  line-height: 43px;\n}\n.sidebar-footer div a:hover {\n  color: #ffffff;\n  text-decoration: none;\n}\n.widget {\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\n  background: #ffffff;\n  border: 1px solid transparent;\n  border-radius: 2px;\n  border-color: #e9e9e9;\n}\n.widget .widget-header .pagination,\n.widget .widget-footer .pagination {\n  margin: 0;\n}\n.widget .widget-header {\n  color: #767676;\n  background-color: #f6f6f6;\n  padding: 10px 15px;\n  border-bottom: 1px solid #e9e9e9;\n  line-height: 30px;\n}\n.widget .widget-header i {\n  margin-right: 5px;\n}\n.widget .widget-header input {\n  width: 25%;\n}\n.widget .widget-body {\n  padding: 20px;\n}\n.widget .widget-body table thead {\n  background: #fafafa;\n}\n.widget .widget-body table thead * {\n  font-size: 14px !important;\n}\n.widget .widget-body table tbody * {\n  font-size: 13px !important;\n}\n.widget .widget-body .error {\n  color: #ff0000;\n}\n.widget .widget-body button {\n  margin-left: 5px;\n}\n.widget .widget-body div.alert {\n  margin-bottom: 10px;\n}\n.widget .widget-body.xlarge {\n  min-height: 600px;\n  overflow-y: none;\n}\n.widget .widget-body.large {\n  height: 450px;\n  overflow-y: auto;\n}\n.widget .widget-body.medium {\n  height: 250px;\n  overflow-y: auto;\n}\n.widget .widget-body.small {\n  height: 150px;\n  overflow-y: auto;\n}\n.widget .widget-body.no-padding {\n  padding: 0;\n}\n.widget .widget-body.no-padding .error,\n.widget .widget-body.no-padding .message {\n  padding: 20px;\n}\n.widget .widget-footer {\n  border-top: 1px solid #e9e9e9;\n  padding: 10px;\n}\n.widget .widget-icon {\n  background: #30426a;\n  width: 65px;\n  height: 65px;\n  border-radius: 50%;\n  text-align: center;\n  vertical-align: middle;\n  margin-right: 15px;\n}\n.widget .widget-icon i {\n  line-height: 66px;\n  color: #ffffff;\n  font-size: 30px;\n}\n.widget .widget-content .title {\n  font-size: 28px;\n  display: block;\n}\n.btn-circle {\n  width: 30px;\n  height: 30px;\n  text-align: center;\n  padding: 6px 0;\n  font-size: 12px;\n  line-height: 1.428571429;\n  border-radius: 15px;\n}\n.left-inner-page {\n  z-index: 1000;\n  position: fixed;\n  top: 61px;\n  right: 250px;\n  width: 0px;\n  height: 100%;\n  margin-right: -250px;\n  overflow-y: auto;\n  background: #F3F3F3;\n  -webkit-transition: all 0.5s ease;\n  -moz-transition: all 0.5s ease;\n  -o-transition: all 0.5s ease;\n  transition: all 0.5s ease;\n  -webkit-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  -moz-box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n  box-shadow: -2px 3px 4px 0px rgba(50, 50, 50, 0.74);\n}\n.steps-indicator {\n  position: absolute;\n  right: 0;\n  left: 0;\n  height: 30px;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n}\n.steps-indicator:before {\n  position: absolute;\n  height: 1px;\n  background-color: #e6e6e6;\n  content: '';\n}\n.steps-indicator.steps-2:before {\n  right: calc(25%);\n  left: calc(25%);\n}\n.steps-indicator.steps-3:before {\n  right: calc(16.66666667%);\n  left: calc(16.66666667%);\n}\n.steps-indicator.steps-4:before {\n  right: calc(12.5%);\n  left: calc(12.5%);\n}\n.steps-indicator.steps-5:before {\n  right: calc(10%);\n  left: calc(10%);\n}\n.steps-indicator.steps-6:before {\n  right: calc(8.33333333%);\n  left: calc(8.33333333%);\n}\n.steps-indicator.steps-7:before {\n  right: calc(7.14285714%);\n  left: calc(7.14285714%);\n}\n.steps-indicator.steps-8:before {\n  right: calc(6.25%);\n  left: calc(6.25%);\n}\n.steps-indicator.steps-9:before {\n  right: calc(5.55555556%);\n  left: calc(5.55555556%);\n}\n.steps-indicator.steps-10:before {\n  right: calc(5%);\n  left: calc(5%);\n}\n.steps-indicator * {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.steps-indicator li {\n  position: relative;\n  float: left;\n  padding: 0;\n  padding-top: 10px;\n  margin: 0;\n  line-height: 15px;\n  text-align: center;\n}\n.steps-indicator li a {\n  font-weight: bold;\n  color: #808080;\n  text-decoration: none;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: 0.25s;\n}\n.steps-indicator li a:before {\n  position: absolute;\n  top: -7px;\n  left: calc(43%);\n  width: 14px;\n  height: 14px;\n  background-color: #e6e6e6;\n  border-radius: 100%;\n  content: '';\n  transition: 0.25s;\n}\n.steps-indicator li a:hover {\n  color: #4d4d4d;\n}\n.steps-indicator.steps-2 li {\n  width: calc(50%);\n}\n.steps-indicator.steps-3 li {\n  width: calc(33.33333333%);\n}\n.steps-indicator.steps-4 li {\n  width: calc(25%);\n}\n.steps-indicator.steps-5 li {\n  width: calc(20%);\n}\n.steps-indicator.steps-6 li {\n  width: calc(16.66666667%);\n}\n.steps-indicator.steps-7 li {\n  width: calc(14.28571429%);\n}\n.steps-indicator.steps-8 li {\n  width: calc(12.5%);\n}\n.steps-indicator.steps-9 li {\n  width: calc(11.11111111%);\n}\n.steps-indicator.steps-10 li {\n  width: calc(10%);\n}\n.steps-indicator.steps-11 li {\n  width: calc(9.09090909%);\n}\n.steps-indicator li.default {\n  pointer-events: none;\n}\n.steps-indicator li.default a:hover {\n  color: #808080;\n}\n.steps-indicator li.current,\n.steps-indicator li.editing {\n  pointer-events: none;\n}\n.steps-indicator li.current a:before {\n  background-color: #808080;\n}\n.steps-indicator li.done a:before {\n  background-color: #339933;\n}\n.steps-indicator li.editing a:before {\n  background-color: #ff0000;\n}\n.rating {\n  unicode-bidi: bidi-override;\n  direction: rtl;\n  font-size: 18px;\n}\n.rating span.star {\n  font-family: FontAwesome;\n  font-weight: normal;\n  font-style: normal;\n  display: inline-block;\n}\n.rating span.star:hover {\n  cursor: pointer;\n}\n.rating span.star:before {\n  content: \"\\f006\";\n  padding-right: 5px;\n  color: #777777;\n}\n.rating span.star:hover:before,\n.rating span.star:hover ~ span.star:before {\n  content: \"\\f005\";\n  color: #e3cf7a;\n}\n[ng\\:cloak],\n[ng-cloak],\n[data-ng-cloak],\n[x-ng-cloak],\n.ng-cloak,\n.x-ng-cloak {\n  display: none !important;\n}\n/* Base */\nbody,\nhtml {\n  height: 100%;\n}\nhtml {\n  overflow-y: scroll;\n}\nbody {\n  background: #f3f3f3;\n  font-family: \"Montserrat\";\n  color: #333333 !important;\n}\n.row {\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n}\n.row > div {\n  margin-bottom: 15px;\n}\n.alerts-container .alert:last-child {\n  margin-bottom: 0;\n}\n#page-wrapper {\n  padding-left: 70px;\n  height: 100%;\n}\n#sidebar-wrapper {\n  margin-left: -150px;\n  left: -30px;\n  width: 250px;\n  position: fixed;\n  height: 100%;\n  z-index: 999;\n}\n#page-wrapper,\n#sidebar-wrapper {\n  transition: all .4s ease 0s;\n}\n.green {\n  background: #23ae89 !important;\n}\n.blue {\n  background: #2361ae !important;\n}\n.orange {\n  background: #d3a938 !important;\n}\n.red {\n  background: #ae2323 !important;\n}\n.form-group .help-block.form-group-inline-message {\n  padding-top: 5px;\n}\ndiv.input-mask {\n  padding-top: 7px;\n}\nfooter .navbar {\n  background: transparent;\n  color: white;\n}\n.login-page {\n  background: url("+__webpack_require__(89)+");\n}\n.login-wrapper {\n  border-radius: 15px;\n  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 36%;\n  left: 50%;\n  display: block;\n  margin-top: -185px;\n  margin-left: -235px;\n  padding: 25px;\n  width: 420px;\n  opacity: .97;\n  background: none repeat scroll 0% 0% #FFF;\n}\n.login-wrapper legend {\n  font-weight: 300;\n  color: #333;\n  margin-top: 5px;\n  margin-bottom: 30px;\n  padding-bottom: 25px;\n}\n.login-wrapper .body {\n  border-bottom: 1px solid #EEE;\n}\n.login-wrapper .footer {\n  margin-top: 20px;\n}\n.question-table {\n  width: 100%;\n  height: 85vh;\n}\n.content-page {\n  position: absolute;\n  height: 100%;\n}\n.content-page .top {\n  padding-top: 20px;\n}\n.content-page.level-1 {\n  top: 0;\n  background: #f3f3f3;\n  left: 16%;\n  -webkit-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  -moz-box-shadow: -3px 1px 6px -4px #3d3d3d;\n  box-shadow: -3px 1px 6px -4px #3d3d3d;\n}\n.sidebar-open {\n  width: 77.944%;\n}\n.sidebar-closed {\n  width: 93.94434%;\n}\n.fade {\n  opacity: .2;\n}\n/** Tabs  */\n.tab-content {\n  background-color: #ffffff;\n  padding-top: 2em;\n  border-right: 1px solid #ddd;\n  border-left: 1px solid #ddd;\n  border-bottom: 1px solid #ddd;\n}\n", ""]);
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -34420,12 +35946,10 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-	__webpack_require__(28)
-	__webpack_require__(29)
 	__webpack_require__(30)
 	__webpack_require__(31)
 	__webpack_require__(32)
@@ -34436,9 +35960,11 @@
 	__webpack_require__(37)
 	__webpack_require__(38)
 	__webpack_require__(39)
+	__webpack_require__(40)
+	__webpack_require__(41)
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/**
@@ -60573,7 +62099,7 @@
 	!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -60769,19 +62295,19 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 
-	__webpack_require__(53);
 	__webpack_require__(54);
 	__webpack_require__(55);
 	__webpack_require__(56);
 	__webpack_require__(57);
 	__webpack_require__(58);
+	__webpack_require__(59);
 
 	module.exports = function ($stateProvider, $urlRouterProvider) {
 
@@ -60912,13 +62438,13 @@
 	};
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
-	var _ = __webpack_require__(4);
+	var _ = __webpack_require__(5);
 	module.exports = function ($scope, $state, $log, $cookieStore) {
 	  var _this = this;
 
@@ -60956,7 +62482,7 @@
 	};
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -64503,7 +66029,7 @@
 
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() {
@@ -64524,7 +66050,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -64589,7 +66115,7 @@
 
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -64689,7 +66215,7 @@
 
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -64811,7 +66337,7 @@
 
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -65054,7 +66580,7 @@
 
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -65271,7 +66797,7 @@
 
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -65438,7 +66964,7 @@
 
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -65768,7 +67294,7 @@
 
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -66246,7 +67772,7 @@
 
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -66365,7 +67891,7 @@
 
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -66546,7 +68072,7 @@
 
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -66705,7 +68231,7 @@
 
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -66873,7 +68399,7 @@
 
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
@@ -66889,8 +68415,6 @@
 
 
 /***/ },
-/* 41 */,
-/* 42 */,
 /* 43 */,
 /* 44 */,
 /* 45 */,
@@ -66901,18 +68425,7 @@
 /* 50 */,
 /* 51 */,
 /* 52 */,
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	"use strict()";
-
-	__webpack_require__(77);
-	var app = __webpack_require__(1).module("proximal2");
-	app.controller("HomeController", ["$log", __webpack_require__(60)]);
-
-/***/ },
+/* 53 */,
 /* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -66920,10 +68433,9 @@
 
 	"use strict()";
 
-	__webpack_require__(79);
-
+	__webpack_require__(81);
 	var app = __webpack_require__(1).module("proximal2");
-	app.controller("DashboardCtrl", [__webpack_require__(62)]);
+	app.controller("HomeController", ["$log", __webpack_require__(63)]);
 
 /***/ },
 /* 55 */
@@ -66933,9 +68445,10 @@
 
 	"use strict()";
 
-	__webpack_require__(78);
+	__webpack_require__(80);
+
 	var app = __webpack_require__(1).module("proximal2");
-	app.controller("LibraryCtrl", ["$log", "$cookieStore", "$scope", __webpack_require__(61)]);
+	app.controller("DashboardCtrl", [__webpack_require__(62)]);
 
 /***/ },
 /* 56 */
@@ -66945,24 +68458,9 @@
 
 	"use strict()";
 
-	__webpack_require__(80);
+	__webpack_require__(79);
 	var app = __webpack_require__(1).module("proximal2");
-
-	app.controller("ChildrenCtrl", ["$log", "Child", "$modal", __webpack_require__(63)]);
-	app.factory("Child", ["$log", "$resource", __webpack_require__(64)]);
-	app.factory("Score", ["$log", "$resource", __webpack_require__(65)]);
-	app.directive("childPicture", ["$log", __webpack_require__(66)]);
-
-	// Add a child
-	__webpack_require__(81);
-	app.controller("AddChildCtrl", ["$scope", "$log", "$modalInstance", "Child", "prox.common", __webpack_require__(67)]);
-
-	// View a child
-	__webpack_require__(82);
-	app.controller("ViewChildCtrl", ["$log", "$window", "$stateParams", "personService", __webpack_require__(68)]);
-
-	__webpack_require__(73);
-	__webpack_require__(74);
+	app.controller("LibraryCtrl", ["$log", "$cookieStore", "$scope", __webpack_require__(61)]);
 
 /***/ },
 /* 57 */
@@ -66970,13 +68468,26 @@
 
 	"use strict";
 
+	"use strict()";
+
+	__webpack_require__(83);
 	var app = __webpack_require__(1).module("proximal2");
 
-	__webpack_require__(85);
-	app.controller("AdminCtrl", ["$log", "$cookieStore", "standardsService", "$modal", __webpack_require__(72)]);
+	app.controller("ChildrenCtrl", ["$log", "Child", "$modal", __webpack_require__(65)]);
+	app.factory("Child", ["$log", "$resource", __webpack_require__(66)]);
+	app.factory("Score", ["$log", "$resource", __webpack_require__(67)]);
+	app.directive("childPicture", ["$log", __webpack_require__(68)]);
 
-	__webpack_require__(75);
-	__webpack_require__(76);
+	// Add a child
+	__webpack_require__(84);
+	app.controller("AddChildCtrl", ["$scope", "$log", "$modalInstance", "Child", "prox.common", __webpack_require__(69)]);
+
+	// View a child
+	__webpack_require__(85);
+	app.controller("ViewChildCtrl", ["$log", "$window", "$stateParams", "personService", __webpack_require__(70)]);
+
+	__webpack_require__(77);
+	__webpack_require__(78);
 
 /***/ },
 /* 58 */
@@ -66984,35 +68495,37 @@
 
 	"use strict";
 
-	"use strict()";
-	(function () {
-	  __webpack_require__(83);
-	  __webpack_require__(84);
-	  var app = __webpack_require__(1).module("proximal2");
+	var app = __webpack_require__(1).module("proximal2");
 
-	  app.controller("ActivitiesController", __webpack_require__(69));
-	  app.factory("Activities", __webpack_require__(70));
+	__webpack_require__(82);
+	app.controller("AdminCtrl", ["$log", "$cookieStore", "standardsService", "$modal", __webpack_require__(64)]);
 
-	  app.controller("AddActivityController", __webpack_require__(71));
-
-	  __webpack_require__(122);
-	  app.directive("activityWidget", __webpack_require__(123));
-	})();
+	__webpack_require__(75);
+	__webpack_require__(76);
 
 /***/ },
-/* 59 */,
-/* 60 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
+	(function () {
+	  __webpack_require__(86);
+	  __webpack_require__(87);
+	  var app = __webpack_require__(1).module("proximal2");
 
-	module.exports = function ($log) {
-	  this.home = "HOME";
-	};
+	  app.controller("ActivitiesController", __webpack_require__(71));
+	  app.factory("Activities", __webpack_require__(72));
+
+	  app.controller("AddActivityController", __webpack_require__(73));
+
+	  __webpack_require__(88);
+	  app.directive("activityWidget", __webpack_require__(74));
+	})();
 
 /***/ },
+/* 60 */,
 /* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -67044,7 +68557,49 @@
 
 	"use strict()";
 
-	var _ = __webpack_require__(4);
+	module.exports = function ($log) {
+	  this.home = "HOME";
+	};
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	module.exports = function ($log, $cookieStore, standardsService, $modal) {
+	  var vm = this;
+	  vm.page = "Admin Page";
+
+	  vm.createStandard = function () {
+	    modalInstance = $modal.open({
+	      templateUrl: "standards/add_standard.html",
+	      controller: "AddStandardCtrl"
+	    });
+
+	    var addStandard = function addStandard(s) {
+	      standardsService.addStandard(s).success(function (data, success, headers, config) {
+	        $log.debug(data);
+	      }).error(function (data, status, headers, config) {
+	        $log.error("Unable to add standard: " + data);
+	      });
+	    };
+
+	    modalInstance.result.then(function (standard) {
+	      addStandard(standard);
+	    });
+	  };
+	};
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+
+	var _ = __webpack_require__(5);
 
 	module.exports = function ($log, Child, $modal) {
 
@@ -67090,7 +68645,7 @@
 	};
 
 /***/ },
-/* 64 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67101,7 +68656,7 @@
 	};
 
 /***/ },
-/* 65 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67112,13 +68667,13 @@
 	};
 
 /***/ },
-/* 66 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
-	var boyImg = __webpack_require__(87);
+	var boyImg = __webpack_require__(90);
 	module.exports = function ($log) {
 	  return {
 	    restrict: "A",
@@ -67149,14 +68704,14 @@
 	};
 
 /***/ },
-/* 67 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 
-	__webpack_require__(88);
+	__webpack_require__(110);
 
 	module.exports = function ($scope, $log, $modalInstance, Child, common) {
 
@@ -67194,14 +68749,14 @@
 	};
 
 /***/ },
-/* 68 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 
-	__webpack_require__(89);
+	__webpack_require__(111);
 
 	module.exports = function ($log, $window, $stateParams, personService) {
 	  var vm = this;
@@ -67213,7 +68768,7 @@
 	};
 
 /***/ },
-/* 69 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67229,13 +68784,11 @@
 	    var vm = this;
 
 	    vm.activities = []; // holds the current activities we are looking at
-	    vm.availableStandards = [];
 	    vm.begin = begin;
 	    vm.deleteSelectedActivities = deleteSelectedActivities;
 	    vm.isMyTab = isMyTab;
 	    vm.selectedActivities = [];
 	    vm.setCurrentActivities = setCurrentActivities;
-	    vm.standardSelected = null;
 	    vm.tab = "my";
 	    vm.updateSelection = updateSelection;
 
@@ -67248,7 +68801,6 @@
 	    function activate() {
 	      getActivities();
 	      getAll();
-	      getAvailableStandards();
 	      setCurrentActivities("my");
 	    }
 
@@ -67286,10 +68838,7 @@
 	        templateUrl: "add/add_activity.html",
 	        controller: "AddActivityController",
 	        controllerAs: "add",
-	        backdrop: false,
-	        resolve: { items: function items() {
-	            return vm.standardSelected;
-	          } }
+	        backdrop: false
 	      });
 
 	      modalInstance.result.then(function (result) {
@@ -67311,14 +68860,6 @@
 	      vm.allActivities = Activities.all.query();
 	    }
 
-	    function getAvailableStandards() {
-	      Standards.getAllStandards().success(function (data) {
-	        vm.availableStandards = data;
-	      }).error(function (data) {
-	        $log.error(data);
-	      });
-	    }
-
 	    function setCurrentActivities(currentTab) {
 	      if (currentTab == "my") {
 	        vm.activities = vm.myActivities;
@@ -67332,7 +68873,7 @@
 	})();
 
 /***/ },
-/* 70 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67350,7 +68891,7 @@
 	})();
 
 /***/ },
-/* 71 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67360,25 +68901,29 @@
 
 	  module.exports = AddActivity;
 
-	  AddActivity.$inject = ["$log", "$modalInstance", "standardsService", "Child", "personService", "prox.common", "$stateParams", "items"];
+	  AddActivity.$inject = ["$log", "$modalInstance", "standardsService", "Child", "personService", "prox.common", "$stateParams"];
 
-	  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams, items) {
+	  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams) {
 	    var vm = this;
 	    vm.addStatement = addStatement;
+	    vm.availableStandards = [];
 	    vm.cancel = cancel;
 	    vm.entity = { statementIds: [] };
 	    vm.forms = null;
 	    vm.goTo = goTo;
 	    vm.isNextDisabled = isNextDisabled;
+	    vm.loadingStatements = false;
 	    vm.nextStep = nextStep;
 	    vm.ok = ok;
+	    vm.standardSelected = null;
 	    vm.setForm = setForm;
-	    vm.standard = items;
+	    vm.standard = null;
 	    vm.statements = [];
-	    vm.steps = [{ step: 1, title: "Choose Statement", completed: false, selected: true }, { step: 2, title: "General Information", completed: false, selected: false }, { step: 3, title: "Resources", completed: false, selected: false }];
+
+	    vm.steps = [{ step: 1, title: "Choose Standard", completed: false, selected: true }, { step: 2, title: "Choose Statement", completed: false, selected: false }, { step: 3, title: "General Information", completed: false, selected: false }, { step: 4, title: "Resources", completed: false, selected: false }];
 
 	    function activate() {
-	      getStatements();
+	      getAvailableStandards();
 	      getProfile();
 	    }
 
@@ -67390,28 +68935,42 @@
 	      vm.forms = f;
 	    }
 
+	    function getAvailableStandards() {
+	      Standards.getAllStandards().success(function (data) {
+	        vm.availableStandards = data;
+	      }).error(function (data) {
+	        $log.error(data);
+	      });
+	    }
+
 	    function getProfile() {
 	      vm.profile = Person.profile.get();
 	    }
 
 	    function getStatements() {
+	      vm.loadingStatements = true;
 	      //Get statements for this standard and grade level of the child
 	      Standards.getStatements(vm.standard.id).success(function (d) {
+	        vm.loadingStatements = false;
 	        vm.statements = d.statements;
 	        //vm.statements = _.filter(d.statements, function(st){
 	        //return (_.contains(st.levels, vm.child.educationLevel.id) ) || (st.levels.length === 0);
 	        //});
 	      }).error(function (d) {
+	        vm.loadingStatements = false;
 	        $log.error(d);
 	      });
 	    }
 
 	    function nextStep() {
 	      // which step are we on?
-	      console.log(vm.entity);
 	      var currentStep = _.find(vm.steps, function (s) {
 	        return s.selected === true;
 	      });
+	      console.log(currentStep);
+	      if (currentStep.step === 1) {
+	        getStatements();
+	      }
 	      vm.steps[currentStep.step - 1].completed = true;
 	      vm.steps[currentStep.step - 1].selected = false;
 	      vm.steps[currentStep.step].selected = true;
@@ -67419,7 +68978,7 @@
 	    }
 
 	    function isNextDisabled() {
-	      return vm.steps[0].selected && vm.statement === undefined || vm.steps[1].selected && !isEntityValid();
+	      return vm.standard === null || vm.steps[1].selected && vm.statement === undefined || vm.steps[2].selected && !isEntityValid();
 	    }
 
 	    function goTo(step) {
@@ -67455,76 +69014,23 @@
 	})();
 
 /***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	module.exports = function ($log, $cookieStore, standardsService, $modal) {
-	  var vm = this;
-	  vm.page = "Admin Page";
-
-	  vm.createStandard = function () {
-	    modalInstance = $modal.open({
-	      templateUrl: "standards/add_standard.html",
-	      controller: "AddStandardCtrl"
-	    });
-
-	    var addStandard = function addStandard(s) {
-	      standardsService.addStandard(s).success(function (data, success, headers, config) {
-	        $log.debug(data);
-	      }).error(function (data, status, headers, config) {
-	        $log.error("Unable to add standard: " + data);
-	      });
-	    };
-
-	    modalInstance.result.then(function (standard) {
-	      addStandard(standard);
-	    });
-	  };
-	};
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var app = __webpack_require__(1).module("proximal2");
-
-	// Templates
-	__webpack_require__(90);
-	__webpack_require__(91);
-
-	//Assessment Service
-	app.factory("Assesments", ["$resource", __webpack_require__(92)]);
-
-	// View Assessments
-	app.controller("AssessmentCtrl", ["$log", "standardsService", "Assesments", "$stateParams", "$modal", __webpack_require__(93)]);
-
-	// New Assessment
-	app.controller("NewAssessmentCtrl", ["$log", "Assesments", "$modalInstance", "items", __webpack_require__(94)]);
-
-/***/ },
 /* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	"use strict()";
+	(function () {
+	  module.exports = activityWidget;
 
-	var app = __webpack_require__(1).module("proximal2");
-
-	__webpack_require__(95);
-	app.controller("HomeworkCtrl", ["$log", "$modal", "toaster", "$stateParams", "standardsService", "Homework", __webpack_require__(96)]);
-
-	app.factory("Homework", ["$resource", __webpack_require__(97)]);
-
-	__webpack_require__(98);
-	app.controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "prox.common", "$stateParams", "items", __webpack_require__(99)]);
-
-	__webpack_require__(100);
-	app.controller("HomeworkDetailsCtrl", ["$log", "standardsService", "Child", "Score", "prox.common", "$stateParams", __webpack_require__(101)]);
+	  function activityWidget() {
+	    return {
+	      restrict: "EA",
+	      templateUrl: "activities/activityWidget.html",
+	      controller: "ActivitiesController",
+	      bindToController: true
+	    };
+	  }
+	})();
 
 /***/ },
 /* 75 */
@@ -67537,26 +69043,26 @@
 	var app = __webpack_require__(1).module("proximal2");
 
 	// Question Service
-	app.factory("Question", ["$log", "$resource", "$http", __webpack_require__(109)]);
+	app.factory("Question", ["$log", "$resource", "$http", __webpack_require__(91)]);
 
 	// Question Controller
-	__webpack_require__(110);
-	app.controller("QuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "toaster", "prox.common", "Question", "standardsService", __webpack_require__(111)]);
+	__webpack_require__(92);
+	app.controller("QuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "toaster", "prox.common", "Question", "standardsService", __webpack_require__(93)]);
 
 	// Details
-	__webpack_require__(112);
-	app.directive("question", __webpack_require__(113));
-	app.directive("questionDetails", ["$log", "$state", "prox.common", __webpack_require__(114)]);
-	app.directive("questionPicture", ["$log", "$q", __webpack_require__(115)]);
-	app.directive("questionAdd", ["$log", "prox.common", __webpack_require__(116)]);
+	__webpack_require__(94);
+	app.directive("question", __webpack_require__(95));
+	app.directive("questionDetails", ["$log", "$state", "prox.common", __webpack_require__(96)]);
+	app.directive("questionPicture", ["$log", "$q", __webpack_require__(97)]);
+	app.directive("questionAdd", ["$log", "prox.common", __webpack_require__(98)]);
 
 	// Add
-	__webpack_require__(117);
-	app.controller("AddQuestionCtrl", ["$log", "$scope", "prox.common", "$upload", "standardsService", "$modalInstance", __webpack_require__(118)]);
+	__webpack_require__(99);
+	app.controller("AddQuestionCtrl", ["$log", "$scope", "prox.common", "$upload", "standardsService", "$modalInstance", __webpack_require__(100)]);
 
 	// Edit
-	__webpack_require__(119);
-	app.controller("EditQuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "prox.common", "standardsService", "Question", "toaster", __webpack_require__(120)]);
+	__webpack_require__(101);
+	app.controller("EditQuestionsCtrl", ["$log", "$scope", "$state", "$stateParams", "prox.common", "standardsService", "Question", "toaster", __webpack_require__(102)]);
 
 /***/ },
 /* 76 */
@@ -67569,104 +69075,41 @@
 	var app = __webpack_require__(1).module("proximal2");
 
 	// Standards
-	__webpack_require__(102);
 	__webpack_require__(103);
-	app.controller("StandardsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "standardsService", "toaster", __webpack_require__(104)]);
+	__webpack_require__(104);
+	app.controller("StandardsCtrl", ["$log", "$scope", "$state", "$stateParams", "$modal", "standardsService", "toaster", __webpack_require__(105)]);
 
 	// Add Standard
-	__webpack_require__(105);
-	app.controller("AddStandardCtrl", ["$log", "$scope", "$modalInstance", "prox.common", "toaster", __webpack_require__(106)]);
+	__webpack_require__(106);
+	app.controller("AddStandardCtrl", ["$log", "$scope", "$modalInstance", "prox.common", "toaster", __webpack_require__(107)]);
 
 	// Add Statement
-	__webpack_require__(107);
-	app.controller("AddStatementCtrl", ["$log", "$scope", "$modalInstance", "prox.common", "standardsService", "standardId", __webpack_require__(108)]);
+	__webpack_require__(108);
+	app.controller("AddStatementCtrl", ["$log", "$scope", "$modalInstance", "prox.common", "standardsService", "standardId", __webpack_require__(109)]);
 
 /***/ },
 /* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<h1> HOME BABY! </h1>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("home/home.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	var app = __webpack_require__(1).module("proximal2");
+
+	// Templates
+	__webpack_require__(112);
+	__webpack_require__(113);
+
+	//Assessment Service
+	app.factory("Assesments", ["$resource", __webpack_require__(114)]);
+
+	// View Assessments
+	app.controller("AssessmentCtrl", ["$log", "standardsService", "Assesments", "$stateParams", "$modal", __webpack_require__(115)]);
+
+	// New Assessment
+	app.controller("NewAssessmentCtrl", ["$log", "Assesments", "$modalInstance", "items", __webpack_require__(116)]);
 
 /***/ },
 /* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<h1> test </h1>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("library/library.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<div class=\"row\"> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon green pull-left\"> <i class=\"fa fa-users\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">2</div> <div class=\"comment\">Children Registered</div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon orange pull-left\"> <i class=\"fa fa-sitemap\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">16</div> <div class=\"comment\">Assessments Taken </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> <div class=\"spacer visible-xs\"></div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-tasks\"></i> Table of Data\n<a href=\"#\" class=\"pull-right\">Clear</a> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <tbody> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-users\"></i> Collaborators\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"></div> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr><th class=\"text-center\">ID</th><th>Username</th><th>Relationship</th><th>Account</th></tr> </thead> <tbody> <tr><td class=\"text-center\">1</td><td>Joe Bloggs</td><td>Brother</td><td>AZ23045</td></tr> <tr><td class=\"text-center\">2</td><td>Timothy Hernandez</td><td>Father</td><td>AU24783</td></tr> <tr><td class=\"text-center\">3</td><td>Joe Bickham</td><td>User</td><td>Friend</td></tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-plus\"></i> Extras\n<button class=\"btn btn-sm btn-info pull-right\">Button</button> <div class=\"clearfix\"></div> </div> <div class=\"widget-body\"> <div class=\"message\"> This is a standard message which will also work the \".no-padding\" class, I can also <span class=\"error\">be an error message!</span> </div> <hr/> <div class=\"message\"> <a href=\"http://angular-ui.github.io/bootstrap/\" target=\"_blank\">UI Bootstrap</a> is included, so you can use <a href=\"#\" tooltip=\"I'm a tooltip!\">tooltips</a> and all of the other native Bootstrap JS components! </div> <hr/> <form class=\"form-horizontal\" role=\"form\"> <div class=\"form-group has-feedback has-success\"> <label for=\"label\" class=\"col-sm-2 control-label\">Inline Form</label> <div class=\"col-sm-5\"> <input type=\"text\" class=\"form-control\"/>\n<span class=\"fa fa-key form-control-feedback\"></span> </div> <div class=\"col-sm-5\"> <div class=\"input-mask\">I'm an input mask!</div> </div> </div> </form> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-cog fa-spin\"></i> Loading Directive\n<a href=\"http://tobiasahlin.com/spinkit/\" target=\"_blank\" class=\"pull-right\">SpinKit</a> </div> <div class=\"widget-body\"> </div> </div> </div> </div> ";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("dashboard/dashboard.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section ng-if=\"!app.state.current.data.hideChildren\"> <div class=\"row\" ng-controller=\"ChildrenCtrl as childCtrl\"> <div class=\"row\"> <button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"childCtrl.createChild()\"> <i class=\"fa fa-plus\"></i> Add Child </button> </div> <div class=\"col-sm-4 col-md-3\" ng-repeat=\"c in childCtrl.children\"> <div class=\"thumbnail\"> <img child-picture child=\"c\" style=\"width:100px;height:100px\"> <div class=\"caption\"> <h3>{{::c.firstName}}</h3> <p> Some blurb, maybe birthdate? and grade? </p> <p><a ui-sref=\"children.view({id:c.id})\" class=\"btn btn-info btn-sm\" role=\"button\"> <i class=\"fa fa-eye\"></i> View </a>\n<a class=\"btn btn-default btn-danger btn-sm\" role=\"button\" ng-click=\"childCtrl.removeChild(c.id)\"> <i class=\"fa fa-trash\"></i>Delete</a></p> </div> </div> </div> </div> </section> <ui-view class=\"row col-md-12\"></ui-view> <toaster> </toaster>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("children/children.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\"> Add a Child </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.firstName.$invalid, 'has-success': !form.firstName.$invalid}\"> <label for=\"firstName\" class=\"sr-only\"> Child's First Name </label> <input type=\"text\" name=\"firstName\" data-ng-model=\"addChild.child.firstName\" class=\"form-control\" id=\"firstName\" placeholder=\"Child's first name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.lastName.$invalid, 'has-success': !form.lastName.$invalid}\"> <label for=\"lastName\" class=\"sr-only\"> Child's Last Name </label> <input type=\"text\" data-ng-model=\"addChild.child.lastName\" name=\"lastName\" class=\"form-control\" id=\"lastName\" placeholder=\"Child's last name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.birthDate.$invalid, 'has-success': !form.birthDate.$invalid}\"> <label for=\"birthDate\" class=\"sr-only\">Child's Date of Birth </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"birthDate\" datepicker-popup=\"{{addChild.format}}\" ng-model=\"addChild.child.birthDate\" is-open=\"addChild.opened\" datepicker-options=\"addChild.dateOptions\" init-date=\"addChildinitDate\" ng-required=\"true\" close-text=\"Close\" placeholder=\"Child's date of birth\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"addChild.open($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}\"> <label for=\"educationLevel\" class=\"sr-only\"> Current Grade Level </label> <select name=\"educationLevel\" class=\"forn-control\" ng-model=\"addChild.child.gradeLevel\" ng-options=\"a.description for a in addChild.availableLevels\" required> <option value=\"\"> -- Current Grade Level -- </option> </select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"addChild.ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"addChild.cancel()\">Cancel</button> </div> </form>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_child.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<div class=\"row col-md-12 toolbar\"> <div class=\"col-md-1 thumbnail\"> <div child-picture child=\"childctrl.child\" style=\"min-height:5em\"> </div> </div> <div class=\"col-md-4\"> <h4> {{childctrl.child.firstName + ' ' + childctrl.child.lastName}} </h4> <span> {{childctrl.child.educationLevel.description}} </span> <a title=\"Move up a grade level\"><i class=\"fa fa-arrow-circle-up\"></i></a> </div> </div> <tabset> <tab heading=\"Assessments\"> <tab-heading> Assessments </tab-heading> <ui-view name=\"assessment\"></ui-view> </tab> <tab heading=\"Homework\"> <tab-heading> Homework </tab-heading> <ui-view name=\"homework\" ng-show=\"childCtrl.showHomeworkDetails == false\"></ui-view> <ui-view name=\"homeworkDetails\" ng-show=\"childCtrl.showHomeworkDetails == true\"></ui-view> </tab> <tab select=\"alertMe()\"> <tab-heading> <i class=\"glyphicon glyphicon-bell\"></i> Alert! </tab-heading> I've got an HTML heading, and a select callback. Pretty cool! </tab> </tabset>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("view/view_child.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<tabset> <data-tab heading=\"My Activities\" select=\"activities.setCurrentActivities('my')\"> <section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Add a new Activity </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"activities.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in activities.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> <button class=\"btn btn-primary\" ng-click=\"activities.begin()\" ng-class=\"{'disabled': activities.standardSelected == null}\"> Continue </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <activity-widget></activity-widget> </data-tab> <data-tab heading=\"All Activities\" select=\"activities.setCurrentActivities('all')\"> <activity-widget></activity-widget> </data-tab> </tabset>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("activities/activities.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-3\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in add.steps\"> <a data-ng-click=\"add.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"add.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"add.addStatement(statement.statement)\" data-ng-class=\"{'success': add.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in add.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[1].selected == true\"> <form name=\"activityForm\" class=\"form-horizontal\" data-ng-init=\"add.setForm(this)\"> <input type=\"hidden\" ng-model=\"add.entity.statementId\" value=\"{{add.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Title</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.title\" class=\"form-control\" id=\"title\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"add.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"add.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"rights\" class=\"col-sm-2 control-label\">Rights</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.rights\" class=\"form-control\" id=\"rights\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"source\" class=\"col-sm-2 control-label\">Source</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.source\" class=\"form-control\" id=\"source\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"type\" class=\"col-sm-2 control-label\">Type</label> <div class=\"col-sm-10\"> <select ng-model=\"add.entity.activity.catagory\"> <option value=\"homework\"> Homework </option> <option value=\"study\"> Study </option> </select> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"add.steps[2].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\"> Resources are tools to help guide students thorugh your activity. They can things like <ul> <li> Videos </li> <li> Links to books </li> <li> Questions </li> </ul> If you can't find the resouce you are looking for here, you can always create a new one. </div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"add.entity.resources.length > 0\"> <ul> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <h4> placeholder for list of resouces available </h4> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == true\" data-ng-click=\"add.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == false\" data-ng-disabled=\"add.isNextDisabled()\" data-ng-click=\"add.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"add.cancel()\">Cancel</button> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_activity.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section class=\"row\" ng-if=\"!app.state.current.data.hideAdmin\"> <ul> <li> <a data-ui-sref=\"admin.standards\"> Manage Standards </a> </li> <li> <a data-ui-sref=\"admin.questions\"> Manage Questions </a> </li> <li> <a data-ui-sref=\"admin.activities\"> Manage Activities </a> </li> </ul> </section> <div data-ui-view class=\"row col-md-12\"> </div> <data-toaster-container></data-toaster-container>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("admin/admin.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 86 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "3894ff7d10fddb7718ce3d9227e5c01d.jpg"
-
-/***/ },
-/* 87 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "0cefab62296d55823b0fb4f894a339be.png"
-
-/***/ },
-/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -67674,77 +69117,130 @@
 	"use strict()";
 
 	var app = __webpack_require__(1).module("proximal2");
-	app.factory("prox.common", ["$log", "$http", CommonService]);
 
-	function CommonService($log, $http) {
-	  this.educationLevels = [{ value: "k", description: "Kindergarden" }, { value: "1", description: "1st Grade" }, { value: "2", description: "2nd Grade" }, { value: "3", description: "3rd Grade" }, { value: "4", description: "4th Grade" }, { value: "5", description: "5th Grade" }, { value: "6", description: "6th Grade" }, { value: "7", description: "7th Grade" }, { value: "9", description: "9th Grade" }, { value: "10", description: "10th Grade" }, { value: "11", description: "11th Grade" }, { value: "12", description: "12th Grade" }];
+	__webpack_require__(117);
+	app.controller("HomeworkCtrl", ["$log", "$modal", "toaster", "$stateParams", "standardsService", "Homework", __webpack_require__(118)]);
 
-	  this.homeworkStatuses = [{ text: "Not Started" }, { text: "In-Progress" }, { text: "Finished" }];
+	app.factory("Homework", ["$resource", __webpack_require__(119)]);
 
-	  return {
-	    educationLevels: this.educationLevels,
-	    homeworkStatuses: this.homeworkStatuses
-	  };
-	}
+	__webpack_require__(120);
+	app.controller("AddHomeworkCtrl", ["$log", "$modalInstance", "standardsService", "Child", "prox.common", "$stateParams", "items", __webpack_require__(121)]);
+
+	__webpack_require__(122);
+	app.controller("HomeworkDetailsCtrl", ["$log", "standardsService", "Child", "Score", "prox.common", "$stateParams", __webpack_require__(123)]);
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<h1> test </h1>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("library/library.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"row\"> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon green pull-left\"> <i class=\"fa fa-users\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">2</div> <div class=\"comment\">Children Registered</div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-icon orange pull-left\"> <i class=\"fa fa-sitemap\"></i> </div> <div class=\"widget-content pull-left\"> <div class=\"title\">16</div> <div class=\"comment\">Assessments Taken </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> <div class=\"spacer visible-xs\"></div> <div class=\"col-lg-3 col-md-6 col-xs-12\"> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-tasks\"></i> Table of Data\n<a href=\"#\" class=\"pull-right\">Clear</a> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <tbody> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-users\"></i> Collaborators\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"></div> </div> <div class=\"widget-body medium no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr><th class=\"text-center\">ID</th><th>Username</th><th>Relationship</th><th>Account</th></tr> </thead> <tbody> <tr><td class=\"text-center\">1</td><td>Joe Bloggs</td><td>Brother</td><td>AZ23045</td></tr> <tr><td class=\"text-center\">2</td><td>Timothy Hernandez</td><td>Father</td><td>AU24783</td></tr> <tr><td class=\"text-center\">3</td><td>Joe Bickham</td><td>User</td><td>Friend</td></tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-plus\"></i> Extras\n<button class=\"btn btn-sm btn-info pull-right\">Button</button> <div class=\"clearfix\"></div> </div> <div class=\"widget-body\"> <div class=\"message\"> This is a standard message which will also work the \".no-padding\" class, I can also <span class=\"error\">be an error message!</span> </div> <hr/> <div class=\"message\"> <a href=\"http://angular-ui.github.io/bootstrap/\" target=\"_blank\">UI Bootstrap</a> is included, so you can use <a href=\"#\" tooltip=\"I'm a tooltip!\">tooltips</a> and all of the other native Bootstrap JS components! </div> <hr/> <form class=\"form-horizontal\" role=\"form\"> <div class=\"form-group has-feedback has-success\"> <label for=\"label\" class=\"col-sm-2 control-label\">Inline Form</label> <div class=\"col-sm-5\"> <input type=\"text\" class=\"form-control\"/>\n<span class=\"fa fa-key form-control-feedback\"></span> </div> <div class=\"col-sm-5\"> <div class=\"input-mask\">I'm an input mask!</div> </div> </div> </form> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-cog fa-spin\"></i> Loading Directive\n<a href=\"http://tobiasahlin.com/spinkit/\" target=\"_blank\" class=\"pull-right\">SpinKit</a> </div> <div class=\"widget-body\"> </div> </div> </div> </div> ";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("dashboard/dashboard.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<h1> HOME BABY! </h1>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("home/home.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<section class=\"row\" ng-if=\"!app.state.current.data.hideAdmin\"> <ul> <li> <a data-ui-sref=\"admin.standards\"> Manage Standards </a> </li> <li> <a data-ui-sref=\"admin.questions\"> Manage Questions </a> </li> <li> <a data-ui-sref=\"admin.activities\"> Manage Activities </a> </li> </ul> </section> <div data-ui-view class=\"row col-md-12\"> </div> <data-toaster-container></data-toaster-container>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("admin/admin.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<section ng-if=\"!app.state.current.data.hideChildren\"> <div class=\"row\" ng-controller=\"ChildrenCtrl as childCtrl\"> <div class=\"row\"> <button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"childCtrl.createChild()\"> <i class=\"fa fa-plus\"></i> Add Child </button> </div> <div class=\"col-sm-4 col-md-3\" ng-repeat=\"c in childCtrl.children\"> <div class=\"thumbnail\"> <img child-picture child=\"c\" style=\"width:100px;height:100px\"> <div class=\"caption\"> <h3>{{::c.firstName}}</h3> <p> Some blurb, maybe birthdate? and grade? </p> <p><a ui-sref=\"children.view({id:c.id})\" class=\"btn btn-info btn-sm\" role=\"button\"> <i class=\"fa fa-eye\"></i> View </a>\n<a class=\"btn btn-default btn-danger btn-sm\" role=\"button\" ng-click=\"childCtrl.removeChild(c.id)\"> <i class=\"fa fa-trash\"></i>Delete</a></p> </div> </div> </div> </div> </section> <ui-view class=\"row col-md-12\"></ui-view> <toaster> </toaster>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("children/children.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\"> Add a Child </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.firstName.$invalid, 'has-success': !form.firstName.$invalid}\"> <label for=\"firstName\" class=\"sr-only\"> Child's First Name </label> <input type=\"text\" name=\"firstName\" data-ng-model=\"addChild.child.firstName\" class=\"form-control\" id=\"firstName\" placeholder=\"Child's first name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.lastName.$invalid, 'has-success': !form.lastName.$invalid}\"> <label for=\"lastName\" class=\"sr-only\"> Child's Last Name </label> <input type=\"text\" data-ng-model=\"addChild.child.lastName\" name=\"lastName\" class=\"form-control\" id=\"lastName\" placeholder=\"Child's last name\" required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.birthDate.$invalid, 'has-success': !form.birthDate.$invalid}\"> <label for=\"birthDate\" class=\"sr-only\">Child's Date of Birth </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"birthDate\" datepicker-popup=\"{{addChild.format}}\" ng-model=\"addChild.child.birthDate\" is-open=\"addChild.opened\" datepicker-options=\"addChild.dateOptions\" init-date=\"addChildinitDate\" ng-required=\"true\" close-text=\"Close\" placeholder=\"Child's date of birth\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"addChild.open($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.educationLevel.$invalid, 'has-success': !form.educationLevel.$invalid}\"> <label for=\"educationLevel\" class=\"sr-only\"> Current Grade Level </label> <select name=\"educationLevel\" class=\"forn-control\" ng-model=\"addChild.child.gradeLevel\" ng-options=\"a.description for a in addChild.availableLevels\" required> <option value=\"\"> -- Current Grade Level -- </option> </select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"addChild.ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"addChild.cancel()\">Cancel</button> </div> </form>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_child.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"row col-md-12 toolbar\"> <div class=\"col-md-1 thumbnail\"> <div child-picture child=\"childctrl.child\" style=\"min-height:5em\"> </div> </div> <div class=\"col-md-4\"> <h4> {{childctrl.child.firstName + ' ' + childctrl.child.lastName}} </h4> <span> {{childctrl.child.educationLevel.description}} </span> <a title=\"Move up a grade level\"><i class=\"fa fa-arrow-circle-up\"></i></a> </div> </div> <tabset> <tab heading=\"Assessments\"> <tab-heading> Assessments </tab-heading> <ui-view name=\"assessment\"></ui-view> </tab> <tab heading=\"Homework\"> <tab-heading> Homework </tab-heading> <ui-view name=\"homework\" ng-show=\"childCtrl.showHomeworkDetails == false\"></ui-view> <ui-view name=\"homeworkDetails\" ng-show=\"childCtrl.showHomeworkDetails == true\"></ui-view> </tab> <tab select=\"alertMe()\"> <tab-heading> <i class=\"glyphicon glyphicon-bell\"></i> Alert! </tab-heading> I've got an HTML heading, and a select callback. Pretty cool! </tab> </tabset>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("view/view_child.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<tabset> <data-tab heading=\"My Activities\" select=\"activities.setCurrentActivities('my')\"> <section class=\"row\"> <div class=\"col-md-12\"> <button class=\"btn btn-xs btn-success\" ng-click=\"activities.begin()\"> <i class=\"fa fa-plus\"></i> Add New </button>\n<button ng-if=\"activities.isMyTab()\" class=\"btn btn-xs btn-danger\" ng-click=\"activities.deleteSelectedActivities()\" ng-disabled=\"activities.selectedActivities.length ==0\"> <i class=\"fa fa-trash\"></i> Delete </button> </div> </section> <activity-widget></activity-widget> </data-tab> <data-tab heading=\"All Activities\" select=\"activities.setCurrentActivities('all')\"> <activity-widget></activity-widget> </data-tab> </tabset>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("activities/activities.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-4\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in add.steps\"> <a data-ng-click=\"add.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"add.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"add.standard\" class=\"form-control\" ng-options=\"standard.title for standard in add.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[1].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div ng-if=\"add.loadingStatements\" class=\"widget-body\"> <div class=\"loading\"> <i class=\"fa fa-circle-o-notch fa-spin\"></i> </div> </div> <div class=\"widget-body small no-padding\" ng-if=\"!add.loadingStatements\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"add.addStatement(statement.statement)\" data-ng-class=\"{'success': add.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in add.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[2].selected == true\"> <form name=\"activityForm\" class=\"form-horizontal\" data-ng-init=\"add.setForm(this)\"> <input type=\"hidden\" ng-model=\"add.entity.statementId\" value=\"{{add.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Title</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.title\" class=\"form-control\" id=\"title\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"add.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"add.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"rights\" class=\"col-sm-2 control-label\">Rights</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.rights\" class=\"form-control\" id=\"rights\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"source\" class=\"col-sm-2 control-label\">Source</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.source\" class=\"form-control\" id=\"source\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"type\" class=\"col-sm-2 control-label\">Type</label> <div class=\"col-sm-10\"> <select ng-model=\"add.entity.activity.catagory\"> <option value=\"homework\"> Homework </option> <option value=\"study\"> Study </option> </select> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"add.steps[3].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\"> Resources are tools to help guide students thorugh your activity. They can things like <ul> <li> Videos </li> <li> Links to books </li> <li> Questions </li> </ul> If you can't find the resouce you are looking for here, you can always create a new one. </div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"add.entity.resources.length > 0\"> <ul> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <h4> placeholder for list of resouces available </h4> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == true\" data-ng-click=\"add.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == false\" data-ng-disabled=\"add.isNextDisabled()\" data-ng-click=\"add.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"add.cancel()\">Cancel</button> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_activity.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\">           <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th ng-if=\"activities.isMyTab()\"> <input type=\"checkbox\"/> </th> <th> Title </th> <th> Description </th> <th> Subject </th> <th> Creator </th> <th> Rights </th> <th> Source </th> <th> Type </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"act in activities.activities\"> <td ng-if=\"activities.isMyTab()\"> <input type=\"checkbox\" ng-model=\"selection\" ng-change=\"activities.updateSelection(act, selection)\"/> </td> <td> {{::act.title}} </td> <td> {{::act.description}} </td> <td> {{::act.subject}} </td> <td> {{::act.creator}} </td> <td> {{::act.rights}} </td> <td> {{::act.source}} </td> <td> {{::act.catagory}} </td> </tr> </tbody> </table> </div>   </div> </section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("activities/activityWidget.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	"use strict()";
-
-	__webpack_require__(1);
-
-	angular.module("proximal2").factory("personService", ["$log", "$http", "$resource", PersonService]);
-
-	function PersonService($log, $http, $resource) {
-	  return {
-	    profile: $resource("/api/v1/profile"),
-	    addChild: function addChild(c) {
-	      return $http.post("/api/v1/children", c);
-	    },
-	    getChildren: function getChildren() {
-	      return $http.get("/api/v1/children");
-	    },
-	    removeChild: function removeChild(id) {
-	      return $http["delete"]("/api/v1/children/" + id);
-	    },
-	    getChild: function getChild(id) {
-	      return $http.get("/api/v1/children/" + id);
-	    }
-	  };
-	}
+	module.exports = __webpack_require__.p + "3894ff7d10fddb7718ce3d9227e5c01d.jpg"
 
 /***/ },
 /* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.question.text}} </h1> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("new/new_assessment.html", v1)}]);
-	module.exports=v1;
+	module.exports = __webpack_require__.p + "0cefab62296d55823b0fb4f894a339be.png"
 
 /***/ },
 /* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Ready to start a new assesment? </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"assessment.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in assessment.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <button class=\"btn btn-primary\" ng-click=\"assessment.begin()\"> Start Here </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Assesments Currently in Progress </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Assesments already completed </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> <div> </div> </div> </div> </div></div></section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("assessments/assessment.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 	(function () {
-	  module.exports = function ($resource) {
-	    return $resource("api/v1/assessments/:assessmentId", null, { score: { method: "PUT" } });
+	  module.exports = function ($log, $resource, $http) {
+	    return $resource("/api/v1/questions/:id", null, { update: { method: "PUT" } });
 	  };
 	})();
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1=" <section class=\"col-lg-12 col-sm-12 col-xs-12 col-md-12\" ng-if=\"!app.state.current.data.hideQuestions\" ng-init=\"init()\"> <pre> {{app.state.current.data.hideQuestions}} </pre> <div class=\"row top\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-question\"></i> Questions\n<button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"addQuestion()\"> Add a Question </button>\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\" data-ng-model=\"searchText\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body no-padding large\"> <question-details> </question-details> </div> <div class=\"widget-footer\"> <nav style=\"text-align:center\"> <ul class=\"pagination\"> <li><a href=\"#\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">Previous</span></a></li> <li><a href=\"#\">1</a></li> <li><a href=\"#\">2</a></li> <li><a href=\"#\">3</a></li> <li><a href=\"#\">4</a></li> <li><a href=\"#\">5</a></li> <li><a href=\"#\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">Next</span></a></li> </ul> </nav> <div> </div> </div> </div> </div></div></section> <div ui-view ng-if=\"app.state.current.data.hideQuestions\"> </div> <toaster> </toaster>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("questions/questions.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 93 */
@@ -67752,107 +69248,62 @@
 
 	"use strict";
 
-	"use strict()";
+	module.exports = function ($log, $scope, $state, $stateParams, $modal, toaster, common, Question, standardsService) {
 
-	(function () {
-
-	  __webpack_require__(121);
-
-	  module.exports = function AssesmentController($log, standardsService, Assesments, $stateParams, $modal) {
-	    var _this = this;
-
-	    standardsService.getAllStandards().success(function (data) {
-	      _this.availableStandards = data;
-	    }).error(function (data) {
-	      $log.error(data);
-	    });
-
-	    _this.begin = function () {
-	      Assesments.save({ childId: Number($stateParams.id), standardId: _this.standardSelected.id }, function (d) {
-	        var modalInstance = $modal.open({
-	          templateUrl: "new/new_assessment.html",
-	          controller: "NewAssessmentCtrl",
-	          controllerAs: "newAssessment",
-	          backdrop: false,
-	          size: "lg",
-	          resolve: {
-	            items: function items() {
-	              return { childId: Number($stateParams.id), question: d };
-	            }
-	          }
-	        });
-	        modalInstance.result.then(function (selectedItem) {
-	          $log.debug(selectedItem);
-	        }, function () {
-	          $log.info("Modal dismissed at: " + new Date());
-	        });
-	      }, function (err) {
-	        $log.error(err);
-	      });
-	    };
+	  $scope.init = function () {
+	    $scope.questions = Question.query();
 	  };
-	})();
+
+	  $scope.availableEducationLevels = common.educationLevels;
+
+	  $scope.addQuestion = function () {
+	    var modalInstance = $modal.open({
+	      templateUrl: "add/add_question.html",
+	      controller: "AddQuestionCtrl"
+	    });
+	    modalInstance.result.then(function (question) {
+	      var q = new Question(question);
+	      q.$save(function (ques, headers) {
+	        $scope.questions.push(new Question(ques));
+	        toaster.pop("success", "Success", "Added the question with ID " + ques.id);
+	      }, function (err) {
+	        toaster.pop("error", "Failure", "Unable to add the question" + err);
+	      });
+	    });
+	  };
+	};
 
 /***/ },
 /* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"list-group\"> <a ui-sref=\"admin.questions.edit({questionId:question.id})\" class=\"list-group-item\" ng-repeat=\"question in questions\"> <h4 class=\"list-group-item-heading\">{{question.text}} </h4> <p class=\"list-group-item-text\"> <div class=\"col-md-12\"> <div class=\"col-md-2\"> <div question-picture style=\"width: 100px;height:100px\"> </div> </div> <div class=\"col-md-5\"> <h5> Standard </h5> <p> None yet </p> </div> <div class=\"col-md-5\"> <h5> Statements that Apply </h5> <ul> <li data-ng-repeat=\"statement in question.statements\"> {{statement.description}} </li> </ul> </div> </div> <span class=\"clearfix\"> </span> </p> </a> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/detail_question.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 	(function () {
-
-	  module.exports = function NewAssessmentController($log, Assessments, $modalInstance, items) {
-	    var _this = this;
-	    _this.items = items;
-
-	    _this.done = false;
-
-	    _this.rateQuestion = 0;
-	    _this.max = 5;
-	    _this.isReadOnly = false;
-
-	    _this.hoveringOver = function (value) {
-	      _this.overStar = value;
-	      _this.percent = 100 * (value / _this.max);
-	    };
-
-	    _this.scored = function () {
-	      return _this.rateQuestion > 0;
-	    };
-
-	    _this.next = function () {
-	      if (_this.rateQuestion > 0) {
-	        _this.error = undefined;
-	        var questionScore = {
-	          studentId: _this.items.childId,
-	          questionId: _this.items.question.question.id,
-	          score: _this.rateQuestion,
-	          timestamp: new Date().getMilliseconds()
-	        };
-	        _this.items.question.question = Assessments.score({ assessmentId: _this.items.question.assessment.id }, questionScore);
-	      } else {
-	        _this.error = "Please rate the students answer first";
+	  module.exports = function () {
+	    return {
+	      restrict: "EA",
+	      scope: true,
+	      template: "<div> </div>",
+	      controller: "QuestionsCtrl",
+	      link: function link(scope, elem, attr) {
+	        outerDiv = "<div class='row col-md-12'> </div>";
+	        innerDiv = "<div class=\"col-md-4\"> </div>";
+	        outerDiv.append(innerDiv);
+	        elem.append(outerDiv);
 	      }
-	    };
-
-	    _this.ok = function () {
-	      $modalInstance.close();
-	    };
-
-	    _this.cancel = function () {
-	      $modalInstance.dismiss("cancel");
 	    };
 	  };
 	})();
-
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Add homework </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"homework.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in homework.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> <button class=\"btn btn-primary\" ng-click=\"homework.begin()\" ng-class=\"{'disabled': homework.standardSelected == null}\"> Continue </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Homework In-Progress </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.unfinished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button>\n<button class=\"btn btn-danger btn-sm\" data-ng-click=\"homework.deleteHomework(assignment.homework.id)\"> <i class=\"fa fa-trash\"></i> </button> </td> </tr> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Homework Finished </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.finished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button> </td> </tr> </tbody> </table> </div> <div> </div> </div> </div> </div></div></section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("homework/homework.html", v1)}]);
-	module.exports=v1;
 
 /***/ },
 /* 96 */
@@ -67860,68 +69311,17 @@
 
 	"use strict";
 
+	"use strict()";
 	(function () {
-
-		__webpack_require__(121);
-
-		module.exports = function ($log, $modal, toaster, $stateParams, standardsService, Homework) {
-			var _this = this;
-
-			standardsService.getAllStandards().success(function (data) {
-				_this.availableStandards = data;
-			}).error(function (data) {
-				$log.error(data);
-			});
-
-			Homework.query({ id: $stateParams.id }, function (activities) {
-				_this.allHomework = activities;
-
-				_this.unfinished = _.filter(activities, function (h) {
-					return h.homework.status !== "Finished";
-				});
-
-				_this.finished = _.filter(activities, function (h) {
-					return h.homework.status === "Finished";
-				});
-			});
-
-			_this.deleteHomework = function (id) {
-				Homework["delete"]({ id: id }, function (d) {
-					_this.unfinished = _.filter(_this.unfinished, function (h) {
-						return h.homework.id !== id;
-					});
-					console.log("successfully deleted homework");
-				}, function (e) {
-					console.log("unable to delete Homework");
-				});
-			};
-
-			_this.begin = function () {
-				var modalInstance = $modal.open({
-					templateUrl: "add/add_homework.html",
-					controller: "AddHomeworkCtrl",
-					controllerAs: "addHomework",
-					backdrop: false,
-					resolve: {
-						items: function items() {
-							return _this.standardSelected;
-						}
-					}
-				});
-
-				modalInstance.result.then(function (result) {
-					var homework = new Homework(result);
-					homework.$save(function (saved) {
-						toaster.pop("success", null, "Successfully added your childs homework!");
-						_this.allHomework.push(saved);
-					}, function (error) {
-						toaster.pop("error", null, "There was an error when trying to add the homework. Please try again.");
-					});
-				}, function () {
-					$log.info("Modal dismissed at: " + new Date());
-				});
-			};
-		};
+	  module.exports = function ($log, $state, common) {
+	    return {
+	      restrict: "E",
+	      scope: true,
+	      replace: true,
+	      controller: "QuestionsCtrl as ctrl",
+	      templateUrl: "details/detail_question.html"
+	    };
+	  };
 	})();
 
 /***/ },
@@ -67930,10 +69330,35 @@
 
 	"use strict";
 
-	"use strict()";
 	(function () {
-	  module.exports = function ($resource) {
-	    return $resource("api/v1/activities/homework/:id");
+
+	  var img = __webpack_require__(125);
+
+	  module.exports = function ($log, $q) {
+	    return {
+	      restrict: "A",
+	      scope: true,
+	      controller: "QuestionsCtrl",
+	      link: function link(scope, elem, attr) {
+
+	        scope.$watch("question", function (newVal) {
+	          if (newVal) {
+	            if (scope.question.picture) {
+	              elem.css({ "background-image": "url(data:image/png;base64," + scope.question.picture });
+	            } else {
+	              elem.css({ "background-image": "url(" + img + ")" });
+	            }
+	          }
+	        }, true);
+
+	        elem.css({ "background-size": "contain" });
+	        elem.css({ "background-repeat": "no-repeat" });
+
+	        if (!_.isUndefined(attr.picturePadding)) {
+	          elem.css({ "padding-bottom": attr.picturePadding });
+	        }
+	      }
+	    };
 	  };
 	})();
 
@@ -67941,155 +69366,219 @@
 /* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-3\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in addHomework.steps\"> <a data-ng-click=\"addHomework.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"addHomework.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"addHomework.statement = statement.statement;addHomework.entity.statementId = statement.statement.id\" data-ng-class=\"{'success': addHomework.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in addHomework.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[1].selected == true\"> <form name=\"homeworkForm\" class=\"form-horizontal\" data-ng-init=\"addHomework.setForm(this)\"> <input type=\"hidden\" ng-model=\"addHomework.entity.statementId\" value=\"{{addHomework.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Name</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"addHomework.entity.activity.title\" class=\"form-control\" id=\"title\" placeholder=\"e.g Lesson 5.2 or Math Worksheet 1\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"addHomework.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"addHomework.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"status\" class=\"col-sm-2 control-label\">Status</label> <div class=\"col-sm-10\"> <select class=\"form-control\" ng-model=\"addHomework.entity.homework.status\" ng-options=\"status.text as status.text for status in addHomework.status\"> <option value=\"\"> -- Select a Status -- </option> </select> </div> </div> <div class=\"form-group\"> <label for=\"date-given\" class=\"col-sm-2 control-label\">Date Given</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateGiven\" class=\"form-control\" id=\"date-given\" placeholder=\"Date Given\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"date-due\" class=\"col-sm-2 control-label\">Due Date</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateDue\" class=\"form-control\" id=\"date-due\" placeholder=\"Due Date\"> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[2].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\">Give some tips and instructions for using Actions</div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"addHomework.entity.acts.length > 0\"> <ul> <li data-ng-repeat=\"actions in addHomework.entity.acts\">{{actions.action}} </li> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div data-ng-if=\"addHomework.showAdd\"> <div class=\"input-group margin-bottom-sm\"> <input type=\"text\" class=\"form-control\" data-ng-model=\"addHomework.actionToAdd\" placeholder=\"\">\n<span class=\"input-group-addon\"> <span class=\"rating\"> <span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span> </span> </span> </div> <button type=\"submit\" class=\"btn btn-sm btn-success\" style=\"margin-top:.25em\" data-ng-click=\"addHomework.addAction()\"> Add </button> </div> <a data-ng-click=\"addHomework.showAdd = true\"> <span> <i class=\"fa fa-plus\"></i> Add an action </span> </a> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == true\" data-ng-click=\"addHomework.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == false\" data-ng-disabled=\"addHomework.isNextDisabled()\" data-ng-click=\"addHomework.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"addHomework.cancel()\">Cancel</button> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_homework.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	"use strict()";
+	(function () {
+
+	  module.exports = function ($log, common) {
+	    return {
+	      restrict: "E",
+	      scope: {},
+	      replace: true,
+	      templateUrl: "details/add_question.html",
+	      controller: "AddQuestionCtrl"
+	    };
+	  };
+	})();
 
 /***/ },
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	"use strict()";
-	(function () {
-
-		module.exports = function ($log, $modalInstance, Standards, Child, Common, $stateParams, items) {
-			var _this = this;
-
-			_this.child = Child.get({ id: $stateParams.id });
-			_this.standard = items;
-
-			_this.status = Common.homeworkStatuses;
-
-			_this.entity = {
-				childId: Number($stateParams.id),
-				statementId: null,
-				activity: {},
-				homework: {
-					studentId: Number($stateParams.id)
-				},
-				acts: []
-			};
-
-			_this.steps = [{ step: 1, title: "Choose Statement", completed: false, selected: true }, { step: 2, title: "General Information", completed: false, selected: false }, { step: 3, title: "Actions", completed: false, selected: false }];
-
-			_this.setForm = function (f) {
-				_this.forms = f;
-			};
-
-			//Get statements for this standard and grade level of the child
-			Standards.getStatements(_this.standard.id).success(function (d) {
-				_this.statements = d.statements;
-				//_this.statements = _.filter(d.statements, function(st){
-				//return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
-				//});
-			}).error(function (d) {
-				$log.error(d);
-			});
-
-			_this.nextStep = function () {
-				// which step are we on?
-				var currentStep = _.find(_this.steps, function (s) {
-					return s.selected === true;
-				});
-				_this.steps[currentStep.step - 1].completed = true;
-				_this.steps[currentStep.step - 1].selected = false;
-				_this.steps[currentStep.step].selected = true;
-				return true;
-			};
-
-			_this.isNextDisabled = function () {
-				return _this.steps[0].selected && _this.statement === undefined || _this.steps[1].selected && !_this.isEntityValid();
-			};
-
-			_this.goTo = function (step) {
-				_.each(_this.steps, function (s) {
-					if (s.step === step.step) {
-						s.selected = true;
-					} else {
-						s.selected = false;
-						s.completed = false;
-					}
-				});
-			};
-
-			_this.addAction = function () {
-				if (_this.actionToAdd !== undefined) {
-					_this.entity.acts.push({ actType: "homework", action: _this.actionToAdd });
-				}
-				_this.actionToAdd = null;
-				_this.showAdd = false;
-			};
-
-			_this.ok = function () {
-				_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();
-				if (_this.dateDue !== undefined) _this.entity.homework.dateDue = new Date(_this.dateDue).getTime();
-				_this.entity.activity.date = new Date().getTime();
-				$modalInstance.close(_this.entity);
-			};
-
-			_this.cancel = function () {
-				$modalInstance.dismiss("cancel");
-			};
-
-			_this.isEntityValid = function () {
-				//TODO: Validate all required fields
-				return _this.entity.activity.title !== undefined && _this.entity.activity.subject !== undefined;
-			};
-		};
-	})();
+	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a Question </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}\"> <label for=\"text\" class=\"sr-only\"> Write your Question </label> <textarea name=\"text\" rows=\"5\" data-ng-model=\"question.text\" class=\"form-control\" id=\"questionText\" placeholder=\"Write Your Question\" required></textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.answer.$invalid, 'has-success': !form.answer.$invalid}\"> <label for=\"Answer\" class=\"sr-only\"> Give an answer (Optional) </label> <textarea name=\"answer\" rows=\"5\" data-ng-model=\"question.answer\" class=\"form-control\" id=\"questionAnswer\" placeholder=\"Give an Answer (Optional)\"> </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}\"> <label for=\"picture\"> Add a picture </label> <input type=\"file\" class=\"form-control\" name=\"file\" ng-file-select ng-model=\"picture\" ng-file-change=\"upload($files)\"> <progressbar ng-show=\"progressPercentage > 0\" class=\"progress-striped active\" max=\"100\" value=\"progressPercentage\" type=\"success\"><i>{{progressPercentage}}%</i></progressbar>  <ul class=\"list-unstyled list-inline\" ng-if=\"uploaded.length > 0\" style=\"padding-top:.5em\"> <li ng-repeat=\"uploadFile in uploaded\"> <img width=\"80px\" height=\"80px\" src=\"data:{{uploadFile.contentType}};base64,{{uploadFile.content}}\"/> <div> {{uploadFile.filename}} </div> </li> </ul> </div> <div class=\"form-group\" data-ng-class=\"\"> <label for=\"standard\"> Align with a Standard </label> <select name=\"standard\" ng-model=\"standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"getStatements()\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <div class=\"form-group\" data-ng-if=\"showEducationLevels()\"> <label for=\"educationlevels\"> Filter by Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.educationLevels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\" ng-change=\"educationLevelChange()\"> <ui-select-match placeholder=\"Education levels that this statement applys\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"\" data-ng-if=\"showStatements()\"> <label for=\"statements\"> Available Statements </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.statements\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Statements that this question covers\"> {{$item.statement.description}} </ui-select-match> <ui-select-choices repeat=\"statement in availableStatements| filter:$select.search\"> <div ng-bind-html=\"statement.statement.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Create</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_question.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<section class=\"row\" data-ng-controller=\"HomeworkDetailsCtrl as details\"> <div class=\"col-lg-12\"> <button class=\"btn btn-primary btn-sm\" data-ng-click=\"childCtrl.showHomeworkDetails = false\"> Back to all </button> <h1> {{::childCtrl.selectedAssignment.activity.title}} <small> <span class=\"label label-danger\"> {{childCtrl.selectedAssignment.homework.status}} </span></small>  </h1> <ul> <li> Assigned On: {{::childCtrl.selectedAssignment.homework.dateGiven | date}} </li> <li data-ng-if=\"childCtrl.selectedAssignment.homework.dueDate\"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li> </ul> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Rating </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"act in childCtrl.selectedAssignment.acts\"> <td> {{act.action}} </td> <td> <select data-ng-options=\"p.text for p in details.progress\" data-ng-model=\"act.progress\"> </select> </td> <td> <data-rating ng-model=\"act.score.score\" max=\"details.max\" readonly=\"false\" on-hover=\"details.hoveringOver(value)\" on-leave=\"overStar=null\" data-ng-click=\"details.updateScore(act)\"> </data-rating> </td> </tr> </tbody> </table> <button class=\"btn btn-primary btn-sm\"> Add another </button> </div> </section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/homework_details.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	"use strict()";
+	(function () {
+
+	  module.exports = function ($log, $scope, common, $upload, standardsService, $modalInstance) {
+
+	    $scope.select2 = {};
+	    $scope.uploaded = [];
+	    $scope.progressPercentage = 0;
+
+	    standardsService.getAllStandards().success(function (data) {
+	      $scope.availableStandards = data;
+	    }).error(function (data) {
+	      $log.error(data);
+	    });
+
+	    $scope.upload = function (files) {
+	      if (angular.isDefined(files) && files.length > 0) {
+	        _.each(files, function (file) {
+	          $upload.upload({
+	            url: "api/v1/upload",
+	            file: file
+	          }).progress(function (evt) {
+	            $scope.progressPercentage = parseInt(100 * evt.loaded / evt.total);
+	            $log.debug($scope.progressPercentage);
+	          }).success(function (data, status, headers, config) {
+	            $scope.uploaded.push(data);
+	            $scope.progressPercentage = 0;
+	            $scope.picture = undefined;
+	          }).error(function (data, status, headers, config) {
+	            $log.error(data);
+	          });
+	        });
+	      }
+	    };
+	    $scope.availableEducationLevels = common.educationLevels;
+
+	    $scope.getStatements = function () {
+	      $scope.select2.statements = [];
+	      standardsService.getStatements($scope.standardSelected.id).success(function (data) {
+	        $scope.availableStatements = data.statements;
+	      }).error(function (data) {
+	        $log.error("unable to get statements");
+	      });
+	    };
+
+	    $scope.educationLevelChange = function () {
+	      if (_.isUndefined($scope.select2.educationLevels) || _.isNull($scope.select2.educationLevels) || _.isEmpty($scope.select2.educationLevels)) {
+	        $scope.getStatements();
+	      }
+	      $scope.availableStatements = _.filter($scope.availableStatements, function (s) {
+	        var test = _.filter(s.levels, function (l) {
+	          var found = _.find($scope.select2.educationLevels, function (e) {
+	            return l.value === e.value;
+	          });
+	          return !_.isUndefined(found);
+	        });
+	        return test.length > 0;
+	      });
+	    };
+
+	    $scope.showEducationLevels = function () {
+	      return !_.isUndefined($scope.standardSelected);
+	    };
+
+	    $scope.showStatements = function () {
+	      return !_.isUndefined($scope.availableStatements);
+	    };
+
+	    $scope.ok = function () {
+	      $scope.question.pictures = angular.isDefined($scope.uploaded) ? $scope.uploaded : null;
+	      $scope.question.statements = [];
+	      $scope.question.statements = _.map($scope.select2.statements, function (st) {
+	        return st.statement;
+	      });
+	      $modalInstance.close($scope.question);
+	    };
+
+	    $scope.cancel = function () {
+	      $modalInstance.dismiss("cancel");
+	    };
+	  };
+	})();
 
 /***/ },
 /* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"row top col-md-12\" ng-init=\"init()\"> <div class=\"col-md-4\"> <div class=\"thumbnail\" question-picture picture-padding=\"75%\"> </div> <button class=\"btn btn-primary\"> Change Picture </button> </div> <div class=\"col-md-8\"> <div class=\"form-group\"> <label for=\"question-text\"> Question </label> <textarea id=\"question-text\" name=\"question-text\" class=\"form-control\" ng-model=\"question.text\" style=\"width: 100%\" rows=\"10\" required> </textarea> </div> <div class=\"form-group\"> <label for=\"answer-text\"> Answer </label> <textarea id=\"answer-text\" name=\"answer-text\" class=\"form-control\" ng-model=\"question.answer\" style=\"width: 100%\" rows=\"10\"> </textarea> </div> <div class=\"form-group\"> <label for=\"question-standard\"> Standard </label> <select name=\"standard\" ng-model=\"standard\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"changeStandard()\"> <option value=\"\"> -- None -- </option> </select> </div> <div class=\"row\">  </div> <div class=\"form-group\" ng-if=\"standard\"> <label for=\"available-statements\"> Available Statements </label>  <div ng-repeat=\"st in availableStatements\"> <div class=\"col-md-4\"> <div class=\"checkbox\"> <label> <input type=\"checkbox\"> {{st.statement.description}} </label> </div> </div> </div> </div>  </div> </div> <div class=\"row col-md-12\"> <div class=\"col-md-4\"> </div> <div class=\"col-md-8\"> <button class=\"btn btn-success\" ng-click=\"update()\"> Update </button>\n<button class=\"btn btn-danger\" ng-click=\"delete()\"> Delete Question </button> </div> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("edit/edit_question.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
 	(function () {
-	  module.exports = function ($log, Standards, Child, Score, Common, $stateParams) {
-	    var vm = this;
-	    vm.max = 5;
 
-	    vm.progress = Common.homeworkStatuses;
+	  module.exports = function ($log, $scope, $state, $stateParams, common, standardsService, Question, toaster) {
 
-	    vm.hoveringOver = function (value) {
-	      vm.overStar = value;
-	      vm.percent = 100 * (value / vm.max);
+	    var GetAvailableStatments = function GetAvailableStatments() {
+	      if (!_.isUndefined($scope.question.statements[0])) {
+	        if (!_.isUndefined($scope.standard)) {
+	          standardsService.getStatements($scope.standard.id).success(function (data) {
+	            $scope.availableStatements = data.statements;
+	          }).error(function (data) {
+	            $log.error("unable to retrieve statements");
+	          });
+	        } else {
+	          $scope.availableStatements = [];
+	        }
+	      }
 	    };
 
-	    vm.updateProgress = function (a) {};
+	    Standards = standardsService.standards;
+	    $scope.select2 = { statements: [] };
 
-	    vm.updateScore = function (s) {
-	      console.log(s);
-	      if (s.score.id === undefined) {
-	        var score = {
-	          studentId: Number($stateParams.id),
-	          actId: s.id,
-	          timestamp: new Date().getTime(),
-	          score: s.score.score
-	        };
-	        Score.save({}, score, function (saved) {});
+	    $scope.init = function () {
+	      $scope.question = Question.get({ id: $stateParams.questionId }, function (ques) {
+	        if (_.isUndefined($scope.question.statements)) {
+	          $scope.select2.statements = [];
+	        } else {
+	          $scope.select2.statements = $scope.question.statements;
+	        }
+	      });
+
+	      $scope.availableStandards = Standards().query();
+
+	      $scope.availableStandards.$promise.then(function (s) {
+	        $scope.question.$promise.then(function (q) {
+	          if (!_.isUndefined($scope.question.statements[0])) {
+	            $scope.standard = _.find(s, function (stan) {
+	              return stan.id === $scope.question.statements[0].standardId;
+	            });
+	            if (!_.isUndefined($scope.standard)) {
+	              standardsService.getStatements($scope.standard.id).success(function (data) {
+	                $scope.availableStatements = data.statements;
+	              }).error(function (data) {
+	                $log.error("unable to retrieve statements");
+	              });
+	            } else {
+	              $scope.availableStatements = [];
+	            }
+	          }
+	        });
+	      });
+	    };
+
+	    $scope.changeStandard = function () {
+	      if (!_.isUndefined($scope.standard)) {
+	        standardsService.getStatements($scope.standard.id).success(function (data) {
+	          $scope.availableStatements = data.statements;
+	        }).error(function (data) {
+	          $log.error("unable to retrieve statements");
+	        });
 	      } else {
-	        Score.update({}, s.score);
+	        $scope.availableStatements = [];
 	      }
+	    };
+
+	    $scope.update = function () {
+	      $scope.question.$update(function () {
+	        toaster.pop("success", "Updated", "Successfully updated question");
+	      }, function () {
+	        toaster.pop("error", "Failed", "Did not update the question, contact the administrator");
+	      });
+	    };
+
+	    $scope["delete"] = function () {
+	      Question.remove({ id: $scope.question.id }, function (q) {
+	        toaster.pop("success", "Deleted", "Successfully removed question " + $scope.question.id);
+	        $state.go("admin.questions");
+	      }, function () {
+	        toaster.pop("error", "Failed", "Unable to delete this question");
+	      });
 	    };
 	  };
 	})();
 
-	//TODO: Update the act's progress to Finished and save
-
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<div class=\"col-md-3\"> <div class=\"row\" data-ng-if=\"standards.length < 1\" class=\"message\"> <span> There are no standards to show </span> </div> <div class=\"row\"> <button class=\"btn btn-success btn-circle\" ng-click=\"addStandard()\"> <i class=\"fa fa-plus\"></i> </button> </div> <div class=\"row\"> <div class=\"list-group\" ng-if=\"standards.length > 0\"> <a class=\"list-group-item active\" data-ng-repeat=\"s in standards\" ui-sref-active=\"active\" ui-sref=\"admin.standards.detail({id:s.id})\"> {{s.title}} </a> </div> </div> </div> <div ui-view> </div>";
@@ -68097,7 +69586,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<div class=\"col-md-9\"> <div class=\"row\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> Description\n<button class=\"btn btn-sm btn-info btn-circle pull-right\"> <i class=\"fa fa-edit\"> </i> </button> <div class=\"clearfix\"></div> </div> <div class=\"widget-body\"> <div class=\"message\"> {{standard.description}} </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> Education Levels\n<button class=\"btn btn-sm btn-info btn-circle pull-right\"> <i class=\"fa fa-edit\"> </i> </button> <div class=\"clearfix\"></div> </div> <div class=\"widget-body\"> <ul> <li data-ng-repeat=\"level in educationLevels\"> {{level.description}} </li> </ul> </div> </div> </div> </div> <div class=\"row\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Statements\n<button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"addStatement()\"> Add a Statement </button>\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body large no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed\"> <thead> <tr> <th> Notation </th> <th> Description </th> <th> Grade Level(s) </th> <th> </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"statement in statements | filter: searchText | filter: gradeLevel\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> <td> <ul> <li data-ng-repeat=\"level in statement.levels\"> {{level.description}} </li> </ul> </td> <td style=\"vertical-align:middle\"> <button class=\"btn btn-sm btn-info btn-circle\"><i class=\"fa fa-edit\"></i></button></td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\"> <div class=\"col-lg-12\"> <button class=\"btn btn-danger btn-large btn-block\" ng-click=\"deleteStandard()\"> Delete Standard </button> </div> </div> </div>";
@@ -68105,7 +69594,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68220,7 +69709,7 @@
 	})();
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a new Standard</h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.title.$invalid && form.title.$dirty, 'has-success': !form.title.$invalid}\"> <label for=\"title\"> Title </label> <input type=\"text\" name=\"title\" data-ng-model=\"edu.standard.title\" class=\"form-control\" id=\"title\" ng-required> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}\"> <label for=\"description\"> Description </label> <textarea data-ng-model=\"edu.standard.description\" name=\"description\" class=\"form-control\" id=\"description\" required></textarea> </div> <div class=\"checkbox\"> <label> <input type=\"checkbox\" data-ng-model=\"edu.standard.publicationStatus\" name=\"publicationStatus\" data-ng-true-value=\"'published'\" data-ng-false-value=\"'unpublished'\"> Published? </label> </div> <div class=\"form-group\"> <label for=\"educationlevels\"> Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"edu.levels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Select all that apply...\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.subject.$invalid && form.subject.$dirty, 'has-success': !form.subject.$invalid}\"> <label for=\"subject\"> Subject </label> <select class=\"form-control\" data-ng-model=\"edu.standard.subject\" name=\"subject\" data-ng-options=\"subject for subject in subjects\" data-ng-required> <option value=\"\" disabled=\"disabled\">-- Choose a Subject -- </option> </select> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.language.$invalid && form.language.$dirty, 'has-success': !form.language.$invalid}\"> <label for=\"language\"> Language </label> <select class=\"form-control\" data-ng-model=\"edu.standard.language\" name=\"language\" data-ng-options=\"language for language in languages\" data-ng-required> <option value=\"\" disabled=\"disabled\">-- Choose a Language --</option> </select> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.source.$invalid && form.source.$dirty, 'has-success': !form.source.$invalid}\"> <label for=\"source\"> Source of the Standard </label> <input type=\"text\" name=\"source\" class=\"form-control\" data-ng-model=\"edu.standard.source\"/> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.dateValid.$invalid && form.dateValid.$dirty, 'has-success': !form.dateValid.$invalid}\"> <label for=\"dateValid\"> Date Valid </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"dateValid\" datepicker-popup=\"{{format}}\" ng-model=\"edu.standard.dateValid\" is-open=\"dateValidOpened\" datepicker-options=\"dateOptions\" init-date=\"initDate\" ng-required=\"true\" close-text=\"Close\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"dateValidOpen($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.repositoryDate.$invalid && form.repositoryDate.$dirty, 'has-success': !form.repositoryDate.$invalid}\"> <label for=\"repositoryDate\"> Repository Date </label> <p class=\"input-group\"> <input type=\"text\" class=\"form-control\" name=\"repositoryDate\" datepicker-popup=\"{{format}}\" ng-model=\"edu.standard.repositoryDate\" is-open=\"repoDateOpened\" datepicker-options=\"dateOptions\" ng-required=\"true\" close-text=\"Close\"/>\n<span class=\"input-group-btn\"> <button type=\"button\" class=\"btn btn-default\" ng-click=\"repoDateOpen($event)\"><i class=\"fa fa-calendar\"></i></button> </span> </p> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.rights.$invalid && form.rights.$dirty, 'has-success': !form.rights.$invalid}\"> <label for=\"rights\"> Copyright </label> <input type=\"text\" class=\"form-control\" data-ng-model=\"edu.standard.rights\" name=\"rights\" data-ng-required/> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.identifier.$invalid && form.identifier.$dirty, 'has-success': !form.identifier.$invalid}\"> <label for=\"identifier\"> Identifier </label> <input type=\"text\" class=\"form-control\" data-ng-model=\"edu.standard.identifier\" name=\"identifier\" required/> </div> <div class=\"form-group\"> <label for=\"manifest\"> Manifest </label> <input type=\"text\" class=\"form-control\" data-ng-model=\"edu.standard.manifest\" name=\"manifest\"/> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
@@ -68228,7 +69717,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68281,7 +69770,7 @@
 	})();
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a Statement</h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.asnUri.$invalid && form.asnUri.$dirty, 'has-success': !form.asnUri.$invalid}\"> <label for=\"asnUri\" class=\"sr-only\"> ASN URI </label> <input type=\"text\" name=\"asnUri\" data-ng-model=\"edu.statement.asnUri\" class=\"form-control\" id=\"asnUri\" placeholder=\"ASN URI\" ng-required>\n<span class=\"help-block\"> The Achievment Standards Network URI for this Statement <question-mark question-click=\"\"></question-mark> </span> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.subject.$invalid && form.subject.$dirty, 'has-success': !form.subject.$invalid}\"> <label for=\"subject\" class=\"sr-only\"> Subject </label> <input type=\"text\" name=\"subject\" class=\"form-control\" data-ng-model=\"edu.statement.subject\" placeholder=\"Subject\" disabled=\"disabled\"/> </div> <div class=\"form-group\"> <label for=\"educationlevels\" class=\"sr-only\"> Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"edu.levels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Education levels that this statement applys\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.notation.$invalid && form.notation.$dirty, 'has-success': !form.notation.$invalid}\"> <label for=\"notation\" class=\"sr-only\"> Notation </label> <input type=\"text\" name=\"notation\" class=\"form-control\" data-ng-model=\"edu.statement.notation\" placeholder=\"Notation\" ng-required/> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.alternateNotation.$invalid && form.alternateNotation.$dirty, 'has-success': !form.alternateNotation.$invalid}\"> <label for=\"alternateNotation\" class=\"sr-only\">Alternate Notation </label> <input type=\"text\" name=\"alternateNotation\" class=\"form-control\" data-ng-model=\"edu.statement.alternateNotation\" placeholder=\"Alternate Notation\"/> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}\"> <label for=\"description\" class=\"sr-only\"> Description </label> <textarea name=\"description\" class=\"form-control\" data-ng-model=\"edu.statement.description\" placeholder=\"Description\" ng-required>\n    </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.alternateDescription.$invalid && form.alternateDescription.$dirty, 'has-success': !form.alternateDescription.$invalid}\"> <label for=\"alternateDescription\" class=\"sr-only\"> Alternate Description </label> <textarea name=\"alternateDescription\" class=\"form-control\" data-ng-model=\"edu.statement.alternateDescription\" placeholder=\"Alternate Description\">\n    </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.identifier.$invalid && form.identifier.$dirty, 'has-success': !form.identifier.$invalid}\"> <label for=\"identifier\" class=\"sr-only\"> Identifier </label> <input type=\"text\" name=\"identifier\" class=\"form-control\" data-ng-model=\"edu.statement.identifier\" placeholder=\"Identifier\"/> </div> <input type=\"hidden\" value=\"Engilish\" data-ng-model=\"edu.statement.language\"/>\n<input type=\"hidden\" value=\"Standard\" data-ng-model=\"edu.statement.label\"/> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Add</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
@@ -68289,7 +69778,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68326,25 +69815,26 @@
 	})();
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	"use strict()";
-	(function () {
-	  module.exports = function ($log, $resource, $http) {
-	    return $resource("/api/v1/questions/:id", null, { update: { method: "PUT" } });
+
+	var app = __webpack_require__(1).module("proximal2");
+	app.factory("prox.common", ["$log", "$http", CommonService]);
+
+	function CommonService($log, $http) {
+	  this.educationLevels = [{ value: "k", description: "Kindergarden" }, { value: "1", description: "1st Grade" }, { value: "2", description: "2nd Grade" }, { value: "3", description: "3rd Grade" }, { value: "4", description: "4th Grade" }, { value: "5", description: "5th Grade" }, { value: "6", description: "6th Grade" }, { value: "7", description: "7th Grade" }, { value: "9", description: "9th Grade" }, { value: "10", description: "10th Grade" }, { value: "11", description: "11th Grade" }, { value: "12", description: "12th Grade" }];
+
+	  this.homeworkStatuses = [{ text: "Not Started" }, { text: "In-Progress" }, { text: "Finished" }];
+
+	  return {
+	    educationLevels: this.educationLevels,
+	    homeworkStatuses: this.homeworkStatuses
 	  };
-	})();
-
-/***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var v1=" <section class=\"col-lg-12 col-sm-12 col-xs-12 col-md-12\" ng-if=\"!state.current.data.hideQuestions\" ng-init=\"init()\"> <div class=\"row top\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-question\"></i> Questions\n<button class=\"btn btn-sm btn-success\" style=\"margin: 0px 10px\" ng-click=\"addQuestion()\"> Add a Question </button>\n<input type=\"text\" placeholder=\"Search\" class=\"form-control input-sm pull-right\" data-ng-model=\"searchText\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body no-padding large\"> <question-details> </question-details> </div> <div class=\"widget-footer\"> <nav style=\"text-align:center\"> <ul class=\"pagination\"> <li><a href=\"#\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">Previous</span></a></li> <li><a href=\"#\">1</a></li> <li><a href=\"#\">2</a></li> <li><a href=\"#\">3</a></li> <li><a href=\"#\">4</a></li> <li><a href=\"#\">5</a></li> <li><a href=\"#\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">Next</span></a></li> </ul> </nav> <div> </div> </div> </div> </div></div></section> <div ui-view ng-if=\"state.current.data.hideQuestions\"> </div> <toaster> </toaster>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("questions/questions.html", v1)}]);
-	module.exports=v1;
+	}
 
 /***/ },
 /* 111 */
@@ -68352,62 +69842,45 @@
 
 	"use strict";
 
-	module.exports = function ($log, $scope, $state, $stateParams, $modal, toaster, common, Question, standardsService) {
+	"use strict()";
 
-	  $scope.init = function () {
-	    $scope.questions = Question.query();
+	__webpack_require__(1);
+
+	angular.module("proximal2").factory("personService", ["$log", "$http", "$resource", PersonService]);
+
+	function PersonService($log, $http, $resource) {
+	  return {
+	    profile: $resource("/api/v1/profile"),
+	    addChild: function addChild(c) {
+	      return $http.post("/api/v1/children", c);
+	    },
+	    getChildren: function getChildren() {
+	      return $http.get("/api/v1/children");
+	    },
+	    removeChild: function removeChild(id) {
+	      return $http["delete"]("/api/v1/children/" + id);
+	    },
+	    getChild: function getChild(id) {
+	      return $http.get("/api/v1/children/" + id);
+	    }
 	  };
-
-	  $scope.availableEducationLevels = common.educationLevels;
-
-	  $scope.addQuestion = function () {
-	    var modalInstance = $modal.open({
-	      templateUrl: "add/add_question.html",
-	      controller: "AddQuestionCtrl"
-	    });
-	    modalInstance.result.then(function (question) {
-	      var q = new Question(question);
-	      q.$save(function (ques, headers) {
-	        $scope.questions.push(new Question(ques));
-	        toaster.pop("success", "Success", "Added the question with ID " + ques.id);
-	      }, function (err) {
-	        toaster.pop("error", "Failure", "Unable to add the question" + err);
-	      });
-	    });
-	  };
-	};
+	}
 
 /***/ },
 /* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"list-group\"> <a ui-sref=\"admin.questions.edit({questionId:question.id})\" class=\"list-group-item\" ng-repeat=\"question in questions\"> <h4 class=\"list-group-item-heading\">{{question.text}} </h4> <p class=\"list-group-item-text\"> <div class=\"col-md-12\"> <div class=\"col-md-2\"> <div question-picture style=\"width: 100px;height:100px\"> </div> </div> <div class=\"col-md-5\"> <h5> Standard </h5> <p> None yet </p> </div> <div class=\"col-md-5\"> <h5> Statements that Apply </h5> <ul> <li data-ng-repeat=\"statement in question.statements\"> {{statement.description}} </li> </ul> </div> </div> <span class=\"clearfix\"> </span> </p> </a> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/detail_question.html", v1)}]);
+	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.question.text}} </h1> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("new/new_assessment.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
 /* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	"use strict()";
-	(function () {
-	  module.exports = function () {
-	    return {
-	      restrict: "EA",
-	      scope: true,
-	      template: "<div> </div>",
-	      controller: "QuestionsCtrl",
-	      link: function link(scope, elem, attr) {
-	        outerDiv = "<div class='row col-md-12'> </div>";
-	        innerDiv = "<div class=\"col-md-4\"> </div>";
-	        outerDiv.append(innerDiv);
-	        elem.append(outerDiv);
-	      }
-	    };
-	  };
-	})();
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Ready to start a new assesment? </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"assessment.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in assessment.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <button class=\"btn btn-primary\" ng-click=\"assessment.begin()\"> Start Here </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Assesments Currently in Progress </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Assesments already completed </div> <div class=\"widget-body\"> <ul> <li> this one </li> <li> And this one </li> </ul> <div> </div> </div> </div> </div></div></section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("assessments/assessment.html", v1)}]);
+	module.exports=v1;
 
 /***/ },
 /* 114 */
@@ -68417,14 +69890,8 @@
 
 	"use strict()";
 	(function () {
-	  module.exports = function ($log, $state, common) {
-	    return {
-	      restrict: "E",
-	      scope: true,
-	      replace: true,
-	      controller: "QuestionsCtrl as ctrl",
-	      templateUrl: "details/detail_question.html"
-	    };
+	  module.exports = function ($resource) {
+	    return $resource("api/v1/assessments/:assessmentId", null, { score: { method: "PUT" } });
 	  };
 	})();
 
@@ -68434,32 +69901,43 @@
 
 	"use strict";
 
+	"use strict()";
+
 	(function () {
 
-	  module.exports = function ($log, $q) {
-	    return {
-	      restrict: "A",
-	      scope: true,
-	      controller: "QuestionsCtrl",
-	      link: function link(scope, elem, attr) {
+	  __webpack_require__(124);
 
-	        scope.$watch("question", function (newVal) {
-	          if (newVal) {
-	            if (scope.question.picture) {
-	              elem.css({ "background-image": "url(data:image/png;base64," + scope.question.picture });
-	            } else {
-	              elem.css({ "background-image": "url(/assets/images/emptyImage.png)" });
+	  module.exports = function AssesmentController($log, standardsService, Assesments, $stateParams, $modal) {
+	    var _this = this;
+
+	    standardsService.getAllStandards().success(function (data) {
+	      _this.availableStandards = data;
+	    }).error(function (data) {
+	      $log.error(data);
+	    });
+
+	    _this.begin = function () {
+	      Assesments.save({ childId: Number($stateParams.id), standardId: _this.standardSelected.id }, function (d) {
+	        var modalInstance = $modal.open({
+	          templateUrl: "new/new_assessment.html",
+	          controller: "NewAssessmentCtrl",
+	          controllerAs: "newAssessment",
+	          backdrop: false,
+	          size: "lg",
+	          resolve: {
+	            items: function items() {
+	              return { childId: Number($stateParams.id), question: d };
 	            }
 	          }
-	        }, true);
-
-	        elem.css({ "background-size": "contain" });
-	        elem.css({ "background-repeat": "no-repeat" });
-
-	        if (!_.isUndefined(attr.picturePadding)) {
-	          elem.css({ "padding-bottom": attr.picturePadding });
-	        }
-	      }
+	        });
+	        modalInstance.result.then(function (selectedItem) {
+	          $log.debug(selectedItem);
+	        }, function () {
+	          $log.info("Modal dismissed at: " + new Date());
+	        });
+	      }, function (err) {
+	        $log.error(err);
+	      });
 	    };
 	  };
 	})();
@@ -68473,13 +69951,46 @@
 	"use strict()";
 	(function () {
 
-	  module.exports = function ($log, common) {
-	    return {
-	      restrict: "E",
-	      scope: {},
-	      replace: true,
-	      templateUrl: "details/add_question.html",
-	      controller: "AddQuestionCtrl"
+	  module.exports = function NewAssessmentController($log, Assessments, $modalInstance, items) {
+	    var _this = this;
+	    _this.items = items;
+
+	    _this.done = false;
+
+	    _this.rateQuestion = 0;
+	    _this.max = 5;
+	    _this.isReadOnly = false;
+
+	    _this.hoveringOver = function (value) {
+	      _this.overStar = value;
+	      _this.percent = 100 * (value / _this.max);
+	    };
+
+	    _this.scored = function () {
+	      return _this.rateQuestion > 0;
+	    };
+
+	    _this.next = function () {
+	      if (_this.rateQuestion > 0) {
+	        _this.error = undefined;
+	        var questionScore = {
+	          studentId: _this.items.childId,
+	          questionId: _this.items.question.question.id,
+	          score: _this.rateQuestion,
+	          timestamp: new Date().getMilliseconds()
+	        };
+	        _this.items.question.question = Assessments.score({ assessmentId: _this.items.question.assessment.id }, questionScore);
+	      } else {
+	        _this.error = "Please rate the students answer first";
+	      }
+	    };
+
+	    _this.ok = function () {
+	      $modalInstance.close();
+	    };
+
+	    _this.cancel = function () {
+	      $modalInstance.dismiss("cancel");
 	    };
 	  };
 	})();
@@ -68488,8 +69999,8 @@
 /* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<form novalidate role=\"form\" name=\"form\"> <div class=\"modal-header\"> <h3 class=\"modal-title\">Add a Question </h3> </div> <div class=\"modal-body\"> <div class=\"form-group\" data-ng-class=\"{'has-error': form.text.$invalid, 'has-success': !form.text.$invalid}\"> <label for=\"text\" class=\"sr-only\"> Write your Question </label> <textarea name=\"text\" rows=\"5\" data-ng-model=\"question.text\" class=\"form-control\" id=\"questionText\" placeholder=\"Write Your Question\" required></textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.answer.$invalid, 'has-success': !form.answer.$invalid}\"> <label for=\"Answer\" class=\"sr-only\"> Give an answer (Optional) </label> <textarea name=\"answer\" rows=\"5\" data-ng-model=\"question.answer\" class=\"form-control\" id=\"questionAnswer\" placeholder=\"Give an Answer (Optional)\"> </textarea> </div> <div class=\"form-group\" data-ng-class=\"{'has-error': form.picture.$invalid, 'has-success': !form.picture.$invalid}\"> <label for=\"picture\"> Add a picture </label> <input type=\"file\" class=\"form-control\" name=\"file\" ng-file-select ng-model=\"picture\" ng-file-change=\"upload($files)\"> <progressbar ng-show=\"progressPercentage > 0\" class=\"progress-striped active\" max=\"100\" value=\"progressPercentage\" type=\"success\"><i>{{progressPercentage}}%</i></progressbar>  <ul class=\"list-unstyled list-inline\" ng-if=\"uploaded.length > 0\" style=\"padding-top:.5em\"> <li ng-repeat=\"uploadFile in uploaded\"> <img width=\"80px\" height=\"80px\" src=\"data:{{uploadFile.contentType}};base64,{{uploadFile.content}}\"/> <div> {{uploadFile.filename}} </div> </li> </ul> </div> <div class=\"form-group\" data-ng-class=\"\"> <label for=\"standard\"> Align with a Standard </label> <select name=\"standard\" ng-model=\"standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"getStatements()\"> <option value=\"\"> -- Choose a Standard -- </option> </select> </div> <div class=\"form-group\" data-ng-if=\"showEducationLevels()\"> <label for=\"educationlevels\"> Filter by Education Level(s) </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.educationLevels\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\" ng-change=\"educationLevelChange()\"> <ui-select-match placeholder=\"Education levels that this statement applys\"> {{$item.description}} </ui-select-match> <ui-select-choices repeat=\"level in availableEducationLevels | filter:$select.search\"> <div ng-bind-html=\"level.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> <div class=\"form-group\" data-ng-class=\"\" data-ng-if=\"showStatements()\"> <label for=\"statements\"> Available Statements </label> <ui-select multiple=\"multiple\" data-ng-model=\"select2.statements\" theme=\"select2\" ng-disabled=\"disabled\" class=\"form-control\"> <ui-select-match placeholder=\"Statements that this question covers\"> {{$item.statement.description}} </ui-select-match> <ui-select-choices repeat=\"statement in availableStatements| filter:$select.search\"> <div ng-bind-html=\"statement.statement.description | highlight: $select.search\"></div> </ui-select-choices> </ui-select> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"form.$invalid\">Create</button>\n<button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button> </div> </form>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_question.html", v1)}]);
+	var v1="<section class=\"row\"> <div class=\"col-lg-12\"> <div class=\"col-lg-6 col-md-6 col-xs-12\"> <div class=\"widget\"> <div class=\"widget-body\"> <div class=\"widget-content pull-left\"> <div class=\"title\"> Add homework </div> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"homework.standardSelected\" class=\"form-control\" ng-options=\"standard.title for standard in homework.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> <button class=\"btn btn-primary\" ng-click=\"homework.begin()\" ng-class=\"{'disabled': homework.standardSelected == null}\"> Continue </button> </div> </div> <div class=\"clearfix\"></div> </div> </div> </div> </div> </section> <section class=\"row\"> <div class=\"col-md-12 col-lg-12\"> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-spinner\"></i> Homework In-Progress </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.unfinished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button>\n<button class=\"btn btn-danger btn-sm\" data-ng-click=\"homework.deleteHomework(assignment.homework.id)\"> <i class=\"fa fa-trash\"></i> </button> </td> </tr> </tbody> </table> </div> </div> </div> </div> <div class=\"col-lg-6\"> <div class=\"widget\"> <div class=\"widget-header\"> <i class=\"fa fa-check\"></i> Homework Finished </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Assigned on </th> <th> Actions </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"assignment in homework.finished\"> <td> {{assignment.activity.title}} </td> <td> {{assignment.homework.status}} </td> <td> {{assignment.homework.dateGiven | date }} </td> <td> <button class=\"btn btn-success btn-sm\" ng-click=\"childCtrl.showHomework(assignment)\"> <i class=\"fa fa-eye\"></i> </button> </td> </tr> </tbody> </table> </div> <div> </div> </div> </div> </div></div></section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("homework/homework.html", v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -68498,99 +70009,93 @@
 
 	"use strict";
 
-	"use strict()";
 	(function () {
 
-	  module.exports = function ($log, $scope, common, $upload, standardsService, $modalInstance) {
+		__webpack_require__(124);
 
-	    $scope.select2 = {};
-	    $scope.uploaded = [];
-	    $scope.progressPercentage = 0;
+		module.exports = function ($log, $modal, toaster, $stateParams, standardsService, Homework) {
+			var _this = this;
 
-	    standardsService.getAllStandards().success(function (data) {
-	      $scope.availableStandards = data;
-	    }).error(function (data) {
-	      $log.error(data);
-	    });
+			standardsService.getAllStandards().success(function (data) {
+				_this.availableStandards = data;
+			}).error(function (data) {
+				$log.error(data);
+			});
 
-	    $scope.upload = function (files) {
-	      if (angular.isDefined(files) && files.length > 0) {
-	        _.each(files, function (file) {
-	          $upload.upload({
-	            url: "api/v1/upload",
-	            file: file
-	          }).progress(function (evt) {
-	            $scope.progressPercentage = parseInt(100 * evt.loaded / evt.total);
-	            $log.debug($scope.progressPercentage);
-	          }).success(function (data, status, headers, config) {
-	            $scope.uploaded.push(data);
-	            $scope.progressPercentage = 0;
-	            $scope.picture = undefined;
-	          }).error(function (data, status, headers, config) {
-	            $log.error(data);
-	          });
-	        });
-	      }
-	    };
-	    $scope.availableEducationLevels = common.educationLevels;
+			Homework.query({ id: $stateParams.id }, function (activities) {
+				_this.allHomework = activities;
 
-	    $scope.getStatements = function () {
-	      $scope.select2.statements = [];
-	      standardsService.getStatements($scope.standardSelected.id).success(function (data) {
-	        $scope.availableStatements = data.statements;
-	      }).error(function (data) {
-	        $log.error("unable to get statements");
-	      });
-	    };
+				_this.unfinished = _.filter(activities, function (h) {
+					return h.homework.status !== "Finished";
+				});
 
-	    $scope.educationLevelChange = function () {
-	      if (_.isUndefined($scope.select2.educationLevels) || _.isNull($scope.select2.educationLevels) || _.isEmpty($scope.select2.educationLevels)) {
-	        $scope.getStatements();
-	      }
-	      $scope.availableStatements = _.filter($scope.availableStatements, function (s) {
-	        var test = _.filter(s.levels, function (l) {
-	          found = _.find($scope.select2.educationLevels, function (e) {
-	            return l.value === e.value;
-	          });
-	          return !_.isUndefined(found);
-	        });
-	        return test.length > 0;
-	      });
-	    };
+				_this.finished = _.filter(activities, function (h) {
+					return h.homework.status === "Finished";
+				});
+			});
 
-	    $scope.showEducationLevels = function () {
-	      return !_.isUndefined($scope.standardSelected);
-	    };
+			_this.deleteHomework = function (id) {
+				Homework["delete"]({ id: id }, function (d) {
+					_this.unfinished = _.filter(_this.unfinished, function (h) {
+						return h.homework.id !== id;
+					});
+					console.log("successfully deleted homework");
+				}, function (e) {
+					console.log("unable to delete Homework");
+				});
+			};
 
-	    $scope.showStatements = function () {
-	      return !_.isUndefined($scope.availableStatements);
-	    };
+			_this.begin = function () {
+				var modalInstance = $modal.open({
+					templateUrl: "add/add_homework.html",
+					controller: "AddHomeworkCtrl",
+					controllerAs: "addHomework",
+					backdrop: false,
+					resolve: {
+						items: function items() {
+							return _this.standardSelected;
+						}
+					}
+				});
 
-	    $scope.ok = function () {
-	      $scope.question.pictures = angular.isDefined($scope.uploaded) ? $scope.uploaded : null;
-	      $scope.question.statements = [];
-	      $scope.question.statements = _.map($scope.select2.statements, function (st) {
-	        return st.statement;
-	      });
-	      $modalInstance.close($scope.question);
-	    };
-
-	    $scope.cancel = function () {
-	      $modalInstance.dismiss("cancel");
-	    };
-	  };
+				modalInstance.result.then(function (result) {
+					var homework = new Homework(result);
+					homework.$save(function (saved) {
+						toaster.pop("success", null, "Successfully added your childs homework!");
+						_this.allHomework.push(saved);
+					}, function (error) {
+						toaster.pop("error", null, "There was an error when trying to add the homework. Please try again.");
+					});
+				}, function () {
+					$log.info("Modal dismissed at: " + new Date());
+				});
+			};
+		};
 	})();
 
 /***/ },
 /* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"row top col-md-12\" ng-init=\"init()\"> <div class=\"col-md-4\"> <div class=\"thumbnail\" question-picture picture-padding=\"75%\"> </div> <button class=\"btn btn-primary\"> Change Picture </button> </div> <div class=\"col-md-8\"> <div class=\"form-group\"> <label for=\"question-text\"> Question </label> <textarea id=\"question-text\" name=\"question-text\" class=\"form-control\" ng-model=\"question.text\" style=\"width: 100%\" rows=\"10\" required> </textarea> </div> <div class=\"form-group\"> <label for=\"answer-text\"> Answer </label> <textarea id=\"answer-text\" name=\"answer-text\" class=\"form-control\" ng-model=\"question.answer\" style=\"width: 100%\" rows=\"10\"> </textarea> </div> <div class=\"form-group\"> <label for=\"question-standard\"> Standard </label> <select name=\"standard\" ng-model=\"standard\" class=\"form-control\" ng-options=\"standard.title for standard in availableStandards\" ng-change=\"changeStandard()\"> <option value=\"\"> -- None -- </option> </select> </div> <div class=\"row\">  </div> <div class=\"form-group\" ng-if=\"standard\"> <label for=\"available-statements\"> Available Statements </label>  <div ng-repeat=\"st in availableStatements\"> <div class=\"col-md-4\"> <div class=\"checkbox\"> <label> <input type=\"checkbox\"> {{st.statement.description}} </label> </div> </div> </div> </div>  </div> </div> <div class=\"row col-md-12\"> <div class=\"col-md-4\"> </div> <div class=\"col-md-8\"> <button class=\"btn btn-success\" ng-click=\"update()\"> Update </button>\n<button class=\"btn btn-danger\" ng-click=\"delete()\"> Delete Question </button> </div> </div>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("edit/edit_question.html", v1)}]);
-	module.exports=v1;
+	"use strict";
+
+	"use strict()";
+	(function () {
+	  module.exports = function ($resource) {
+	    return $resource("api/v1/activities/homework/:id");
+	  };
+	})();
 
 /***/ },
 /* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-3\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in addHomework.steps\"> <a data-ng-click=\"addHomework.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"addHomework.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"addHomework.statement = statement.statement;addHomework.entity.statementId = statement.statement.id\" data-ng-class=\"{'success': addHomework.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in addHomework.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[1].selected == true\"> <form name=\"homeworkForm\" class=\"form-horizontal\" data-ng-init=\"addHomework.setForm(this)\"> <input type=\"hidden\" ng-model=\"addHomework.entity.statementId\" value=\"{{addHomework.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Name</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"addHomework.entity.activity.title\" class=\"form-control\" id=\"title\" placeholder=\"e.g Lesson 5.2 or Math Worksheet 1\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"addHomework.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"addHomework.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"status\" class=\"col-sm-2 control-label\">Status</label> <div class=\"col-sm-10\"> <select class=\"form-control\" ng-model=\"addHomework.entity.homework.status\" ng-options=\"status.text as status.text for status in addHomework.status\"> <option value=\"\"> -- Select a Status -- </option> </select> </div> </div> <div class=\"form-group\"> <label for=\"date-given\" class=\"col-sm-2 control-label\">Date Given</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateGiven\" class=\"form-control\" id=\"date-given\" placeholder=\"Date Given\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"date-due\" class=\"col-sm-2 control-label\">Due Date</label> <div class=\"col-sm-10\"> <input type=\"date\" data-ng-model=\"addHomework.dateDue\" class=\"form-control\" id=\"date-due\" placeholder=\"Due Date\"> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"addHomework.steps[2].selected == true\"> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"alert alert-info\" role=\"alert\">Give some tips and instructions for using Actions</div> </div> <div class=\"col-md-12 col-lg-12 col-sm-12\" data-ng-show=\"addHomework.entity.acts.length > 0\"> <ul> <li data-ng-repeat=\"actions in addHomework.entity.acts\">{{actions.action}} </li> </ul> </div> <hr> <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div data-ng-if=\"addHomework.showAdd\"> <div class=\"input-group margin-bottom-sm\"> <input type=\"text\" class=\"form-control\" data-ng-model=\"addHomework.actionToAdd\" placeholder=\"\">\n<span class=\"input-group-addon\"> <span class=\"rating\"> <span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span>\n<span class=\"star\"></span> </span> </span> </div> <button type=\"submit\" class=\"btn btn-sm btn-success\" style=\"margin-top:.25em\" data-ng-click=\"addHomework.addAction()\"> Add </button> </div> <a data-ng-click=\"addHomework.showAdd = true\"> <span> <i class=\"fa fa-plus\"></i> Add an action </span> </a> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == true\" data-ng-click=\"addHomework.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"addHomework.steps[addHomework.steps.length-1].selected == false\" data-ng-disabled=\"addHomework.isNextDisabled()\" data-ng-click=\"addHomework.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"addHomework.cancel()\">Cancel</button> </div>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_homework.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68598,89 +70103,142 @@
 	"use strict()";
 	(function () {
 
-	  module.exports = function ($log, $scope, $state, $stateParams, common, standardsService, Question, toaster) {
+		module.exports = function ($log, $modalInstance, Standards, Child, Common, $stateParams, items) {
+			var _this = this;
 
-	    var GetAvailableStatments = function GetAvailableStatments() {
-	      if (!_.isUndefined($scope.question.statements[0])) {
-	        if (!_.isUndefined($scope.standard)) {
-	          standardsService.getStatements($scope.standard.id).success(function (data) {
-	            $scope.availableStatements = data.statements;
-	          }).error(function (data) {
-	            $log.error("unable to retrieve statements");
-	          });
-	        } else {
-	          $scope.availableStatements = [];
-	        }
-	      }
+			_this.child = Child.get({ id: $stateParams.id });
+			_this.standard = items;
+
+			_this.status = Common.homeworkStatuses;
+
+			_this.entity = {
+				childId: Number($stateParams.id),
+				statementId: null,
+				activity: {},
+				homework: {
+					studentId: Number($stateParams.id)
+				},
+				acts: []
+			};
+
+			_this.steps = [{ step: 1, title: "Choose Statement", completed: false, selected: true }, { step: 2, title: "General Information", completed: false, selected: false }, { step: 3, title: "Actions", completed: false, selected: false }];
+
+			_this.setForm = function (f) {
+				_this.forms = f;
+			};
+
+			//Get statements for this standard and grade level of the child
+			Standards.getStatements(_this.standard.id).success(function (d) {
+				_this.statements = d.statements;
+				//_this.statements = _.filter(d.statements, function(st){
+				//return (_.contains(st.levels, _this.child.educationLevel.id) ) || (st.levels.length === 0);
+				//});
+			}).error(function (d) {
+				$log.error(d);
+			});
+
+			_this.nextStep = function () {
+				// which step are we on?
+				var currentStep = _.find(_this.steps, function (s) {
+					return s.selected === true;
+				});
+				_this.steps[currentStep.step - 1].completed = true;
+				_this.steps[currentStep.step - 1].selected = false;
+				_this.steps[currentStep.step].selected = true;
+				return true;
+			};
+
+			_this.isNextDisabled = function () {
+				return _this.steps[0].selected && _this.statement === undefined || _this.steps[1].selected && !_this.isEntityValid();
+			};
+
+			_this.goTo = function (step) {
+				_.each(_this.steps, function (s) {
+					if (s.step === step.step) {
+						s.selected = true;
+					} else {
+						s.selected = false;
+						s.completed = false;
+					}
+				});
+			};
+
+			_this.addAction = function () {
+				if (_this.actionToAdd !== undefined) {
+					_this.entity.acts.push({ actType: "homework", action: _this.actionToAdd });
+				}
+				_this.actionToAdd = null;
+				_this.showAdd = false;
+			};
+
+			_this.ok = function () {
+				_this.entity.homework.dateGiven = new Date(_this.dateGiven).getTime();
+				if (_this.dateDue !== undefined) _this.entity.homework.dateDue = new Date(_this.dateDue).getTime();
+				_this.entity.activity.date = new Date().getTime();
+				$modalInstance.close(_this.entity);
+			};
+
+			_this.cancel = function () {
+				$modalInstance.dismiss("cancel");
+			};
+
+			_this.isEntityValid = function () {
+				//TODO: Validate all required fields
+				return _this.entity.activity.title !== undefined && _this.entity.activity.subject !== undefined;
+			};
+		};
+	})();
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<section class=\"row\" data-ng-controller=\"HomeworkDetailsCtrl as details\"> <div class=\"col-lg-12\"> <button class=\"btn btn-primary btn-sm\" data-ng-click=\"childCtrl.showHomeworkDetails = false\"> Back to all </button> <h1> {{::childCtrl.selectedAssignment.activity.title}} <small> <span class=\"label label-danger\"> {{childCtrl.selectedAssignment.homework.status}} </span></small>  </h1> <ul> <li> Assigned On: {{::childCtrl.selectedAssignment.homework.dateGiven | date}} </li> <li data-ng-if=\"childCtrl.selectedAssignment.homework.dueDate\"> Due on: {{::childCtrl.selectedAssignment.homework.dueDate | date}} </li> </ul> <table class=\"table\"> <thead> <tr> <th> Name </th> <th> Status </th> <th> Rating </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"act in childCtrl.selectedAssignment.acts\"> <td> {{act.action}} </td> <td> <select data-ng-options=\"p.text for p in details.progress\" data-ng-model=\"act.progress\"> </select> </td> <td> <data-rating ng-model=\"act.score.score\" max=\"details.max\" readonly=\"false\" on-hover=\"details.hoveringOver(value)\" on-leave=\"overStar=null\" data-ng-click=\"details.updateScore(act)\"> </data-rating> </td> </tr> </tbody> </table> <button class=\"btn btn-primary btn-sm\"> Add another </button> </div> </section>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/homework_details.html", v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	"use strict()";
+	(function () {
+	  module.exports = function ($log, Standards, Child, Score, Common, $stateParams) {
+	    var vm = this;
+	    vm.max = 5;
+
+	    vm.progress = Common.homeworkStatuses;
+
+	    vm.hoveringOver = function (value) {
+	      vm.overStar = value;
+	      vm.percent = 100 * (value / vm.max);
 	    };
 
-	    Standards = standardsService.standards;
-	    $scope.select2 = { statements: [] };
+	    vm.updateProgress = function (a) {};
 
-	    $scope.init = function () {
-	      $scope.question = Question.get({ id: $stateParams.questionId }, function (ques) {
-	        if (_.isUndefined($scope.question.statements)) {
-	          $scope.select2.statements = [];
-	        } else {
-	          $scope.select2.statements = $scope.question.statements;
-	        }
-	      });
-
-	      $scope.availableStandards = Standards().query();
-
-	      $scope.availableStandards.$promise.then(function (s) {
-	        $scope.question.$promise.then(function (q) {
-	          if (!_.isUndefined($scope.question.statements[0])) {
-	            $scope.standard = _.find(s, function (stan) {
-	              return stan.id === $scope.question.statements[0].standardId;
-	            });
-	            if (!_.isUndefined($scope.standard)) {
-	              standardsService.getStatements($scope.standard.id).success(function (data) {
-	                $scope.availableStatements = data.statements;
-	              }).error(function (data) {
-	                $log.error("unable to retrieve statements");
-	              });
-	            } else {
-	              $scope.availableStatements = [];
-	            }
-	          }
-	        });
-	      });
-	    };
-
-	    $scope.changeStandard = function () {
-	      if (!_.isUndefined($scope.standard)) {
-	        standardsService.getStatements($scope.standard.id).success(function (data) {
-	          $scope.availableStatements = data.statements;
-	        }).error(function (data) {
-	          $log.error("unable to retrieve statements");
-	        });
+	    vm.updateScore = function (s) {
+	      console.log(s);
+	      if (s.score.id === undefined) {
+	        var score = {
+	          studentId: Number($stateParams.id),
+	          actId: s.id,
+	          timestamp: new Date().getTime(),
+	          score: s.score.score
+	        };
+	        Score.save({}, score, function (saved) {});
 	      } else {
-	        $scope.availableStatements = [];
+	        Score.update({}, s.score);
 	      }
-	    };
-
-	    $scope.update = function () {
-	      $scope.question.$update(function () {
-	        toaster.pop("success", "Updated", "Successfully updated question");
-	      }, function () {
-	        toaster.pop("error", "Failed", "Did not update the question, contact the administrator");
-	      });
-	    };
-
-	    $scope["delete"] = function () {
-	      Question.remove({ id: $scope.question.id }, function (q) {
-	        toaster.pop("success", "Deleted", "Successfully removed question " + $scope.question.id);
-	        $state.go("admin.questions");
-	      }, function () {
-	        toaster.pop("error", "Failed", "Unable to delete this question");
-	      });
 	    };
 	  };
 	})();
 
+	//TODO: Update the act's progress to Finished and save
+
 /***/ },
-/* 121 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68723,31 +70281,10 @@
 	})();
 
 /***/ },
-/* 122 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<section class=\"row\"> <div class=\"col-md-12\"> <button ng-if=\"activities.isMyTab()\" class=\"btn btn-xs btn-danger\" ng-click=\"activities.deleteSelectedActivities()\" ng-disabled=\"activities.selectedActivities.length ==0\"> <i class=\"fa fa-trash\"></i> Delete </button> </div> </section> <section class=\"row\"> <div class=\"col-lg-12\">           <div class=\"table-responsive\"> <table class=\"table\"> <thead> <tr> <th ng-if=\"activities.isMyTab()\"> <input type=\"checkbox\"/> </th> <th> Title </th> <th> Description </th> <th> Subject </th> <th> Creator </th> <th> Rights </th> <th> Source </th> <th> Type </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"act in activities.activities\"> <td ng-if=\"activities.isMyTab()\"> <input type=\"checkbox\" ng-model=\"selection\" ng-change=\"activities.updateSelection(act, selection)\"/> </td> <td> {{::act.title}} </td> <td> {{::act.description}} </td> <td> {{::act.subject}} </td> <td> {{::act.creator}} </td> <td> {{::act.rights}} </td> <td> {{::act.source}} </td> <td> {{::act.catagory}} </td> </tr> </tbody> </table> </div>   </div> </section>";
-	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("activities/activityWidget.html", v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	(function () {
-	  module.exports = activityWidget;
-
-	  function activityWidget() {
-	    return {
-	      restrict: "EA",
-	      templateUrl: "activities/activityWidget.html",
-	      controller: "ActivitiesController",
-	      bindToController: true
-	    };
-	  }
-	})();
+	module.exports = __webpack_require__.p + "12f9b291a7c132dcfea1b243cbcca7c5.png"
 
 /***/ }
 /******/ ])

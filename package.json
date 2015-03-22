@@ -19,7 +19,7 @@
     "angular-toaster": "./web/thirdparty/angular/angular-toaster.js",
     "ui-router": "./node_modules/angular-ui-router/release/angular-ui-router.js",
     "ui-bootstrap": "./node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.js",
-    "ui-select2": "./node_modules/angular-ui-select2/src/select2.js",
+    "ui-select": "./web/thirdparty/angular/ui-select.js",
     "ng-file-upload": "./node_modules/ng-file-upload/dist/angular-file-upload-all.js"
   },
   "license": "MIT",

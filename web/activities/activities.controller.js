@@ -9,13 +9,11 @@
     var vm = this;
 
     vm.activities = []; // holds the current activities we are looking at
-    vm.availableStandards = [];
     vm.begin = begin;
     vm.deleteSelectedActivities = deleteSelectedActivities;
     vm.isMyTab = isMyTab;
     vm.selectedActivities = [];
     vm.setCurrentActivities = setCurrentActivities; 
-    vm.standardSelected = null;
     vm.tab = "my";
     vm.updateSelection = updateSelection;
    
@@ -28,7 +26,6 @@
     function activate(){
       getActivities();
       getAll();
-      getAvailableStandards();
       setCurrentActivities("my");
     }
  
@@ -66,8 +63,7 @@
 				templateUrl: "add/add_activity.html", 
 				controller: 'AddActivityController',
 				controllerAs: 'add',
-        backdrop: false,
-				resolve: { items: function(){ return vm.standardSelected; } }
+        backdrop: false
 			});
 
 			modalInstance.result.then(function (result) {
@@ -87,14 +83,6 @@
 
     function getAll(){
       vm.allActivities = Activities.all.query();
-    }
-
-    function getAvailableStandards(){
-      Standards.getAllStandards().success(function(data){
-			  vm.availableStandards = data;
-		  }).error(function(data){
-			  $log.error(data);
-		  });
     }
 
     function setCurrentActivities(currentTab){

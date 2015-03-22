@@ -49,7 +49,7 @@
       } 
       $scope.availableStatements = _.filter($scope.availableStatements, function(s) {
         var test = _.filter(s.levels, function(l) {
-          found = _.find($scope.select2.educationLevels, function(e) {
+          var found = _.find($scope.select2.educationLevels, function(e) {
             return l.value === e.value ;
           });
           return !_.isUndefined(found);

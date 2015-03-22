@@ -6,6 +6,7 @@ var angular = require('angular');
 require('./styles/main.less');
 require('./styles/animate.css');
 require('./styles/toaster.css');
+require('./styles/select.css');
 
 // Bootstrap
 window.$ = window.jQuery = require('jquery');
@@ -20,7 +21,7 @@ require("ui-router");
 require("angular-toaster");
 
 require("select2");
-require("ui-select2");
+require("ui-select");
 require("ng-file-upload");
 
 angular.module("proximal2", [
@@ -30,7 +31,7 @@ angular.module("proximal2", [
     'ngCookies', 
     'ui.router', 
     'ui.bootstrap',
-    'ui.select2',
+    'ui.select',
     'ngFileUpload',
     'toaster']);
 

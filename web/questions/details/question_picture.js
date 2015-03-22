@@ -1,5 +1,7 @@
 (function(){
 
+var img = require('../../images/emptyImage.png');
+
 module.exports = function($log,$q){
   return {
     restrict: "A",
@@ -12,7 +14,7 @@ module.exports = function($log,$q){
           if(scope.question.picture){
             elem.css({"background-image": "url(data:image/png;base64," + scope.question.picture});
           } else {
-            elem.css({"background-image": "url(/assets/images/emptyImage.png)"});
+            elem.css({"background-image": "url(" + img + ")"});
           }
         }
       }, true);

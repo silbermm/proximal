@@ -10,31 +10,35 @@
     "Child",
     "personService",
     "prox.common",
-    "$stateParams",
-    "items"
+    "$stateParams"
   ];
     
-  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams, items){
+  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams){
 		var vm = this;
     vm.addStatement = addStatement; 
+    vm.availableStandards = [];
     vm.cancel = cancel;
     vm.entity = { statementIds: [] };
     vm.forms = null;
     vm.goTo = goTo;
     vm.isNextDisabled = isNextDisabled;
+    vm.loadingStatements = false;
     vm.nextStep = nextStep;
     vm.ok = ok;
+    vm.standardSelected = null;
     vm.setForm = setForm;
-		vm.standard = items;
+		vm.standard = null;
     vm.statements = [];
-		vm.steps = [
-			{step: 1, title: "Choose Statement", completed: false, selected: true},
-			{step: 2, title: "General Information", completed: false, selected: false},
-      {step: 3, title: "Resources", completed: false, selected: false}
+		
+    vm.steps = [
+      {step: 1, title: "Choose Standard", completed: false, selected: true },
+			{step: 2, title: "Choose Statement", completed: false, selected: false},
+			{step: 3, title: "General Information", completed: false, selected: false},
+      {step: 4, title: "Resources", completed: false, selected: false}
 		];
 
-    function activate(){
-      getStatements();
+    function activate(){ 
+      getAvailableStandards();
       getProfile();
     }
 
@@ -46,28 +50,42 @@
 			vm.forms = f;
 		}
 
+    function getAvailableStandards(){
+      Standards.getAllStandards().success(function(data){
+			  vm.availableStandards = data;
+		  }).error(function(data){
+			  $log.error(data);
+		  });
+    }
+
     function getProfile(){
       vm.profile = Person.profile.get();
     }
 
     function getStatements(){
+      vm.loadingStatements = true;
       //Get statements for this standard and grade level of the child
       Standards.getStatements(vm.standard.id).success(function(d){
+        vm.loadingStatements = false;
         vm.statements = d.statements;
         //vm.statements = _.filter(d.statements, function(st){
         //return (_.contains(st.levels, vm.child.educationLevel.id) ) || (st.levels.length === 0);
         //});
       }).error(function(d){
+        vm.loadingStatements = false;
         $log.error(d);
       });
     }
 		
 		function nextStep(){
 			// which step are we on?
-      console.log(vm.entity);
 			var currentStep = _.find(vm.steps, function(s){
 				return s.selected === true;
 			});
+      console.log(currentStep);
+      if(currentStep.step === 1){
+        getStatements(); 
+      }
 			vm.steps[currentStep.step -1].completed = true;
 			vm.steps[currentStep.step -1].selected = false;
 			vm.steps[currentStep.step].selected = true;
@@ -75,8 +93,10 @@
 		}
 
 	  function isNextDisabled(){
-			return (vm.steps[0].selected && vm.statement === undefined) || 
-        (vm.steps[1].selected && !isEntityValid());
+			return (
+        vm.standard === null ||
+        vm.steps[1].selected && vm.statement === undefined) || 
+        (vm.steps[2].selected && !isEntityValid());
 		}
 
 		function goTo(step){
