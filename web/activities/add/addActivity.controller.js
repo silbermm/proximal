@@ -19,7 +19,7 @@
     vm.addStatement = addStatement; 
     vm.availableStandards = [];
     vm.cancel = cancel;
-    vm.entity = { statementIds: [] };
+    vm.entity = { statementIds: [] , activity: {}, resource: {}};
     vm.forms = null;
     vm.goTo = goTo;
     vm.isNextDisabled = isNextDisabled;
@@ -27,6 +27,7 @@
     vm.nextStep = nextStep;
     vm.ok = ok;
     vm.resourceFilter = "Questions";
+    vm.selectedResource = null;
     vm.standardSelected = null;
     vm.setForm = setForm;
 		vm.standard = null;
@@ -129,8 +130,10 @@
     }
 
     function ok() {
+      var resource = Common.getResource();
 			vm.entity.activity.date = new Date().getTime();      
 		  vm.entity.activity.creator = vm.profile.user.uid;
+      vm.entity.activity.resourceId = resource.id;
       $modalInstance.close(vm.entity);
 		}
 

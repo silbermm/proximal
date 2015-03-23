@@ -1,5 +1,5 @@
 <div class="table-responsive"> 
-  <table class="table"> 
+  <table class="table table-striped table-condensed table-hover"> 
     <thead> 
       <tr> 
         <th ng-if="isMultipleSelect()"> <input type="checkbox" /> </th>
@@ -11,7 +11,9 @@
       </tr> 
     </thead> 
     <tbody> 
-      <tr data-ng-repeat="resource in questions"> 
+      <tr data-ng-repeat="resource in questions" 
+          data-ng-click="addResource(resource)"
+          data-ng-class="resource.selected" > 
         <td ng-if="isMultipleSelect()" > <input type="checkbox" ng-model="selection" ng-change="updateSelection(resource, selection)" /> </td>
         <td> {{::resource.title}} </td> 
         <td> {{::resource.description}} </td> 

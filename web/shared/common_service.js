@@ -4,6 +4,17 @@ var app = require('angular').module('proximal2');
 app.factory("prox.common",[ "$log", "$http", CommonService]);
 
 function CommonService($log,$http) {   
+
+  function setResource(resource) {
+    this.resource = resource;
+  }
+
+  function getResource(){
+    return this.resource;
+  }
+
+  this.resource = "";
+
   this.educationLevels = [
       { value: "k", description: "Kindergarden"},
       { value: "1", description: "1st Grade" },
@@ -24,9 +35,12 @@ function CommonService($log,$http) {
       {text: "In-Progress"},
       {text: "Finished"}
     ];
-    
-    return {
-      educationLevels: this.educationLevels,
-      homeworkStatuses: this.homeworkStatuses
-    };
+ 
+  return {
+    educationLevels: this.educationLevels,
+    homeworkStatuses: this.homeworkStatuses,
+    getResource: getResource,
+    setResource: setResource
+  };
+   
 }
