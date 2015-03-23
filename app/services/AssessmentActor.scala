@@ -58,11 +58,11 @@ class AssessmentActor extends Actor {
         val finalQuestion = filteredQuestions(random.nextInt(filteredQuestions.length))
         Questions.convertToJsonQuestion(finalQuestion, None, None)
       } catch {
-        case e: java.util.NoSuchElementException => JsonQuestion(Some(-1), "No questions available!", None, None, None, None)
+        case e: java.util.NoSuchElementException => JsonQuestion(Some(-1), "No questions available!", None, None, None, None, None)
         case e2: Throwable => {
           // Let's back out of our assessment since we can't ask any questions
           Assesments.delete(assessment.id.get)
-          JsonQuestion(Some(-1), e2.getMessage(), None, None, None, None)
+          JsonQuestion(Some(-1), e2.getMessage(), None, None, None, None, None)
         }
       }
     }

@@ -54,7 +54,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
 
   def list = Action { implicit request =>
     DB.withSession { implicit s =>
-      val q = Questions.allWithStatements
+      val q = Questions.allWithResource
       Ok(Json.toJson(q))
     }
   }

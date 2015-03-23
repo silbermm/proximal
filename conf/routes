@@ -60,6 +60,10 @@ POST /api/v1/scores                                   @controllers.ScoresControl
 GET /api/v1/scores/:studentId                         @controllers.ScoresController.showScores(studentId: Long)
 PUT /api/v1/scores                                    @controllers.ScoresController.updateScore
 
+# Resources
+POST /api/v1/resources                                @controllers.ResourceController.createResource
+GET /api/v1/resources                                 @controllers.ResourceController.listResources
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /assets/securesocial/*file  securesocial.controllers.Assets.at(path="/public/securesocial", file)

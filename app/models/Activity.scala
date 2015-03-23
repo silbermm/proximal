@@ -15,7 +15,19 @@ case class Activity(id: Option[Long],
   source: Option[String],
   subject: Option[String],
   title: Option[String],
-  category: Option[String])
+  category: Option[String],
+  resourceId: Option[Long])
+
+case class ActivityWithResource(id: Option[Long],
+  creator: Long,
+  date: Long,
+  description: Option[String],
+  rights: Option[String],
+  source: Option[String],
+  subject: Option[String],
+  title: Option[String],
+  category: Option[String],
+  resource: Option[Resource])
 
 case class ActivityWithStatements(id: Option[Long],
   creator: Long,
@@ -73,10 +85,12 @@ class Activities(tag: Tag) extends Table[Activity](tag, "activities") {
   def subject = column[Option[String]]("subject")
   def title = column[Option[String]]("title")
   def category = column[Option[String]]("category")
+  def resourceId = column[Option[Long]]("resource_id")
 
-  def * = (id.?, creator, date, description, rights, source, subject, title, category) <> (Activity.tupled, Activity.unapply _)
+  def * = (id.?, creator, date, description, rights, source, subject, title, category, resourceId) <> (Activity.tupled, Activity.unapply _)
 
   def person = foreignKey("activities_person_fk", creator, People.people)(_.id)
+  def resource = foreignKey("activities_resource_fk", resourceId, Resources.resources)(_.id)
 }
 
 object Activities {
@@ -111,6 +125,31 @@ object Activities {
 
   def find(id: Long)(implicit s: Session) =
     activities.filter(_.id === id).firstOption
+
+  def findWithResource(id: Long)(implicit s: Session): Option[ActivityWithResource] = {
+    val query = for {
+      activ <- activities if activ.id === id
+      resource <- activ.resource
+    } yield resource
+
+    find(id) match {
+      case Some(activity) => {
+        Some(ActivityWithResource(
+          activity.id,
+          activity.creator,
+          activity.date,
+          activity.description,
+          activity.rights,
+          activity.source,
+          activity.subject,
+          activity.title,
+          activity.category,
+          query.firstOption))
+      }
+      case _ => None
+    }
+
+  }
 
   def findWithStatements(id: Long)(implicit s: Session): Option[ActivityWithStatements] = {
     val query = for {

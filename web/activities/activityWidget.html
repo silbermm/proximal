@@ -1,45 +1,31 @@
 <section class="row">
   <div class="col-lg-12">
-    <!--<div class="widget"> -->
-      <!--<div class="widget-header"> -->
-        <!--<span class="widget-buttons" style="margin: 0px 2em 0px 25%">-->
-          <!--<button ng-if="activities.isMyTab()" class="btn btn-xs btn-danger" ng-click="activities.deleteSelectedActivities()" ng-disabled="activities.selectedActivities.length ==0"> -->
-            <!--<i class="fa fa-trash"></i> Delete-->
-          <!--</button>-->
-        <!--</span>-->
-        <!--<input type="text" placeholder="Search" data-ng-model="searchText" class="form-control input-sm pull-right" /> -->
-      <!--</div> -->
-      <!--<div class="widget-body large no-padding"> --> 
-        <div class="table-responsive"> 
-          <table class="table"> 
-            <thead> 
-              <tr> 
-                <th ng-if="activities.isMyTab()"> <input type="checkbox" /> </th>
-                <th> Title </th> 
-                <th> Description </th> 
-                <th> Subject </th> 
-                <th> Creator </th>
-                <th> Rights </th> 
-                <th> Source </th>
-                <th> Type </th>
-              </tr> 
-            </thead> 
-            <tbody> 
-              <tr data-ng-repeat="act in activities.activities"> 
-                <td ng-if="activities.isMyTab()"> <input type="checkbox" ng-model="selection" ng-change="activities.updateSelection(act, selection)" /> </td>
-                <td> {{::act.title}} </td>
-                <td> {{::act.description}} </td>
-                <td> {{::act.subject}} </td>
-                <td> {{::act.creator}} </td>
-                <td> {{::act.rights}} </td>
-                <td> {{::act.source}} </td>
-                <td> {{::act.catagory}} </td>
-              </tr>
-            </tbody> 
-          </table> 
-        </div> 
-      <!--</div> -->
-    <!--</div>-->
+    <div class="table-responsive"> 
+      <table class="table"> 
+        <thead> 
+          <tr> 
+            <th ng-if="activities.isMyTab()"> <input type="checkbox" /> </th>
+            <th> Title </th> 
+            <th> Description </th> 
+            <th> Subject </th> 
+            <th> Rights </th> 
+            <th> Source </th>
+            <th> Type </th>
+          </tr> 
+        </thead> 
+        <tbody> 
+          <tr data-ng-repeat="act in activities.activities"> 
+            <td ng-if="activities.isMyTab()"> <input type="checkbox" ng-model="selection" ng-change="activities.updateSelection(act, selection)" /> </td>
+            <td> {{::act.title}} </td>
+            <td> {{::act.description}} </td>
+            <td> {{::act.subject}} </td>
+            <td> {{::act.rights}} </td>
+            <td> {{::act.source}} </td>
+            <td> {{::act.catagory}} </td>
+          </tr>
+        </tbody> 
+      </table> 
+    </div> 
   </div>
 </section>
 

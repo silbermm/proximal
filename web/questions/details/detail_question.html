@@ -1,26 +1,24 @@
-<div class="list-group">
-  <a  ui-sref="admin.questions.edit({questionId:question.id})" class="list-group-item" ng-repeat="question in questions" > 
-    <h4 class="list-group-item-heading">{{question.text}} </h4> 
-      <p class="list-group-item-text">
-        <div class="col-md-12"> 
-        <div class="col-md-2"> 
-           <div question-picture style="width: 100px;height:100px"> </div>
-        </div>
-
-        <div class="col-md-5">
-          <h5> Standard </h5>
-          <p> None yet </p>
-        </div>
-        <div class="col-md-5"> 
-          <h5> Statements that Apply </h5>
-          <ul>
-            <li data-ng-repeat="statement in question.statements">
-              {{statement.description}}
-            </li>
-          </ul>
-        </div>
-      </div>
-      <span class="clearfix"> </span>
-    </p>
-  </a>
-</div>
+<div class="table-responsive"> 
+  <table class="table"> 
+    <thead> 
+      <tr> 
+        <th ng-if="isMultipleSelect()"> <input type="checkbox" /> </th>
+        <th> Title </th>
+        <th> Description </th>
+        <th> Question Text </th> 
+        <th> Answer </th> 
+        <th ng-hide="hidePicture"> Picture </th>
+      </tr> 
+    </thead> 
+    <tbody> 
+      <tr data-ng-repeat="resource in questions"> 
+        <td ng-if="isMultipleSelect()" > <input type="checkbox" ng-model="selection" ng-change="updateSelection(resource, selection)" /> </td>
+        <td> {{::resource.title}} </td> 
+        <td> {{::resource.description}} </td> 
+        <td> {{::resource.question.text}} </td>
+        <td> {{::resource.question.answer}} </td>
+        <td ng-hide="hidePicture" question-picture pic="resource.picture" style="width: 100px;height:100px"> </td>
+      </tr>
+    </tbody> 
+  </table> 
+</div> 

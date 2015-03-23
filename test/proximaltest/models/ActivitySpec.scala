@@ -50,6 +50,24 @@ class ActivitySpec extends PlaySpec with Results {
       }
     }
 
+    "find an activity with it's resource" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+          val person = People.insertPerson(PersonHelpers.person)
+          val resource = Resources.create(ResourceHelpers.sampleResource.copy(creator = person.id))
+
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get, resourceId = resource.id)
+          val created = Activities.create(sampleActivity)
+          created.id must not be empty
+
+          Activities.findWithResource(created.id.get) match {
+            case Some(activityWithResources) => activityWithResources.resource.get.title mustBe resource.title
+            case _ => fail("not able to find the activity with resources")
+          }
+        }
+      }
+    }
+
     "list all activity" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>

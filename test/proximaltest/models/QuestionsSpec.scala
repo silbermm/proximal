@@ -33,6 +33,33 @@ class QuestionsSpec extends PlaySpec with Results {
       }
     }
 
+    "find all statements with a resource" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+
+          // create a resource
+          val person = People.insertPerson(PersonHelpers.person)
+          val resource = ResourceHelpers.sampleResource.copy(creator = person.id)
+          val created = Resources.create(resource);
+          created.id must not be empty
+
+          val q = Questions.create(fakeQuestion.copy(resourceId = created.id))
+          q.id must not be empty
+          q.resourceId must not be empty
+
+          val q2 = Questions.create(fakeQuestion)
+          val q3 = Questions.create(fakeQuestion)
+
+          val questions = Questions.allWithAResourceId
+          val allQuestions = Questions.all
+
+          questions must have length 1
+          allQuestions must have length 3
+        }
+      }
+
+    }
+
     "have a statement" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
@@ -108,6 +135,23 @@ class QuestionsSpec extends PlaySpec with Results {
             case (questions, Some(statement)) => questions must have length 2
             case _ => fail("did not get the correct data")
           }
+        }
+      }
+    }
+
+    "find all questions with resources" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+          val resource = ResourceHelpers.sampleResource
+          val created = Resources.create(resource)
+
+          val question = Questions.create(QuestionsHelpers.sampleQuestion.copy(resourceId = created.id))
+
+          question.resourceId.get mustBe created.id.get
+
+          val list = Questions.allWithResource
+          list must have length 1
+
         }
       }
     }

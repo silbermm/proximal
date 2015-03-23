@@ -2,14 +2,15 @@
 
 var app = require("angular").module("proximal2");
 
+
 // Question Service
 app.factory("Question", [ "$log", "$resource", "$http", require('./questions_service')]);
  
 // Question Controller
 require("./questions.html");
-app.controller("QuestionsCtrl",[ "$log", "$scope", "$state", "$stateParams", "$modal", "toaster", "prox.common", "Question", "standardsService", require('./questions_controller')]);
+app.controller("QuestionsCtrl", require('./questions_controller'));
 
-
+app.directive("questions", require('./questions.directive'));
 
 // Details
 require("./details/detail_question.html");

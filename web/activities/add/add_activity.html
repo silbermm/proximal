@@ -118,28 +118,35 @@
  
   <div class="row" data-ng-show="add.steps[3].selected == true">
   
-    <div class="col-md-12 col-lg-12 col-sm-12">
-      <div class="alert alert-info" role="alert">
-        Resources are tools to help guide students thorugh your activity. They can things like 
-        <ul>
-          <li> Videos </li>
-          <li> Links to books </li>
-          <li> Questions </li>
-        </ul>
-        If you can't find the resouce you are looking for here, you can always create a new one.
-      </div> 
-    </div>
-  
-    <div class="col-md-12 col-lg-12 col-sm-12" data-ng-show="add.entity.resources.length > 0">
-      <ul>
-         
-      </ul>
-    </div>
-    
+    <!--<div class="col-md-12 col-lg-12 col-sm-12">-->
+      <!--<div class="alert alert-info" role="alert">-->
+        <!--Resources are tools to help guide students thorugh your activity. They can things like -->
+        <!--<ul>-->
+          <!--<li> Videos </li>-->
+          <!--<li> Links to books </li>-->
+          <!--<li> Questions </li>-->
+        <!--</ul>-->
+        <!--If you can't find the resouce you are looking for here, you can always create a new one.-->
+      <!--</div> -->
+    <!--</div>-->  
     <hr>
 
     <div class="col-md-12 col-lg-12 col-sm-12">
-      <h4> placeholder for list of resouces available </h4> 
+      <div class="widget">
+        <div class="widget-header">
+          Choose a resource
+          <div class="btn-group">
+            <label class="btn btn-success btn-xs" ng-model="add.resourceFilter" btn-radio="'Questions'">Questions</label>
+            <label class="btn btn-success btn-xs" ng-model="add.resourceFilter" btn-radio="'Books'" disabled uncheckable>Books</label>
+            <label class="btn btn-success btn-xs" ng-model="add.resourceFilter" btn-radio="'Videos'" disabled uncheckable>Videos</label>
+      </div> 
+          <input type="text" placeholder="Search" data-ng-model="searchText" class="form-control input-sm pull-right" />
+          <div class="clearfix"> </div>
+        </div>
+        <div class="widget-body small no-padding" ng-if="!add.loadingStatements">
+          <question-details question-list="add.questionResources" selectable="single" hide-picture="true"> </question-details> 
+        </div>
+      </div>
     </div> 
   </div>
 

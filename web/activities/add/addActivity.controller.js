@@ -8,12 +8,13 @@
     "$modalInstance",
     "standardsService",
     "Child",
+    "Question",
     "personService",
     "prox.common",
     "$stateParams"
   ];
     
-  function AddActivity($log, $modalInstance, Standards, Child, Person, Common, $stateParams){
+  function AddActivity($log, $modalInstance, Standards, Child, Question, Person, Common, $stateParams){
 		var vm = this;
     vm.addStatement = addStatement; 
     vm.availableStandards = [];
@@ -25,6 +26,7 @@
     vm.loadingStatements = false;
     vm.nextStep = nextStep;
     vm.ok = ok;
+    vm.resourceFilter = "Questions";
     vm.standardSelected = null;
     vm.setForm = setForm;
 		vm.standard = null;
@@ -76,6 +78,10 @@
         $log.error(d);
       });
     }
+
+    function getResources(){
+      vm.questionResources = Question.query(); 
+    }
 		
 		function nextStep(){
 			// which step are we on?
@@ -85,6 +91,9 @@
       console.log(currentStep);
       if(currentStep.step === 1){
         getStatements(); 
+      }
+      if(currentStep.step === 3){
+        getResources();
       }
 			vm.steps[currentStep.step -1].completed = true;
 			vm.steps[currentStep.step -1].selected = false;

@@ -6,6 +6,7 @@ require('../library');
 require("../children");
 require("../admin");
 require("../activities");
+require("../resources");
 
 module.exports = function($stateProvider, $urlRouterProvider) {
 
@@ -96,6 +97,18 @@ module.exports = function($stateProvider, $urlRouterProvider) {
     controller: 'AdminCtrl as ctrl',
     templateUrl: 'admin/admin.html',
     data: { title: 'Administrative Tasks', hideAdmin: false },
+  })
+  .state('admin.resources', {
+    url: '/resources',
+    controller: 'ResourcesController as resource',
+    templateUrl: 'resources/resources.html',
+    data: {
+      title: 'Resources',
+      hideAdmin: true,
+      breadcrumbs: [
+        {"path": "admin", "text": "Admin"}
+      ]
+    }
   })
   .state('admin.standards', {
     url: '/standards',

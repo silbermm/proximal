@@ -44,9 +44,7 @@ class ActivityControllerSpec extends PlaySpec with Results {
         val Some(user) = route(FakeRequest(GET, "/api/v1/profile").withCookies(creds1.get("id").get))
         val json: JsValue = Json.parse(contentAsString(user))
         contentType(user) mustEqual Some("application/json")
-        Logger.debug(json.toString());
         val uid = (json \ "user" \ "uid").as[Long]
-        Logger.debug(s"The uid of the person creating the activity is $uid")
         val createActivity = CreateActivity(ActivityHelpers.sampleActivity.copy(creator = uid), List.empty)
         val Some(create) = route(FakeRequest(POST, "/api/v1/activities").withJsonBody(Json.toJson(createActivity)).withCookies(creds1.get("id").get))
         status(create) mustBe OK
