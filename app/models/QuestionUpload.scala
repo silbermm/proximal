@@ -35,4 +35,13 @@ object QuestionUploads {
   def find(q: Long)(implicit s: Session) =
     questionUploads.filter(_.id === q).firstOption
 
+  def findByQuestion(q: Long)(implicit s: Session) = {
+    var query = for {
+      upload <- questionUploads if upload.questionId === q
+      question <- upload.question
+    } yield upload
+
+    query.firstOption
+  }
+
 }

@@ -13,7 +13,20 @@ function CommonService($log,$http) {
     return this.resource;
   }
 
+  function getSelectedQuestions(){
+    return this.selectedQuestions;
+  }
+
+  function addSelectedQuestion(question){
+    this.selectedQuestions.push(question);
+  }
+
+  function clearSelectedQuestions(){
+    this.selectedQuestions = [];
+  }
+
   this.resource = "";
+  this.selectedQuestions = [];
 
   this.educationLevels = [
       { value: "k", description: "Kindergarden"},

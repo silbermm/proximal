@@ -88,7 +88,7 @@ object ResourceActor {
 
   def deleteResource(resource: Resource): Int = {
     DB.withSession { implicit s =>
-      Resources.delete(resource)
+      Resources.delete(resource.id.get)
     }
   }
 

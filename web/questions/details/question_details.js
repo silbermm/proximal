@@ -8,6 +8,7 @@
       restrict: "E",
       scope: {
         questions: "=questionList",
+        selectlist: "=selectlist",
         selectable: "@selectable",
         hidePicture: "@hidePicture"
       },
@@ -20,31 +21,41 @@
   
     
     function link(scope, el, attr){
-
-      scope.addResource = addResource;
+      scope.toggleResource = toggleResource;
       scope.hidePicture = scope.hidePicture === undefined ? false : scope.hidePicture;
       scope.isMultipleSelect = isMultipleSelect;
       scope.isSingleSelect = isSingleSelect;
       scope.selected = []; 
       scope.selectedResource = selectedResource;
+      scope.toggleSelectAll = toggleSelectAll;
 
       activate();
       ////////////////////////////
       function activate(){
 
+        console.log(scope);
       }
 
-      function addResource(resource){
-        if(isMultipleSelect()){
-          scope.selected.push(resource);
-        } else {
-          scope.selected.resource = [resource];
-          _.each(scope.questions, function(r){
-            r.selected = "";
+      function toggleResource(resource){
+        console.log("toggled!");
+        if(resource.selected){
+          resource.selected = false;
+          scope.selectlist = _.filter(scope.selectlist, function(l){
+            return l.id !== resource.id 
           });
-          common.setResource(resource);
+        } else {
+          if(isMultipleSelect()){
+            scope.selectlist.push(resource);
+          } else {
+            scope.selected.resource = [resource];
+            _.each(scope.questions, function(r){
+              r.selected = false;
+            });
+            common.setResource(resource);
+          }
+          resource.selected = true;
         }
-        resource.selected = "success";
+        console.log(scope.selectlist);
       }
 
       function isMultipleSelect(){
@@ -56,13 +67,29 @@
       }
 
       function selectedResource(resourceId){
-        var sel = _.find(scope.selected, function(s){
-          console.log("scope.selected = " + scope.selected);
-          console.log("resourceId = " + resourceId);
+        var sel = _.find(scope.selectlist, function(s){
           return s.id === resourceId; 
         });
-        console.log(sel);
         return sel !== undefined;
+      }
+
+      function toggleSelectAll(){
+        if(scope.selectAll){
+          _.each(scope.questions, function(question){
+            scope.selectlist.push(question);
+            question.selected = true;    
+          });
+        } else {
+          _.each(scope.questions, function(question){
+            // remove the question from the list
+            scope.selectlist = _.filter(scope.selectlist, function(l){
+              return l.id !== question.id 
+            });
+            question.selected = false;    
+          });
+        }
+
+        console.log(scope.selectlist );
       }
     } 
   }

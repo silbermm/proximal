@@ -2,7 +2,9 @@
   <table class="table table-striped table-condensed table-hover"> 
     <thead> 
       <tr> 
-        <th ng-if="isMultipleSelect()"> <input type="checkbox" /> </th>
+        <th ng-show="isMultipleSelect()"> 
+          <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()" /> 
+        </th>
         <th> Title </th>
         <th> Description </th>
         <th> Question Text </th> 
@@ -12,9 +14,11 @@
     </thead> 
     <tbody> 
       <tr data-ng-repeat="resource in questions" 
-          data-ng-click="addResource(resource)"
-          data-ng-class="resource.selected" > 
-        <td ng-if="isMultipleSelect()" > <input type="checkbox" ng-model="selection" ng-change="updateSelection(resource, selection)" /> </td>
+          data-ng-click="toggleResource(resource)"
+          data-ng-class="{'success': resource.selected}" > 
+        <td ng-show="isMultipleSelect()" > 
+          <input type="checkbox" ng-model="resource.selected" on-change="toggleQuestion(resource)" /> 
+        </td>
         <td> {{::resource.title}} </td> 
         <td> {{::resource.description}} </td> 
         <td> {{::resource.question.text}} </td>

@@ -45,8 +45,8 @@ object Resources {
   def update(r: Resource)(implicit s: Session) =
     resources.filter(_.id === r.id.get).update(r)
 
-  def delete(r: Resource)(implicit s: Session) =
-    resources.filter(_.id === r.id.get).delete
+  def delete(r: Long)(implicit s: Session) =
+    resources.filter(_.id === r).delete
 
   def all(implicit s: Session) =
     resources.list

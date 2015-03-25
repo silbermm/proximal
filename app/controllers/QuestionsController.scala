@@ -67,13 +67,17 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def delete(id: Long) = SecuredAction { implicit request =>
-    DB.withSession { implicit s =>
-      RolesHelper.admin(request.user.uid.get, uid => {
-        Questions.delete(id) match {
-          case 1 => Ok
-          case _ => BadRequest(Json.obj("message" -> "Did not delete the record"))
-        }
-      })
+    try {
+      DB.withSession { implicit s =>
+        RolesHelper.admin(request.user.uid.get, uid => {
+          Questions.delete(id) match {
+            case 1 => Ok
+            case _ => BadRequest(Json.obj("message" -> "Did not delete the record"))
+          }
+        })
+      }
+    } catch {
+      case e: Throwable => BadRequest(Json.obj("message" -> s"$e"))
     }
   }
 

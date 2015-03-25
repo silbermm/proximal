@@ -113,6 +113,15 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     }
   }
 
+  def deleteActivity(activityId: Long) = SecuredAction.async { implicit request =>
+    ask(activityActor, DeleteActivity(activityId)) map { message =>
+      message match {
+        case deleted: Int => Ok
+        case e: Throwable => BadRequest(Json.obj("message" -> s"$e"))
+      }
+    }
+  }
+
   def updateAct = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     Future.successful { Ok("done") }
   }

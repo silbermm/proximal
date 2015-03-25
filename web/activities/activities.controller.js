@@ -54,8 +54,13 @@
 
     function deleteSelectedActivities(){
       _.each(vm.selectedActivities, function(a){
-        a.$delete({activityId: a.id}); 
+        a.$delete({activityId: a.id}, function(){
+          vm.activities = _.filter(vm.activities, function(a2){
+            return a2.id !== a.id;
+          });
+        }); 
       });
+      vm.selectedActivities = [];
     }
 
     function begin(){

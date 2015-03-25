@@ -39,7 +39,7 @@ class ResourceSpec extends PlaySpec with Results {
           val resource = ResourceHelpers.sampleResource.copy(creator = person.id)
           val created = Resources.create(resource)
           created.id must not be empty
-          val deleted = Resources.delete(created)
+          val deleted = Resources.delete(created.id.get)
           deleted mustBe 1
         }
       }

@@ -70,7 +70,13 @@ object Questions {
         for (
           qws <- QuestionsWithStatements.findByQuestionId(ques.id.get)
         ) QuestionsWithStatements.delete(qws.id.get)
-        questions.filter(_.id === id).delete
+
+        // any pictures out there?
+        QuestionUploads.findByQuestion(ques.id.get) map (QuestionUploads.delete(_))
+
+        var deleted = questions.filter(_.id === id).delete
+        ques.resourceId map (Resources.delete(_))
+        deleted
       }
       case None => 0
     }

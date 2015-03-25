@@ -6,8 +6,11 @@
 
   function QuestionController($log, $modal, toaster,Question, Resources) {
     var vm = this;
-    vm.questions = [];
+    
     vm.addQuestion = addQuestion;
+    vm.deleteQuestion = deleteQuestion;
+    vm.selectedQuestions = []; 
+    vm.questions = [];
 
     activate();
     //////////////////////////
@@ -29,13 +32,25 @@
           obj.question.resourceId = res.id;
           var q = new Question(obj.question);
           q.$save(function(ques,headers) {
-          vm.questions.push(new Question(ques));
+            res.question = ques;
+            vm.questions.push(res);
             toaster.pop('success', "Success", "Added the question with ID " + ques.id);
           },function(err){
             toaster.pop('error', "Failure", "Unable to add the question" + err);
           }); 
         });
       });
+    }
+
+    function deleteQuestion(){
+      _.each(vm.selectedQuestions, function(q){
+        Question.delete({id: q.question.id}, function(s){
+          vm.questions = _.filter(vm.questions, function(fq){
+            return fq.question.id !== q.question.id;
+          });
+        }); 
+      });
+      vm.selectedQuestions = [];
     }
   }
 
