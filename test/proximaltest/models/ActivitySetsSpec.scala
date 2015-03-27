@@ -31,7 +31,7 @@ class ActivitySetsSpec extends PlaySpec with Results {
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 
-          val activitySet = ActivitySets.create(ActivitySet(None, activity.id.get, aset.id.get))
+          val activitySet = ActivitySets.create(ActivitySet(None, activity.id.get, aset.id.get, None))
           activitySet.id must not be empty
         }
       }
@@ -49,7 +49,7 @@ class ActivitySetsSpec extends PlaySpec with Results {
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
 
-          val activitySet = ActivitySets.create(ActivitySet(None, activity.id.get, aset.id.get))
+          val activitySet = ActivitySets.create(ActivitySet(None, activity.id.get, aset.id.get, None))
           activitySet.id must not be empty
 
           ActivitySets.find(activitySet.id.get) match {
@@ -61,5 +61,4 @@ class ActivitySetsSpec extends PlaySpec with Results {
 
     }
   }
-
 }

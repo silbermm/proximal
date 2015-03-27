@@ -7,7 +7,7 @@
     $scope.uploaded = [];
     $scope.progressPercentage = 0;
     
-    $scope.resource = null;
+    $scope.resource = {};
 
     standardsService.getAllStandards().success(function(data){
       $scope.availableStandards = data;

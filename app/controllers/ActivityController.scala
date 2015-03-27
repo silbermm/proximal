@@ -70,6 +70,10 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
       })
   }
 
+  def allActivitySets = SecuredAction.async { implicit request =>
+    ???
+  }
+
   def newHomeworkActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {

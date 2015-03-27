@@ -89,7 +89,7 @@ class ResourceActorSpec extends PlaySpec with Results {
         val sampleresource = ResourceHelpers.sampleResource
 
         val resource = ResourceActor.createResource(ResourceHelpers.sampleResource, None)
-        val future = ask(actorRef, UpdateResource(resource.copy(title = "something")))
+        val future = ask(actorRef, UpdateResource(resource.copy(title = Some("something"))))
         future.value map (message =>
           message mustBe a[Success[Int]]
         )

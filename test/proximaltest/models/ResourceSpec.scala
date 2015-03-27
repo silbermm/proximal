@@ -54,7 +54,7 @@ class ResourceSpec extends PlaySpec with Results {
           created.id must not be empty
 
           Resources.find(created.id.get) match {
-            case Some(r) => r.title mustEqual created.title
+            case Some(r) => r.title.get mustEqual created.title.get
             case None => fail("did not find an entity")
           }
         }
@@ -69,9 +69,9 @@ class ResourceSpec extends PlaySpec with Results {
           val created = Resources.create(resource)
           created.id must not be empty
 
-          val updated = Resources.update(created.copy(title = "some nonsense"))
+          val updated = Resources.update(created.copy(title = Some("some nonsense")))
           Resources.find(created.id.get) match {
-            case Some(r) => r.title mustEqual "some nonsense"
+            case Some(r) => r.title.get mustEqual "some nonsense"
             case None => fail("did not find an entity")
           }
         }

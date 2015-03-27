@@ -7,14 +7,14 @@ import scala.slick.lifted.ProvenShape
 import play.api.Logger
 
 case class Resource(id: Option[Long],
-  title: String,
+  title: Option[String],
   description: Option[String],
   category: Option[String],
   creator: Option[Long],
   createdOn: Option[Long])
 
 case class ResourceWithQuestion(id: Option[Long],
-  title: String,
+  title: Option[String],
   description: Option[String],
   category: Option[String],
   creator: Option[Long],
@@ -23,7 +23,7 @@ case class ResourceWithQuestion(id: Option[Long],
 
 class Resources(tag: Tag) extends Table[Resource](tag, "resources") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
+  def title = column[Option[String]]("title")
   def description = column[Option[String]]("description", O.DBType("Text"))
   def category = column[Option[String]]("type")
   def creator = column[Option[Long]]("creator")

@@ -7,14 +7,15 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class ActivitySet(id: Option[Long], activityId: Long, setId: Long)
+case class ActivitySet(id: Option[Long], activityId: Long, setId: Long, sequence: Option[Long])
 
 class ActivitySets(tag: Tag) extends Table[ActivitySet](tag, "activity_sets") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def activityId = column[Long]("activity_id")
   def setId = column[Long]("set_id")
+  def sequence = column[Option[Long]]("sequence")
 
-  def * = (id.?, activityId, setId) <> (ActivitySet.tupled, ActivitySet.unapply _)
+  def * = (id.?, activityId, setId, sequence) <> (ActivitySet.tupled, ActivitySet.unapply _)
 
   def activity = foreignKey("activityset_activity_fk", activityId, Activities.activities)(_.id)
   def set = foreignKey("activityset_set_fk", setId, Sets.sets)(_.id)

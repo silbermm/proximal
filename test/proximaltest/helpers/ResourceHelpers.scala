@@ -14,7 +14,7 @@ object ResourceHelpers {
     title <- Arbitrary.arbitrary[String]
     createdOn <- Arbitrary.arbitrary[Long]
     category <- Arbitrary.arbitrary[String]
-  } yield Resource(None, title, Some(description), Some(category), None, Some(createdOn))
+  } yield Resource(None, Some(title), Some(description), Some(category), None, Some(createdOn))
 
   val sampleResource = resourceGen.sample.get
 

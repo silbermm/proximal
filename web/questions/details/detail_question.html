@@ -5,8 +5,6 @@
         <th ng-show="isMultipleSelect()"> 
           <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()" /> 
         </th>
-        <th> Title </th>
-        <th> Description </th>
         <th> Question Text </th> 
         <th> Answer </th> 
         <th ng-hide="hidePicture"> Picture </th>
@@ -19,8 +17,6 @@
         <td ng-show="isMultipleSelect()" > 
           <input type="checkbox" ng-model="resource.selected" on-change="toggleQuestion(resource)" /> 
         </td>
-        <td> {{::resource.title}} </td> 
-        <td> {{::resource.description}} </td> 
         <td> {{::resource.question.text}} </td>
         <td> {{::resource.question.answer}} </td>
         <td ng-hide="hidePicture" question-picture pic="resource.picture" style="width: 100px;height:100px"> </td>

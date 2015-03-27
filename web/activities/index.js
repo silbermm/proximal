@@ -12,4 +12,7 @@
   require('./activityWidget.html');
   app.directive("activityWidget", require('./activityWidget.directive'));
 
+  require('./activitySets.html');
+  app.directive("activitySetsWidget", require('./activitySetsWidget.directive'));
+
 })();
