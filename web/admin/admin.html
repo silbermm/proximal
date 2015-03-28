@@ -1,13 +1,43 @@
-<section class="row" ng-if="!app.state.current.data.hideAdmin">
-  <ul>
-    <li> <a data-ui-sref="admin.standards" > Manage Standards </a> </li>
-    <li> <a data-ui-sref="admin.questions" > Manage Questions </a> </li>
-    <li> <a data-ui-sref="admin.resources" > Manage Resources </a> </li>
-    <li> <a data-ui-sref="admin.activities"> Manage Activities </a> </li>
-  </ul>
-</section>
+<div class="row" ng-if="!app.state.current.data.hideAdmin">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img data-ng-src={{ctrl.ccImage}} alt="Manage Standards" style="height:250px">
+        <div class="caption">
+          <h3> Standards </h3>
+          <p> Standards are the backbone of the Proximal Tool. We suggest using the Common Core Standards, but give people the ability to create any standard they would like too. </p>
+          <p>
+          <a data-ui-sref="admin.standards" class="btn btn-primary" role="button">Manage</a> 
+        </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img alt="Mange Activities" class="admin-images">
+        <div class="caption">
+          <h3> Activities </h3>
+          <p> Activities are... The can be grouped together and presented as Homework, Study tools or even quizes/tests.  </p>
+          <p>
+          <a data-ui-sref="admin.activities" class="btn btn-primary" role="button">Manage</a> 
+        </div>
+    </div>
+  </div>
+  
 
 
-<div data-ui-view class="row col-md-12"> </div>
- 
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img data-ng-src={{ctrl.resourceImage}} alt="Mange Resources" class="admin-images">
+        <div class="caption">
+          <h3> Resources </h3>
+          <p> Resources are anything from Videos and books to questions. You can utilize resources by creating activities and linking them together. They are a way of illustrating your point or providing additional information. </p>
+          <p>
+          <a data-ui-sref="admin.resources" class="btn btn-primary" role="button">Manage</a> 
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div data-ui-view class="row col-md-12"> </div> 
 <data-toaster-container></data-toaster-container>

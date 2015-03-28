@@ -3,7 +3,7 @@
 
   module.exports = EditActivity;
 
-  //EditActivity.$inject = ["$modalInstance", "standardsService"];
+  EditActivity.$inject = ["$modalInstance", "standardsService", 'items'];
 
   function EditActivity($modalInstance, standardsService, items){
     var vm = this;

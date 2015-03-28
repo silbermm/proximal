@@ -20,6 +20,7 @@ module: {
   ]
 },
  plugins: [ 
-   new ExtractTextPlugin("bundle.css")
+   new ExtractTextPlugin("bundle.css"),
+   new webpack.optimize.UglifyJsPlugin({minimize: true})
  ]
 };

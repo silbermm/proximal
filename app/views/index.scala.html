@@ -9,9 +9,9 @@
 @main(title = "Home"){
 <div data-ng-app="proximal2" data-ng-controller="AppController as app">
 
-  <div id="page-wrapper" ng-class="{'active': app.toggle}" ng-cloak>
+  <div id="page-wrapper" ng-class="{'active': app.toggle}" data-ng-cloak>
   <!-- Sidebar -->
-  <div id="sidebar-wrapper">
+  <div id="sidebar-wrapper" data-ng-cloak>
     <ul class="sidebar">
       <li class="sidebar-main">
         <a href="" ng-click="app.toggleSidebar()"> 
