@@ -82,6 +82,9 @@ object Questions {
     }
   }
 
+  def findByResourceId(resourceId: Long)(implicit s: Session): Option[Question] =
+    questions.filter(_.resourceId === resourceId).firstOption
+
   def findJsonQuestion(id: Long)(implicit s: Session): Option[JsonQuestion] =
     questions.filter(_.id === id).firstOption match {
       case Some(q) => Some(convertToJsonQuestion(q, None, None))

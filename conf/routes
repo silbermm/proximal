@@ -36,8 +36,9 @@ DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsCont
 
 
 #Questions
-GET    /api/v1/questions       												@controllers.QuestionsController.list
+GET    /api/v1/questions/byResource/:id               @controllers.QuestionsController.getByResource(id: Long)
 POST   /api/v1/questions       												@controllers.QuestionsController.create
+GET    /api/v1/questions       												@controllers.QuestionsController.list
 PUT    /api/v1/questions       												@controllers.QuestionsController.update
 GET    /api/v1/questions/:id   												@controllers.QuestionsController.get(id: Long)
 DELETE /api/v1/questions/:id   												@controllers.QuestionsController.delete(id:Long)
@@ -66,7 +67,7 @@ PUT /api/v1/scores                                    @controllers.ScoresControl
 # Resources
 POST /api/v1/resources                                @controllers.ResourceController.createResource
 GET /api/v1/resources                                 @controllers.ResourceController.listResources
-
+GET /api/v1/resources/:id                             @controllers.ResourceController.getResource(id: Long)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /assets/securesocial/*file  securesocial.controllers.Assets.at(path="/public/securesocial", file)

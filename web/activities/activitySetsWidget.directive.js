@@ -10,7 +10,7 @@
       restrict: "EA",
       templateUrl: "activities/activitySets.html",
       link: link
-    }
+    };
     
     function link(scope, el, attrs){
      

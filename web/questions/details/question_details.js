@@ -41,7 +41,7 @@
         if(resource.selected){
           resource.selected = false;
           scope.selectlist = _.filter(scope.selectlist, function(l){
-            return l.id !== resource.id 
+            return l.id !== resource.id;
           });
         } else {
           if(isMultipleSelect()){
@@ -83,7 +83,7 @@
           _.each(scope.questions, function(question){
             // remove the question from the list
             scope.selectlist = _.filter(scope.selectlist, function(l){
-              return l.id !== question.id 
+              return l.id !== question.id ;
             });
             question.selected = false;    
           });

@@ -13,7 +13,7 @@ import models._
 case class CreateResource(resource: Resource, uid: Option[Long])
 case class DeleteResource(resource: Resource)
 case class UpdateResource(resource: Resource)
-case class FindResource(resourceId: Long)
+case class GetResource(resourceId: Long)
 case class ListResources()
 
 class ResourceActor extends Actor {
@@ -45,7 +45,7 @@ class ResourceActor extends Actor {
         }
       }
     }
-    case FindResource(resourceId) => {
+    case GetResource(resourceId) => {
       try {
         sender ! ResourceActor.findResource(resourceId)
       } catch {

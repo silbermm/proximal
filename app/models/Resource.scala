@@ -54,6 +54,24 @@ object Resources {
   def find(rId: Long)(implicit s: Session) =
     resources.filter(_.id === rId).firstOption
 
+  def findWithQuestion(rId: Long)(implicit s: Session) = {
+    val query = for {
+      ques <- questions if ques.resourceId === rId
+    } yield ques
+    find(rId) match {
+      case Some(resource) => {
+        Some(ResourceWithQuestion(resource.id,
+          resource.title,
+          resource.description,
+          resource.category,
+          resource.creator,
+          resource.createdOn,
+          query.firstOption))
+      }
+      case None => None
+    }
+  }
+
   def allQuestions(implicit s: Session) = {
     val query = for {
       res <- resources if res.category === "question"

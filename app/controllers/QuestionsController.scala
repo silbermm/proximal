@@ -66,6 +66,14 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
+  def getByResource(id: Long) = SecuredAction { implicit request =>
+    Logger.debug("looking for question with resourceId: " + id);
+    DB.withSession { implicit s =>
+      val q = Questions.findByResourceId(id)
+      Ok(Json.toJson(q));
+    }
+  }
+
   def delete(id: Long) = SecuredAction { implicit request =>
     try {
       DB.withSession { implicit s =>
@@ -82,6 +90,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
   }
 
   def createQuestion(q: JsonQuestion, userId: Long): Future[Result] = {
+    Logger.debug(s"Question to create = $q")
     ask(questionActor, CreateQuestion(q, userId)).mapTo[Option[JsonQuestion]] map { x =>
       x match {
         case Some(ques) => Ok(Json.toJson(ques))

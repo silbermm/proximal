@@ -55,8 +55,13 @@ class ResourceController(override implicit val env: RuntimeEnvironment[SecureUse
     ???
   }
 
-  def getResource = SecuredAction.async { implicit request =>
-    ???
+  def getResource(id: Long) = SecuredAction.async { implicit request =>
+    ask(resourceActor, GetResource(id)) map { message =>
+      message match {
+        case Some(res: Resource) => Ok(Json.toJson(res))
+        case ex: Exception => BadRequest(Json.obj("message" -> ex.getMessage()))
+      }
+    }
   }
 
 }

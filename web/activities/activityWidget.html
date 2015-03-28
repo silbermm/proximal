@@ -1,16 +1,15 @@
 <section class="row">
   <div class="col-lg-12">
     <div class="table-responsive"> 
-      <table class="table"> 
+      <table class="table table-hover"> 
         <thead> 
           <tr> 
             <th ng-if="activities.isMyTab()"> <input type="checkbox" /> </th>
             <th> Title </th> 
             <th> Description </th> 
             <th> Subject </th> 
-            <th> Rights </th> 
-            <th> Source </th>
-            <th> Type </th>
+            <th> Resource </th>
+            <th> </td>
           </tr> 
         </thead> 
         <tbody> 
@@ -19,9 +18,15 @@
             <td> {{::act.title}} </td>
             <td> {{::act.description}} </td>
             <td> {{::act.subject}} </td>
-            <td> {{::act.rights}} </td>
-            <td> {{::act.source}} </td>
-            <td> {{::act.catagory}} </td>
+            <td> 
+              <resource-compact-view resource-id="act.resourceId"> 
+              </resource-compact-view>   
+            </td>
+            <td> 
+              <button class="btn-circle btn-info btn-xs" ng-click="activities.editActivity(act)" > 
+                <i class="fa fa-edit"></i>
+              </button>
+            </td>
           </tr>
         </tbody> 
       </table> 

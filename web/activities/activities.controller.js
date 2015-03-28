@@ -11,11 +11,14 @@
     vm.activities = []; // holds the current activities we are looking at
     vm.begin = begin;
     vm.deleteSelectedActivities = deleteSelectedActivities;
+    vm.editActivity = editActivity;
+    vm.getResource = getResource;
     vm.isMyTab = isMyTab;
     vm.selectedActivities = [];
     vm.setCurrentActivities = setCurrentActivities; 
     vm.tab = "my";
     vm.updateSelection = updateSelection;
+    vm.resource = [];
    
     activate();
 
@@ -31,6 +34,43 @@
  
     function addActivitySelection(activity){
       vm.selectedActivities.push(activity);
+    }
+    
+    function begin(){
+      var modalInstance = $modal.open({
+				templateUrl: "add/add_activity.html", 
+				controller: 'AddActivityController',
+				controllerAs: 'add',
+        backdrop: false
+			});
+
+			modalInstance.result.then(function (result) {
+				var activity = new Activities.data(result);
+				activity.$save(function(saved){
+          vm.activities.push(saved);
+					toaster.pop("success", null, "Successfully added a new activitiy!");
+				}, function(error){
+					toaster.pop("error", null, "There was an error when trying to add the activity. Please try again.");
+				});
+			});
+    }
+
+    function editActivity(activity){
+      var modalInstance = $modal.open({
+        templateUrl: "edit/editActivity.html", 
+				controller: 'EditActivityController',
+				controllerAs: 'edit',
+        backdrop: false,
+        resolve: {
+          items: function(){
+            return activity;
+          }
+        }
+      });
+
+      modalInstance.result.then(function(result){
+        console.log(result); 
+      });
     }
 
     function isMyTab(){
@@ -63,31 +103,17 @@
       vm.selectedActivities = [];
     }
 
-    function begin(){
-      var modalInstance = $modal.open({
-				templateUrl: "add/add_activity.html", 
-				controller: 'AddActivityController',
-				controllerAs: 'add',
-        backdrop: false
-			});
-
-			modalInstance.result.then(function (result) {
-				var activity = new Activities.data(result);
-				activity.$save(function(saved){
-          vm.activities.push(saved);
-					toaster.pop("success", null, "Successfully added a new activitiy!");
-				}, function(error){
-					toaster.pop("error", null, "There was an error when trying to add the activity. Please try again.");
-				});
-			});
-    }
-
+    
     function getActivities(){
       vm.myActivities = Activities.data.query();
     }
 
     function getAll(){
       vm.allActivities = Activities.all.query();
+    }
+
+    function getResource(resourceId){
+
     }
 
     function setCurrentActivities(currentTab){

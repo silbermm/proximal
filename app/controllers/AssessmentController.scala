@@ -47,7 +47,6 @@ class AssessmentController(override implicit val env: RuntimeEnvironment[SecureU
     } else {
       PersonService.childActionAsync(request.user.uid.get, webReq.childId, c => {
         val childAndS = ChildAndStandard(c, webReq.standardId)
-        Logger.error(s"sending a message to akka: $childAndS")
         ask(newAssessmentActor, childAndS).mapTo[Option[AssessmentQuestion]] map { x =>
           x match {
             case Some(obj) => {
