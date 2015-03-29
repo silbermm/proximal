@@ -129,7 +129,6 @@ class PersonService {
 
 object PersonService {
 
-  import play.api._
   import play.api.mvc._
   import play.api.Play.current
 
@@ -149,7 +148,7 @@ object PersonService {
     }
   }
 
-  def isChildOf(uid: Long, childId: Long, f: Long => Option[Int]): Option[Int] = {
+  def isChildOf[T](uid: Long, childId: Long, f: Long => Option[T]): Option[T] = {
     // get the children for this person
     personService.findChildren(uid) match {
       case children: List[Person] => {

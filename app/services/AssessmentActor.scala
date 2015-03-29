@@ -1,8 +1,22 @@
+/* Copyright 2015 Matt Silbernagel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package services
 
 import play.api.libs.concurrent.Akka
 import play.api.Logger
-import services._
 import models._
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -14,6 +28,7 @@ import akka.actor.Props
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 case class ChildAndStandard(childId: Long, standardId: Long)
+case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
 case class AssessmentQuestion(assessment: Assesment, question: JsonQuestion)
 
 class AssessmentActor extends Actor {
@@ -27,10 +42,29 @@ class AssessmentActor extends Actor {
       }
       sender ! Some(AssessmentQuestion(asses, nextQuestion(asses, childAndStandard.childId, childAndStandard.standardId)))
     }
+    case assessment: CreateAssessment => {
+      create(assessment) map (sender ! _) getOrElse (sender ! akka.actor.Status.Failure(new Exception("failed to create")))
+    }
     case _ => sender ! None
   }
 
-  def nextQuestion(assessment: Assesment, studentId: Long, standardId: Long): JsonQuestion = {
+  /**
+   * Finds a random question in the database based on the education level of the child,
+   * the standard that was asked for
+   * and that the child has not been scored on the question yet
+   */
+  private def create(createAssessment: CreateAssessment): Option[JsonQuestion] = {
+    DB.withSession { implicit s =>
+      PersonService.isChildOf[JsonQuestion](createAssessment.parentUid,
+        createAssessment.childId, cid => {
+
+          val questions = Questions.all
+          Some(questions(1))
+        })
+    }
+  }
+
+  private def nextQuestion(assessment: Assesment, studentId: Long, standardId: Long): JsonQuestion = {
     DB.withSession { implicit s =>
       try {
         // Find the student and his/her grade level 

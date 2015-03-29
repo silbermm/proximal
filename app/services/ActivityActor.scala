@@ -78,7 +78,7 @@ object ActivityActor {
     DB.withSession { implicit s =>
       Homeworks.find(homeworkId) match {
         case Some(h) => {
-          PersonService.isChildOf(uid, h.studentId.get, c => {
+          PersonService.isChildOf[Int](uid, h.studentId.get, c => {
             Activities.find(h.activityId.get) match {
               case Some(a) => {
                 ActivityActs.deleteByActivity(a.id.get)

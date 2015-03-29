@@ -4,12 +4,10 @@ import services._
 import models._
 import helpers.ImplicitJsonFormat._
 
-import play.api._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.Logger
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import play.api.libs.concurrent.Akka
 
 import securesocial.core._
@@ -22,6 +20,7 @@ import akka.util.Timeout
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
+import scala.language.postfixOps
 
 case class ChildAndActivity(childId: Long, statementId: Long, activity: Activity, homework: Homework, acts: List[Act])
 

@@ -13,11 +13,14 @@ import play.api.test._
 import play.api.test.Helpers._
 
 import play.api.Logger
-//import helpers._
 import proximaltest.helpers._
 
 class ActivitySpec extends PlaySpec with Results {
   import models._
+  import services._
+
+  var standardsService = new StandardsService()
+  var personService = new PersonService()
 
   "Activity model" should {
 
@@ -25,7 +28,6 @@ class ActivitySpec extends PlaySpec with Results {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
           val person = People.insertPerson(PersonHelpers.person)
-
           val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
           val activity = Activities.create(sampleActivity)
           activity.id must not be empty
@@ -46,6 +48,34 @@ class ActivitySpec extends PlaySpec with Results {
             case Some(a) => a.id.get mustEqual activity.id.get
             case None => fail("unable to find the activity in the database :(")
           }
+        }
+      }
+    }
+
+    "find and activity unattempted" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+
+          val standard = standardsService.create(StandardsHelpers.fakeStandard)
+          val statement1 = standardsService.create(StandardsHelpers.fakeStatements(0).copy(standardId = standard.id))
+          val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard.id))
+
+          val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+
+          val person = People.insertPerson(PersonHelpers.person)
+          val child = People.insertPerson(PersonHelpers.child(edLevelId = e.id.get))
+          val relationship = personService.addChild(child, person);
+
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("question"))
+          val sampleActivity2 = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("video"))
+          val activity1 = Activities.create(sampleActivity)
+          val activity2 = Activities.create(sampleActivity2)
+
+          ActivityStatements.create(ActivityStatement(None, activity1.id.get, statement1.id.get))
+          ActivityStatements.create(ActivityStatement(None, activity2.id.get, statement1.id.get))
+
+          var actList = Activities.findUnAttempted(child.id.get, standard.id.get, "question")
+          actList must have length 1
         }
       }
     }

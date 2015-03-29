@@ -98,6 +98,7 @@ object Activities {
   lazy val activityStatements = ActivityStatements.activityStatements
   lazy val activityActs = ActivityActs.activityActs
   lazy val homeworks = Homeworks.homeworks
+  lazy val attempts = Attempts.attempts
 
   def create(a: Activity)(implicit s: Session): Activity =
     (activities returning activities.map(_.id) into ((activity, id) => activity.copy(Some(id)))) += a
@@ -231,5 +232,20 @@ object Activities {
       case _ => None
     }
   }
+
+  def findUnAttempted(childId: Long, standardId: Long, category: String)(implicit s: Session): List[Activity] = {
+    var queryActivities = for {
+      a <- activities if a.category === category
+      activitySt <- activityStatements if activitySt.activityId === a.id
+      statements <- activitySt.statement if statements.standardId === standardId
+    } yield a
+
+    // only activities by 'category' in the requested standard
+    queryActivities.list filter (activity =>
+      true
+    )
+
+  }
+
 }
 

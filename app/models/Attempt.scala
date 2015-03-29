@@ -35,7 +35,8 @@ object Attempts {
 
   def find = ???
 
-  def findByStudent = ???
+  def findByStudentAndActivity(studentId: Long, activityId: Long)(implicit s: Session) =
+    attempts.filter(x => x.studentId === studentId && x.activityId === activityId).firstOption
 
   def findByStudentAndActivity = ???
 

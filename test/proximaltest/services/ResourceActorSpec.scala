@@ -7,14 +7,11 @@ import play.api.Play.current
 
 import collection.mutable.Stack
 import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
 
 import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
-import play.api.db.slick.DB
-import play.api.Play.current
 
 import scala.compat.Platform
 
@@ -24,7 +21,6 @@ import play.api.Logger
 import proximaltest.helpers._
 
 import akka.testkit.TestActorRef
-import scala.concurrent.duration._
 import scala.concurrent.Await
 import akka.pattern.ask
 
@@ -55,14 +51,13 @@ class ResourceActorSpec extends PlaySpec with Results {
         implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
         val actorRef = TestActorRef(new ResourceActor)
         val sampleresource = ResourceHelpers.sampleResource
-        val future = ask(actorRef, CreateResource(sampleresource, None))
-        future.value.get match {
-          case Success(res: Resource) => {
-            res.id must not be empty
+        ask(actorRef, CreateResource(sampleresource, None)).value map { m =>
+          m match {
+            case Success(res: Resource) => res.id must not be empty
+            case Success(res: Any) => fail("expected to get a resource")
+            case Failure(_) => fail("nothing came back")
           }
-          case Failure(_) => fail("nothing came back")
-          case _ => fail("didn't receive a success(resource) or failure")
-        }
+        } getOrElse { fail("map doesn't work") }
       }
     }
 

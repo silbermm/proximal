@@ -6,7 +6,6 @@ import services._
 import securesocial.core._
 import models._
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {

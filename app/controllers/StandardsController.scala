@@ -7,7 +7,8 @@ import services._
 import securesocial.core._
 import models._
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+
+import scala.language.higherKinds
 
 case class StandardWithEducationLevel(standard: Standard, levels: List[EducationLevel])
 case class StatementWithEducationLevel(statement: Statement, levels: List[EducationLevel])

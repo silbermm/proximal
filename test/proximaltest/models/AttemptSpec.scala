@@ -73,6 +73,21 @@ class AttemptSpec extends PlaySpec with Results {
       }
     }
 
+    "find by student and activity" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+          val person = People.insertPerson(PersonHelpers.person)
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get)
+
+          val activity = Activities.create(sampleActivity)
+
+          val attempt = Attempts.create(Attempt(None, activity.id.get, person.id.get, currentTime, 5L))
+          val found = Attempts.findByStudentAndActivity(person.id.get, activity.id.get)
+          found must not be empty
+        }
+      }
+    }
+
     "find an attempt" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
