@@ -91,12 +91,12 @@ object Standards {
       e <- l.educationLevel
       s <- l.standard
     } yield e
-    return (find(id), query.list)
+    (find(id), query.list)
   }
 
   def findWithStatements(id: Long)(implicit s: Session): (Option[Standard], List[Statement]) = {
     val qs = statements.filter(_.standardId === id)
-    return (find(id), qs.list)
+    (find(id), qs.list)
   }
 
   def delete(standard: Standard)(implicit s: Session): Int =
@@ -183,7 +183,7 @@ object Statements {
       e <- l.educationLevel
       s <- l.statement
     } yield e
-    return (find(id), query.list)
+    (find(id), query.list)
   }
 
   def list(implicit s: Session) =

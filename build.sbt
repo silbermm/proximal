@@ -8,6 +8,17 @@ versionWithGit
 
 scalariformSettings
 
+//wartremoverErrors ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable)
+
+scalacOptions ++= Seq(
+  "-feature",
+  "-unchecked",
+  "-deprecation",
+  "-Ywarn-dead-code",
+  "-Ywarn-unused-import",
+  "-encoding", "UTF-8"
+)
+
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

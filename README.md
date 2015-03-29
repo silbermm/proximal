@@ -7,6 +7,7 @@ Development Branch [![Build Status](https://travis-ci.org/silbermm/proximal.svg?
 
 [![Coverage Status](https://coveralls.io/repos/silbermm/proximal/badge.svg?branch=master)](https://coveralls.io/r/silbermm/proximal?branch=master)
 
+[![Codacy Badge](https://www.codacy.com/project/badge/b2fcc3fda55b4ea69880739260a594af)](https://www.codacy.com/app/silbermm/proximal)
 
 ##To get this up and running on your local machine:
 

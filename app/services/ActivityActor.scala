@@ -84,7 +84,7 @@ object ActivityActor {
                 ActivityActs.deleteByActivity(a.id.get)
                 ActivityStatements.deleteByActivity(a.id.get)
                 Homeworks.delete(h)
-                var deleted = Activities.delete(a)
+                val deleted = Activities.delete(a)
                 Some(deleted)
               }
               case _ => None
