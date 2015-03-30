@@ -74,7 +74,7 @@ object Questions {
         // any pictures out there?
         QuestionUploads.findByQuestion(ques.id.get) map (QuestionUploads.delete(_))
 
-        var deleted = questions.filter(_.id === id).delete
+        val deleted = questions.filter(_.id === id).delete
         ques.resourceId map (Resources.delete(_))
         deleted
       }
@@ -133,7 +133,7 @@ object Questions {
   }
 
   def findWithStatements(id: Long)(implicit s: Session): JsonQuestion = {
-    var query = for {
+    val query = for {
       qws <- questionsWithStatements if qws.questionId === id
       s <- qws.statements
     } yield s
@@ -141,7 +141,7 @@ object Questions {
   }
 
   def findByStatement(statementId: Long)(implicit s: Session): (List[Question], Option[Statement]) = {
-    var query = for {
+    val query = for {
       qws <- questionsWithStatements if qws.statementId === statementId
       q <- qws.questions
     } yield q

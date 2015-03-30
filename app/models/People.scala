@@ -164,7 +164,7 @@ object People {
       child <- people if child.id === id
       level <- education_levels if level.id === child.educationLevelId
     } yield (child, level)
-    return query.first
+    query.first
   }
 
   def findPerson(id: Long)(implicit s: Session) =

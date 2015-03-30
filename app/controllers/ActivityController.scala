@@ -107,7 +107,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
 
   def deleteHomework(homeworkId: Long) = SecuredAction.async { implicit request =>
     ask(activityActor, DeleteHomework(request.user.uid.get, homeworkId)).mapTo[Option[Int]] map { x =>
-      var num = x.getOrElse(0);
+      val num = x.getOrElse(0);
       if (num > 0) {
         Ok(Json.obj("message" -> "success"))
       } else {

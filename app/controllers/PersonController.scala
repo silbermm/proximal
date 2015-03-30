@@ -10,8 +10,8 @@ import org.joda.time.DateTime
 
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
-  var personService = new PersonService()
-  var educationLevelService = new EducationLevelsService()
+  val personService = new PersonService()
+  val educationLevelService = new EducationLevelsService()
 
   implicit val edLevelFormat = Json.format[EducationLevel]
   implicit val childFormat = Json.format[Child]

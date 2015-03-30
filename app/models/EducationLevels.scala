@@ -52,7 +52,7 @@ object EducationLevels {
       e <- l.educationLevel
       s <- l.standard
     } yield (e, s)
-    return query.list
+    query.list
   }
 
   def findWithStatements(id: Long)(implicit s: Session): List[(EducationLevel, Statement)] = {
@@ -61,7 +61,7 @@ object EducationLevels {
       e <- l.educationLevel
       s <- l.statement
     } yield (e, s)
-    return query.list
+    query.list
   }
 
   def findByChild(child: Person)(implicit s: Session): Option[EducationLevel] = {
