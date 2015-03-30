@@ -4,7 +4,9 @@ scala:
   - 2.11.1
 script:
   - sbt clean coverage test
-after_success: sbt coveralls
+after_success: sbt coverageReport codacyCoverage
+env: 
+  - CODACY_PROJECT_TOKEN=cdfe8b45484e4729bc947d3df4a8c79b
 deploy:
   provider: heroku
   api_key:
