@@ -58,6 +58,7 @@ class AssessmentActor extends Actor {
       PersonService.isChildOf[JsonQuestion](createAssessment.parentUid,
         createAssessment.childId, cid => {
 
+          val (student: Person, edLevel: EducationLevel) = People.findWithEducationLevel(cid);
           val questions = Questions.all
           Some(questions(1))
         })
