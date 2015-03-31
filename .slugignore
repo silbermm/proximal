@@ -5,3 +5,4 @@ activator.bat
 activator-launch-1.2.8.jar
 package.json
 target/report/
+.sbt_home/
