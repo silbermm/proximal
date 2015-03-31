@@ -8,8 +8,6 @@ versionWithGit
 
 scalariformSettings
 
-//wartremoverErrors ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable)
-
 scalacOptions ++= Seq(
   "-feature",
   "-unchecked",
