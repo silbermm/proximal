@@ -7,7 +7,7 @@ import scala.slick.lifted.ProvenShape
 import play.api.Play.current
 import play.api.Logger
 
-case class Score(id: Option[Long], studentId: Long, questionId: Option[Long], actId: Option[Long], score: Option[Long], timestamp: Long)
+case class Score(id: Option[Long], studentId: Long, questionId: Option[Long], actId: Option[Long], activityId: Option[Long], score: Option[Long], timestamp: Long)
 
 case class ScoreQuestion(
   scoreId: Long,
@@ -21,20 +21,28 @@ case class ScoreAct(
   timestamp: Long,
   act: Act)
 
+case class ScoreActivity(
+  scoreId: Long,
+  score: Option[Long],
+  timestamp: Long,
+  activity: Activity)
+
 class Scores(tag: Tag) extends Table[Score](tag, "scores") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def studentId = column[Long]("studentId")
   def questionId = column[Option[Long]]("questionId")
   def actId = column[Option[Long]]("actid")
+  def activityId = column[Option[Long]]("activity_id")
   def score = column[Option[Long]]("compentency")
   def timestamp = column[Long]("timestamp")
 
-  def * = (id.?, studentId, questionId, actId, score, timestamp) <> (Score.tupled, Score.unapply _)
+  def * = (id.?, studentId, questionId, actId, activityId, score, timestamp) <> (Score.tupled, Score.unapply _)
 
   def student = foreignKey("scores_student_fk", studentId, People.people)(_.id)
   def question = foreignKey("scores_question_fk", questionId, Questions.questions)(_.id)
   def act = foreignKey("scores_acts_fk", actId, Acts.acts)(_.id)
+  def activity = foreignKey("scores_activity_fk", activityId, Activities.activities)(_.id)
 }
 
 object Scores {
@@ -42,6 +50,7 @@ object Scores {
   lazy val scores = TableQuery[Scores]
   lazy val questions = Questions.questions
   lazy val acts = Acts.acts
+  lazy val activities = Activities.activities
 
   def create(qs: Score)(implicit s: Session): Score =
     (scores returning scores.map(_.id) into ((scores, id) => scores.copy(Some(id)))) += qs
@@ -67,6 +76,10 @@ object Scores {
 
   def findByActAndStudent(actId: Long, studentId: Long)(implicit s: Session) = {
     scores.filter(x => x.actId === actId && x.studentId === studentId).firstOption
+  }
+
+  def findByActivityAndStudent(activityId: Long, studentId: Long)(implicit s: Session) = {
+    scores.filter(x => x.activityId === activityId && x.studentId === studentId).firstOption
   }
 
   def findWithQuestions(id: Long)(implicit s: Session): ScoreQuestion = {

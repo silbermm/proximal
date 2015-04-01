@@ -71,7 +71,7 @@ class AssessmentActorSpec extends PlaySpec with Results {
 
           ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standard.id.get)).value map (message => {
             message match {
-              case Success(question: JsonQuestion) => question.id must not be empty
+              case Success(aq: AssessmentQuestion) => aq.question.id must not be empty
               case Failure(ex: Throwable) => fail("Got an exception")
               case _ => fail("Didn't get a question back...")
             }

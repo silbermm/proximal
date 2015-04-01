@@ -13,7 +13,7 @@ object ScoreHelpers {
     actId <- Arbitrary.arbitrary[Long]
     score <- Arbitrary.arbitrary[Long]
     timestamp <- Arbitrary.arbitrary[Long]
-  } yield Score(None, studentId, Some(questionId), Some(actId), Some(score), timestamp)
+  } yield Score(None, studentId, Some(questionId), Some(actId), None, Some(score), timestamp)
 
   val sampleScore = scoreGen.sample.get
 }

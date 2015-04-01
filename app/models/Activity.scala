@@ -114,6 +114,8 @@ object Activities {
   lazy val activityActs = ActivityActs.activityActs
   lazy val homeworks = Homeworks.homeworks
   lazy val attempts = Attempts.attempts
+  lazy val statementLevels = StatementLevels.statement_levels
+  lazy val people = People.people
 
   def create(a: Activity)(implicit s: Session): Activity =
     (activities returning activities.map(_.id) into ((activity, id) => activity.copy(Some(id)))) += a
@@ -248,19 +250,18 @@ object Activities {
     }
   }
 
-  def findUnAttempted(childId: Long, standardId: Long, category: String)(implicit s: Session): List[Activity] = {
+  def filterByStandardLevelCategory(childId: Long, standardId: Long, category: String)(implicit s: Session): List[Activity] = {
+
     val queryActivities = for {
       a <- activities if a.category === category
       activitySt <- activityStatements if activitySt.activityId === a.id
       statements <- activitySt.statement if statements.standardId === standardId
+      person <- people if person.id === childId
+      edLevel <- person.educationLevel
+      levels <- statementLevels if levels.statementId === statements.id && levels.educationLevelId === edLevel.id
     } yield a
 
-    // only activities by 'category' in the requested standard
-    queryActivities.list filter (activity =>
-      true
-    )
-
+    queryActivities.list
   }
-
 }
 

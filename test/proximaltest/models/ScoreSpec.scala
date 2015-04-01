@@ -1,4 +1,4 @@
-package models
+package proximaltest.models
 
 import play.api.db.slick.DB
 import play.api.Play.current
@@ -34,10 +34,47 @@ class ScoreSpec extends PlaySpec with Results {
 
           person.id must not be empty
           question.id must not be empty
-          val score = Score(None, person.id.get, Some(question.id.get), None, Some(5), t)
+          val score = Score(None, person.id.get, Some(question.id.get), None, None, Some(5), t)
           val createdScore = Scores.create(score);
           createdScore.id must not be empty
           createdScore.timestamp mustBe t
+        }
+      }
+    }
+
+    "should find a score by activity and student" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+          val person = People.insertPerson(fakePerson)
+          val activity = Activities.create(ActivityHelpers.sampleActivity)
+          val t = Platform.currentTime
+          person.id must not be empty
+          activity.id must not be empty
+          val score = Score(None, person.id.get, None, None, activity.id, Some(5), t)
+          val createdScore = Scores.create(score);
+          createdScore.id must not be empty
+
+          val found = Scores.findByActivityAndStudent(activity.id.get, person.id.get)
+          found must not be empty
+        }
+      }
+    }
+
+    "delete a score" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+          val person = People.insertPerson(fakePerson)
+          val question = Questions.create(fakeQuestion)
+          val t = Platform.currentTime
+          person.id must not be empty
+          question.id must not be empty
+          val score = Score(None, person.id.get, Some(question.id.get), None, None, Some(5), t)
+          val createdScore = Scores.create(score);
+          createdScore.id must not be empty
+
+          val deleted = Scores.delete(createdScore.id.get)
+          deleted mustBe 1
+
         }
       }
     }

@@ -52,29 +52,65 @@ class ActivitySpec extends PlaySpec with Results {
       }
     }
 
-    "find and activity unattempted" in {
+    "find an empty list find a list of questions by standard - ed level and category" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
 
           val standard = standardsService.create(StandardsHelpers.fakeStandard)
+          val standard2 = standardsService.create(StandardsHelpers.fakeStandard)
           val statement1 = standardsService.create(StandardsHelpers.fakeStatements(0).copy(standardId = standard.id))
-          val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard.id))
+          val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard2.id))
 
           val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          val e2 = EducationLevels.insert(StandardsHelpers.fakeEducationLevel2)
 
+          val statementLevels1 = StatementLevels.insert(StatementLevel(None, e2.id.get, statement1.id.get))
+          val statementLevels2 = StatementLevels.insert(StatementLevel(None, e2.id.get, statement2.id.get))
           val person = People.insertPerson(PersonHelpers.person)
           val child = People.insertPerson(PersonHelpers.child(edLevelId = e.id.get))
           val relationship = personService.addChild(child, person);
 
           val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("question"))
-          val sampleActivity2 = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("video"))
+          val sampleActivity2 = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("question"))
           val activity1 = Activities.create(sampleActivity)
           val activity2 = Activities.create(sampleActivity2)
 
           ActivityStatements.create(ActivityStatement(None, activity1.id.get, statement1.id.get))
-          ActivityStatements.create(ActivityStatement(None, activity2.id.get, statement1.id.get))
+          ActivityStatements.create(ActivityStatement(None, activity2.id.get, statement2.id.get))
 
-          var actList = Activities.findUnAttempted(child.id.get, standard.id.get, "question")
+          var actList = Activities.filterByStandardLevelCategory(child.id.get, standard.id.get, "question")
+          actList must have length 0
+        }
+      }
+    }
+
+    "find a list of questions by standard - ed level and category" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+
+          val standard = standardsService.create(StandardsHelpers.fakeStandard)
+          val standard2 = standardsService.create(StandardsHelpers.fakeStandard)
+          val statement1 = standardsService.create(StandardsHelpers.fakeStatements(0).copy(standardId = standard.id))
+          val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard2.id))
+
+          val e = EducationLevels.insert(StandardsHelpers.fakeEducationLevel)
+          val e2 = EducationLevels.insert(StandardsHelpers.fakeEducationLevel2)
+
+          val statementLevels1 = StatementLevels.insert(StatementLevel(None, e.id.get, statement1.id.get))
+          val statementLevels2 = StatementLevels.insert(StatementLevel(None, e2.id.get, statement2.id.get))
+          val person = People.insertPerson(PersonHelpers.person)
+          val child = People.insertPerson(PersonHelpers.child(edLevelId = e.id.get))
+          val relationship = personService.addChild(child, person);
+
+          val sampleActivity = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("question"))
+          val sampleActivity2 = ActivityHelpers.sampleActivity.copy(creator = person.id.get, category = Some("question"))
+          val activity1 = Activities.create(sampleActivity)
+          val activity2 = Activities.create(sampleActivity2)
+
+          ActivityStatements.create(ActivityStatement(None, activity1.id.get, statement1.id.get))
+          ActivityStatements.create(ActivityStatement(None, activity2.id.get, statement2.id.get))
+
+          var actList = Activities.filterByStandardLevelCategory(child.id.get, standard.id.get, "question")
           actList must have length 1
         }
       }

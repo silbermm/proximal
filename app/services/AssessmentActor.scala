@@ -22,26 +22,24 @@ import play.api.db.slick.DB
 import play.api.Play.current
 import scala.util.Random
 import scala.compat.Platform
-import akka.actor.Actor
-import akka.actor.ActorSystem
-import akka.actor.Props
+import akka.actor.{ Actor, ActorSystem, Props }
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
-case class AssessmentQuestion(assessment: Assesment, question: JsonQuestion)
+case class AssessmentQuestion(assessment: Assesment, question: Question)
 
 class AssessmentActor extends Actor {
 
   private val random = new Random
 
   def receive = {
-    case childAndStandard: ChildAndStandard => {
-      val asses = DB.withSession { implicit s =>
-        Assesments.create(Assesment(None, childAndStandard.childId, Platform.currentTime, None))
-      }
-      sender ! Some(AssessmentQuestion(asses, nextQuestion(asses, childAndStandard.childId, childAndStandard.standardId)))
-    }
+    /*case childAndStandard: ChildAndStandard => {*/
+    //val asses = DB.withSession { implicit s =>
+    //Assesments.create(Assesment(None, childAndStandard.childId, Platform.currentTime, None))
+    //}
+    //sender ! Some(AssessmentQuestion(asses, nextQuestion(asses, childAndStandard.childId, childAndStandard.standardId)))
+    /*}*/
     case assessment: CreateAssessment => {
       create(assessment) map (sender ! _) getOrElse (sender ! akka.actor.Status.Failure(new Exception("failed to create")))
     }
@@ -53,15 +51,37 @@ class AssessmentActor extends Actor {
    * the standard that was asked for
    * and that the child has not been scored on the question yet
    */
-  private def create(createAssessment: CreateAssessment): Option[JsonQuestion] = {
+  private def create(createAssessment: CreateAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
-      PersonService.isChildOf[JsonQuestion](createAssessment.parentUid,
+      PersonService.isChildOf[AssessmentQuestion](createAssessment.parentUid,
         createAssessment.childId, cid => {
-
-          val (student: Person, edLevel: EducationLevel) = People.findWithEducationLevel(cid);
-          val questions = Questions.all
-          Some(questions(1))
+          // this is a new assessment, so create a new assessment record
+          val assessment = Assesments.create(Assesment(None, cid, Platform.currentTime, None))
+          val Some(question) = chooseQuestion(cid, createAssessment.standardId, true)
+          Some(AssessmentQuestion(assessment, question))
         })
+    }
+  }
+
+  /**
+   * This does the work of choosing the next question to ask
+   */
+  private def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean): Option[Question] = {
+    DB.withSession { implicit s =>
+      val activities = Activities.filterByStandardLevelCategory(studentId, standardId, "question")
+        .filter(activity => {
+          val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
+          score.isEmpty
+        })
+
+      // choose a random activity and get the question for it..a
+      if (isRandom) {
+        activities(random.nextInt(activities.length)).id map (
+          Questions.findByResourceId(_)
+        ) getOrElse None
+      } else {
+        None
+      }
     }
   }
 

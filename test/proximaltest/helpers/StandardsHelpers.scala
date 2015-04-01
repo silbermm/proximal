@@ -35,6 +35,9 @@ object StandardsHelpers {
   def fakeEducationLevel =
     new EducationLevel(None, "k", "kindergarten")
 
+  def fakeEducationLevel2 =
+    new EducationLevel(None, "1", "First Grade")
+
   def fakeStatement = {
     new Statement(
       None,
