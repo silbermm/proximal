@@ -28,7 +28,7 @@ class ScoreSpec extends PlaySpec with Results {
     "insert a score" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val person = People.insertPerson(fakePerson)
+          val person = People.insertPerson(PersonHelpers.person)
           val question = Questions.create(fakeQuestion)
           val t = Platform.currentTime
 
@@ -45,16 +45,17 @@ class ScoreSpec extends PlaySpec with Results {
     "should find a score by activity and student" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val person = People.insertPerson(fakePerson)
-          val activity = Activities.create(ActivityHelpers.sampleActivity)
+          val person = People.insertPerson(PersonHelpers.person)
+          val child = People.insertPerson(PersonHelpers.person)
+          val activity = Activities.create(ActivityHelpers.sampleActivity.copy(creator = person.id.get))
           val t = Platform.currentTime
           person.id must not be empty
           activity.id must not be empty
-          val score = Score(None, person.id.get, None, None, activity.id, Some(5), t)
-          val createdScore = Scores.create(score);
+          val score = Score(None, child.id.get, None, None, activity.id, Some(5), t)
+          val createdScore = Scores.create(score)
           createdScore.id must not be empty
 
-          val found = Scores.findByActivityAndStudent(activity.id.get, person.id.get)
+          val found = Scores.findByActivityAndStudent(activity.id.get, child.id.get)
           found must not be empty
         }
       }
@@ -63,7 +64,7 @@ class ScoreSpec extends PlaySpec with Results {
     "delete a score" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
-          val person = People.insertPerson(fakePerson)
+          val person = People.insertPerson(PersonHelpers.person)
           val question = Questions.create(fakeQuestion)
           val t = Platform.currentTime
           person.id must not be empty

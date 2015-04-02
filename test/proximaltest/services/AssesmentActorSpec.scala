@@ -47,6 +47,7 @@ class AssessmentActorSpec extends PlaySpec with Results {
         val actorRef = TestActorRef(new AssessmentActor)
 
         val e = DB.withSession { implicit s => EducationLevels.insert(StandardsHelpers.fakeEducationLevel) }
+        val e2 = DB.withSession { implicit s => EducationLevels.insert(StandardsHelpers.fakeEducationLevel2) }
 
         // Generate a parent and student first
         val Success(user) = userService.save(BasicProfileGenerator.basicProfile(), SaveMode.LoggedIn).value.get
@@ -56,17 +57,20 @@ class AssessmentActorSpec extends PlaySpec with Results {
 
         // Add a fake standard and statements  
         val standard = standardsService.create(StandardsHelpers.fakeStandard)
-        val statement1 = standardsService.create(StandardsHelpers.fakeStatements(0).copy(standardId = standard.id))
-        val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard.id))
+        val standard2 = standardsService.create(StandardsHelpers.fakeStandard)
 
+        val statement1 = standardsService.create(StandardsHelpers.fakeStatements(0).copy(standardId = standard.id))
+        val statement2 = standardsService.create(StandardsHelpers.fakeStatements(1).copy(standardId = standard2.id))
         DB.withSession { implicit s =>
-          val e1 = StatementLevels.insert(StatementLevel(None, e.id.get, statement1.id.get))
-          val e2 = StatementLevels.insert(StatementLevel(None, e.id.get, statement2.id.get))
+
+          StatementLevels.insert(StatementLevel(None, e.id.get, statement1.id.get))
+          StatementLevels.insert(StatementLevel(None, e2.id.get, statement2.id.get))
 
           (1 to 5) foreach (x => {
-            val resource = Resources.create(ResourceHelpers.sampleResource)
+            val resource = Resources.create(ResourceHelpers.sampleResource.copy(category = Some("question")))
             val nq = Questions.create(QuestionsHelpers.questionGen.sample.get.copy(resourceId = resource.id))
             val activity = Activities.create(ActivityHelpers.sampleActivity.copy(resourceId = resource.id, creator = parent.id.get))
+            ActivityStatements.create(ActivityStatement(None, activity.id.get, statement1.id.get))
           })
 
           ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standard.id.get)).value map (message => {

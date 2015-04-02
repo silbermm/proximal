@@ -32,7 +32,7 @@ object Questions {
   lazy val questions = TableQuery[Questions]
   lazy val questionUploads = QuestionUploads.questionUploads
   lazy val questionsWithStatements = QuestionsWithStatements.qWithS
-
+  lazy val activities = Activities.activities
   lazy val resources = Resources.resources
 
   def create(q: Question)(implicit s: Session): Question =
@@ -146,6 +146,15 @@ object Questions {
       q <- qws.questions
     } yield q
     (query.list, Statements.find(statementId))
+  }
+
+  def findActivity(questionId: Long)(implicit s: Session): Option[Activity] = {
+    val query = for {
+      question <- questions if question.id === questionId
+      resource <- question.res
+      activity <- activities if activity.resourceId === resource.id
+    } yield activity
+    query.firstOption
   }
 
   def convertToQuestion(jsonQuestion: JsonQuestion): Question = {

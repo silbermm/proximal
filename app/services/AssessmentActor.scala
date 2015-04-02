@@ -27,6 +27,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
+case class ScoreAssessment(assessmentId: Long, childId: Long, questionId: Long, score: Long)
 case class AssessmentQuestion(assessment: Assesment, question: Question)
 
 class AssessmentActor extends Actor {
@@ -42,6 +43,9 @@ class AssessmentActor extends Actor {
     /*}*/
     case assessment: CreateAssessment => {
       create(assessment) map (sender ! _) getOrElse (sender ! akka.actor.Status.Failure(new Exception("failed to create")))
+    }
+    case scoreAssessment: ScoreAssessment => {
+      sender ! score(scoreAssessment)
     }
     case _ => sender ! None
   }
@@ -63,6 +67,23 @@ class AssessmentActor extends Actor {
     }
   }
 
+  private def score(scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
+    DB.withSession { implicit s =>
+      // Get activty for this question...
+      Questions.findActivity(scoreAssessment.questionId) map { activity =>
+        activity.id map { activityId =>
+          // Create the score in the database...
+          val score = Scores.create(Score(None, scoreAssessment.childId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime))
+          // Create the Assessment History... 
+          AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.get))
+        }
+
+        // Decide if we need another question...
+        None
+      } getOrElse None
+    }
+  }
+
   /**
    * This does the work of choosing the next question to ask
    */
@@ -73,14 +94,17 @@ class AssessmentActor extends Actor {
           val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
           score.isEmpty
         })
-
-      // choose a random activity and get the question for it..a
-      if (isRandom) {
-        activities(random.nextInt(activities.length)).id map (
-          Questions.findByResourceId(_)
-        ) getOrElse None
-      } else {
+      if (activities.length < 1) {
         None
+      } else {
+        // choose a random activity and get the question for it..a
+        if (isRandom) {
+          activities(random.nextInt(activities.length)).resourceId map (x =>
+            Questions.findByResourceId(x) getOrElse Question(Some(-1L), "", None, None, None)
+          )
+        } else {
+          None
+        }
       }
     }
   }
