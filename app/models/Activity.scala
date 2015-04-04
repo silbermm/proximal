@@ -193,6 +193,15 @@ object Activities {
     }
   }
 
+  def includesStatement(activityId: Long, statementId: Long)(implicit s: Session): Boolean = {
+    findWithStatements(activityId) map (aWs => {
+      val vv = aWs.statements.filter(aa => {
+        statementId == aa.id.get
+      })
+      vv.isEmpty
+    }) getOrElse false
+  }
+
   def findWithHomeworkAndActs(id: Long)(implicit s: Session): Option[ActivityWithHomeworkAndActs] = {
     val homeworker = for {
       h <- homeworks if h.activityId === id

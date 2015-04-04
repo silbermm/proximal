@@ -61,18 +61,18 @@ class AssessmentController(override implicit val env: RuntimeEnvironment[SecureU
     )
   }
 
-  def scoreAssessment = SecureAction.async(BodyParsers.parse.json) { implicit request =>
+  def scoreAssessment(assessmentId: Long) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     request.body.validate[ScoreAssessment].fold(
       errors => Future { BadRequest(Json.obj("message" -> s"Something went wrong: $errors")) },
       obj => {
         val Some(result) = ask(newAssessmentActor, obj).value map { message =>
           message match {
-            case Success(Some(question)) => Ok(Json.toJson(question))
+            case Success(Some(question: AssessmentQuestion)) => Ok(Json.toJson(question))
             case Success(None) => Ok
             case Failure(err: Throwable) => BadRequest(Json.obj("message" -> s"${err.getMessage()}"))
-            case leftover: _ => BadRequest(Json.obj("message" -> ""))
           }
         }
+        Future { result }
       }
     )
   }

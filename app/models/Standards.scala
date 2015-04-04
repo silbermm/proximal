@@ -105,6 +105,7 @@ object Standards {
 
 case class Statement(
   id: Option[Long],
+  sequence: Option[Long],
   standardId: Option[Long],
   asnUri: Option[String],
   subject: Option[String],
@@ -122,6 +123,7 @@ class Statements(tag: Tag) extends Table[Statement](tag, "statements") {
   lazy val standards = Standards.standards
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def sequence = column[Option[Long]]("sequence")
   def standardId = column[Option[Long]]("standardId")
   def asnUri = column[Option[String]]("asn_uri")
   def subject = column[Option[String]]("subject")
@@ -135,6 +137,7 @@ class Statements(tag: Tag) extends Table[Statement](tag, "statements") {
   def language = column[Option[String]]("language")
 
   def * = (id.?,
+    sequence,
     standardId,
     asnUri,
     subject,
@@ -156,6 +159,7 @@ object Statements {
   lazy val statements = TableQuery[Statements]
   lazy val standards = Standards.standards
   lazy val statement_levels = StatementLevels.statement_levels
+  lazy val people = People.people
 
   def insert(statement: Statement)(implicit s: Session) =
     (statements returning statements.map(_.id) into ((st, id) => st.copy(id = Some(id)))) += statement
@@ -185,6 +189,19 @@ object Statements {
     } yield e
     (find(id), query.list)
   }
+
+  def findBySequence(sequenceNumber: Long, standardId: Long)(implicit s: Session): Option[Statement] =
+    statements.filter(x => x.sequence === sequenceNumber && x.standardId === standardId).firstOption
+
+  //def filterByStandardAndLevel(standardId: Long, studentId: Long)(implicit s: Session): List[Statement] = {
+  //var query = for {
+  //statement <- statements if statement.standardId === standardId
+  //child <- people if child.id === studentId
+  //edLevel <- child.educationLevel
+  //level <- statement_levels if level.statementId === statement.id && level.educationLevelId === edLevel.id
+  //} yield statement
+  //query.list
+  /*}*/
 
   def list(implicit s: Session) =
     statements.list

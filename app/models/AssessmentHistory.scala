@@ -8,6 +8,7 @@ import play.api.Play.current
 import play.api.Logger
 
 case class AssessmentHistory(id: Option[Long], assessmentId: Long, activityId: Long, scoreId: Long)
+case class AssessmentHistoryWithScore(id: Option[Long], assessmentId: Long, activityId: Long, scoreId: Long, score: Option[Score])
 
 class AssessmentHistories(tag: Tag) extends Table[AssessmentHistory](tag, "assessment_history") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -30,6 +31,18 @@ object AssessmentHistories {
     (history returning history.map(_.id) into ((h, id) => h.copy(Some(id)))) += ah
 
   def findByAssessment(assessmentId: Long)(implicit s: Session) =
-    history.filter(_.assessmentId === assessmentId).list
+    history.filter(_.assessmentId === assessmentId).sortBy(_.id.asc).list
+
+  def findByAssessmentWithScore(assessmentId: Long)(implicit s: Session) = {
+    val q = for {
+      assessment <- history if assessment.id === assessmentId
+      score <- assessment.score
+    } yield (assessment, score)
+
+    q.list.map(x => {
+      val h = history.filter(_.assessmentId === x._1.assessmentId).first
+      AssessmentHistoryWithScore(h.id, h.assessmentId, h.activityId, h.scoreId, Some(x._2))
+    })
+  }
 
 }

@@ -27,7 +27,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
-case class ScoreAssessment(assessmentId: Long, childId: Long, questionId: Long, score: Long)
+case class ScoreAssessment(assessmentId: Long, childId: Long, questionId: Long, standardId: Long, score: Long)
 case class AssessmentQuestion(assessment: Assesment, question: Question)
 
 class AssessmentActor extends Actor {
@@ -61,7 +61,7 @@ class AssessmentActor extends Actor {
         createAssessment.childId, cid => {
           // this is a new assessment, so create a new assessment record
           val assessment = Assesments.create(Assesment(None, cid, Platform.currentTime, None))
-          val Some(question) = chooseQuestion(cid, createAssessment.standardId, true)
+          val Some(question) = chooseQuestion(cid, createAssessment.standardId, true, None)
           Some(AssessmentQuestion(assessment, question))
         })
     }
@@ -77,17 +77,38 @@ class AssessmentActor extends Actor {
           // Create the Assessment History... 
           AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.get))
         }
-
+        val history = AssessmentHistories.findByAssessmentWithScore(scoreAssessment.assessmentId)
         // Decide if we need another question...
-        None
+        determineNextQuestion(history, history.length - 1, scoreAssessment)
       } getOrElse None
+    }
+  }
+
+  private def determineNextQuestion(history: List[AssessmentHistoryWithScore], place: Int, scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
+    DB.withSession { implicit s =>
+      val lastScore = history(place).score
+      val lastScoreValue = history(place).score map (_.score) getOrElse 0
+      if (lastScoreValue != 3L) {
+        val assessment = Assesments.find(scoreAssessment.assessmentId)
+        val question = chooseQuestion(scoreAssessment.childId, scoreAssessment.standardId, true, lastScore)
+        Some(AssessmentQuestion(assessment.get, question.get))
+      } else {
+        if (history.length - 3 == place) {
+          // we've checked the last three scores and they all equal 3, this is the standard we should recommend
+          // for the next activity
+          None
+        } else {
+          // the last score value was 3, what about the one before and the one before that?
+          determineNextQuestion(history, place - 1, scoreAssessment)
+        }
+      }
     }
   }
 
   /**
    * This does the work of choosing the next question to ask
    */
-  private def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean): Option[Question] = {
+  private def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean, lastScored: Option[Score]): Option[Question] = {
     DB.withSession { implicit s =>
       val activities = Activities.filterByStandardLevelCategory(studentId, standardId, "question")
         .filter(activity => {
@@ -97,9 +118,41 @@ class AssessmentActor extends Actor {
       if (activities.length < 1) {
         None
       } else {
+        // if lastScored is set, than we need to filter again by only statements that are appropriate
+        val updatedActivities = lastScored.map { score =>
+          // got get the score and activity and determine which statement it was scored for...
+          Scores.find(score.id getOrElse (0)) match {
+            case Some(sc) => {
+              val currentSequence = Activities.findWithStatements(sc.activityId.get) match {
+                case Some(thing) => thing.statements.head.sequence.get
+                case None => 0
+              }
+              //val availableStatements = Statements.filterByStandardAndLevel(standardId, studentId); 
+              val sequenceToUse = sc.score match {
+                case Some(1) => if (currentSequence > 1) currentSequence - 2 else 1
+                case Some(2) => if (currentSequence > 0) currentSequence - 1 else 1
+                case Some(3) => currentSequence
+                case Some(4) => currentSequence + 1
+                case Some(5) => currentSequence + 2
+                case None => 1
+              }
+              // get the statement with the above sequence...
+              Statements.findBySequence(sequenceToUse, standardId) map { statement =>
+                activities.filter(activity => {
+                  Activities.includesStatement(statement.id.get, activity.id.get)
+                })
+              } getOrElse {
+                activities
+              }
+            }
+            case None => activities
+          }
+
+        } getOrElse activities
+
         // choose a random activity and get the question for it..a
         if (isRandom) {
-          activities(random.nextInt(activities.length)).resourceId map (x =>
+          updatedActivities(random.nextInt(activities.length)).resourceId map (x =>
             Questions.findByResourceId(x) getOrElse Question(Some(-1L), "", None, None, None)
           )
         } else {

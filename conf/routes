@@ -44,8 +44,8 @@ GET    /api/v1/questions/:id   												@controllers.QuestionsController.get(
 DELETE /api/v1/questions/:id   												@controllers.QuestionsController.delete(id:Long)
 
 #Assesments
-POST   /api/v1/assessments 	   												@controllers.AssessmentController.newAssesment()
-PUT	   /api/v1/assessments/:assessmentId							@controllers.AssessmentController.newScore(assessmentId: Long)
+POST   /api/v1/assessments 	   												@controllers.AssessmentController.startAssessment()
+PUT	   /api/v1/assessments/:assessmentId							@controllers.AssessmentController.scoreAssessment(assessmentId: Long)
 
 
 #Activities
