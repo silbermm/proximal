@@ -1,27 +1,22 @@
 package controllers
 
-import play.api._
-import play.api.mvc._
-import services._
-import securesocial.core._
-import models._
-import helpers.RolesHelper
-import play.api.Logger
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import play.api.db.slick.DB
-import play.api.Play.current
-import helpers.ImplicitJsonFormat._
-
-import play.api.libs.concurrent.Akka
-import akka.actor.Actor
-import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
+import helpers.ImplicitJsonFormat._
+import helpers.RolesHelper
+import models._
+import play.api.Logger
+import play.api.Play.current
+import play.api.db.slick.DB
+import play.api.libs.concurrent.Akka
+import play.api.libs.json._
+import play.api.mvc._
+import services._
+import securesocial.core._
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 

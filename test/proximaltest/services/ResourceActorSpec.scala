@@ -1,35 +1,20 @@
 package proximaltest.services
 
+import akka.actor.ActorSystem
+import akka.pattern.ask
+import akka.testkit.TestActorRef
+import com.typesafe.config.ConfigFactory
+import org.scalatestplus.play._
+import play.api.Play.current
+import play.api.db.slick.DB
+import play.api.libs.json._
+import play.api.mvc._
+import play.api.test.Helpers._
+import play.api.test._
+import proximaltest.helpers._
 import services._
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatestplus.play._
-
-import play.api.mvc._
-import play.api.test._
-import play.api.test.Helpers._
-
-import scala.compat.Platform
-
-import play.api.libs.json._
-
-import play.api.Logger
-import proximaltest.helpers._
-
-import akka.testkit.TestActorRef
-import scala.concurrent.Await
-import akka.pattern.ask
-
-import akka.actor.ActorSystem
-import com.typesafe.config.ConfigFactory
-import scala.concurrent.ExecutionContext.Implicits.global
-import akka.pattern.ask
-
-import scala.util.{ Try, Success, Failure }
+import scala.util.{ Failure, Success }
 
 class ResourceActorSpec extends PlaySpec with Results {
   import models._

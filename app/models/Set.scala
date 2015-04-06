@@ -1,11 +1,8 @@
 package models
 
 import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.lifted.Tag
-import scala.slick.SlickException
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import play.api.Logger
 
 case class Set(id: Option[Long], title: Option[String], description: Option[String])
 

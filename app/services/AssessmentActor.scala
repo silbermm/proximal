@@ -15,34 +15,37 @@
 
 package services
 
-import play.api.libs.concurrent.Akka
-import play.api.Logger
+import akka.actor.Actor
 import models._
-import play.api.db.slick.DB
 import play.api.Play.current
-import scala.util.Random
+import play.api.db.slick.DB
+import play.Logger
+
 import scala.compat.Platform
-import akka.actor.{ Actor, ActorSystem, Props }
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.util.Random
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
 case class ScoreAssessment(assessmentId: Long, childId: Long, questionId: Long, standardId: Long, score: Long)
 case class AssessmentQuestion(assessment: Assesment, question: Question)
+case class TestAssessment(e: String)
 
 class AssessmentActor extends Actor {
 
   private val random = new Random
 
   def receive = {
-    /*case childAndStandard: ChildAndStandard => {*/
-    //val asses = DB.withSession { implicit s =>
-    //Assesments.create(Assesment(None, childAndStandard.childId, Platform.currentTime, None))
-    //}
-    //sender ! Some(AssessmentQuestion(asses, nextQuestion(asses, childAndStandard.childId, childAndStandard.standardId)))
-    /*}*/
+    case childAndStandard: ChildAndStandard => {
+      val asses = DB.withSession { implicit s =>
+        Assesments.create(Assesment(None, childAndStandard.childId, Platform.currentTime, None))
+      }
+      sender ! None
+    }
+    case te: TestAssessment => {
+      sender ! "Hello"
+    }
     case assessment: CreateAssessment => {
-      create(assessment) map (sender ! _) getOrElse (sender ! akka.actor.Status.Failure(new Exception("failed to create")))
+      sender ! create(assessment)
     }
     case scoreAssessment: ScoreAssessment => {
       sender ! score(scoreAssessment)
@@ -55,19 +58,20 @@ class AssessmentActor extends Actor {
    * the standard that was asked for
    * and that the child has not been scored on the question yet
    */
-  private def create(createAssessment: CreateAssessment): Option[AssessmentQuestion] = {
+  def create(createAssessment: CreateAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
       //PersonService.isChildOf[AssessmentQuestion](createAssessment.parentUid,
       //createAssessment.childId, cid => {
       // this is a new assessment, so create a new assessment record
       val assessment = Assesments.create(Assesment(None, createAssessment.childId, Platform.currentTime, None))
-      val Some(question) = chooseQuestion(createAssessment.childId, createAssessment.standardId, true, None)
+      val question = chooseQuestion(
+        createAssessment.childId, createAssessment.standardId, true, None) getOrElse (Question(Some(-1L), "", None, None, None))
       Some(AssessmentQuestion(assessment, question))
       // })
     }
   }
 
-  private def score(scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
+  def score(scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
       // Get activty for this question...
       Questions.findActivity(scoreAssessment.questionId) map { activity =>
@@ -86,7 +90,7 @@ class AssessmentActor extends Actor {
     }
   }
 
-  private def determineNextQuestion(history: List[AssessmentHistoryWithScore], place: Int, scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
+  def determineNextQuestion(history: List[AssessmentHistoryWithScore], place: Int, scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
       val lastScore = history(place).score
       val lastScoreValue = history(place).score map (_.score) getOrElse 0
@@ -110,13 +114,14 @@ class AssessmentActor extends Actor {
   /**
    * This does the work of choosing the next question to ask
    */
-  private def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean, lastScored: Option[Score]): Option[Question] = {
+  def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean, lastScored: Option[Score]): Option[Question] = {
     DB.withSession { implicit s =>
       val activities = Activities.filterByStandardLevelCategory(studentId, standardId, "question")
-        .filter(activity => {
-          val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
-          score.isEmpty
-        })
+       .filter(activity => {
+      val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
+      score.isEmpty
+      })
+      Logger.debug(s"$activities")
       if (activities.length < 1) {
         None
       } else {

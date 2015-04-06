@@ -1,14 +1,12 @@
 package models
 
-import java.util.Date
 import java.sql.{ Date => SqlDate }
+
 import play.api.db.slick.Config.driver.simple._
-import scala.slick.lifted.Tag
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
 import securesocial.core._
 import securesocial.core.services._
-import play.api.Logger
+
+import scala.slick.lifted.{ ProvenShape, Tag }
 
 case class SecureUser(uid: Option[Long] = None, providerId: String, userId: String, firstName: Option[String], lastName: Option[String],
   fullName: Option[String], email: Option[String], avatarUrl: Option[String], authMethod: AuthenticationMethod,

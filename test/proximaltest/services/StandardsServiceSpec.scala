@@ -1,23 +1,12 @@
 package services
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
 import play.api.mvc._
-import play.api.test._
 import play.api.test.Helpers._
-
-import play.api.Logger
+import play.api.test._
 import proximaltest.helpers._
 
 class StandardsServiceSpec extends PlaySpec with Results {
-
-  import models._
 
   val standardsService: StandardsServiceTrait = new StandardsService()
 

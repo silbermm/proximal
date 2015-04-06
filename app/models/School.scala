@@ -1,13 +1,10 @@
 package models
 
 import java.util.Date
-import java.sql.Timestamp
+
 import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.lifted.Tag
-import scala.slick.SlickException
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import play.api.Logger
 
 case class Attendence(personId: Long, schoolId: Long, startDate: Option[Date], endDate: Option[Date], grade: Option[Long])
 class Attendences(tag: Tag) extends Table[Attendence](tag, "attendence") {

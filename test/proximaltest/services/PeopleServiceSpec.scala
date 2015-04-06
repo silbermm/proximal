@@ -1,19 +1,9 @@
 package services
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
 import play.api.mvc._
-import play.api.test._
 import play.api.test.Helpers._
-
-import play.api.Logger
-import proximaltest.helpers._
+import play.api.test._
 
 class PeopleServiceSpec extends PlaySpec with Results {
 

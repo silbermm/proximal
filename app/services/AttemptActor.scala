@@ -1,17 +1,9 @@
 package services
 
-import play.api.libs.concurrent.Akka
-import play.api.Logger
-import services._
-import models._
-import play.api.db.slick.DB
-import play.api.Play.current
-import scala.util.Random
-import scala.compat.Platform
 import akka.actor.Actor
-import akka.actor.ActorSystem
-import akka.actor.Props
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import models._
+import play.api.Play.current
+import play.api.db.slick.DB
 
 case class CreateAttempt(attempt: Attempt)
 case class DeleteAttempt(attempt: Attempt)

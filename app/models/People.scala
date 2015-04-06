@@ -1,14 +1,12 @@
 package models
 
 import java.util.Date
-import org.joda.time.DateTime
+
 import com.github.tototoshi.slick.PostgresJodaSupport._
+import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.lifted.Tag
-import scala.slick.SlickException
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import play.api.Logger
 
 case class Person(id: Option[Long] = None, firstName: String, lastName: Option[String], birthDate: Option[DateTime], educationLevelId: Option[Long], uid: Option[Long])
 class People(tag: Tag) extends Table[Person](tag, "Person") {

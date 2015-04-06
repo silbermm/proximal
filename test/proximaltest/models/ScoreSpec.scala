@@ -1,25 +1,18 @@
 package proximaltest.models
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
+import play.api.Play.current
+import play.api.db.slick.DB
 import play.api.mvc._
-import play.api.test._
 import play.api.test.Helpers._
-
-import play.api.Logger
+import play.api.test._
 //import helpers._
 import proximaltest.helpers._
 
 class ScoreSpec extends PlaySpec with Results {
   import models._
-  import QuestionsHelpers._
-  import java.sql.Timestamp
+  import proximaltest.helpers.QuestionsHelpers._
+
   import scala.compat.Platform
 
   val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None, None)

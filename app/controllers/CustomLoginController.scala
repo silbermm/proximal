@@ -1,13 +1,11 @@
 package controllers
 
-import play.api.mvc.{ Controller, RequestHeader }
-import play.api.templates.{ Txt }
-import play.twirl.api.Html
-import securesocial.core.{ BasicProfile, RuntimeEnvironment }
 import play.api.data.Form
 import play.api.i18n.Lang
+import play.api.mvc.RequestHeader
+import play.twirl.api.Html
 import securesocial.controllers._
-import models._
+import securesocial.core.RuntimeEnvironment
 
 class CustomTemplates(env: RuntimeEnvironment[_]) extends ViewTemplates {
 

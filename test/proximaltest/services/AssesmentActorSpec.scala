@@ -1,36 +1,21 @@
 package proximaltest.services
 
+import akka.actor.ActorSystem
+import akka.pattern.ask
+import akka.testkit.TestActorRef
+import com.typesafe.config.ConfigFactory
+import org.scalatestplus.play._
+import play.api.Logger
+import play.api.Play.current
+import play.api.db.slick.DB
+import play.api.mvc._
+import play.api.test.Helpers._
+import play.api.test._
+import proximaltest.helpers._
+import securesocial.core.services.SaveMode
 import services._
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatestplus.play._
-import org.scalatest._
-
-import play.api.mvc._
-import play.api.test._
-import play.api.test.Helpers._
-
-import scala.compat.Platform
-
-import play.api.Logger
-import proximaltest.helpers._
-
-import akka.testkit.TestActorRef
-import scala.concurrent.Await
-import akka.pattern.ask
-
-import akka.actor.ActorSystem
-import com.typesafe.config.ConfigFactory
-import scala.concurrent.ExecutionContext.Implicits.global
-import akka.pattern.ask
-
-import scala.util.{ Try, Success, Failure }
-
-import securesocial.core.services.SaveMode
+import scala.util.{ Failure, Success }
 
 class AssessmentActorSpec extends PlaySpec with Results {
 
@@ -84,10 +69,10 @@ class AssessmentActorSpec extends PlaySpec with Results {
       }
       ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standards(0).id.get)).value map (message => {
         message match {
-          case Success(aq: AssessmentQuestion) => {
-            aq.question.id must not be empty
+          case Success(aq: Option[AssessmentQuestion]) => {
+            aq must not be empty
             val statementSequence: Long = DB.withSession { implicit s =>
-              Questions.findActivity(aq.question.id.get) match {
+              Questions.findActivity(aq.get.question.id.get) match {
                 case Some(act) => {
                   Activities.findWithStatements(act.id.get) map (aWs =>
                     if (aWs.statements.isEmpty) 1L else aWs.statements(0).sequence.getOrElse(1L)
@@ -97,9 +82,9 @@ class AssessmentActorSpec extends PlaySpec with Results {
               }
             }
             Logger.debug(s"$statementSequence")
-            ask(actorRef, ScoreAssessment(aq.assessment.id.get,
+            ask(actorRef, ScoreAssessment(aq.get.assessment.id.get,
               child.id.get,
-              aq.question.id.get,
+              aq.get.question.id.get,
               standards(0).id.get,
               5))
               .value map (message2 => {

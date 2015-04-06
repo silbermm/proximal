@@ -16,11 +16,8 @@
 package models
 
 import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.lifted.Tag
-import scala.slick.SlickException
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import play.api.Logger
 
 case class Activity(id: Option[Long],
   creator: Long,

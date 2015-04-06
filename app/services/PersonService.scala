@@ -1,11 +1,10 @@
 package services
 
-import play.api.Logger
 import models._
-import play.api.db.slick.DB
 import play.api.Play.current
-import org.joda.time.DateTime
+import play.api.db.slick.DB
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 import scala.concurrent.Future
 
 class PersonService {
@@ -130,7 +129,6 @@ class PersonService {
 object PersonService {
 
   import play.api.mvc._
-  import play.api.Play.current
 
   val personService = new PersonService
 

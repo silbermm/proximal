@@ -1,12 +1,13 @@
 package controllers
 
 import java.util.Date
+
+import models._
 import play.api._
+import play.api.libs.json._
 import play.api.mvc._
 import services._
 import securesocial.core._
-import models._
-import play.api.libs.json._
 
 import scala.language.higherKinds
 

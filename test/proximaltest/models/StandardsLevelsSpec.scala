@@ -1,23 +1,15 @@
 package models
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
+import play.api.Play.current
+import play.api.db.slick.DB
 import play.api.mvc._
-import play.api.test._
 import play.api.test.Helpers._
-
-import play.api.Logger
+import play.api.test._
 //import helpers.StandardsHelpers._
 import proximaltest.helpers.StandardsHelpers._
 
 class StandardsLevelsSpec extends PlaySpec with Results {
-  import models._
 
   "Standards Levels " should {
 

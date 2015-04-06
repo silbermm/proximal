@@ -15,15 +15,15 @@
 
 package services
 
-import play.api.Logger
-import securesocial.core._
-import securesocial.core.providers.{ UsernamePasswordProvider, MailToken }
-import scala.concurrent.Future
-import securesocial.core.services.{ UserService, SaveMode }
 import models._
-import play.api.db.slick.DB
-import play.api.Play.current
 import org.joda.time.DateTime
+import play.api.Play.current
+import play.api.db.slick.DB
+import securesocial.core._
+import securesocial.core.providers.MailToken
+import securesocial.core.services.{ SaveMode, UserService }
+
+import scala.concurrent.Future
 
 class SecureUserService extends UserService[SecureUser] {
 

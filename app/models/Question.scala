@@ -1,14 +1,8 @@
 package models
 
-import org.apache.commons.codec.binary.Base64
-import java.util.Date
-import java.sql.Timestamp
 import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.lifted.Tag
-import scala.slick.SlickException
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import play.api.Logger
 
 case class Question(id: Option[Long], text: String, typeId: Option[Long], answer: Option[String], resourceId: Option[Long])
 

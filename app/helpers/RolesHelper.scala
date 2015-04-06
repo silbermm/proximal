@@ -1,12 +1,9 @@
 package helpers
 
-import play.api._
-import play.api.mvc._
 import models._
-import securesocial.core._
-
-import play.api.db.slick.DB
 import play.api.Play.current
+import play.api.db.slick.DB
+import play.api.mvc._
 
 object RolesHelper {
 

@@ -1,24 +1,16 @@
 package models
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
-import play.api.mvc._
-import play.api.test._
-import play.api.test.Helpers._
-
 import play.api.Logger
+import play.api.Play.current
+import play.api.db.slick.DB
+import play.api.mvc._
+import play.api.test.Helpers._
+import play.api.test._
 //import helpers._
 import proximaltest.helpers._
 
 class PeopleSpec extends PlaySpec with Results {
-
-  import models._
 
   val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None, None)
   val fakeChild = new Person(None, "miles", Some("silbernagel"), None, None, None)

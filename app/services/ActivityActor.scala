@@ -1,14 +1,9 @@
 package services
 
-import play.api.libs.concurrent.Akka
-import play.api.Logger
-import play.api.db.slick.DB
-import play.api.Play.current
 import akka.actor.Actor
-import akka.actor.ActorSystem
-import akka.actor.Props
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
+import play.api.Play.current
+import play.api.db.slick.DB
 
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
 case class ListHomework(studentId: Long)

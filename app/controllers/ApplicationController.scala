@@ -1,32 +1,23 @@
 package controllers
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
+import java.nio.file.{ Files, Path, Paths }
 
-import java.io.File
-import play.api._
-import play.api.mvc._
-import play.api.Play.current
-import services._
-
-import play.api.libs.json._
-import play.api.Logger
-import securesocial.core._
-import models._
-import org.apache.commons.codec.binary.Base64
-
-import play.api.libs.concurrent.Akka
-import akka.actor.Actor
-import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-
-import scala.concurrent.duration._
-import scala.concurrent.Future
-
 import helpers.ImplicitJsonFormat._
+import models._
+import org.apache.commons.codec.binary.Base64
+import play.api.Logger
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
+import play.api.libs.json._
+import play.api.mvc._
+import services._
+import securesocial.core._
+
+import scala.concurrent.Future
+import scala.concurrent.duration._
 
 class ApplicationController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 

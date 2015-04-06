@@ -1,16 +1,13 @@
 package proximaltest.helpers
 
 import java.lang.reflect.Constructor
-import services.SecureUserService
-import play.api.GlobalSettings
-import play.api.test.{ FakeRequest, WithApplication, FakeApplication, PlaySpecification }
-import securesocial.core.RuntimeEnvironment
 
-import play.api.test._
-import play.api.test.Helpers._
-
-import play.api.Logger
 import models._
+import play.api.GlobalSettings
+import play.api.test.FakeApplication
+import play.api.test.Helpers._
+import securesocial.core.RuntimeEnvironment
+import services.SecureUserService
 
 object SecureSocialHelper {
 

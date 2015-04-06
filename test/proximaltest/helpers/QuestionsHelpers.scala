@@ -1,8 +1,6 @@
 package proximaltest.helpers
 
 import models._
-import java.util.Date
-import org.scalacheck.Gen
 import org.scalacheck.Arbitrary
 
 object QuestionsHelpers {

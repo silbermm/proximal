@@ -1,7 +1,8 @@
 package proximaltest.helpers
 
-import models._
 import java.util.Date
+
+import models._
 
 object StandardsHelpers {
 

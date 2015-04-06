@@ -1,11 +1,11 @@
 package proximaltest.helpers
 
 import java.util.Date
+
+import models._
 import org.scalacheck.Gen
 import play.api.libs.json._
 import securesocial.core.{ AuthenticationMethod, BasicProfile }
-import models._
-import play.Logger
 
 object BasicProfileGenerator {
   val nameGen = for {

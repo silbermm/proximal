@@ -1,12 +1,12 @@
 package controllers
 
+import models._
+import org.joda.time.DateTime
 import play.api._
+import play.api.libs.json._
 import play.api.mvc._
 import services._
 import securesocial.core._
-import models._
-import play.api.libs.json._
-import org.joda.time.DateTime
 
 class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 

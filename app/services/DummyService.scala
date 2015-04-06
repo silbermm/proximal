@@ -1,9 +1,8 @@
 package services
 
-import play.api.Logger
 import models._
-import play.api.db.slick.DB
 import play.api.Play.current
+import play.api.db.slick.DB
 
 trait DummyServiceTrait {
   def create(d: Dummy): Dummy

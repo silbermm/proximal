@@ -1,26 +1,18 @@
 package models
 
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
 import org.scalatestplus.play._
-
+import play.api.Play.current
+import play.api.db.slick.DB
 import play.api.mvc._
-import play.api.test._
 import play.api.test.Helpers._
-
-import play.api.Logger
+import play.api.test._
 //import helpers._
 import proximaltest.helpers._
 
 class QuestionsSpec extends PlaySpec with Results {
 
-  import models._
-  import QuestionsHelpers._
-  import StandardsHelpers._
+  import proximaltest.helpers.QuestionsHelpers._
+  import proximaltest.helpers.StandardsHelpers._
 
   "Quesitons Model" should {
 

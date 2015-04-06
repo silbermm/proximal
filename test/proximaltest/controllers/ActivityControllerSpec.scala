@@ -1,39 +1,17 @@
 package proximaltest.controllers;
 
-import java.lang.reflect.Constructor
-import services.SecureUserService
-import play.api.GlobalSettings
-import play.api.test.{ FakeRequest, WithApplication, FakeApplication, PlaySpecification }
-import securesocial.core.RuntimeEnvironment
 import controllers.ChildAndActivity
+import org.scalatestplus.play._
+import play.api.libs.json._
+import play.api.mvc._
+import play.api.test.Helpers._
+import play.api.test.{ FakeApplication, FakeRequest }
+import proximaltest.helpers._
 import services._
 
-import securesocial.core._
-import securesocial.core.services._
-
-import collection.mutable.Stack
-import scala.concurrent.Future
-import org.scalatest._
-import org.scalatestplus.play._
-
-import play.api.mvc._
-import play.api.test._
-import play.api.test.Helpers._
-
-import play.api.libs.json._
-
-import play.api.Logger
-import proximaltest.helpers._
-
-import play.api.db.slick.DB
-import play.api.Play.current
-
-import play.api.libs.json._
-
 class ActivityControllerSpec extends PlaySpec with Results {
-  import models._
-
   import helpers.ImplicitJsonFormat._
+  import models._
   implicit val childActivityFormat = Json.format[ChildAndActivity]
 
   "Activity Controller" should {

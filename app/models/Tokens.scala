@@ -1,16 +1,13 @@
 package models
 
-import java.util.Date
 import java.sql.{ Date => SqlDate }
+
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
-import scala.slick.lifted.Tag
-import scala.slick.lifted.ProvenShape
-import play.api.Play.current
-import securesocial.core._
-import securesocial.core.services._
 import securesocial.core.providers.MailToken
-import com.github.tototoshi.slick.PostgresJodaSupport._
+
+import scala.slick.lifted.{ ProvenShape, Tag }
 
 class Tokens(tag: Tag) extends Table[MailToken](tag, "Token") {
   def uuid = column[String]("uuid")

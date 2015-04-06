@@ -15,25 +15,23 @@
 
 package controllers
 
-import services._
-import play.api.mvc._
-import securesocial.core._
-import models._
-import helpers.RolesHelper
-import play.api.Logger
-import play.api.libs.json._
-import play.api.db.slick.DB
-import play.api.Play.current
-import helpers.ImplicitJsonFormat._
-import play.api.libs.concurrent.Akka
-import akka.actor.{ Actor, ActorSystem, Props }
+import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-import scala.concurrent.duration._
-import scala.concurrent.Future
-import scala.util.{ Try, Success, Failure }
+import helpers.ImplicitJsonFormat._
+import models._
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
+import play.api.libs.json._
+import play.api.mvc._
+import play.Logger
+import services._
+import securesocial.core._
 
+import scala.concurrent.Future
+import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{ Failure, Success }
 
 case class ChildWithStandard(childId: Long, standardId: Long)
 
@@ -49,14 +47,13 @@ class AssessmentController(override implicit val env: RuntimeEnvironment[SecureU
       errors => Future { BadRequest(Json.obj("message" -> s"Something went wrong!")) },
       obj => {
         val createAssessment = CreateAssessment(request.user.uid.get, obj.childId, obj.standardId)
-        val Some(result) = ask(newAssessmentActor, createAssessment).value map { message =>
-          message match {
-            case Success(question: Question) => Ok(Json.toJson(question))
-            case Failure(err: Throwable) => BadRequest(Json.obj("message" -> s"Unable to start the assessment: ${err.getMessage()}"))
-            case _ => BadRequest(Json.obj("message" -> ""))
-          }
+        Logger.debug(s"$createAssessment")
+        ask(newAssessmentActor, createAssessment).mapTo[Option[AssessmentQuestion]] map { message =>
+          if (message.isEmpty) BadRequest(Json.obj("message" -> "nothing returned")) else Ok(Json.toJson(message))
         }
-        Future { result }
+        /*ask(newAssessmentActor, TestAssessment("hello")).mapTo[String] map { message =>*/
+        //Ok(message)
+        /*}*/
       }
     )
   }

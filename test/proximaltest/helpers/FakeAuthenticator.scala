@@ -4,6 +4,7 @@ import org.joda.time.DateTime
 import play.api.mvc.Result
 import play.mvc.Http.Context
 import securesocial.core.authenticator.Authenticator
+
 import scala.concurrent.Future
 
 case class FakeAuthenticator[A](id: String, user: A, creationDate: DateTime, expirationDate: DateTime, lastUsed: DateTime) extends Authenticator[A] {

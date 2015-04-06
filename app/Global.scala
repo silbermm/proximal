@@ -1,18 +1,14 @@
-import play.api._
-import play.api._
-import play.api.mvc._
-import play.api.mvc.Results._
-import scala.concurrent.Future
 import java.lang.reflect.Constructor
+
+import controllers.CustomTemplates
+import models._
+import play.api._
+import play.api.mvc.Results._
+import play.api.mvc._
 import securesocial.core.RuntimeEnvironment
 import services._
-import models._
-import controllers.CustomTemplates
-import play.api.libs.concurrent.Akka
-import akka.actor.Props
-import play.api.Play.current
-import akka.util.Timeout
-import scala.concurrent.duration._
+
+import scala.concurrent.Future
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
