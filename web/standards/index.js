@@ -7,6 +7,9 @@ require('./standards.html');
 require('./view_standard.html');
 app.controller("StandardsCtrl",[ "$log", "$scope", "$state", "$stateParams", "$modal", "standardsService", "toaster", require('./standards_controller')]);
 
+require("./standardView.html");
+app.directive('standardView', require('./standardView.directive'));
+
 // Add Standard
 require('./add/add_standard.html');
 app.controller("AddStandardCtrl", [ "$log", "$scope", "$modalInstance", "prox.common", "toaster", require('./add/add_standard_controller')]);

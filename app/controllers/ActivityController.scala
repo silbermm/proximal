@@ -51,6 +51,12 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     }
   }
 
+  def findStatementsForActivity(activityId: Long) = SecuredAction.async { implicit request =>
+    ask(activityActor, FindStatement(activityId)).mapTo[List[Statement]] map { x =>
+      Ok(Json.toJson(x))
+    }
+  }
+
   def createActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     //Todo: Make sure this person has the correct permissions to do this! 
     request.body.validate[CreateActivity].fold(

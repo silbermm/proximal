@@ -47,7 +47,7 @@ class AssessmentActor extends Actor {
     case scoreAssessment: ScoreAssessment => {
       sender ! score(scoreAssessment)
     }
-    case _ => sender ! None
+    case _ => sender ! akka.actor.Status.Failure(new Exception("nothing sent to do"))
   }
 
   /**
@@ -57,13 +57,13 @@ class AssessmentActor extends Actor {
    */
   private def create(createAssessment: CreateAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
-      PersonService.isChildOf[AssessmentQuestion](createAssessment.parentUid,
-        createAssessment.childId, cid => {
-          // this is a new assessment, so create a new assessment record
-          val assessment = Assesments.create(Assesment(None, cid, Platform.currentTime, None))
-          val Some(question) = chooseQuestion(cid, createAssessment.standardId, true, None)
-          Some(AssessmentQuestion(assessment, question))
-        })
+      //PersonService.isChildOf[AssessmentQuestion](createAssessment.parentUid,
+      //createAssessment.childId, cid => {
+      // this is a new assessment, so create a new assessment record
+      val assessment = Assesments.create(Assesment(None, createAssessment.childId, Platform.currentTime, None))
+      val Some(question) = chooseQuestion(createAssessment.childId, createAssessment.standardId, true, None)
+      Some(AssessmentQuestion(assessment, question))
+      // })
     }
   }
 
@@ -73,7 +73,9 @@ class AssessmentActor extends Actor {
       Questions.findActivity(scoreAssessment.questionId) map { activity =>
         activity.id map { activityId =>
           // Create the score in the database...
-          val score = Scores.create(Score(None, scoreAssessment.childId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime))
+          val score = Scores.create(
+            Score(None, scoreAssessment.childId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime)
+          )
           // Create the Assessment History... 
           AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.get))
         }
@@ -123,8 +125,8 @@ class AssessmentActor extends Actor {
           // got get the score and activity and determine which statement it was scored for...
           Scores.find(score.id getOrElse (0)) match {
             case Some(sc) => {
-              val currentSequence = Activities.findWithStatements(sc.activityId.get) match {
-                case Some(thing) => thing.statements.head.sequence.get
+              val currentSequence: Long = Activities.findWithStatements(sc.activityId.get) match {
+                case Some(aws) => aws.statements(0).sequence.getOrElse(1L)
                 case None => 0
               }
               //val availableStatements = Statements.filterByStandardAndLevel(standardId, studentId); 
@@ -134,7 +136,7 @@ class AssessmentActor extends Actor {
                 case Some(3) => currentSequence
                 case Some(4) => currentSequence + 1
                 case Some(5) => currentSequence + 2
-                case None => 1
+                case _ => 1
               }
               // get the statement with the above sequence...
               Statements.findBySequence(sequenceToUse, standardId) map { statement =>

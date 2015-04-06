@@ -9,7 +9,8 @@
             <th> Description </th> 
             <th> Subject </th> 
             <th> Resource </th>
-            <th> </td>
+            <th> Standard(s) </th>
+            <th> </th>
           </tr> 
         </thead> 
         <tbody> 
@@ -21,6 +22,10 @@
             <td> 
               <resource-compact-view resource-id="act.resourceId"> 
               </resource-compact-view>   
+            </td>
+            <td> 
+              <standard-view activity-id="act.id">
+              </standard-view>
             </td>
             <td> 
               <button class="btn-circle btn-info btn-xs" ng-click="activities.editActivity(act)" > 

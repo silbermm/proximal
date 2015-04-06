@@ -53,6 +53,7 @@ POST  /api/v1/activities                              @controllers.ActivityContr
 DELETE /api/v1/activities/:activityId                 @controllers.ActivityController.deleteActivity(activityId: Long)
 GET   /api/v1/activities/all                          @controllers.ActivityController.listAllActivities
 GET   /api/v1/activities                              @controllers.ActivityController.listActivities
+GET   /api/v1/activities/:activityId/statements       @controllers.ActivityController.findStatementsForActivity(activityId: Long)
 POST 	/api/v1/activities/homework											@controllers.ActivityController.newHomeworkActivity
 GET   /api/v1/activities/homework/:childId            @controllers.ActivityController.allHomework(childId: Long)
 DELETE /api/v1/activities/homework/:homeworkId  @controllers.ActivityController.deleteHomework(homeworkId: Long)

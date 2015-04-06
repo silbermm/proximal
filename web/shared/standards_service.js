@@ -31,6 +31,9 @@
       },
       getStatements: function(standardId){
         return $http.get("api/v1/standards/" + standardId + "/statements");
+      },
+      getStatementsByActivity: function(activityId){
+        return $http.get("api/v1/activities/" + activityId + "/statements");
       }
     };
   }

@@ -17,6 +17,7 @@ case class DeleteHomework(uid: Long, homeworkId: Long)
 case class CreateActivity(activity: Activity, statementIds: List[Long])
 case class ListActivities(uid: Long)
 case class DeleteActivity(activityId: Long)
+case class FindStatement(activityId: Long)
 
 class ActivityActor extends Actor {
 
@@ -54,7 +55,9 @@ class ActivityActor extends Actor {
         }
       }
     }
-
+    case fs: FindStatement => {
+      sender ! ActivityActor.findStatement(fs.activityId)
+    }
     case cha: CreateHomeworkActivity => {
       val newActivity = ActivityActor.createHomework(cha)
       sender ! newActivity
@@ -93,6 +96,12 @@ object ActivityActor {
         }
         case _ => 0
       }
+    }
+  }
+
+  def findStatement(activityId: Long): List[Statement] = {
+    DB.withSession { implicit s =>
+      Activities.findWithStatements(activityId) map (_.statements) getOrElse (List.empty)
     }
   }
 
