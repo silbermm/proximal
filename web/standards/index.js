@@ -17,3 +17,6 @@ app.controller("AddStandardCtrl", [ "$log", "$scope", "$modalInstance", "prox.co
 // Add Statement
 require('./add/add_statement.html');
 app.controller("AddStatementCtrl",[ "$log", "$scope", "$modalInstance", "prox.common", "standardsService", "standardId", require('./add/add_statement_controller')]); 
+
+require('./delete/delete_standard.html');
+app.controller("DeleteStandardController", require("./delete/deleteStandard.controller"));

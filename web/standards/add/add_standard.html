@@ -3,27 +3,21 @@
   <h3 class="modal-title">Add a new Standard</h3>
 </div>
 <div class="modal-body">
-    <div class="form-group" data-ng-class="{'has-error': form.title.$invalid && form.title.$dirty, 'has-success': !form.title.$invalid}" >
-      <label for="title"> Title </label>
-      <input type="text" name="title"
-             data-ng-model="edu.standard.title"  
-             class="form-control" id="title" ng-required>
-    </div>
-    <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}" >
-      <label for="description" > Description </label>
-      <textarea data-ng-model="edu.standard.description" name="description" class="form-control" id="description"  required></textarea>
-    </div>
+    
+  <div class="form-group" data-ng-class="{'has-error': form.title.$invalid && form.title.$dirty, 'has-success': !form.title.$invalid}" >
+    <label for="title"> Title </label>
+    <input type="text" name="title" data-ng-model="edu.standard.title"
+            class="form-control" id="title" ng-required>
+  </div>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" data-ng-model="edu.standard.publicationStatus" name="publicationStatus" 
-               data-ng-true-value="'published'" data-ng-false-value="'unpublished'"> Published?
-      </label>
-   </div>
+  <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}" >
+    <label for="description" > Description </label>
+    <textarea data-ng-model="edu.standard.description" name="description" class="form-control" id="description"  required></textarea>
+  </div>
 
   <div class="form-group">
     <label for="educationlevels"> Education Level(s) </label>
-     <ui-select multiple data-ng-model="edu.levels" theme="select2" ng-disabled="disabled" class="form-control">
+     <ui-select multiple data-ng-model="edu.levels" theme="bootstrap" ng-disabled="disabled" class="form-control">
        <ui-select-match placeholder="Select all that apply..."> {{$item.description}} </ui-select-match>
        <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
          <div ng-bind-html="level.description | highlight: $select.search"></div>
@@ -36,69 +30,7 @@
      <select class="form-control" data-ng-model="edu.standard.subject" name="subject" data-ng-options="subject for subject in subjects" data-ng-required >
       <option value="" disabled>-- Choose a Subject -- </option> 
      </select>
-   </div>
-  
-   <div class="form-group" data-ng-class="{'has-error': form.language.$invalid && form.language.$dirty, 'has-success': !form.language.$invalid}">
-    <label for="language"> Language </label>
-    <select class="form-control" data-ng-model="edu.standard.language" name="language" data-ng-options="language for language in languages" data-ng-required >
-      <option value="" disabled>-- Choose a Language --</option>
-    </select>
-   </div>
-
-   <div class="form-group" data-ng-class="{'has-error': form.source.$invalid && form.source.$dirty, 'has-success': !form.source.$invalid}">
-      <label for="source" > Source of the Standard </label>
-      <input type="text" name="source" class="form-control" data-ng-model="edu.standard.source" /> 
-   </div>
-
-   <div class="form-group" data-ng-class="{'has-error': form.dateValid.$invalid && form.dateValid.$dirty, 'has-success': !form.dateValid.$invalid}">
-     <label for="dateValid" > Date Valid </label>
-     <p class="input-group">
-      <input type="text" class="form-control" name="dateValid" 
-                                              datepicker-popup="{{format}}" 
-                                              ng-model="edu.standard.dateValid"
-                                              is-open="dateValidOpened"
-                                              datepicker-options="dateOptions"
-                                              init-date="initDate"
-                                              ng-required="true"
-                                              close-text="Close" />
-       <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="dateValidOpen($event)"><i class="fa fa-calendar"></i></button>
-       </span>
-     </p>
-   </div>
-
-  <div class="form-group" data-ng-class="{'has-error': form.repositoryDate.$invalid && form.repositoryDate.$dirty, 'has-success': !form.repositoryDate.$invalid}">
-    <label for="repositoryDate" class=""> Repository Date </label>
-    <p class="input-group">
-      <input type="text" class="form-control" name="repositoryDate"
-                                              datepicker-popup="{{format}}"
-                                              ng-model="edu.standard.repositoryDate"
-                                              is-open="repoDateOpened"
-                                              datepicker-options="dateOptions"
-                                              ng-required="true"
-                                              close-text="Close" />
-      <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="repoDateOpen($event)"><i class="fa fa-calendar"></i></button>
-      </span>
-    </p>
-  </div>
-  
-  <div class="form-group" data-ng-class="{'has-error': form.rights.$invalid && form.rights.$dirty, 'has-success': !form.rights.$invalid}">
-    <label for="rights" class=""> Copyright </label>
-    <input type="text" class="form-control" data-ng-model="edu.standard.rights" name="rights" data-ng-required />
-  </div>
-
-  <div class="form-group" data-ng-class="{'has-error': form.identifier.$invalid && form.identifier.$dirty, 'has-success': !form.identifier.$invalid}">
-    <label for="identifier" class=""> Identifier </label>
-    <input type="text" class="form-control" data-ng-model="edu.standard.identifier" name="identifier" required/>
-  </div>
-
-
-  <div class="form-group">
-    <label for="manifest" class=""> Manifest </label>
-    <input type="text" class="form-control" data-ng-model="edu.standard.manifest" name="manifest"  />
-  </div>
-
+   </div> 
 </div>
 
 <div class="modal-footer">

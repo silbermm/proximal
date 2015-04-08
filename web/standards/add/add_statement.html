@@ -4,20 +4,26 @@
   </div>
   
   <div class="modal-body">
-    <div class="form-group" data-ng-class="{'has-error': form.asnUri.$invalid && form.asnUri.$dirty, 'has-success': !form.asnUri.$invalid}" >
-      <label for="asnUri" class="sr-only"> ASN URI </label>
-      <input type="text" name="asnUri" data-ng-model="edu.statement.asnUri" class="form-control" id="asnUri" placeholder="ASN URI" ng-required>
-      <span class="help-block"> The Achievment Standards Network URI for this Statement <question-mark question-click=""></question-mark> </span>
+  
+    <div class="form-group" data-ng-class="{'has-error': form.notation.$invalid && form.notation.$dirty, 'has-success': !form.notation.$invalid}">
+      <label for="notation" class="sr-only"> Notation </label>
+      <input type="text" name="notation" class="form-control" data-ng-model="edu.statement.notation" placeholder="Notation" ng-required />
     </div>
  
-   <div class="form-group" data-ng-class="{'has-error': form.subject.$invalid && form.subject.$dirty, 'has-success': !form.subject.$invalid}">
+    <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}">
+      <label for="description" class="sr-only"> Description </label>
+      <textarea name="description" class="form-control" data-ng-model="edu.statement.description" placeholder="Description" ng-required>
+      </textarea>
+    </div>
+ 
+    <div class="form-group" data-ng-class="{'has-error': form.subject.$invalid && form.subject.$dirty, 'has-success': !form.subject.$invalid}">
       <label for="subject" class="sr-only"> Subject </label>
       <input type="text" name="subject" class="form-control" data-ng-model="edu.statement.subject" placeholder="Subject" disabled/>
    </div>
    
    <div class="form-group">
     <label for="educationlevels" class="sr-only"> Education Level(s) </label>
-     <ui-select multiple data-ng-model="edu.levels" theme="select2" ng-disabled="disabled" class="form-control">
+     <ui-select multiple data-ng-model="edu.levels" theme="bootstrap" ng-disabled="disabled" class="form-control">
        <ui-select-match placeholder="Education levels that this statement applys"> {{$item.description}} </ui-select-match>
        <ui-select-choices repeat="level in availableEducationLevels | filter:$select.search">
          <div ng-bind-html="level.description | highlight: $select.search"></div>
@@ -25,37 +31,10 @@
     </ui-select>
   </div>
 
-  <div class="form-group" data-ng-class="{'has-error': form.notation.$invalid && form.notation.$dirty, 'has-success': !form.notation.$invalid}">
-    <label for="notation" class="sr-only"> Notation </label>
-    <input type="text" name="notation" class="form-control" data-ng-model="edu.statement.notation" placeholder="Notation" ng-required />
-  </div>
- 
-  <div class="form-group" data-ng-class="{'has-error': form.alternateNotation.$invalid && form.alternateNotation.$dirty, 'has-success': !form.alternateNotation.$invalid}">
-    <label for="alternateNotation" class="sr-only">Alternate Notation </label>
-    <input type="text" name="alternateNotation" class="form-control" data-ng-model="edu.statement.alternateNotation" placeholder="Alternate Notation" />
-  </div>
-
-
-  <div class="form-group" data-ng-class="{'has-error': form.description.$invalid && form.description.$dirty, 'has-success': !form.description.$invalid}">
-    <label for="description" class="sr-only"> Description </label>
-    <textarea name="description" class="form-control" data-ng-model="edu.statement.description" placeholder="Description" ng-required>
-    </textarea>
-  </div>
-
-  <div class="form-group" data-ng-class="{'has-error': form.alternateDescription.$invalid && form.alternateDescription.$dirty, 'has-success': !form.alternateDescription.$invalid}">
-    <label for="alternateDescription" class="sr-only"> Alternate Description </label>
-    <textarea name="alternateDescription" class="form-control" data-ng-model="edu.statement.alternateDescription" placeholder="Alternate Description">
-    </textarea>
-  </div>
-
-  <div class="form-group" data-ng-class="{'has-error': form.identifier.$invalid && form.identifier.$dirty, 'has-success': !form.identifier.$invalid}">
-    <label for="identifier" class="sr-only"> Identifier </label>
-    <input type="text" name="identifier" class="form-control" data-ng-model="edu.statement.identifier" placeholder="Identifier" />
-  </div>
-
-  <input type="hidden" value="Engilish" data-ng-model="edu.statement.language" />
-  <input type="hidden" value="Standard" data-ng-model="edu.statement.label" />
-
+  <div class="form-group" data-ng-class="{'has-error': form.sequence.$invalid && form.sequence.$dirty, 'has-success': !form.sequence.$invalid}">
+      <label for="sequence" class="sr-only"> Subject </label>
+      <input type="number" min="1" max="50" name="sequence" class="form-control" data-ng-model="edu.statement.sequence" placeholder="Sequence" />
+   </div>
 </div>
 
 <div class="modal-footer">

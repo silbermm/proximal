@@ -14,7 +14,7 @@ import play.api.test._
 import proximaltest.helpers._
 import securesocial.core.services.SaveMode
 import services._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{ Failure, Success }
 
 class AssessmentActorSpec extends PlaySpec with Results {
@@ -67,12 +67,11 @@ class AssessmentActorSpec extends PlaySpec with Results {
           ActivityStatements.create(ActivityStatement(None, activity.id.get, statements(0).id.get))
         })
       }
-      ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standards(0).id.get)).value map (message => {
+      ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standards(0).id.get)).mapTo[Option[AssessmentQuestion]] map (message => {
         message match {
-          case Success(aq: Option[AssessmentQuestion]) => {
-            aq must not be empty
+          case Some(aq) => {
             val statementSequence: Long = DB.withSession { implicit s =>
-              Questions.findActivity(aq.get.question.id.get) match {
+              Questions.findActivity(aq.question.id.get) match {
                 case Some(act) => {
                   Activities.findWithStatements(act.id.get) map (aWs =>
                     if (aWs.statements.isEmpty) 1L else aWs.statements(0).sequence.getOrElse(1L)
@@ -81,25 +80,20 @@ class AssessmentActorSpec extends PlaySpec with Results {
                 case None => 1L
               }
             }
-            Logger.debug(s"$statementSequence")
-            ask(actorRef, ScoreAssessment(aq.get.assessment.id.get,
+            ask(actorRef, ScoreAssessment(aq.assessment.id.get,
               child.id.get,
-              aq.get.question.id.get,
+              aq.question.id.get,
               standards(0).id.get,
               5))
-              .value map (message2 => {
+              .mapTo[Option[AssessmentQuestion]] map (message2 => {
                 message2 match {
-                  case Success(aq: Option[AssessmentQuestion]) => {
-                    Logger.debug(s"${aq.get}")
-                    aq must not be empty
-                  }
-                  case Success(any: Any) => fail("Got Somethingelse back")
-                  case Failure(ex: Throwable) => fail("Got an exception")
+                  case Some(aq2) => aq2.question.id must not be empty
+                  case None => fail("Got an exception")
                   case _ => fail("Didn't get a question back...")
                 }
               })
           }
-          case Failure(ex: Throwable) => fail("Got an exception")
+          case None => fail("Got an exception")
           case _ => fail("Didn't get a question back...")
         }
       })
@@ -110,7 +104,6 @@ class AssessmentActorSpec extends PlaySpec with Results {
 
       implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
       val actorRef = TestActorRef(new AssessmentActor)
-
       DB.withSession { implicit s =>
         // Create 5 random questions
         (1 to 5) foreach (x => {
@@ -120,10 +113,10 @@ class AssessmentActorSpec extends PlaySpec with Results {
           ActivityStatements.create(ActivityStatement(None, activity.id.get, statements(0).id.get))
         })
 
-        ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standards(0).id.get)).value map (message => {
+        ask(actorRef, CreateAssessment(user.uid.get, child.id.get, standards(0).id.get)).mapTo[Option[AssessmentQuestion]] map (message => {
           message match {
-            case Success(aq: AssessmentQuestion) => aq.question.id must not be empty
-            case Failure(ex: Throwable) => fail("Got an exception")
+            case Some(aq) => aq.question.id must not be empty
+            case None => fail("Got an exception")
             case _ => fail("Didn't get a question back...")
           }
         })

@@ -28,15 +28,8 @@
 
     $scope.deleteStandard = function(){
       var modalInstance = $modal.open({
-        templateUrl: "standards/delete_standard.html",
-        controller: function($scope, $modalInstance){
-          $scope.ok = function(){
-            $modalInstance.close();
-          };
-          $scope.cancel = function(){
-            $modalInstance.dismiss('cancel'); 
-          };
-        }
+        templateUrl: "delete/delete_standard.html",
+        controller: "DeleteStandardController"
       });
       modalInstance.result.then( function(){
         standardsService.removeStandard($scope.standard.id).success(function(data){

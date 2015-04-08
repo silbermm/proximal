@@ -117,10 +117,10 @@ class AssessmentActor extends Actor {
   def chooseQuestion(studentId: Long, standardId: Long, isRandom: Boolean, lastScored: Option[Score]): Option[Question] = {
     DB.withSession { implicit s =>
       val activities = Activities.filterByStandardLevelCategory(studentId, standardId, "question")
-       .filter(activity => {
-      val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
-      score.isEmpty
-      })
+        .filter(activity => {
+          val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
+          score.isEmpty
+        })
       Logger.debug(s"$activities")
       if (activities.length < 1) {
         None

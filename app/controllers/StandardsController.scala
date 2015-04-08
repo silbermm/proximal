@@ -17,18 +17,9 @@ case class TupleWithList(statement: Option[Statement], levels: List[EducationLev
 
 case class JsonStandard(
   id: Option[Long],
-  organizationId: Option[Long],
   title: Option[String],
   description: Option[String],
-  publicationStatus: Option[String],
   subject: Option[String],
-  language: Option[String],
-  source: Option[String],
-  dateValid: Option[Date],
-  repositoryDate: Option[Date],
-  rights: Option[String],
-  manifest: Option[String],
-  identifier: Option[String],
   levels: Option[List[EducationLevel]])
 
 class StandardsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
@@ -186,18 +177,9 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   def convertFromJsonStandard(standard: JsonStandard): (Standard, List[EducationLevel]) = {
     val stan = Standard(
       standard.id,
-      standard.organizationId,
       standard.title.getOrElse(""),
       standard.description.getOrElse(""),
-      standard.publicationStatus.getOrElse(""),
-      standard.subject.getOrElse(""),
-      standard.language,
-      standard.source,
-      standard.dateValid,
-      standard.repositoryDate,
-      standard.rights,
-      standard.manifest,
-      standard.identifier
+      standard.subject.getOrElse("")
     )
     val edLevels = standard.levels.getOrElse(List.empty)
     (stan, edLevels)
@@ -206,18 +188,9 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
   def convertToJsonStandard(standard: Standard, edLevels: List[EducationLevel]): JsonStandard = {
     JsonStandard(
       standard.id,
-      standard.organizationId,
       Some(standard.title),
       Some(standard.description),
-      Some(standard.publicationStatus),
       Some(standard.subject),
-      standard.language,
-      standard.source,
-      standard.dateValid,
-      standard.repositoryDate,
-      standard.rights,
-      standard.manifest,
-      standard.identifier,
       Some(edLevels)
     )
   }
