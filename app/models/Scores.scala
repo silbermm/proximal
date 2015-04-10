@@ -71,7 +71,7 @@ object Scores {
     scores.filter(x => x.questionId === questionId && x.studentId === studentId).firstOption
   }
 
-  def findByActAndStudent(actId: Long, studentId: Long)(implicit s: Session) = {
+  def findByActAndStudent(actId: Long, studentId: Long)(implicit s: Session): Option[Score] = {
     scores.filter(x => x.actId === actId && x.studentId === studentId).firstOption
   }
 

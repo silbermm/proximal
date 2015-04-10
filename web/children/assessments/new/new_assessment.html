@@ -4,7 +4,7 @@
 <div class="modal-body">
   <div class="alert alert-danger" role="alert" ng-if="newAssessment.error"> {{newAssessment.error}} </div>
   <div class="jumbotron"> 
-    <h1> {{newAssessment.items.question.question.text}} </h1> 
+    <h1> {{newAssessment.items.question.text}} </h1> 
   </div> 
   <rating style="font-size:2em; color: gold;" ng-model="newAssessment.rateQuestion" max="newAssessment.max" readonly="newAssessment.isReadonly" on-hover="newAssessment.hoveringOver(value)" on-leave="newAssessment.overStar = null"></rating>
 </div>

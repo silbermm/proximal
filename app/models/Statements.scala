@@ -63,8 +63,17 @@ object Statements {
     (find(id), query.list)
   }
 
-  def findBySequence(sequenceNumber: Long, standardId: Long)(implicit s: Session): Option[Statement] =
-    statements.filter(x => x.sequence === sequenceNumber && x.standardId === standardId).firstOption
+  def findBySequence(sequenceNumber: Long, standardId: Long, studentId: Long)(implicit s: Session): Option[Statement] = {
+    var query = for {
+      statement <- statements if statement.sequence === sequenceNumber
+      standard <- statement.standard if standard.id === standardId
+      person <- people if person.id === studentId
+      edLevel <- person.educationLevel
+      levels <- statement_levels if levels.statementId === statement.id && levels.educationLevelId === edLevel.id
+    } yield statement
+    query.firstOption
+
+  }
 
   def list(implicit s: Session) =
     statements.list

@@ -8,6 +8,12 @@ versionWithGit
 
 scalariformSettings
 
+WebKeys.webTarget := target.value / "scala-web"
+
+herokuAppName in Compile := "proximal"
+
+artifactPath in PlayKeys.playPackageAssets := WebKeys.webTarget.value / (artifactPath in PlayKeys.playPackageAssets).value.getName
+
 scalacOptions ++= Seq(
   "-feature",
   "-unchecked",

@@ -24,12 +24,16 @@
       if(_this.rateQuestion > 0) { 
         _this.error = undefined;
         var questionScore = {
+          assessmentId: _this.items.assessment.id,
           studentId: _this.items.childId,
-          questionId: _this.items.question.question.id,
+          questionId: _this.items.question.id,
           score: _this.rateQuestion,
-          timestamp: (new Date()).getMilliseconds()
+          standardId: _this.items.standardId,
+          timestamp: (new Date()).getTime()
         };
-        _this.items.question.question = Assessments.score({assessmentId: _this.items.question.assessment.id},questionScore ); 
+        Assessments.score({assessmentId: _this.items.assessment.id},questionScore, function(newQues){
+          _this.items.question = newQues.question;
+        }); 
          
         
       } else {

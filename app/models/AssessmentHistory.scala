@@ -32,13 +32,13 @@ object AssessmentHistories {
 
   def findByAssessmentWithScore(assessmentId: Long)(implicit s: Session) = {
     val q = for {
-      assessment <- history if assessment.id === assessmentId
-      score <- assessment.score
-    } yield (assessment, score)
+      h <- history if h.assessmentId === assessmentId
+      score <- h.score
+    } yield (h, score)
 
     q.list.map(x => {
-      val h = history.filter(_.assessmentId === x._1.assessmentId).first
-      AssessmentHistoryWithScore(h.id, h.assessmentId, h.activityId, h.scoreId, Some(x._2))
+      //val h = history.filter(_.assessmentId === x._1.assessmentId).first
+      AssessmentHistoryWithScore(x._1.id, x._1.assessmentId, x._1.activityId, x._1.scoreId, Some(x._2))
     })
   }
 

@@ -15,4 +15,4 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.0.3")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0-RC1")
+addSbtPlugin("com.heroku" % "sbt-heroku" % "0.3.6")

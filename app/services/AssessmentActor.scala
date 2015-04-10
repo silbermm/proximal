@@ -26,7 +26,7 @@ import scala.util.Random
 
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
-case class ScoreAssessment(assessmentId: Long, childId: Long, questionId: Long, standardId: Long, score: Long)
+case class ScoreAssessment(assessmentId: Long, studentId: Long, questionId: Long, standardId: Long, score: Long)
 case class AssessmentQuestion(assessment: Assesment, question: Question)
 case class TestAssessment(e: String)
 
@@ -74,29 +74,36 @@ class AssessmentActor extends Actor {
   def score(scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
       // Get activty for this question...
-      Questions.findActivity(scoreAssessment.questionId) map { activity =>
-        activity.id map { activityId =>
-          // Create the score in the database...
-          val score = Scores.create(
-            Score(None, scoreAssessment.childId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime)
-          )
-          // Create the Assessment History... 
-          AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.get))
+      Questions.findActivity(scoreAssessment.questionId) match {
+        case Some(activity) => {
+          val hws = activity.id map { activityId =>
+            // Create the score in the database...
+            val score = Scores.create(
+              Score(None, scoreAssessment.studentId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime)
+            )
+            AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.getOrElse(0)))
+            val history = AssessmentHistories.findByAssessmentWithScore(scoreAssessment.assessmentId)
+            history;
+          }
+          hws match {
+            case Some(history) => determineNextQuestion(history, history.length - 1, scoreAssessment)
+            case _ => None
+          }
         }
-        val history = AssessmentHistories.findByAssessmentWithScore(scoreAssessment.assessmentId)
-        // Decide if we need another question...
-        determineNextQuestion(history, history.length - 1, scoreAssessment)
-      } getOrElse None
+        case _ => None
+      }
     }
   }
 
   def determineNextQuestion(history: List[AssessmentHistoryWithScore], place: Int, scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
+
       val lastScore = history(place).score
       val lastScoreValue = history(place).score map (_.score) getOrElse 0
       if (lastScoreValue != 3L) {
         val assessment = Assesments.find(scoreAssessment.assessmentId)
-        val question = chooseQuestion(scoreAssessment.childId, scoreAssessment.standardId, true, lastScore)
+        val question = chooseQuestion(scoreAssessment.studentId, scoreAssessment.standardId, true, lastScore)
+        //TODO: Perform matching so .get doesn't fail!
         Some(AssessmentQuestion(assessment.get, question.get))
       } else {
         if (history.length - 3 == place) {
@@ -118,16 +125,19 @@ class AssessmentActor extends Actor {
     DB.withSession { implicit s =>
       val activities = Activities.filterByStandardLevelCategory(studentId, standardId, "question")
         .filter(activity => {
-          val score = activity.id map (Scores.findByActivityAndStudent(_, studentId))
-          score.isEmpty
+          activity.id map { aid =>
+            Scores.findByActivityAndStudent(aid, studentId) match {
+              case Some(activ) => false
+              case _ => true
+            }
+          } getOrElse true
         })
-      Logger.debug(s"$activities")
       if (activities.length < 1) {
         None
       } else {
         // if lastScored is set, than we need to filter again by only statements that are appropriate
         val updatedActivities = lastScored.map { score =>
-          // got get the score and activity and determine which statement it was scored for...
+          // get the score and activity and determine which statement it was scored for...
           Scores.find(score.id getOrElse (0)) match {
             case Some(sc) => {
               val currentSequence: Long = Activities.findWithStatements(sc.activityId.get) match {
@@ -135,6 +145,8 @@ class AssessmentActor extends Actor {
                 case None => 0
               }
               //val availableStatements = Statements.filterByStandardAndLevel(standardId, studentId); 
+              Logger.debug(s"last scored was ${sc.score}");
+              Logger.debug(s"current statement sequence is $currentSequence")
               val sequenceToUse = sc.score match {
                 case Some(1) => if (currentSequence > 1) currentSequence - 2 else 1
                 case Some(2) => if (currentSequence > 0) currentSequence - 1 else 1
@@ -143,8 +155,10 @@ class AssessmentActor extends Actor {
                 case Some(5) => currentSequence + 2
                 case _ => 1
               }
-              // get the statement with the above sequence...
-              Statements.findBySequence(sequenceToUse, standardId) map { statement =>
+              Logger.debug(s"sequence to use is $sequenceToUse")
+              // get the statement with the above sequence, gradelevel and standard...
+              Statements.findBySequence(sequenceToUse, standardId, studentId) map { statement =>
+                Logger.debug(s"statement to use $statement")
                 activities.filter(activity => {
                   Activities.includesStatement(statement.id.get, activity.id.get)
                 })

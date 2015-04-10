@@ -133,7 +133,7 @@
       var resource = Common.getResource();
 			vm.entity.activity.date = new Date().getTime();      
 		  vm.entity.activity.creator = vm.profile.user.uid;
-      vm.entity.activity.resourceId = resource !== undefined ? resource.id : undefined;
+      vm.entity.activity.resourceId = resource !== undefined ? resource.id : undefined;  
       $modalInstance.close(vm.entity);
 		}
 
