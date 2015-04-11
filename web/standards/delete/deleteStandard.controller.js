@@ -2,7 +2,7 @@
 
   module.exports = DeleteStandardController;
  
-  DeleteStandardController.$inject = ['$scope', '$modalInstance']
+  DeleteStandardController.$inject = ['$scope', '$modalInstance'];
  
   function DeleteStandardController($scope, $modalInstance){
     $scope.ok = function(){

@@ -106,8 +106,10 @@ object Questions {
   def allWithResource(implicit s: Session) = {
     val query = for {
       ques <- questions if ques.resourceId.isDefined
+      quesPic <- questionUploads if quesPic.questionId === ques.id
+      pic <- quesPic.upload
       res <- resources if res.id === ques.resourceId
-    } yield (res, ques)
+    } yield (res, ques, pic)
 
     query.list map { tup =>
       ResourceWithQuestion(tup._1.id,
@@ -116,7 +118,10 @@ object Questions {
         tup._1.category,
         tup._1.creator,
         tup._1.createdOn,
-        Some(tup._2))
+        Some(tup._2),
+        Some(tup._3)
+      )
+
     }
   }
 

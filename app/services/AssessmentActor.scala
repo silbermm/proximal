@@ -27,7 +27,7 @@ import scala.util.Random
 case class ChildAndStandard(childId: Long, standardId: Long)
 case class CreateAssessment(parentUid: Long, childId: Long, standardId: Long)
 case class ScoreAssessment(assessmentId: Long, studentId: Long, questionId: Long, standardId: Long, score: Long)
-case class AssessmentQuestion(assessment: Assesment, question: Question)
+case class AssessmentQuestion(assessment: Assesment, question: Question, picture: Option[Upload])
 case class TestAssessment(e: String)
 
 class AssessmentActor extends Actor {
@@ -66,7 +66,8 @@ class AssessmentActor extends Actor {
       val assessment = Assesments.create(Assesment(None, createAssessment.childId, Platform.currentTime, None))
       val question = chooseQuestion(
         createAssessment.childId, createAssessment.standardId, true, None) getOrElse (Question(Some(-1L), "", None, None, None))
-      Some(AssessmentQuestion(assessment, question))
+      var pic = QuestionUploads.findUploadByQuestion(question.id.get);
+      Some(AssessmentQuestion(assessment, question, pic))
       // })
     }
   }
@@ -82,8 +83,7 @@ class AssessmentActor extends Actor {
               Score(None, scoreAssessment.studentId, None, None, Some(activityId), Some(scoreAssessment.score), Platform.currentTime)
             )
             AssessmentHistories.create(AssessmentHistory(None, scoreAssessment.assessmentId, activityId, score.id.getOrElse(0)))
-            val history = AssessmentHistories.findByAssessmentWithScore(scoreAssessment.assessmentId)
-            history;
+            AssessmentHistories.findByAssessmentWithScore(scoreAssessment.assessmentId)
           }
           hws match {
             case Some(history) => determineNextQuestion(history, history.length - 1, scoreAssessment)
@@ -97,24 +97,38 @@ class AssessmentActor extends Actor {
 
   def determineNextQuestion(history: List[AssessmentHistoryWithScore], place: Int, scoreAssessment: ScoreAssessment): Option[AssessmentQuestion] = {
     DB.withSession { implicit s =>
-
       val lastScore = history(place).score
-      val lastScoreValue = history(place).score map (_.score) getOrElse 0
-      if (lastScoreValue != 3L) {
-        val assessment = Assesments.find(scoreAssessment.assessmentId)
-        val question = chooseQuestion(scoreAssessment.studentId, scoreAssessment.standardId, true, lastScore)
-        //TODO: Perform matching so .get doesn't fail!
-        Some(AssessmentQuestion(assessment.get, question.get))
+      val lastScoreValue = history(place).score map (_.score.get) getOrElse 0
+      if (lastThreeQuestionsScored(history)) {
+        None
       } else {
-        if (history.length - 3 == place) {
-          // we've checked the last three scores and they all equal 3, this is the standard we should recommend
-          // for the next activity
-          None
-        } else {
-          // the last score value was 3, what about the one before and the one before that?
-          determineNextQuestion(history, place - 1, scoreAssessment)
+        // if the current score is not three, find a new question to ask
+        Assesments.find(scoreAssessment.assessmentId) match {
+          case Some(asses) => {
+            chooseQuestion(scoreAssessment.studentId, scoreAssessment.standardId, true, lastScore) map { question =>
+              var pic = QuestionUploads.findUploadByQuestion(question.id.get);
+              Some(AssessmentQuestion(asses, question, pic))
+            } getOrElse None
+          }
+          case _ => None
         }
       }
+    }
+  }
+
+  /**
+   * Find out if the last three scores are equal to three
+   */
+  def lastThreeQuestionsScored(history: List[AssessmentHistoryWithScore]): Boolean = {
+    if (history.length < 3) {
+      return false;
+    } else {
+      val listIndex = history.length - 1
+      val lastScore = history(listIndex).score map (_.score.get) getOrElse 0
+      val secondLastScore = history(listIndex - 1).score map (_.score.get) getOrElse 0
+      val thirdLastScore = history(listIndex - 2).score map (_.score.get) getOrElse 0
+
+      return (lastScore == 3 && secondLastScore == 3 && thirdLastScore == 3)
     }
   }
 
@@ -133,18 +147,23 @@ class AssessmentActor extends Actor {
           } getOrElse true
         })
       if (activities.length < 1) {
+        Logger.debug("no questions to ask.. sorry")
         None
       } else {
         // if lastScored is set, than we need to filter again by only statements that are appropriate
+        Logger.debug(s"lastScore: $lastScored");
         val updatedActivities = lastScored.map { score =>
           // get the score and activity and determine which statement it was scored for...
           Scores.find(score.id getOrElse (0)) match {
             case Some(sc) => {
+              Logger.debug(s"sc : $sc")
+              Logger.debug(s"finding acitivity with statements by id: ${sc.activityId.get}")
               val currentSequence: Long = Activities.findWithStatements(sc.activityId.get) match {
-                case Some(aws) => aws.statements(0).sequence.getOrElse(1L)
+                case Some(aws) => {
+                  aws.statements(0).sequence.getOrElse(1L)
+                }
                 case None => 0
               }
-              //val availableStatements = Statements.filterByStandardAndLevel(standardId, studentId); 
               Logger.debug(s"last scored was ${sc.score}");
               Logger.debug(s"current statement sequence is $currentSequence")
               val sequenceToUse = sc.score match {
@@ -156,7 +175,6 @@ class AssessmentActor extends Actor {
                 case _ => 1
               }
               Logger.debug(s"sequence to use is $sequenceToUse")
-              // get the statement with the above sequence, gradelevel and standard...
               Statements.findBySequence(sequenceToUse, standardId, studentId) map { statement =>
                 Logger.debug(s"statement to use $statement")
                 activities.filter(activity => {

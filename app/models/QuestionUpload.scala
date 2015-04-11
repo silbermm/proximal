@@ -57,4 +57,12 @@ object QuestionUploads {
     query.firstOption
   }
 
+  def findUploadByQuestion(q: Long)(implicit s: Session) = {
+    val query = for {
+      upload <- questionUploads if upload.questionId === q
+      pic <- upload.upload
+    } yield pic
+    query.firstOption
+  }
+
 }

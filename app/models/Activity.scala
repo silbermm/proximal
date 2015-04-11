@@ -16,7 +16,7 @@
 package models
 
 import play.api.db.slick.Config.driver.simple._
-
+import play.Logger
 import scala.slick.lifted.Tag
 
 case class Activity(id: Option[Long],

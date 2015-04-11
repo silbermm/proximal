@@ -33,6 +33,8 @@
         };
         Assessments.score({assessmentId: _this.items.assessment.id},questionScore, function(newQues){
           _this.items.question = newQues.question;
+          _this.rateQuestion = 0;
+          _this.items.picture = newQues.picture; 
         }); 
          
         

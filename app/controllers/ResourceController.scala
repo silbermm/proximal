@@ -42,10 +42,6 @@ class ResourceController(override implicit val env: RuntimeEnvironment[SecureUse
       })
   }
 
-  def deleteResource = SecuredAction.async { implicit request =>
-    ???
-  }
-
   def getResource(id: Long) = SecuredAction.async { implicit request =>
     ask(resourceActor, GetResource(id)) map { message =>
       message match {

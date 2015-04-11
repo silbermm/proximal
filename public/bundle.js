@@ -69588,7 +69588,7 @@
 /* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.text}} </h1> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
+	var v1="<div class=\"modal-header\"> <h3 class=\"modal-title\">New Assessment</h3> </div> <div class=\"modal-body\"> <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"newAssessment.error\"> {{newAssessment.error}} </div> <div class=\"jumbotron\"> <h1> {{newAssessment.items.question.text}} </h1> <div question-picture pic=\"newAssessment.items.picture\" width=\"50%\"> </div> </div> <rating style=\"font-size:2em; color: gold\" ng-model=\"newAssessment.rateQuestion\" max=\"newAssessment.max\" readonly=\"newAssessment.isReadonly\" on-hover=\"newAssessment.hoveringOver(value)\" on-leave=\"newAssessment.overStar = null\"></rating> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" ng-disabled=\"!newAssessment.scored\" ng-click=\"newAssessment.next()\">Next</button>\n<button class=\"btn btn-warning\" ng-click=\"newAssessment.cancel()\">Cancel</button> </div>";
 	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("new/new_assessment.html", v1)}]);
 	module.exports=v1;
 
@@ -69644,7 +69644,7 @@
 	          size: "lg",
 	          resolve: {
 	            items: function items() {
-	              return { childId: Number($stateParams.id), assessment: d.assessment, question: d.question, standardId: _this.standardSelected.id };
+	              return { childId: Number($stateParams.id), assessment: d.assessment, question: d.question, standardId: _this.standardSelected.id, picture: d.picture };
 	            }
 	          }
 	        });
@@ -69701,6 +69701,8 @@
 	        };
 	        Assessments.score({ assessmentId: _this.items.assessment.id }, questionScore, function (newQues) {
 	          _this.items.question = newQues.question;
+	          _this.rateQuestion = 0;
+	          _this.items.picture = newQues.picture;
 	        });
 	      } else {
 	        _this.error = "Please rate the students answer first";
@@ -70084,7 +70086,7 @@
 /* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th ng-show=\"isMultipleSelect()\"> <input type=\"checkbox\" ng-model=\"selectAll\" ng-change=\"toggleSelectAll()\"/> </th> <th> Question Text </th> <th> Answer </th> <th ng-hide=\"hidePicture\"> Picture </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"resource in questions\" data-ng-click=\"toggleResource(resource)\" data-ng-class=\"{'success': resource.selected}\"> <td ng-show=\"isMultipleSelect()\"> <input type=\"checkbox\" ng-model=\"resource.selected\" on-change=\"toggleQuestion(resource)\"/> </td> <td> {{::resource.question.text}} </td> <td> {{::resource.question.answer}} </td> <td ng-hide=\"hidePicture\" question-picture pic=\"resource.picture\" style=\"width: 100px;height:100px\"> </td> </tr> </tbody> </table> </div>";
+	var v1="<div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th ng-show=\"isMultipleSelect()\"> <input type=\"checkbox\" ng-model=\"selectAll\" ng-change=\"toggleSelectAll()\"/> </th> <th> Question Text </th> <th> Answer </th> <th ng-hide=\"hidePicture\"> Picture </th> </tr> </thead> <tbody> <tr data-ng-repeat=\"resource in questions\" data-ng-click=\"toggleResource(resource)\" data-ng-class=\"{'success': resource.selected}\"> <td ng-show=\"isMultipleSelect()\"> <input type=\"checkbox\" ng-model=\"resource.selected\" on-change=\"toggleQuestion(resource)\"/> </td> <td> {{::resource.question.text}} </td> <td> {{::resource.question.answer}} </td> <td ng-hide=\"hidePicture\" question-picture pic=\"resource.picture\" width=\"50%\"> </td> </tr> </tbody> </table> </div>";
 	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/detail_question.html", v1)}]);
 	module.exports=v1;
 
@@ -70220,26 +70222,26 @@
 	"use strict";
 
 	(function () {
-
+	  __webpack_require__(145);
 	  var img = __webpack_require__(143);
 
 	  module.exports = function ($log, $q) {
 	    return {
 	      restrict: "A",
 	      scope: {
-	        pic: "=pic"
+	        pic: "=pic",
+	        width: "@width"
 	      },
+	      templateUrl: "details/questionPicture.html",
 	      link: function link(scope, elem, attr) {
-	        if (scope.pic === undefined) {
-	          elem.css({ "background-image": "url(" + img + ")" });
-	        } else {
-	          elem.css({ "background-image": "url(data:image/png;base64," + scope.question.picture });
-	        }
-	        elem.css({ "background-size": "contain" });
-	        elem.css({ "background-repeat": "no-repeat" });
 
-	        if (!_.isUndefined(attr.picturePadding)) {
-	          elem.css({ "padding-bottom": attr.picturePadding });
+	        console.log(scope.pic);
+
+	        scope.showPicture = showPicture;
+	        scope.style = { width: scope.width };
+
+	        function showPicture() {
+	          return scope.pic !== undefined;
 	        }
 	      }
 	    };
@@ -70792,6 +70794,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "32e4d0b32d05db9cbe4629cad088411a.jpeg"
+
+/***/ },
+/* 145 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var v1="<img ng-show=\"showPicture()\" src=\"data:{{pic.contentType}};base64, {{pic.content}}\" ng-style=\"style\"/>";
+	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("details/questionPicture.html", v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ])

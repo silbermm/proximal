@@ -24,7 +24,7 @@
           size: 'lg',
           resolve: {
             items: function () {
-              return { childId: Number($stateParams.id), "assessment": d.assessment, "question": d.question, "standardId": _this.standardSelected.id };
+              return { childId: Number($stateParams.id), "assessment": d.assessment, "question": d.question, "standardId": _this.standardSelected.id, 'picture': d.picture };
             }
           }
         });

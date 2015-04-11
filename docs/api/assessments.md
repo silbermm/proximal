@@ -27,10 +27,13 @@ Example:
 		'id' : 1,
 		'beginDate' : 1422220207510,
 	},
+  'picture' : {
+    'contentType: 'image/png', 
+    'content': 'somelongstringofnumbersrepreseningthebase64picture',
+   },
 	'question' : {
 		'id': 1,
 		'text': 'What is the first letter of the alphabet?',
-		'picture' : 'somelongstringofnumbersrepreseningthebase64picture',
 		'typeId' : 4,
 		'answer' : "A"
 	}
@@ -49,9 +52,11 @@ Example:
 Send the Scored Question as a JSON object
 ```json
 {
-	'studentId': 23,
+  'assessmentId: 1,
+	'studentId': 340,
 	'questionId': 570,
 	'score' : 5,
+  'standardId' : 4569,
 	'timestamp': 1422220207510
 }
 ``` 
@@ -64,11 +69,14 @@ The next question to answer
 		'id' : 1,
 		'beginDate' : 1422220207510,
 	},
+  'picture' : {
+    'contentType: 'image/png', 
+    'content': 'somelongstringofnumbersrepreseningthebase64picture',
+   },
 	'question' : {
 		'id': 1,
 		'text': 'What is the first letter of the alphabet?',
-		'picture' : 'somelongstringofnumbersrepreseningthebase64picture',
-		'typeId' : 4,
+    'resourceId' : 4,
 		'answer' : "A"
 	}
 }

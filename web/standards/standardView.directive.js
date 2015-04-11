@@ -12,7 +12,7 @@
         activityId: '=activityId'
       },
       link: link
-    }
+    };
 
     function link(scope, el, attr){
     
@@ -31,4 +31,4 @@
     }
   }
 
-})()
+})();

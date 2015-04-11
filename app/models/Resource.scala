@@ -17,7 +17,8 @@ case class ResourceWithQuestion(id: Option[Long],
   category: Option[String],
   creator: Option[Long],
   createdOn: Option[Long],
-  question: Option[Question])
+  question: Option[Question],
+  picture: Option[Upload])
 
 class Resources(tag: Tag) extends Table[Resource](tag, "resources") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -64,7 +65,7 @@ object Resources {
           resource.category,
           resource.creator,
           resource.createdOn,
-          query.firstOption))
+          query.firstOption, None))
       }
       case None => None
     }
@@ -83,7 +84,9 @@ object Resources {
         tup._1.category,
         tup._1.creator,
         tup._1.createdOn,
-        Some(tup._2))
+        Some(tup._2),
+        None
+      )
     }
 
   }
