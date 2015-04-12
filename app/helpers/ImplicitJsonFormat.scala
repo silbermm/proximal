@@ -7,6 +7,9 @@ import models._
 import securesocial.core._
 
 object ImplicitJsonFormat {
+
+  implicit val attemptFormate = Json.format[Attempt]
+
   implicit val scoresFormat = Json.format[Score]
   implicit val personFormat = Json.format[Person]
   implicit val standardFormat = Json.format[Standard]
@@ -30,6 +33,8 @@ object ImplicitJsonFormat {
   implicit val oAuth2Format = Json.format[securesocial.core.OAuth2Info]
   implicit val passwordInfoFormat = Json.format[securesocial.core.PasswordInfo]
 
+  implicit val questionwithpictureFormat = Json.format[QuestionWithPicture]
+
   implicit val secureUserFormat = Json.format[SecureUser]
   implicit val roleFormat = Json.format[Role]
   implicit val profileFormat = Json.format[Profile]
@@ -41,6 +46,7 @@ object ImplicitJsonFormat {
   implicit val homeworkFormat = Json.format[Homework]
   implicit val studyFormat = Json.format[Study]
 
+  implicit val activityQuestionFormat = Json.format[ActivityQuestion]
   implicit val createHomeworkFormat = Json.format[CreateHomeworkActivity]
   implicit val homeworkActivityActsFormat = Json.format[HomeworkActivityActs]
 

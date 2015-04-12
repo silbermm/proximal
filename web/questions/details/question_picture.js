@@ -11,8 +11,6 @@ module.exports = function($log,$q){
     },
     templateUrl: "details/questionPicture.html",
     link: function(scope,elem,attr) {
-      
-      console.log(scope.pic);
        
       scope.showPicture = showPicture;
       scope.style = { width: scope.width };

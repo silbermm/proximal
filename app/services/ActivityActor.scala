@@ -5,6 +5,8 @@ import models._
 import play.api.Play.current
 import play.api.db.slick.DB
 
+import scala.util.Random
+
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
 case class ListHomework(studentId: Long)
 case class DeleteHomework(uid: Long, homeworkId: Long)
@@ -12,7 +14,14 @@ case class DeleteHomework(uid: Long, homeworkId: Long)
 case class CreateActivity(activity: Activity, statementIds: List[Long])
 case class ListActivities(uid: Long)
 case class DeleteActivity(activityId: Long)
+
 case class FindStatement(activityId: Long)
+case class FindActivities(studentId: Long, category: String)
+
+case class GetQuestion(studentId: Long, standardId: Long)
+case class CreateActivityAttempt(studentId: Long, activityId: Long, score: Int)
+
+case class ActivityQuestion(activity: Activity, question: QuestionWithPicture)
 
 class ActivityActor extends Actor {
 
@@ -27,6 +36,14 @@ class ActivityActor extends Actor {
           throw e
         }
       }
+    }
+    case fa: FindActivities => {
+      val activities = ActivityActor.findActivities(fa.studentId, fa.category, None)
+      sender ! activities
+    }
+    case getQuestion: GetQuestion => {
+      val question = ActivityActor.getQuestion(getQuestion.studentId, getQuestion.standardId)
+      sender ! question
     }
     case la: ListActivities => {
       try {
@@ -72,6 +89,8 @@ class ActivityActor extends Actor {
 
 object ActivityActor {
 
+  private val random = new Random
+
   def deleteHomework(uid: Long, homeworkId: Long) = {
     DB.withSession { implicit s =>
       Homeworks.find(homeworkId) match {
@@ -97,6 +116,54 @@ object ActivityActor {
   def findStatement(activityId: Long): List[Statement] = {
     DB.withSession { implicit s =>
       Activities.findWithStatements(activityId) map (_.statements) getOrElse (List.empty)
+    }
+  }
+
+  def findActivities(studentId: Long, category: String, standardId: Option[Long]): List[Activity] = {
+    DB.withSession { implicit s =>
+      val standards = standardId map { x =>
+        Standards.find(x) match {
+          case Some(stan) => List(stan)
+          case None => Standards.list
+        }
+      } getOrElse Standards.list
+      // for each standard,  find all study activities in the students grade level
+      for {
+        standard <- standards
+        activities <- Activities.filterByStandardLevelCategory(studentId, standard.id.get, category)
+      } yield activities
+    }
+  }
+
+  def getQuestion(studentId: Long, standardId: Long): Option[ActivityQuestion] = {
+    DB.withSession { implicit s =>
+      val activities = filterOutAttemptedActivities(
+        findActivities(studentId, "question", Some(standardId)),
+        studentId)
+      //pick random for now...
+      val activity = activities(random.nextInt(activities.length))
+      val question: Option[QuestionWithPicture] = activity.resourceId map (rid =>
+        Questions.findByResourceId(rid) map { q =>
+          Questions.findWithPicture(q.id.get)
+        } getOrElse None
+      ) getOrElse None
+
+      question map { q =>
+        ActivityQuestion(activity, q)
+      }
+    }
+  }
+
+  def filterOutAttemptedActivities(activities: List[Activity], studentId: Long) = {
+    DB.withSession { implicit s =>
+      activities.filter(activity => {
+        activity.id map { aid =>
+          Attempts.findByStudentAndActivity(studentId, aid) match {
+            case Some(activ) => false
+            case _ => true
+          }
+        } getOrElse true
+      })
     }
   }
 

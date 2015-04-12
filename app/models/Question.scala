@@ -5,7 +5,7 @@ import play.api.db.slick.Config.driver.simple._
 import scala.slick.lifted.Tag
 
 case class Question(id: Option[Long], text: String, typeId: Option[Long], answer: Option[String], resourceId: Option[Long])
-
+case class QuestionWithPicture(id: Option[Long], text: String, typeId: Option[Long], answer: Option[String], resourceId: Option[Long], picture: Option[Upload])
 case class JsonQuestion(id: Option[Long], text: String, pictures: Option[List[Upload]], typeId: Option[Long], answer: Option[String], resourceId: Option[Long], statements: Option[List[Statement]])
 
 class Questions(tag: Tag) extends Table[Question](tag, "questions") {
@@ -129,6 +129,19 @@ object Questions {
     all.map { q =>
       Questions.findWithStatements(q.id.get)
     }
+  }
+
+  def findWithPicture(id: Long)(implicit s: Session): Option[QuestionWithPicture] = {
+    val query = for {
+      question <- questions if question.id === id
+      quesUpload <- questionUploads if quesUpload.questionId === id
+      upload <- quesUpload.upload
+    } yield upload
+
+    find(id) map { question =>
+      QuestionWithPicture(question.id, question.text, question.typeId, question.answer, question.resourceId, query.firstOption)
+    }
+
   }
 
   def findWithStatements(id: Long)(implicit s: Session): JsonQuestion = {

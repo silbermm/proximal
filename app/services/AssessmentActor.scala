@@ -127,7 +127,6 @@ class AssessmentActor extends Actor {
       val lastScore = history(listIndex).score map (_.score.get) getOrElse 0
       val secondLastScore = history(listIndex - 1).score map (_.score.get) getOrElse 0
       val thirdLastScore = history(listIndex - 2).score map (_.score.get) getOrElse 0
-
       return (lastScore == 3 && secondLastScore == 3 && thirdLastScore == 3)
     }
   }
@@ -191,7 +190,7 @@ class AssessmentActor extends Actor {
 
         // choose a random activity and get the question for it..a
         if (isRandom) {
-          updatedActivities(random.nextInt(activities.length)).resourceId map (x =>
+          updatedActivities(random.nextInt(updatedActivities.length)).resourceId map (x =>
             Questions.findByResourceId(x) getOrElse Question(Some(-1L), "", None, None, None)
           )
         } else {

@@ -51,6 +51,22 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     }
   }
 
+  def getQuestion(studentId: Long, standardId: Long) = SecuredAction.async { implicit request =>
+    ask(activityActor, GetQuestion(studentId, standardId)).mapTo[Option[ActivityQuestion]] map { x =>
+      Ok(Json.toJson(x))
+    }
+  }
+
+  def findActivitiesByTypeAndStudent(activityType: String, studentId: Long) = SecuredAction.async { implicit request =>
+    if (activityType == "study") {
+      ask(activityActor, FindActivities(studentId, "study")).mapTo[List[Activity]] map { x =>
+        Ok(Json.toJson(x))
+      }
+    } else {
+      Future { BadRequest(Json.obj("message" -> s"")) }
+    }
+  }
+
   def createActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     //Todo: Make sure this person has the correct permissions to do this! 
     request.body.validate[CreateActivity].fold(

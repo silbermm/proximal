@@ -45,7 +45,9 @@
 			});
 
 			modalInstance.result.then(function (result) {
-				var activity = new Activities.data(result);
+			  console.log(result);	
+        var activity = new Activities.data({'activity': result.activity, 'statementIds': result.statementIds});
+        console.log(activity);
 				activity.$save(function(saved){
           vm.activities.push(saved);
 					toaster.pop("success", null, "Successfully added a new activitiy!");
@@ -74,7 +76,6 @@
     }
 
     function isMyTab(){
-      console.log(vm.tab === "my");
       return vm.tab === "my";
     }
 

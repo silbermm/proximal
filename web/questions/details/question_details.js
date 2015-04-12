@@ -33,11 +33,9 @@
       ////////////////////////////
       function activate(){
 
-        console.log(scope);
       }
 
       function toggleResource(resource){
-        console.log("toggled!");
         if(resource.selected){
           resource.selected = false;
           scope.selectlist = _.filter(scope.selectlist, function(l){
@@ -55,7 +53,6 @@
           }
           resource.selected = true;
         }
-        console.log(scope.selectlist);
       }
 
       function isMultipleSelect(){
@@ -88,8 +85,6 @@
             question.selected = false;    
           });
         }
-
-        console.log(scope.selectlist );
       }
     } 
   }

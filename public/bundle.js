@@ -68865,7 +68865,9 @@
 	      });
 
 	      modalInstance.result.then(function (result) {
-	        var activity = new Activities.data(result);
+	        console.log(result);
+	        var activity = new Activities.data({ activity: result.activity, statementIds: result.statementIds });
+	        console.log(activity);
 	        activity.$save(function (saved) {
 	          vm.activities.push(saved);
 	          toaster.pop("success", null, "Successfully added a new activitiy!");
@@ -68894,7 +68896,6 @@
 	    }
 
 	    function isMyTab() {
-	      console.log(vm.tab === "my");
 	      return vm.tab === "my";
 	    }
 
@@ -69047,7 +69048,6 @@
 	      var currentStep = _.find(vm.steps, function (s) {
 	        return s.selected === true;
 	      });
-	      console.log(currentStep);
 	      if (currentStep.step === 1) {
 	        getStatements();
 	      }
@@ -69120,9 +69120,7 @@
 	    activate();
 	    ////////////////////
 
-	    function activate() {
-	      console.log(vm.activity);
-	    }
+	    function activate() {}
 
 	    function ok() {
 	      $modalInstance.close({});
@@ -69133,6 +69131,8 @@
 	    }
 	  }
 	})();
+
+	//console.log(vm.activity);
 
 /***/ },
 /* 76 */
@@ -69438,7 +69438,7 @@
 /* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-4\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in add.steps\"> <a data-ng-click=\"add.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"add.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"add.standard\" class=\"form-control\" ng-options=\"standard.title for standard in add.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[1].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div ng-if=\"add.loadingStatements\" class=\"widget-body\"> <div class=\"loading\"> <i class=\"fa fa-circle-o-notch fa-spin\"></i> </div> </div> <div class=\"widget-body small no-padding\" ng-if=\"!add.loadingStatements\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"add.addStatement(statement.statement)\" data-ng-class=\"{'success': add.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in add.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[2].selected == true\"> <form name=\"activityForm\" class=\"form-horizontal\" data-ng-init=\"add.setForm(this)\"> <input type=\"hidden\" ng-model=\"add.entity.statementId\" value=\"{{add.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Title</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.title\" class=\"form-control\" id=\"title\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"add.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"add.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"rights\" class=\"col-sm-2 control-label\">Rights</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.rights\" class=\"form-control\" id=\"rights\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"source\" class=\"col-sm-2 control-label\">Source</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.source\" class=\"form-control\" id=\"source\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"type\" class=\"col-sm-2 control-label\">Type</label> <div class=\"col-sm-10\"> <select ng-model=\"add.entity.activity.catagory\" class=\"form-control\"> <option value=\"homework\"> Homework </option> <option value=\"study\"> Study </option> <option value=\"question\"> Assessment Question </option> </select> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"add.steps[3].selected == true\">            <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose a resource <div class=\"btn-group\"> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Questions'\">Questions</label> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Books'\" disabled=\"disabled\" uncheckable>Books</label> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Videos'\" disabled=\"disabled\" uncheckable>Videos</label> </div> <input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\" ng-if=\"!add.loadingStatements\"> <question-details question-list=\"add.questionResources\" selectable=\"single\" hide-picture=\"true\"> </question-details> </div> </div> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == true\" data-ng-click=\"add.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == false\" data-ng-disabled=\"add.isNextDisabled()\" data-ng-click=\"add.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"add.cancel()\">Cancel</button> </div>";
+	var v1="<div class=\"modal-header\">  <br/> <ul class=\"steps-indicator steps-4\"> <li data-ng-class=\"{default: !step.completed && !step.selected, \n                     current: step.selected && !step.completed, \n                     done: step.completed && !step.selected, \n                     editing: step.selected && step.completed}\" data-ng-repeat=\"step in add.steps\"> <a data-ng-click=\"add.goTo(step)\"> {{step.title}} </a> </li> </ul> <br/> </div> <div class=\"modal-body\"> <div class=\"row\" data-ng-show=\"add.steps[0].selected == true\"> <div class=\"col-lg-12\"> <div class=\"comment\"> <div class=\"form-group\"> <select name=\"standard\" ng-model=\"add.standard\" class=\"form-control\" ng-options=\"standard.title for standard in add.availableStandards\"> <option value=\"\"> -- Choose a Standard -- </option> </select> <span id=\"helpBlock\" class=\"help-block small\"><i class=\"fa fa-question-circle\"></i><a href=\"#\"> Help! I don't see my standard! </a> </span> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[1].selected == true\"> <div class=\"col-lg-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose which statement applies\n<input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div ng-if=\"add.loadingStatements\" class=\"widget-body\"> <div class=\"loading\"> <i class=\"fa fa-circle-o-notch fa-spin\"></i> </div> </div> <div class=\"widget-body small no-padding\" ng-if=\"!add.loadingStatements\"> <div class=\"table-responsive\"> <table class=\"table table-striped table-condensed table-hover\"> <thead> <tr> <th> Notation </th> <th> Description </th> </tr> </thead> <tbody> <tr data-ng-click=\"add.addStatement(statement.statement)\" data-ng-class=\"{'success': add.statement.id == statement.statement.id}\" data-ng-repeat=\"statement in add.statements | filter: searchText\"> <td> {{statement.statement.notation }}</td> <td> {{statement.statement.description }} </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> <div class=\"row\" data-ng-show=\"add.steps[2].selected == true\"> <form name=\"activityForm\" class=\"form-horizontal\" data-ng-init=\"add.setForm(this)\"> <input type=\"hidden\" ng-model=\"add.entity.statementId\" value=\"{{add.statement.id}}\"/> <div class=\"form-group\"> <label for=\"title\" class=\"col-sm-2 control-label\">Title</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.title\" class=\"form-control\" id=\"title\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"subject\" class=\"col-sm-2 control-label\">Subject</label> <div class=\"col-sm-10\"> <input type=\"text\" class=\"form-control\" ng-model=\"add.entity.activity.subject\" id=\"subject\" placeholder=\"e.g Math or Basket Weaving\" ng-required> </div> </div> <div class=\"form-group\"> <label for=\"description\" class=\"col-sm-2 control-label\">Description</label> <div class=\"col-sm-10\"> <textarea ng-model=\"add.entity.activity.description\" class=\"form-control\" id=\"description\"> \n          </textarea> </div> </div> <div class=\"form-group\"> <label for=\"rights\" class=\"col-sm-2 control-label\">Rights</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.rights\" class=\"form-control\" id=\"rights\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"source\" class=\"col-sm-2 control-label\">Source</label> <div class=\"col-sm-10\"> <input type=\"text\" ng-model=\"add.entity.activity.source\" class=\"form-control\" id=\"source\" data-ng-required> </div> </div> <div class=\"form-group\"> <label for=\"type\" class=\"col-sm-2 control-label\">Type</label> <div class=\"col-sm-10\"> <select ng-model=\"add.entity.activity.category\" class=\"form-control\"> <option value=\"homework\"> Homework </option> <option value=\"study\"> Study </option> <option value=\"question\"> Assessment Question </option> </select> </div> </div> </form> </div> <div class=\"row\" data-ng-show=\"add.steps[3].selected == true\">            <div class=\"col-md-12 col-lg-12 col-sm-12\"> <div class=\"widget\"> <div class=\"widget-header\"> Choose a resource <div class=\"btn-group\"> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Questions'\">Questions</label> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Books'\" disabled=\"disabled\" uncheckable>Books</label> <label class=\"btn btn-success btn-xs\" ng-model=\"add.resourceFilter\" btn-radio=\"'Videos'\" disabled=\"disabled\" uncheckable>Videos</label> </div> <input type=\"text\" placeholder=\"Search\" data-ng-model=\"searchText\" class=\"form-control input-sm pull-right\"/> <div class=\"clearfix\"> </div> </div> <div class=\"widget-body small no-padding\" ng-if=\"!add.loadingStatements\"> <question-details question-list=\"add.questionResources\" selectable=\"single\" hide-picture=\"true\"> </question-details> </div> </div> </div> </div> </div> <div class=\"modal-footer\"> <button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == true\" data-ng-click=\"add.ok()\">Submit </button>\n<button class=\"btn btn-primary\" data-ng-show=\"add.steps[add.steps.length-1].selected == false\" data-ng-disabled=\"add.isNextDisabled()\" data-ng-click=\"add.nextStep()\"> Next </button>\n<button class=\"btn btn-warning\" data-ng-click=\"add.cancel()\">Cancel</button> </div>";
 	window.angular.module(["ng"]).run(["$templateCache",function(c){c.put("add/add_activity.html", v1)}]);
 	module.exports=v1;
 
@@ -70151,13 +70151,9 @@
 
 	      activate();
 	      ////////////////////////////
-	      function activate() {
-
-	        console.log(scope);
-	      }
+	      function activate() {}
 
 	      function toggleResource(resource) {
-	        console.log("toggled!");
 	        if (resource.selected) {
 	          resource.selected = false;
 	          scope.selectlist = _.filter(scope.selectlist, function (l) {
@@ -70175,7 +70171,6 @@
 	          }
 	          resource.selected = true;
 	        }
-	        console.log(scope.selectlist);
 	      }
 
 	      function isMultipleSelect() {
@@ -70208,8 +70203,6 @@
 	            question.selected = false;
 	          });
 	        }
-
-	        console.log(scope.selectlist);
 	      }
 	    }
 	  }
@@ -70234,8 +70227,6 @@
 	      },
 	      templateUrl: "details/questionPicture.html",
 	      link: function link(scope, elem, attr) {
-
-	        console.log(scope.pic);
 
 	        scope.showPicture = showPicture;
 	        scope.style = { width: scope.width };

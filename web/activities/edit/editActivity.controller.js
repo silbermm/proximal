@@ -15,7 +15,7 @@
     ////////////////////
 
     function activate(){
-      console.log(vm.activity);
+      //console.log(vm.activity);
     }
 
     function ok(){

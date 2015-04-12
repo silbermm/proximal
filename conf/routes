@@ -37,6 +37,7 @@ DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsCont
 
 #Questions
 GET    /api/v1/questions/byResource/:id               @controllers.QuestionsController.getByResource(id: Long)
+GET    /api/v1/questions/student/:studentId/standard/:standardId @controllers.ActivityController.getQuestion(studentId: Long, standardId: Long)
 POST   /api/v1/questions       												@controllers.QuestionsController.create
 GET    /api/v1/questions       												@controllers.QuestionsController.list
 PUT    /api/v1/questions       												@controllers.QuestionsController.update
@@ -54,6 +55,7 @@ DELETE /api/v1/activities/:activityId                 @controllers.ActivityContr
 GET   /api/v1/activities/all                          @controllers.ActivityController.listAllActivities
 GET   /api/v1/activities                              @controllers.ActivityController.listActivities
 GET   /api/v1/activities/:activityId/statements       @controllers.ActivityController.findStatementsForActivity(activityId: Long)
+GET   /api/v1/activities/:type/student/:studentId     @controllers.ActivityController.findActivitiesByTypeAndStudent(type: String, studentId: Long) 
 POST 	/api/v1/activities/homework											@controllers.ActivityController.newHomeworkActivity
 GET   /api/v1/activities/homework/:childId            @controllers.ActivityController.allHomework(childId: Long)
 DELETE /api/v1/activities/homework/:homeworkId  @controllers.ActivityController.deleteHomework(homeworkId: Long)
@@ -64,6 +66,10 @@ GET  /api/v1/activitysets                             @controllers.ActivityContr
 POST /api/v1/scores                                   @controllers.ScoresController.createScore
 GET /api/v1/scores/:studentId                         @controllers.ScoresController.showScores(studentId: Long)
 PUT /api/v1/scores                                    @controllers.ScoresController.updateScore
+
+#Attempts
+POST /api/v1/attempts                                 @controllers.AttemptController.createAttempt
+
 
 # Resources
 POST /api/v1/resources                                @controllers.ResourceController.createResource

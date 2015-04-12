@@ -89,7 +89,6 @@
 			var currentStep = _.find(vm.steps, function(s){
 				return s.selected === true;
 			});
-      console.log(currentStep);
       if(currentStep.step === 1){
         getStatements(); 
       }

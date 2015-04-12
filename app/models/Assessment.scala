@@ -5,9 +5,7 @@ import play.api.db.slick.Config.driver.simple._
 import scala.slick.lifted.Tag
 
 case class Assesment(id: Option[Long], studentId: Long, startDate: Long, endDate: Option[Long])
-case class AssesmentWithQuestionsAndScores(id: Long,
-  startDate: Long,
-  endDate: Option[Long])
+case class AssesmentWithQuestionsAndScores(id: Long, startDate: Long, endDate: Option[Long])
 
 class Assesments(tag: Tag) extends Table[Assesment](tag, "assesments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)

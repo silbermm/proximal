@@ -28,13 +28,7 @@ object Attempts {
   def delete(attempt: Attempt)(implicit s: Session) =
     attempts.filter(_.id === attempt.id.get).delete
 
-  def update = ???
-
-  def find = ???
-
   def findByStudentAndActivity(studentId: Long, activityId: Long)(implicit s: Session) =
     attempts.filter(x => x.studentId === studentId && x.activityId === activityId).firstOption
-
-  def findByStudentAndActivity = ???
 
 }
