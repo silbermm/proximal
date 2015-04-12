@@ -25,6 +25,11 @@ class AttemptActor extends Actor {
         case e: Throwable => sender ! e
       }
     }
+    case _ => {
+      akka.actor.Status.Failure(new Exception("NOPE"))
+      throw new Exception("NOPE")
+    }
+
   }
 
 }

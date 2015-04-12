@@ -5,6 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import helpers.ImplicitJsonFormat._
 import models._
+import play.Logger
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.json._
@@ -27,8 +28,13 @@ class AttemptController(override implicit val env: RuntimeEnvironment[SecureUser
     request.body.validate[Attempt].fold(
       errors => Future { BadRequest(Json.obj("message" -> s"Something went wrong: ${JsError.toFlatJson(errors)}")) },
       obj => {
-        ask(attemptActor, CreateAttempt(obj)).mapTo[Attempt] map { response =>
-          Ok(Json.toJson(response))
+        Logger.debug(s"$obj")
+        try {
+          ask(attemptActor, CreateAttempt(obj)).mapTo[Attempt] map { response =>
+            Ok(Json.toJson(response))
+          }
+        } catch {
+          case e: Throwable => Future { BadRequest(Json.obj("message" -> "nope")) }
         }
       }
     )
