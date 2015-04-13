@@ -17,6 +17,7 @@ class Uploads(tag: Tag) extends Table[Upload](tag, "uploads") {
 object Uploads {
 
   lazy val uploads = TableQuery[Uploads]
+  lazy val questionUploads = QuestionUploads.questionUploads
 
   def create(u: Upload)(implicit s: Session): Upload =
     (uploads returning uploads.map(_.id) into ((upload, id) => upload.copy(Some(id)))) += u
@@ -29,4 +30,12 @@ object Uploads {
 
   def find(id: Long)(implicit s: Session) =
     uploads.filter(_.id === id).firstOption
+
+  def findByQuestion(questionId: Long)(implicit s: Session) = {
+    var query = for {
+      questionUpload <- questionUploads if questionUpload.questionId === questionId
+      upload <- questionUpload.upload
+    } yield upload
+    query.firstOption
+  }
 }
