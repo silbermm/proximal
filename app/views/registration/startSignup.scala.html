@@ -24,6 +24,7 @@
               }
               
               <form action="@env.routes.startSignUpUrl" class="form-horizontal" autocomplete="off" method="post" > 
+                @CSRF.formField(play.filters.csrf.CSRF.Token.getToken(request))
                 @helper.inputText( startForm("email"), '_label -> Messages("securesocial.signup.email1"), 'placeholder -> "Provide a Valid Email")
                 <button type="submit" class="btn btn-login">Submit</button> 
               </form> 

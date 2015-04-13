@@ -26,6 +26,7 @@
                 </div>
               }
        <form action="@securesocial.controllers.routes.Registration.handleSignUp(mailToken).absoluteURL(IdentityProvider.sslEnabled)" class="form-horizontal" autocomplete= "off" method="POST" >
+         @CSRF.formField(play.filters.csrf.CSRF.Token.getToken(request))
          <legend>Create an account for Proximal Learning </legend>
           @request.flash.get("error").map { msg =>
           <div class="alert alert-danger " role="alert">
