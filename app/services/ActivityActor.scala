@@ -4,7 +4,7 @@ import akka.actor.Actor
 import models._
 import play.api.Play.current
 import play.api.db.slick.DB
-
+import play.Logger
 import scala.util.Random
 
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
@@ -135,19 +135,47 @@ object ActivityActor {
     }
   }
 
+  def getStudyActivity(studentId: Long, standardId: Long): Option[Activity] = {
+    DB.withSession { implicit s =>
+      val activities = filterOutAttemptedActivities(
+        findActivities(studentId, "study", Some(standardId)),
+        studentId)
+      val releventActivities = filterReleventActivities(10, activities, standardId, studentId)
+      if (releventActivities.length == 0) {
+        Some(activities(random.nextInt(activities.length)))
+      } else {
+        Logger.debug(s"releventActivities: ${releventActivities.map(_.title.get) + "\n"}")
+        val act = releventActivities(random.nextInt(releventActivities.length))
+        Some(act)
+      }
+    }
+  }
+
   def getQuestion(studentId: Long, standardId: Long): Option[ActivityQuestion] = {
     DB.withSession { implicit s =>
       val activities = filterOutAttemptedActivities(
         findActivities(studentId, "question", Some(standardId)),
         studentId)
       //pick random for now...
-      val activity = activities(random.nextInt(activities.length))
+      val releventActivities = filterReleventActivities(10, activities, standardId, studentId)
+      Logger.debug(s"releventActivities: ${releventActivities.map(_.title.get) + "\n"}")
+      if (releventActivities.length == 0) {
+        val activity = activities(random.nextInt(activities.length))
+        convertToActivityQuestion(activity)
+      } else {
+        val activity = releventActivities(random.nextInt(releventActivities.length))
+        convertToActivityQuestion(activity)
+      }
+    }
+  }
+
+  def convertToActivityQuestion(activity: Activity): Option[ActivityQuestion] = {
+    DB.withSession { implicit s =>
       val question: Option[QuestionWithPicture] = activity.resourceId map (rid =>
         Questions.findByResourceId(rid) map { q =>
           Questions.findWithPicture(q.id.get)
         } getOrElse None
       ) getOrElse None
-
       question map { q =>
         ActivityQuestion(activity, q)
       }
@@ -165,6 +193,66 @@ object ActivityActor {
         } getOrElse true
       })
     }
+  }
+
+  def filterReleventActivities(howMany: Int, activities: List[Activity], standardId: Long, studentId: Long): List[Activity] = {
+    val lastFour = lastNumberOfAttempts(howMany, studentId, standardId)
+    if (lastFour.length < 1) return activities
+    if (lastFour.length < howMany) {
+      val lastStatementAsked = getStatement(lastFour(lastFour.length - 1).activityId) getOrElse (throw new Exception("the last thing asked didn't have a statement!"))
+      activities.filter(activity => {
+        getStatement(activity.id.get) map { statement =>
+          (statement.sequence getOrElse 0L) == (lastStatementAsked.sequence getOrElse 0L) ||
+            (statement.sequence getOrElse 0L) == (lastStatementAsked.sequence getOrElse 0L) - 1 ||
+            (statement.sequence getOrElse 0L) == (lastStatementAsked.sequence getOrElse 0L) + 1
+        } getOrElse false
+      })
+    } else {
+      val (right, wrong) = averageTheAttempts(lastFour);
+      Logger.debug(s"average difficulty of right: $right");
+      Logger.debug(s"average difficulty of wrong: $wrong");
+      // return something in the middle....
+      Logger.debug(s"returning activities with difficulty ${right + wrong / 2}")
+      activities.filter(activity => {
+        getStatement(activity.id.get) map { statement =>
+          statement.sequence == (right + wrong / 2)
+        } getOrElse false
+      })
+    }
+  }
+
+  def getStatement(activityId: Long): Option[Statement] = {
+    DB.withSession { implicit s =>
+      Activities.findWithStatements(activityId) map { activityWithStatements =>
+        if (activityWithStatements.statements.length < 1) None else Some(activityWithStatements.statements(0))
+      } getOrElse None
+    }
+  }
+
+  def lastNumberOfAttempts(number: Int, studentId: Long, standardId: Long): List[Attempt] = {
+    DB.withSession { implicit s =>
+      def lastNumber(attempts: List[Attempt]): List[Attempt] =
+        if (attempts.length <= number) return attempts else lastNumber(attempts.tail)
+
+      val myAttempts = Attempts.findByStudentAndStandard(studentId, standardId)
+      lastNumber(myAttempts)
+    }
+  }
+
+  def averageTheAttempts(attempts: List[Attempt]): (Int, Int) = {
+    val gotRight = attempts.filter(_.score == 5)
+    val totalDifficulty = gotRight.foldLeft(0L) { (counter, current) =>
+      val difficulty: Long = getStatement(current.activityId) map (_.sequence getOrElse 0L) getOrElse 0L
+      counter + difficulty
+    }
+    val gotWrong = attempts.filter(_.score == 3)
+    val totalWrongDifficulty = gotRight.foldLeft(0L) { (counter, current) =>
+      val difficulty: Long = getStatement(current.activityId) map (_.sequence getOrElse 0L) getOrElse 0L
+      counter + difficulty
+    }
+    val averageDifficultyOfRight: Int = totalDifficulty.toInt / gotRight.length.toInt
+    val averageDifficultyOfWrong: Int = totalWrongDifficulty.toInt / gotWrong.length.toInt
+    (averageDifficultyOfRight, averageDifficultyOfWrong)
   }
 
   def createActivity(ca: CreateActivity): Option[Activity] = {

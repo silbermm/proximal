@@ -27,7 +27,7 @@ object ImplicitJsonFormat {
 
   implicit val edLevelFormat = Json.format[EducationLevel]
   implicit val childFormat = Json.format[Child]
-  implicit val peopleFormat = Json.format[Person]
+  //  implicit val peopleFormat = Json.format[Person]
   implicit val authMethodFormat = Json.format[securesocial.core.AuthenticationMethod]
   implicit val oAuth1Format = Json.format[securesocial.core.OAuth1Info]
   implicit val oAuth2Format = Json.format[securesocial.core.OAuth2Info]
