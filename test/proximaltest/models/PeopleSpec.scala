@@ -1,4 +1,4 @@
-package models
+package proximaltest.models
 
 import org.scalatestplus.play._
 import play.api.Logger
@@ -9,11 +9,16 @@ import play.api.test.Helpers._
 import play.api.test._
 //import helpers._
 import proximaltest.helpers._
+import securesocial.core.services.SaveMode
 
 class PeopleSpec extends PlaySpec with Results {
 
+  import models._
+
   val fakePerson = new Person(None, "Matthew", Some("Silbernagel"), None, None, None)
+  val fakePerson2 = new Person(None, "Leslie", Some("Silbernagel"), None, None, None)
   val fakeChild = new Person(None, "miles", Some("silbernagel"), None, None, None)
+  val fakeChild2 = new Person(None, "Ella", Some("silbernagel"), None, None, None)
   val fakeSchool = new School(None,
     "Fairview German School",
     "999",
@@ -27,6 +32,35 @@ class PeopleSpec extends PlaySpec with Results {
   val fakeRole = new Role(None, "user", "Just a user of the system")
 
   "Person model" should {
+
+    "find only the logged in users child" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        DB.withSession { implicit s =>
+
+          val parent = People.insertPerson(PersonHelpers.person)
+          val parent2 = People.insertPerson(PersonHelpers.person)
+
+          parent.id must not be parent2.id
+
+          // Create the child and add the relationship
+          val child = People.insertPerson(PersonHelpers.person)
+          val relationship = People.addChild(child, parent);
+          relationship.personId mustEqual parent.id.get
+          relationship.otherPersonId mustEqual child.id.get
+
+          // and the other parents child
+          val child2 = People.insertPerson(PersonHelpers.person)
+          val relationship2 = People.addChild(child2, parent2);
+          relationship2.personId mustEqual parent2.id.get
+          relationship2.otherPersonId mustEqual child2.id.get
+
+          val myChildren = People.findChildrenFor(parent2.id.get)
+          myChildren must have length 1
+
+        }
+      }
+    }
+
     "insert and retrieve a record by id" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         DB.withSession { implicit s =>
@@ -169,18 +203,6 @@ class PeopleSpec extends PlaySpec with Results {
           val relationship = People.addChild(child, parent);
           relationship.personId mustEqual parent.id.get
           relationship.otherPersonId mustEqual child.id.get
-        }
-      }
-    }
-
-    "find children by parent" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        DB.withSession { implicit s =>
-          val parent = People.insertPerson(fakePerson)
-          val child = People.insertPerson(fakeChild)
-          val relationship = People.addChild(child, parent);
-          val listOfChildren = People.findChildrenFor(parent.id.get)
-          listOfChildren.size mustEqual 1
         }
       }
     }

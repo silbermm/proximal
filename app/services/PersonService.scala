@@ -5,6 +5,8 @@ import play.api.Play.current
 import play.api.db.slick.DB
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import play.Logger
+
 import scala.concurrent.Future
 
 class PersonService {
@@ -74,7 +76,13 @@ class PersonService {
    */
   def findChildren(uid: Long) = {
     DB.withSession { implicit s =>
-      People.findChildrenFor(uid)
+      People.findPersonByUid(uid) match {
+        case Some(p) => {
+          Logger.debug("found a person with that uid!")
+          People.findChildrenFor(p.id getOrElse 0)
+        }
+        case _ => List()
+      }
     }
   }
 

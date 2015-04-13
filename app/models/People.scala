@@ -119,6 +119,7 @@ object People {
   lazy val attendences = Attendences.attendences
   lazy val roles = Roles.roles
   lazy val person_roles = PersonRoles.person_roles
+  lazy val secureUsers = SecureUsers.secureUsers
 
   def insertPerson(p: Person)(implicit s: Session): Person = {
     p.uid match {
@@ -205,14 +206,14 @@ object People {
     person_roles += new PersonRole(None, person.id.get, admin.id.get)
   }
 
-  def findChildrenFor(uid: Long)(implicit s: Session): List[Person] = {
-    val q3 = (for {
-      ((p, r), t) <- people leftJoin relationships on (_.id === _.personId) leftJoin relationship_types on (_._2.typeId === _.id)
-      if t.reltype === "child"
-    } yield (r.otherPersonId))
-    val listOfChildIds = q3.list
-    val listOfChildren: List[Person] = listOfChildIds.flatMap(id => findPerson(id))
-    listOfChildren
+  def findChildrenFor(id: Long)(implicit s: Session): List[Person] = {
+    val query = for {
+      person <- people if person.id === id
+      relationship <- relationships if relationship.personId === person.id
+      child <- people if child.id === relationship.otherPersonId
+    } yield child
+
+    query.list
   }
 
   def findRelTypeById(id: Long)(implicit s: Session): Option[RelationshipType] =

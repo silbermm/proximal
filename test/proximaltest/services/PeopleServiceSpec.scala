@@ -35,15 +35,15 @@ class PeopleServiceSpec extends PlaySpec with Results {
       }
     }
 
-    "find children by parent" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None, None, None))
-        val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None, None))
-        val relationship = personService.addChild(child, parent);
-        val listOfChildren = personService.findChildren(parent.id.get)
-        listOfChildren.size mustEqual 1
-      }
-    }
+    /*"find children by parent" in {*/
+    //running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    //val parent = personService.createPerson(new Person(None, "Matt", Some("Silbernagel"), None, None, None))
+    //val child = personService.createPerson(new Person(None, "miles", Some("silbernagel"), None, None, None))
+    //val relationship = personService.addChild(child, parent);
+    //val listOfChildren = personService.findChildren(parent.id.get)
+    //listOfChildren.size mustEqual 1
+    //}
+    /*}*/
 
     "add the admin role to user" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
