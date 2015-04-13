@@ -3,15 +3,18 @@ language:
 scala:
   - 2.11.1
 script:
-  - sbt clean coverage test
-after_success: sbt coverageReport codacyCoverage
+  - sbt clean coverage test stage
+after_success: sbt coverageReport codacyCoverage deployHeroku
 env: 
   - CODACY_PROJECT_TOKEN=cdfe8b45484e4729bc947d3df4a8c79b
-deploy:
-  provider: heroku
-  api_key:
-    secure: DnmzNk7tX0yF00sSFquyBfXxOxIPlCsGV5VpPtapv9sGwJ4pwhkZATskvNAK46WLTu/yW5lzj+Xo/G7QfUZCGKyrnSW248rVzRxxl63deOSMOYSkqENmkoEIbGh1BCN20a8AFI5tOLwsAPzLpGZVtp8UVEAnYq8VzLhSHKD1D70=
-  app: proximal
-  on:
-    repo: silbermm/proximal
-    branch: master
+  global: 
+    - secure: DnmzNk7tX0yF00sSFquyBfXxOxIPlCsGV5VpPtapv9sGwJ4pwhkZATskvNAK46WLTu/yW5lzj+Xo/G7QfUZCGKyrnSW248rVzRxxl63deOSMOYSkqENmkoEIbGh1BCN20a8AFI5tOLwsAPzLpGZVtp8UVEAnYq8VzLhSHKD1D70=
+
+#deploy:
+  #provider: heroku
+  #api_key:
+    #secure: DnmzNk7tX0yF00sSFquyBfXxOxIPlCsGV5VpPtapv9sGwJ4pwhkZATskvNAK46WLTu/yW5lzj+Xo/G7QfUZCGKyrnSW248rVzRxxl63deOSMOYSkqENmkoEIbGh1BCN20a8AFI5tOLwsAPzLpGZVtp8UVEAnYq8VzLhSHKD1D70=
+  #app: proximal
+  #on:
+    #repo: silbermm/proximal
+    #branch: master
