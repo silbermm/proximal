@@ -117,11 +117,33 @@ object Questions {
         tup._1.creator,
         tup._1.createdOn,
         Some(tup._2),
-        Uploads.findByQuestion(tup._1.id.get)
+        Uploads.findByQuestion(tup._2.id.get)
 
       )
 
     }
+  }
+
+  def pagedWithResource(limit: Int, offset: Int)(implicit s: Session) = {
+    val query = for {
+      ques <- questions if ques.resourceId.isDefined
+      res <- resources if res.id === ques.resourceId
+    } yield (res, ques)
+
+    query.drop(offset).take(limit).list map {
+      case (resource, question) => {
+        ResourceWithQuestion(resource.id,
+          resource.title,
+          resource.description,
+          resource.category,
+          resource.creator,
+          resource.createdOn,
+          Some(question),
+          Uploads.findByQuestion(question.id.get)
+        )
+      }
+    }
+
   }
 
   def allWithStatements(implicit s: Session): List[JsonQuestion] = {

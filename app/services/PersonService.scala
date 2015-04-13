@@ -142,7 +142,7 @@ object PersonService {
           case _ => play.api.mvc.Results.Ok
         }
       }
-      case List() => play.api.mvc.Results.NoContent
+      case _ => play.api.mvc.Results.NoContent
     }
   }
 
@@ -156,7 +156,7 @@ object PersonService {
           case _ => None
         }
       }
-      case List() => None
+      case _ => None
     }
   }
 
@@ -169,7 +169,7 @@ object PersonService {
           case _ => scala.concurrent.Future { play.api.mvc.Results.Ok }
         }
       }
-      case List() => scala.concurrent.Future { play.api.mvc.Results.NoContent }
+      case _ => scala.concurrent.Future { play.api.mvc.Results.NoContent }
     }
   }
 

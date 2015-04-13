@@ -92,6 +92,7 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
         Ok(Json.toJson(convertToJsonStandard(standard, levels)))
       }
       case (None, List(_*)) => NotFound(Json.obj("message" -> "standard not found"))
+      case _ => BadRequest(Json.obj("message" -> "an error occured, please contact an administrator"))
     }
   }
 
@@ -160,18 +161,6 @@ class StandardsController(override implicit val env: RuntimeEnvironment[SecureUs
     } else {
       Unauthorized
     }
-  }
-
-  def updateStatement(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    ???
-  }
-
-  def deleteStatement(id: Long, statementId: Long) = SecuredAction { implicit request =>
-    ???
-  }
-
-  def importData = SecuredAction { implicit request =>
-    ???
   }
 
   def convertFromJsonStandard(standard: JsonStandard): (Standard, List[EducationLevel]) = {

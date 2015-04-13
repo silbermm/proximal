@@ -66,7 +66,7 @@ class AssessmentActor extends Actor {
       val assessment = Assesments.create(Assesment(None, createAssessment.childId, Platform.currentTime, None))
       val question = chooseQuestion(
         createAssessment.childId, createAssessment.standardId, true, None) getOrElse (Question(Some(-1L), "", None, None, None))
-      var pic = QuestionUploads.findUploadByQuestion(question.id.get);
+      val pic = QuestionUploads.findUploadByQuestion(question.id.get);
       Some(AssessmentQuestion(assessment, question, pic))
       // })
     }
@@ -106,7 +106,7 @@ class AssessmentActor extends Actor {
         Assesments.find(scoreAssessment.assessmentId) match {
           case Some(asses) => {
             chooseQuestion(scoreAssessment.studentId, scoreAssessment.standardId, true, lastScore) map { question =>
-              var pic = QuestionUploads.findUploadByQuestion(question.id.get);
+              val pic = QuestionUploads.findUploadByQuestion(question.id.get);
               Some(AssessmentQuestion(asses, question, pic))
             } getOrElse None
           }

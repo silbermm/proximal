@@ -54,6 +54,13 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
     }
   }
 
+  def pagedList(limit: Int, offset: Int) = Action { implicit request =>
+    DB.withSession { implicit s =>
+      val q = Questions.pagedWithResource(limit, offset)
+      Ok(Json.toJson(q))
+    }
+  }
+
   def get(id: Long) = Action { implicit request =>
     DB.withSession { implicit s =>
       val q = Questions.findWithStatements(id)

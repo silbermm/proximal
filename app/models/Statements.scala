@@ -64,7 +64,7 @@ object Statements {
   }
 
   def findBySequence(sequenceNumber: Long, standardId: Long, studentId: Long)(implicit s: Session): Option[Statement] = {
-    var query = for {
+    val query = for {
       statement <- statements if statement.sequence === sequenceNumber
       standard <- statement.standard if standard.id === standardId
       person <- people if person.id === studentId

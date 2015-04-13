@@ -31,8 +31,6 @@ POST    /api/v2/standards           									@controllers.StandardsController.cr
 #Statements
 GET     /api/v1/standards/:id/statements              @controllers.StandardsController.getStatementsForStandard(id: Long)
 POST    /api/v1/standards/:id/statements              @controllers.StandardsController.createStatement(id: Long)
-PUT     /api/v1/standards/:id/statements              @controllers.StandardsController.updateStatement(id: Long)
-DELETE  /api/v1/standards/:id/statement/:stateId      @controllers.StandardsController.deleteStatement(id: Long, stateId: Long)
 
 
 #Questions
@@ -40,6 +38,7 @@ GET    /api/v1/questions/byResource/:id               @controllers.QuestionsCont
 GET    /api/v1/questions/student/:studentId/standard/:standardId @controllers.ActivityController.getQuestion(studentId: Long, standardId: Long)
 POST   /api/v1/questions       												@controllers.QuestionsController.create
 GET    /api/v1/questions       												@controllers.QuestionsController.list
+GET    /api/v1/pagedQuestions                         @controllers.QuestionsController.pagedList(limit:Int ?= 10, offset:Int ?= 0)
 PUT    /api/v1/questions       												@controllers.QuestionsController.update
 GET    /api/v1/questions/:id   												@controllers.QuestionsController.get(id: Long)
 DELETE /api/v1/questions/:id   												@controllers.QuestionsController.delete(id:Long)
@@ -60,7 +59,6 @@ POST 	/api/v1/activities/homework											@controllers.ActivityController.newH
 GET   /api/v1/activities/homework/:childId            @controllers.ActivityController.allHomework(childId: Long)
 DELETE /api/v1/activities/homework/:homeworkId  @controllers.ActivityController.deleteHomework(homeworkId: Long)
 
-GET  /api/v1/activitysets                             @controllers.ActivityController.allActivitySets
 
 #Scores
 POST /api/v1/scores                                   @controllers.ScoresController.createScore

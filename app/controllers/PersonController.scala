@@ -31,7 +31,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   }
 
   def children = SecuredAction { implicit request =>
-    var c = personService.findChildren(request.user.uid.get)
+    val c = personService.findChildren(request.user.uid.get)
     Ok(Json.toJson(c))
   }
 

@@ -85,10 +85,6 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
       })
   }
 
-  def allActivitySets = SecuredAction.async { implicit request =>
-    ???
-  }
-
   def newHomeworkActivity = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
     def createHomework(childAndActivity: ChildAndActivity): Future[Result] = {
@@ -106,7 +102,8 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
     request.body.validate[ChildAndActivity].fold(
       errors => { Future { BadRequest(Json.obj("message" -> s"Something went wrong! $errors")) } },
       obj => {
-        val activity = obj.activity.copy(creator = request.user.uid.get)
+        val userUid: Long = request.user.uid map (u => u) getOrElse 0
+        val activity = obj.activity.copy(creator = userUid)
         val childAndActivity = obj.copy(activity = activity)
         createHomework(childAndActivity)
       }
@@ -137,6 +134,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
       message match {
         case deleted: Int => Ok
         case e: Throwable => BadRequest(Json.obj("message" -> s"$e"))
+        case _ => BadRequest(Json.obj("message" -> s"Unable to process your request"))
       }
     }
   }

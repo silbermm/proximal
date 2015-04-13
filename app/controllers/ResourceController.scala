@@ -25,6 +25,7 @@ class ResourceController(override implicit val env: RuntimeEnvironment[SecureUse
       message match {
         case res: List[Resource] => Ok(Json.toJson(res))
         case ex: Exception => BadRequest(Json.obj("message" -> ex.getMessage()))
+        case _ => BadRequest(Json.obj("message" -> "Unable to process the request"))
       }
     }
   }
