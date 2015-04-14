@@ -6,6 +6,7 @@ import play.api.Play.current
 import play.api.db.slick.DB
 import play.Logger
 import scala.util.Random
+import java.sql.SQLException
 
 case class CreateHomeworkActivity(statementIds: List[Long], activity: Activity, homework: Homework, acts: List[Act])
 case class ListHomework(studentId: Long)
@@ -31,7 +32,7 @@ class ActivityActor extends Actor {
         val newActivity = ActivityActor.createActivity(ca)
         sender ! newActivity
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
           throw e
         }
@@ -50,7 +51,7 @@ class ActivityActor extends Actor {
         val activities = ActivityActor.listActivities(la.uid)
         sender ! activities
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
           throw e
         }
@@ -61,7 +62,7 @@ class ActivityActor extends Actor {
         val activities = ActivityActor.deleteActivity(la.activityId)
         sender ! activities
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
           throw e
         }
@@ -144,7 +145,6 @@ object ActivityActor {
       if (releventActivities.length == 0) {
         Some(activities(random.nextInt(activities.length)))
       } else {
-        Logger.debug(s"releventActivities: ${releventActivities.map(_.title.get) + "\n"}")
         val act = releventActivities(random.nextInt(releventActivities.length))
         Some(act)
       }
@@ -158,7 +158,6 @@ object ActivityActor {
         studentId)
       //pick random for now...
       val releventActivities = filterReleventActivities(10, activities, standardId, studentId)
-      Logger.debug(s"releventActivities: ${releventActivities.map(_.title.get) + "\n"}")
       if (releventActivities.length == 0) {
         val activity = activities(random.nextInt(activities.length))
         convertToActivityQuestion(activity)
@@ -232,7 +231,7 @@ object ActivityActor {
   def lastNumberOfAttempts(number: Int, studentId: Long, standardId: Long): List[Attempt] = {
     DB.withSession { implicit s =>
       def lastNumber(attempts: List[Attempt]): List[Attempt] =
-        if (attempts.length <= number) return attempts else lastNumber(attempts.tail)
+        if (attempts.length <= number) attempts else lastNumber(attempts.tail)
 
       val myAttempts = Attempts.findByStudentAndStandard(studentId, standardId)
       lastNumber(myAttempts)

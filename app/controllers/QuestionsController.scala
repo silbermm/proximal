@@ -5,6 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import helpers.ImplicitJsonFormat._
 import helpers.RolesHelper
+import java.sql.SQLException
 import models._
 import play.api.Logger
 import play.api.Play.current
@@ -17,6 +18,7 @@ import securesocial.core._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUser]) extends securesocial.core.SecureSocial[SecureUser] {
 
@@ -87,7 +89,7 @@ class QuestionsController(override implicit val env: RuntimeEnvironment[SecureUs
         })
       }
     } catch {
-      case e: Throwable => BadRequest(Json.obj("message" -> s"$e"))
+      case e: SQLException => BadRequest(Json.obj("message" -> s"$e"))
     }
   }
 

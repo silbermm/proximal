@@ -20,6 +20,7 @@ import models._
 import play.api.Logger
 import play.api.Play.current
 import play.api.db.slick.DB
+import java.sql.SQLException
 
 case class CreateUpload(upload: Upload)
 case class DeleteUpload(upload: Upload)
@@ -41,10 +42,7 @@ class UploadActor extends Actor {
         val up = Uploads.create(u)
         Some(up)
       } catch {
-        case ex: Throwable => {
-          Logger.debug(s"$ex")
-          None
-        }
+        case ex: SQLException => None
       }
     }
   }

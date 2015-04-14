@@ -51,12 +51,8 @@ object Schools {
   def findByNameCityState(name: String, city: String, state: String)(implicit s: Session) =
     schools.filter(x => x.name === name && x.city === city && x.state === state).firstOption
 
-  def findByCity(city: String)(implicit s: Session) = {
-    schools.filter(_.city like "%" + city + "%").list
-    //val query = for {
-    //    s <- School if school.city like "%"+ city + "%"
-    //} yield s
-  }
+  def findByCity(city: String)(implicit s: Session) =
+    schools.filter(_.city like s"%$city%").list
 
   def update(id: Long, school: School)(implicit s: Session) = {
     val schoolToUpdate = school.copy(Some(id))

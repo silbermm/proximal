@@ -12,22 +12,15 @@ class AttemptActor extends Actor {
 
   def receive = {
     case CreateAttempt(attempt) => {
-      try {
-        sender ! AttemptActor.createAttempt(attempt)
-      } catch {
-        case e: Throwable => sender ! e
-      }
+      sender ! AttemptActor.createAttempt(attempt)
     }
     case DeleteAttempt(attempt) => {
-      try {
-        sender ! AttemptActor.deleteAttempt(attempt)
-      } catch {
-        case e: Throwable => sender ! e
-      }
+      sender ! AttemptActor.deleteAttempt(attempt)
     }
     case _ => {
-      akka.actor.Status.Failure(new Exception("NOPE"))
-      throw new Exception("NOPE")
+      val e = new Exception("Please send a message that akka can process")
+      akka.actor.Status.Failure(e)
+      throw e
     }
 
   }

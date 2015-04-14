@@ -27,7 +27,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
 
   def profile = SecuredAction { implicit request =>
     val roles = personService.findRoles(request.user.uid.get)
-    var person = personService.findPersonByUid(request.user.uid.get)
+    val person = personService.findPersonByUid(request.user.uid.get)
     Ok(Json.toJson(new Profile(request.user, person, roles)))
   }
 
@@ -39,15 +39,19 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
   def child(id: Long) = SecuredAction { implicit request =>
     personService.findChildren(request.user.uid.get) match {
       case children: List[Person] => {
-        children.find { child => child.id.get == id } match {
+        children.find { child => child.id.getOrElse(0L) == id } match {
           case Some(c) => {
             educationLevelService.findByChild(c).map(e =>
-              Ok(Json.toJson(new Child(c.id, c.firstName, c.lastName.get, c.birthDate.get.getMillis, Some(e))))
+              Ok(Json.toJson(new Child(c.id, c.firstName, c.lastName.get, c.birthDate.map(_.getMillis).getOrElse(0L), Some(e))))
             ).getOrElse(
-              Ok(Json.toJson(new Child(c.id, c.firstName, c.lastName.get, c.birthDate.get.getMillis, None)))
+              Ok(Json.toJson(new Child(c.id, c.firstName, c.lastName.get, c.birthDate.map(_.getMillis).getOrElse(0L), None)))
             )
           }
-          case None => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
+          case None => {
+            BadRequest(Json.obj("status" -> "KO", "message" ->
+              ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString()))
+            )
+          }
         }
       }
       case _ => BadRequest(Json.obj("status" -> "KO", "message" -> ("Unable to find child for " + request.user.firstName + " with an id of " + id.toString())))
@@ -83,7 +87,7 @@ class PersonController(override implicit val env: RuntimeEnvironment[SecureUser]
     personService.findChildren(request.user.uid.get) match {
       case children: List[Person] => {
         Logger.debug(children.toString())
-        children.find { child => child.id.get == id } match {
+        children.find { child => child.id.getOrElse(0L) == id } match {
           case Some(c) => {
             personService.deletePerson(id)
             Ok(Json.toJson(c))

@@ -19,6 +19,7 @@ import akka.actor.Actor
 import models._
 import play.api.Play.current
 import play.api.db.slick.DB
+import java.sql.SQLException
 
 case class CreateResource(resource: Resource, uid: Option[Long])
 case class DeleteResource(resource: Resource)
@@ -32,7 +33,7 @@ class ResourceActor extends Actor {
       try {
         sender ! ResourceActor.createResource(resource, uid)
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
         }
       }
@@ -41,7 +42,7 @@ class ResourceActor extends Actor {
       try {
         sender ! ResourceActor.deleteResource(resource)
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
         }
       }
@@ -50,7 +51,7 @@ class ResourceActor extends Actor {
       try {
         sender ! ResourceActor.updateResource(resource)
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
         }
       }
@@ -59,7 +60,7 @@ class ResourceActor extends Actor {
       try {
         sender ! ResourceActor.findResource(resourceId)
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
         }
       }
@@ -68,7 +69,7 @@ class ResourceActor extends Actor {
       try {
         sender ! ResourceActor.listResources
       } catch {
-        case e: Throwable => {
+        case e: SQLException => {
           sender ! akka.actor.Status.Failure(e)
         }
       }

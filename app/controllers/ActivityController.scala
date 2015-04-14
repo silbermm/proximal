@@ -1,5 +1,6 @@
 package controllers
 
+import java.sql.SQLException
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
@@ -11,7 +12,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import services._
 import securesocial.core._
-
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -31,7 +31,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
         Ok(Json.toJson(x))
       }
     } catch {
-      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
+      case e: SQLException => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
     }
   }
 
@@ -41,7 +41,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
         Ok(Json.toJson(x))
       }
     } catch {
-      case e: Throwable => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
+      case e: SQLException => Future { BadRequest(Json.obj("message" -> s"$e.getMessage()")) }
     }
   }
 
@@ -80,7 +80,7 @@ class ActivityController(override implicit val env: RuntimeEnvironment[SecureUse
             }
           }
         } catch {
-          case e: Throwable => { Future { BadRequest(Json.obj("message" -> e.getMessage)) } }
+          case e: SQLException => { Future { BadRequest(Json.obj("message" -> e.getMessage)) } }
         }
       })
   }

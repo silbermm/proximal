@@ -1,6 +1,7 @@
 package services
 
 import akka.actor.Actor
+import java.sql.SQLException
 import models._
 import play.api.Play.current
 import play.api.db.slick.DB
@@ -40,7 +41,7 @@ object ScoreActor {
       try {
         Scores.update(score)
       } catch {
-        case e: Exception => 0
+        case e: SQLException => 0
       }
     }
   }
@@ -50,7 +51,7 @@ object ScoreActor {
       try {
         Scores.findByStudent(studentId)
       } catch {
-        case e: Exception => List.empty
+        case e: SQLException => List.empty
       }
     }
 

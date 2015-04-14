@@ -20,7 +20,7 @@ import models._
 import play.api.Play.current
 import play.api.db.slick.DB
 import play.Logger
-
+import java.sql.SQLException
 import scala.compat.Platform
 import scala.util.Random
 
@@ -229,7 +229,7 @@ class AssessmentActor extends Actor {
         Questions.convertToJsonQuestion(finalQuestion, None, None)
       } catch {
         case e: java.util.NoSuchElementException => JsonQuestion(Some(-1), "No questions available!", None, None, None, None, None)
-        case e2: Throwable => {
+        case e2: SQLException => {
           // Let's back out of our assessment since we can't ask any questions
           Assesments.delete(assessment.id.get)
           JsonQuestion(Some(-1), e2.getMessage(), None, None, None, None, None)

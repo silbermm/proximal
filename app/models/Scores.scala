@@ -4,7 +4,13 @@ import play.api.db.slick.Config.driver.simple._
 
 import scala.slick.lifted.Tag
 
-case class Score(id: Option[Long], studentId: Long, questionId: Option[Long], actId: Option[Long], activityId: Option[Long], score: Option[Long], timestamp: Long)
+case class Score(id: Option[Long],
+  studentId: Long,
+  questionId: Option[Long],
+  actId: Option[Long],
+  activityId: Option[Long],
+  score: Option[Long],
+  timestamp: Long)
 
 case class ScoreQuestion(
   scoreId: Long,

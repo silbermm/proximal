@@ -28,13 +28,8 @@ class AttemptController(override implicit val env: RuntimeEnvironment[SecureUser
     request.body.validate[Attempt].fold(
       errors => Future { BadRequest(Json.obj("message" -> s"Something went wrong: ${JsError.toFlatJson(errors)}")) },
       obj => {
-        Logger.debug(s"$obj")
-        try {
-          ask(attemptActor, CreateAttempt(obj)).mapTo[Attempt] map { response =>
-            Ok(Json.toJson(response))
-          }
-        } catch {
-          case e: Throwable => Future { BadRequest(Json.obj("message" -> "nope")) }
+        ask(attemptActor, CreateAttempt(obj)).mapTo[Attempt] map { response =>
+          Ok(Json.toJson(response))
         }
       }
     )

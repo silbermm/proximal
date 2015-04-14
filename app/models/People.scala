@@ -121,6 +121,8 @@ object People {
   lazy val person_roles = PersonRoles.person_roles
   lazy val secureUsers = SecureUsers.secureUsers
 
+  val childType = "child"
+
   def insertPerson(p: Person)(implicit s: Session): Person = {
     p.uid match {
       case Some(u) => {
@@ -174,10 +176,10 @@ object People {
   }
 
   def addChild(child: Person, parent: Person)(implicit s: Session) = {
-    val childTypeId: Long = findRelTypeByName("child") match {
+    val childTypeId: Long = findRelTypeByName(childType) match {
       case Some(c) => c.id.get
       case None => {
-        relationship_types returning relationship_types.map(_.id) += new RelationshipType(None, "child", "A child of a parent that is registered in the system")
+        relationship_types returning relationship_types.map(_.id) += new RelationshipType(None, childType, "A child of a parent that is registered in the system")
       }
     }
     val r = new Relationship(parent.id.get, child.id.get, childTypeId)
